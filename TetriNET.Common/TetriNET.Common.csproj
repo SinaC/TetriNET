@@ -4,8 +4,8 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3876454C-747B-4E66-B691-CD2F0A2FA237}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{195BE21E-603A-4858-A805-09C59107C5A7}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TetriNET.Common</RootNamespace>
     <AssemblyName>TetriNET.Common</AssemblyName>
@@ -13,7 +13,6 @@
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,6 +32,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Discovery" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,12 +41,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Interfaces\Contracts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WCF\DiscoveryFactory.cs" />
+    <Compile Include="WCF\DiscoveryHelper.cs" />
+    <Compile Include="WCF\SupportingTypes\AddressesContainer.cs" />
+    <Compile Include="WCF\SupportingTypes\ArrayExtensions.cs" />
+    <Compile Include="WCF\SupportingTypes\Collection.cs" />
+    <Compile Include="WCF\SupportingTypes\CollectionExtensions.cs" />
+    <Compile Include="WCF\SupportingTypes\MetadataHelper.cs" />
+    <Compile Include="WCF\SupportingTypes\ServiceHost.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

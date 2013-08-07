@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Server", "TetriNET
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Client", "TetriNET.Client\TetriNET.Client.csproj", "{DF0E62BB-86B0-4FAC-B731-0CD62C90CEB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Common", "TetriNET.Common\TetriNET.Common.csproj", "{3876454C-747B-4E66-B691-CD2F0A2FA237}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Common", "TetriNET.Common\TetriNET.Common.csproj", "{195BE21E-603A-4858-A805-09C59107C5A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,10 @@ Global
 		{DF0E62BB-86B0-4FAC-B731-0CD62C90CEB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF0E62BB-86B0-4FAC-B731-0CD62C90CEB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF0E62BB-86B0-4FAC-B731-0CD62C90CEB7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3876454C-747B-4E66-B691-CD2F0A2FA237}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3876454C-747B-4E66-B691-CD2F0A2FA237}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3876454C-747B-4E66-B691-CD2F0A2FA237}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3876454C-747B-4E66-B691-CD2F0A2FA237}.Release|Any CPU.Build.0 = Release|Any CPU
+		{195BE21E-603A-4858-A805-09C59107C5A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{195BE21E-603A-4858-A805-09C59107C5A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{195BE21E-603A-4858-A805-09C59107C5A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{195BE21E-603A-4858-A805-09C59107C5A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
