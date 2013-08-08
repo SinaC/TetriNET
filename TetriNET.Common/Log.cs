@@ -6,7 +6,7 @@ namespace TetriNET.Common
     {
         public static void WriteLine(string line)
         {
-            string threadLine = String.Format("[{0:X}]{1}", System.Threading.Thread.CurrentThread.ManagedThreadId, line);
+            string threadLine = String.Format("[{0:X8}]{1}", System.Threading.Thread.CurrentThread.ManagedThreadId, line);
             Console.WriteLine(threadLine);
             System.Diagnostics.Debug.WriteLine(threadLine);
         }

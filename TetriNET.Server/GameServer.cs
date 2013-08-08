@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.ServiceModel;
@@ -69,7 +67,7 @@ namespace TetriNET.Server
                 if (player != null)
                     player.Callback.OnPlayerRegistered(true, emptySlot);
                 // Inform players
-                // Send attack message to players
+                // Send register message to players
                 foreach (Player p in _players.Where(p => p != null))
                     p.Callback.OnPublishServerMessage(playerName + "[" + emptySlot + "] is now connected");
                 //
@@ -89,11 +87,8 @@ namespace TetriNET.Server
             Player player = GetPlayer(playerId);
             if (player != null)
             {
-                //lock (_players)
-                //{
-                //    foreach (Player p in _players.Where(p => p != null))
-                //        p.Callback.OnPublishPlayerMessage(playerId, player.Name, msg);
-                //}
+                foreach (Player p in _players.Where(p => p != null))
+                    p.Callback.OnPublishPlayerMessage(playerId, player.Name, msg);
             }
             else
                 Log.WriteLine("PublishMessage from unknown player[" + playerId + "]");
@@ -168,11 +163,8 @@ namespace TetriNET.Server
         private Player GetPlayer(int playerId)
         {
             Player player = null;
-            lock (_players)
-            {
-                if (playerId < MaxPlayerCount)
-                    player = _players[playerId];
-            }
+            if (playerId < MaxPlayerCount)
+                player = _players[playerId];
             return player;
         }
 
@@ -180,15 +172,12 @@ namespace TetriNET.Server
         {
             // get first empty slot
             int emptySlot = -1;
-            lock (_players)
-            {
-                for (int i = 0; i < MaxPlayerCount; i++)
-                    if (_players[i] == null)
-                    {
-                        emptySlot = i;
-                        break;
-                    }
-            }
+            for (int i = 0; i < MaxPlayerCount; i++)
+                if (_players[i] == null)
+                {
+                    emptySlot = i;
+                    break;
+                }
             return emptySlot;
         }
 
@@ -209,6 +198,7 @@ namespace TetriNET.Server
                         action();
                 }
                 Thread.Sleep(0);
+                // TODO: break
             }
         }
         #endregion
@@ -223,11 +213,8 @@ namespace TetriNET.Server
             target.Callback.OnAttackReceived(attack);
             // Send attack message to players
             string attackString = "Attack " + attack + " from " + player.Name + " to " + target.Name;
-            lock (_players)
-            {
-                foreach (Player p in _players.Where(p => p != null))
-                    p.Callback.OnAttackMessageReceived(attackId, attackString);
-            }
+            foreach (Player p in _players.Where(p => p != null))
+                p.Callback.OnAttackMessageReceived(attackId, attackString);
             // Increment attack id
             IncrementAttackId();
         }

@@ -46,7 +46,6 @@
     <Compile Include="Interfaces\Contracts.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WCF\DiscoveryFactory.cs" />
     <Compile Include="WCF\DiscoveryHelper.cs" />
     <Compile Include="WCF\SupportingTypes\AddressesContainer.cs" />
     <Compile Include="WCF\SupportingTypes\ArrayExtensions.cs" />

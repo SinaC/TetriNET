@@ -31,8 +31,9 @@ namespace TetriNET.Common.WCF.SupportingTypes
          ServiceEndpoint[] endpoints = GetEndpoints(mexAddress);
          ContractDescription description = ContractDescription.GetContract(contractType);
 
-         return endpoints.Where((endpoint) => endpoint.Contract.Name == description.Name && endpoint.Contract.Namespace == description.Namespace);       
+         return endpoints.Where(endpoint => endpoint.Contract.Name == description.Name && endpoint.Contract.Namespace == description.Namespace);       
       }
+
       public static ServiceEndpoint[] GetEndpoints(string mexAddress)
       {
          if(String.IsNullOrEmpty(mexAddress))
@@ -111,8 +112,9 @@ namespace TetriNET.Common.WCF.SupportingTypes
             ipcBindingElement.MaxReceivedMessageSize *= MessageSizeMultiplier;
             endpoints = QueryMexEndpoint(mexAddress,ipcBindingElement);
          }
-         return endpoints.ToArray();
+         return endpoints == null ? null : endpoints.ToArray();
       }
+
       public static Type GetCallbackContract(string mexAddress,Type contractType)
       {
          if(contractType.IsInterface == false)
@@ -202,10 +204,12 @@ namespace TetriNET.Common.WCF.SupportingTypes
          {}
          return false;
       }
+
       public static ContractDescription[] GetContracts(string mexAddress)
       {
          return GetContracts(typeof(Binding),mexAddress);
       }
+
       public static ContractDescription[] GetContracts(Type bindingType,string mexAddress)
       {
          Debug.Assert(bindingType.IsSubclassOf(typeof(Binding)) || bindingType == typeof(Binding));
@@ -213,14 +217,13 @@ namespace TetriNET.Common.WCF.SupportingTypes
          ServiceEndpoint[] endpoints = GetEndpoints(mexAddress);
 
          List<ContractDescription> contracts = new List<ContractDescription>();
-         ContractDescription contract;
-         foreach(ServiceEndpoint endpoint in endpoints)
+          foreach(ServiceEndpoint endpoint in endpoints)
          {
             if(bindingType.IsInstanceOfType(endpoint.Binding))
             {
-               contract = new ContractDescription(endpoint.Contract.Name,endpoint.Contract.Namespace);
+                ContractDescription contract = new ContractDescription(endpoint.Contract.Name,endpoint.Contract.Namespace);
 
-               if(contracts.Any((item)=> item.Name == contract.Name && item.Namespace == contract.Namespace) == false)
+                if(contracts.Any(item=> item.Name == contract.Name && item.Namespace == contract.Namespace) == false)
                {
                   contracts.Add(contract);
                }
@@ -228,6 +231,7 @@ namespace TetriNET.Common.WCF.SupportingTypes
          }
          return contracts.ToArray();
       }
+
       public static string[] GetAddresses(string mexAddress,Type contractType) 
       {
          if(contractType.IsInterface == false)
@@ -246,6 +250,7 @@ namespace TetriNET.Common.WCF.SupportingTypes
 
          return GetAddresses(mexAddress,description.Namespace,description.Name);
       }
+
       public static string[] GetAddresses(string mexAddress,string contractNamespace,string contractName)
       {
          ServiceEndpoint[] endpoints = GetEndpoints(mexAddress);
@@ -262,6 +267,7 @@ namespace TetriNET.Common.WCF.SupportingTypes
          }
          return addresses.ToArray();
       }
+
       public static string[] GetAddresses(Type bindingType,string mexAddress,Type contractType)
       {
          Debug.Assert(bindingType.IsSubclassOf(typeof(Binding)) || bindingType == typeof(Binding));
@@ -282,6 +288,7 @@ namespace TetriNET.Common.WCF.SupportingTypes
 
          return GetAddresses(bindingType,mexAddress,description.Namespace,description.Name);
       }
+
       public static string[] GetAddresses(Type bindingType,string mexAddress,string contractNamespace,string contractName)
       {
          Debug.Assert(bindingType.IsSubclassOf(typeof(Binding)) || bindingType == typeof(Binding));
