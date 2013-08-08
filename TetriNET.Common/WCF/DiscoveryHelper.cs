@@ -8,11 +8,11 @@ using System.ServiceModel.Description;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using TetriNET.Common.WCF.SupportingTypes;
 using System.Collections.Generic;
 
 //http://msdn.microsoft.com/en-us/magazine/ee335779.aspx
 //Adhoc
+
 namespace TetriNET.Common.WCF
 {
     public static class DiscoveryHelper
@@ -47,11 +47,12 @@ namespace TetriNET.Common.WCF
                     Debug.Assert(binding != null);
                     if (binding != null)
                     {
-                        host.AddServiceEndpoint(typeof(IMetadataExchange), binding, "MEX");
+                        host.AddServiceEndpoint(typeof (IMetadataExchange), binding, "MEX");
                     }
                 }
             }
         }
+
         public static Uri AvailableTcpBaseAddress
         {
             get
@@ -67,7 +68,8 @@ namespace TetriNET.Common.WCF
                 return new Uri("net.pipe://localhost/" + Guid.NewGuid() + "/");
             }
         }
-        static int FindAvailablePort()
+
+        private static int FindAvailablePort()
         {
             Mutex mutex = new Mutex(false, "ServiceModelEx.DiscoveryHelper.FindAvailablePort");
             try
@@ -77,7 +79,7 @@ namespace TetriNET.Common.WCF
                 using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
                 {
                     socket.Bind(endPoint);
-                    IPEndPoint local = (IPEndPoint)socket.LocalEndPoint;
+                    IPEndPoint local = (IPEndPoint) socket.LocalEndPoint;
                     return local.Port;
                 }
             }
@@ -90,10 +92,10 @@ namespace TetriNET.Common.WCF
         public static EndpointAddress DiscoverAddress<T>(Uri scope = null)
         {
             DiscoveryClient discoveryClient = new DiscoveryClient(new UdpDiscoveryEndpoint());
-            FindCriteria criteria = new FindCriteria(typeof(T))
-                {
-                    MaxResults = 1
-                };
+            FindCriteria criteria = new FindCriteria(typeof (T))
+            {
+                MaxResults = 1
+            };
             if (scope != null)
             {
                 criteria.Scopes.Add(scope);
@@ -106,10 +108,11 @@ namespace TetriNET.Common.WCF
 
             return discovered.Endpoints[0].Address;
         }
+
         public static List<EndpointAddress> DiscoverAddresses<T>(Uri scope = null)
         {
             DiscoveryClient discoveryClient = new DiscoveryClient(new UdpDiscoveryEndpoint());
-            FindCriteria criteria = new FindCriteria(typeof(T));
+            FindCriteria criteria = new FindCriteria(typeof (T));
             if (scope != null)
             {
                 criteria.Scopes.Add(scope);
@@ -137,7 +140,7 @@ namespace TetriNET.Common.WCF
 
             Uri mexAddress = discovered.Endpoints[0].Address.Uri;
 
-            ServiceEndpoint[] endpoints = MetadataHelper.GetEndpoints(mexAddress.AbsoluteUri, typeof(T));
+            ServiceEndpoint[] endpoints = MetadataHelper.GetEndpoints(mexAddress.AbsoluteUri, typeof (T));
 
             Debug.Assert(endpoints.Length == 1);
 

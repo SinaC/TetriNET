@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common;
 using TetriNET.Common.Interfaces;
-using TetriNET.Common.WCF;
 
 namespace TetriNET.Client
 {
@@ -14,11 +14,13 @@ namespace TetriNET.Client
     {
         public enum States
         {
-            ApplicationStarted, // -> Connecting to server
-            ConnectingToServer, // -> Connected to server
+            ApplicationStarted, // -> ConnectingToServer
+            ConnectingToServer, // -> ConnectedToServer
             ConnectedToServer, // -> Registering
-            Registering, // -> Registered or ApplicationStarted
-            Registered
+            Registering, // -> WaitingStartGame | ApplicationStarted
+            WaitingStartGame, // -> GameStarted
+            GameStarted, // -> GameFinished
+            GameFinished, // -> WaitingStartGame
         }
         private ITetriNET Proxy { get; set; }
 
@@ -37,7 +39,11 @@ namespace TetriNET.Client
             State = States.ConnectingToServer;
 
             InstanceContext instanceContext = new InstanceContext(this);
-            List<EndpointAddress> addresses = DiscoveryHelper.DiscoverAddresses<ITetriNET>();
+            //List<EndpointAddress> addresses = DiscoveryHelper.DiscoverAddresses<ITetriNET>();
+            List<EndpointAddress> addresses = new List<EndpointAddress>
+            {
+                new EndpointAddress("net.tcp://localhost:8765/")
+            };
 
             if (addresses != null && addresses.Any())
             {
@@ -79,23 +85,33 @@ namespace TetriNET.Client
             switch (State)
             {
                 case States.ApplicationStarted:
-                    State = States.ConnectingToServer;
                     ConnectToServer();
                     break;
                 case States.ConnectingToServer:
-                    // Nop
+                    // NOP
                     break;
                 case States.ConnectedToServer:
                     Register(PlayerName);
                     break;
-                case States.Registered:
+                case States.Registering:
+                    // NOP
+                    break;
+                case States.WaitingStartGame:
+                    State = States.GameStarted;
+                    break;
+                case States.GameStarted:
+                    Thread.Sleep(60);
                     Proxy.PublishMessage(PlayerId, "I'll kill you");
+                    Thread.Sleep(60);
                     Proxy.PlaceTetrimino(PlayerId, Tetriminos.TetriminoI, Orientations.Top, new Position
                     {
                         X = 5,
                         Y = 3
                     });
+                    Thread.Sleep(60);
                     Proxy.SendAttack(PlayerId, PlayerId, Attacks.Nuke);
+                    break;
+                case States.GameFinished:
                     break;
             }
         }
@@ -112,7 +128,7 @@ namespace TetriNET.Client
             if (succeeded)
             {
                 PlayerId = playerId;
-                State = States.Registered;
+                State = States.WaitingStartGame;
             }
             else
                 State = States.ApplicationStarted;

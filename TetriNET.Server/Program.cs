@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TetriNET.Server
 {
@@ -12,11 +8,13 @@ namespace TetriNET.Server
         {
             GameServer server = new GameServer();
             server.StartService();
+            server.StartGame();
 
             Console.WriteLine("Press enter to stop server");
             
             Console.ReadLine();
 
+            server.StopGame();
             server.StopService();
         }
     }
