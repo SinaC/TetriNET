@@ -11,12 +11,13 @@ namespace TetriNET.Server
         static void Main(string[] args)
         {
             GameServer server = new GameServer();
+            server.StartService();
 
             Console.WriteLine("Press enter to stop server");
             
-            server.StartService();
-
             Console.ReadLine();
+
+            server.StopService();
         }
     }
 }

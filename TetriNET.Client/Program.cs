@@ -1,12 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
-using TetriNET.Common.WCF;
-using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Client
 {
@@ -14,18 +6,20 @@ namespace TetriNET.Client
     {
         static void Main(string[] args)
         {
-            EndpointAddress address = DiscoveryHelper.DiscoverAddress<ITetriNET>();
-            Binding binding = new NetTcpBinding();
+            GameClient client = new GameClient();
+            client.PlayerName = "Joel";
 
-            ITetriNET proxy = ChannelFactory<ITetriNET>.CreateChannel(binding, address);
-            proxy.RegisterPlayer("Joël");
+            Console.WriteLine("Press any key to stop client");
 
-            (proxy as ICommunicationObject).Close();
+            while (true)
+            {
+                client.Test();
+                if (Console.KeyAvailable)
+                    break;
+                System.Threading.Thread.Sleep(1000);
+            }
 
-            //IMyContract proxy = DiscoveryFactory.CreateChannel<IMyContract>();
-            //proxy.MyMethod();
-
-            //(proxy as ICommunicationObject).Close();
+            Console.ReadLine();
         }
     }
 }

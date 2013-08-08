@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using TetriNET.Common.WCF.SupportingTypes;
+using System.Collections.Generic;
 
 //http://msdn.microsoft.com/en-us/magazine/ee335779.aspx
 //Adhoc
@@ -28,7 +29,7 @@ namespace TetriNET.Common.WCF
             discovery.AnnouncementEndpoints.Add(new UdpAnnouncementEndpoint());
             host.Description.Behaviors.Add(discovery);
 
-            if (enableMEX == true)
+            if (enableMEX)
             {
                 host.Description.Behaviors.Add(new ServiceMetadataBehavior());
 
@@ -89,8 +90,10 @@ namespace TetriNET.Common.WCF
         public static EndpointAddress DiscoverAddress<T>(Uri scope = null)
         {
             DiscoveryClient discoveryClient = new DiscoveryClient(new UdpDiscoveryEndpoint());
-            FindCriteria criteria = new FindCriteria(typeof(T));
-            criteria.MaxResults = 1;
+            FindCriteria criteria = new FindCriteria(typeof(T))
+                {
+                    MaxResults = 1
+                };
             if (scope != null)
             {
                 criteria.Scopes.Add(scope);
@@ -103,7 +106,7 @@ namespace TetriNET.Common.WCF
 
             return discovered.Endpoints[0].Address;
         }
-        public static EndpointAddress[] DiscoverAddresses<T>(Uri scope = null)
+        public static List<EndpointAddress> DiscoverAddresses<T>(Uri scope = null)
         {
             DiscoveryClient discoveryClient = new DiscoveryClient(new UdpDiscoveryEndpoint());
             FindCriteria criteria = new FindCriteria(typeof(T));
@@ -114,7 +117,7 @@ namespace TetriNET.Common.WCF
             FindResponse discovered = discoveryClient.Find(criteria);
             discoveryClient.Close();
 
-            return discovered.Endpoints.Select((endpoint) => endpoint.Address).ToArray();
+            return discovered.Endpoints.Select(endpoint => endpoint.Address).ToList();
         }
 
         public static Binding DiscoverBinding<T>(Uri scope = null)
