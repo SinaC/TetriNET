@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.Threading.Tasks;
 using TetriNET.Common;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.WCF;
@@ -33,7 +34,7 @@ namespace TetriNET.Client
 
         public void ConnectToServer()
         {
-            Console.WriteLine("Searching server");
+            Log.WriteLine("Searching server");
             State = States.ConnectingToServer;
 
             InstanceContext instanceContext = new InstanceContext(this);
@@ -42,17 +43,24 @@ namespace TetriNET.Client
             if (addresses != null && addresses.Any())
             {
                 foreach (EndpointAddress endpoint in addresses)
-                    Console.WriteLine("{0}:\t{1}", addresses.IndexOf(endpoint), endpoint.Uri);
+                    Log.WriteLine("{0}:\t{1}", addresses.IndexOf(endpoint), endpoint.Uri);
 
-                Console.WriteLine("Connecting to first server");
+                Log.WriteLine("Connecting to first server");
                 Binding binding = new NetTcpBinding();
-                Proxy = DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, addresses[0]);
+                //http://tech.pro/tutorial/914/wcf-callbacks-hanging-wpf-applications
+                // Create channel in another thread to solve hanging
+                Task<ITetriNET> task = Task<ITetriNET>.Factory.StartNew(
+                    () => DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, addresses[0])
+                );
+                task.Wait();
+                Proxy = task.Result;
+                //Proxy = DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, addresses[0]);
 
                 State = States.ConnectedToServer;
             }
             else
             {
-                Console.WriteLine("No server found");
+                Log.WriteLine("No server found");
 
                 State = States.ApplicationStarted;
             }
@@ -60,7 +68,7 @@ namespace TetriNET.Client
 
         public void Register(string playerName)
         {
-            Console.WriteLine("Registering");
+            Log.WriteLine("Registering");
             State = States.Registering;
 
             PlayerName = playerName;
@@ -101,7 +109,7 @@ namespace TetriNET.Client
         #region ITetriNETCallback
         public void OnPlayerRegistered(bool succeeded, int playerId)
         {
-            Console.WriteLine("OnPlayerRegistered:" + succeeded + " => " + playerId);
+            Log.WriteLine("OnPlayerRegistered:" + succeeded + " => " + playerId);
             if (succeeded)
             {
                 PlayerId = playerId;
@@ -113,22 +121,22 @@ namespace TetriNET.Client
 
         public void OnPublishPlayerMessage(int playerId, string playerName, string msg)
         {
-            Console.WriteLine("OnPublishPlayerMessage:" + playerName + "[" + playerId + "]:" + msg);
+            Log.WriteLine("OnPublishPlayerMessage:" + playerName + "[" + playerId + "]:" + msg);
         }
 
         public void OnPublishServerMessage(string msg)
         {
-            Console.WriteLine("OnPublishServerMessage:" + msg);
+            Log.WriteLine("OnPublishServerMessage:" + msg);
         }
 
         public void OnAttackReceived(Attacks attack)
         {
-            Console.WriteLine("OnAttackReceived:" + attack);
+            Log.WriteLine("OnAttackReceived:" + attack);
         }
 
         public void OnAttackMessageReceived(int attackId, string msg)
         {
-            Console.WriteLine("OnAttackMessageReceived:" + attackId + " " + msg);
+            Log.WriteLine("OnAttackMessageReceived:" + attackId + " " + msg);
         }
         #endregion
     }

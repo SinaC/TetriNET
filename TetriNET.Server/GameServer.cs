@@ -21,14 +21,14 @@ namespace TetriNET.Server
         private ServiceHost Host { get; set; }
 
         public GameServer() { 
-            Console.WriteLine("GameServer:ctor");
+            Log.WriteLine("GameServer:ctor");
 
             _attackId = 0;
             Task.Factory.StartNew(TaskResolveActions);
         }
 
         public void StartService() {
-            Console.WriteLine("Starting service");
+            Log.WriteLine("Starting service");
             Uri baseAddress = DiscoveryHelper.AvailableTcpBaseAddress;
 
             Host = new ServiceHost(this, baseAddress);
@@ -37,15 +37,15 @@ namespace TetriNET.Server
 
             foreach (var endpt in Host.Description.Endpoints)
             {
-                Console.WriteLine("Enpoint address:\t{0}", endpt.Address);
-                Console.WriteLine("Enpoint binding:\t{0}", endpt.Binding);
-                Console.WriteLine("Enpoint contract:\t{0}\n", endpt.Contract.ContractType.Name);
+                Log.WriteLine("Enpoint address:\t{0}", endpt.Address);
+                Log.WriteLine("Enpoint binding:\t{0}", endpt.Binding);
+                Log.WriteLine("Enpoint contract:\t{0}\n", endpt.Contract.ContractType.Name);
             }
         }
 
         public void StopService()
         {
-            Console.WriteLine("Stopping service");
+            Log.WriteLine("Stopping service");
             // TODO: notify clients
 
             // Close service host
@@ -55,7 +55,7 @@ namespace TetriNET.Server
         #region ITetriNET
         public void RegisterPlayer(string playerName)
         {
-            Console.WriteLine("RegisterPlayer:"+playerName);
+            Log.WriteLine("RegisterPlayer:"+playerName);
 
             ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
 
@@ -73,18 +73,18 @@ namespace TetriNET.Server
                 foreach (Player p in _players.Where(p => p != null))
                     p.Callback.OnPublishServerMessage(playerName + "[" + emptySlot + "] is now connected");
                 //
-                Console.WriteLine("New player:[" + emptySlot + "] " + playerName);
+                Log.WriteLine("New player:[" + emptySlot + "] " + playerName);
             }
             else
             {
-                Console.WriteLine("Register failed for player " + playerName);
+                Log.WriteLine("Register failed for player " + playerName);
                 callback.OnPlayerRegistered(false, 0);
             }
         }
 
         public void PublishMessage(int playerId, string msg)
         {
-            Console.WriteLine("PublishMessage:["+playerId+"]:"+msg);
+            Log.WriteLine("PublishMessage:["+playerId+"]:"+msg);
 
             Player player = GetPlayer(playerId);
             if (player != null)
@@ -96,23 +96,23 @@ namespace TetriNET.Server
                 //}
             }
             else
-                Console.WriteLine("PublishMessage from unknown player[" + playerId + "]");
+                Log.WriteLine("PublishMessage from unknown player[" + playerId + "]");
         }
 
         public void PlaceTetrimino(int playerId, Tetriminos tetrimino, Orientations orientation, Position position)
         {
-            Console.WriteLine("PlaceTetrimino:[" + playerId + "]" + tetrimino + " " + orientation + " at " + position.X + "," + position.Y);
+            Log.WriteLine("PlaceTetrimino:[" + playerId + "]" + tetrimino + " " + orientation + " at " + position.X + "," + position.Y);
 
             Player player = GetPlayer(playerId);
             if (player != null)
                 _actionQueue.Enqueue(() => PlaceTetrimino(player, tetrimino, orientation, position));
             else
-                Console.WriteLine("PlaceTetrimino from unknown player[" + playerId + "]");
+                Log.WriteLine("PlaceTetrimino from unknown player[" + playerId + "]");
         }
 
         public void SendAttack(int playerId, int targetId, Attacks attack)
         {
-            Console.WriteLine("SendAttack:["+playerId+"] -> ["+targetId+"]:"+attack);
+            Log.WriteLine("SendAttack:["+playerId+"] -> ["+targetId+"]:"+attack);
 
             Player player = GetPlayer(playerId);
             if (player != null)
@@ -121,10 +121,10 @@ namespace TetriNET.Server
                 if (target != null)
                     _actionQueue.Enqueue(() => Attack(player, target, attack));
                 else
-                    Console.WriteLine("SendAttack to unknown player[" + targetId + "] from [" + playerId + "]");
+                    Log.WriteLine("SendAttack to unknown player[" + targetId + "] from [" + playerId + "]");
             }
             else
-                Console.WriteLine("SendAttack from unknown player[" + playerId + "]");
+                Log.WriteLine("SendAttack from unknown player[" + playerId + "]");
         }
         #endregion
 
@@ -215,7 +215,7 @@ namespace TetriNET.Server
 
         private void Attack(Player player, Player target, Attacks attack)
         {
-            Console.WriteLine("SendAttack[" + player.Name + "][" + target.Name + "]" + attack);
+            Log.WriteLine("SendAttack[" + player.Name + "][" + target.Name + "]" + attack);
 
             // Store attack id locally
             int attackId = AttackId;
@@ -234,7 +234,7 @@ namespace TetriNET.Server
 
         public void PlaceTetrimino(Player player, Tetriminos tetrimino, Orientations orientation, Position position)
         {
-            Console.WriteLine("PlaceTetrimino[" + player.Name + "]" + tetrimino + " " + orientation + " at " + position.X + "," + position.Y);
+            Log.WriteLine("PlaceTetrimino[" + player.Name + "]" + tetrimino + " " + orientation + " at " + position.X + "," + position.Y);
 
             // TODO:
         }
