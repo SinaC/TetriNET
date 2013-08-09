@@ -2,7 +2,9 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
+using System.ServiceModel.Dispatcher;
 using System.Threading;
 using System.Threading.Tasks;
 using System.ServiceModel;
@@ -11,11 +13,46 @@ using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Server
 {
+    public class MyInstanceContextInitializer : IEndpointBehavior, IInstanceContextInitializer
+    {
+        public void AddBindingParameters(ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
+        {
+        }
+
+        public void ApplyClientBehavior(ServiceEndpoint endpoint, ClientRuntime clientRuntime)
+        {
+        }
+
+        public void ApplyDispatchBehavior(ServiceEndpoint endpoint, EndpointDispatcher endpointDispatcher)
+        {
+            endpointDispatcher.DispatchRuntime.InstanceContextInitializers.Add(this);
+        }
+
+        public void Validate(ServiceEndpoint endpoint)
+        {
+            Log.WriteLine("Validate");
+        }
+
+        public void Initialize(InstanceContext instanceContext, Message message)
+        {
+            if (message != null)
+            {
+                RemoteEndpointMessageProperty remp = (RemoteEndpointMessageProperty) message.Properties[RemoteEndpointMessageProperty.Name];
+                Log.WriteLine("Starting new session from {0}:{1}", remp.Address, remp.Port);
+                Log.WriteLine("If session should not be started, throw an exception here");
+            }
+            else
+                Log.WriteLine("MyInstanceContextInitializer:Initialize with null message");
+        }
+    }
+
     //[ServiceBehavior(InstanceContextMode=InstanceContextMode.Single, ConcurrencyMode=ConcurrencyMode.Single)]
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
     internal class GameServer : ITetriNET
     {
         private const int MaxPlayerCount = 6;
+        private const int MaxSpam = 5;
+        private const int SpamThreshold = 50;
 
         public enum States
         {
@@ -51,10 +88,15 @@ namespace TetriNET.Server
             
             Log.WriteLine("Starting service");
             //Uri baseAddress = DiscoveryHelper.AvailableTcpBaseAddress;
-            Uri baseAddress = new Uri("net.tcp://localhost:8765/");
+            Uri baseAddress = new Uri("net.tcp://localhost:8765/TetriNET");
 
             Host = new ServiceHost(this, baseAddress);
             Host.AddDefaultEndpoints();
+            //ServiceEndpoint endpoint = Host.AddServiceEndpoint(typeof(ITetriNET), new NetTcpBinding(SecurityMode.None), "");
+            //foreach (ServiceEndpoint endpoint in Host.Description.Endpoints)
+            //    endpoint.Behaviors.Add(new MyInstanceContextInitializer());
+            Host.Description.Endpoints[2].Behaviors.Add(new MyInstanceContextInitializer());
+            //endpoint.Behaviors.Add(new MyInstanceContextInitializer());
             Host.Open();
 
             foreach (var endpt in Host.Description.Endpoints)
@@ -129,7 +171,7 @@ namespace TetriNET.Server
             Debug.Assert(player == GetPlayer(OperationContext.Current.GetCallbackChannel<ITetriNETCallback>()));
             if (player != null)
             {
-                Debug.Assert(player.CheckLastActionTimespan());
+                Debug.Assert(!player.IsSpammer());
                 foreach (Player p in _players.Where(p => p != null))
                     p.Callback.OnPublishPlayerMessage(playerId, player.Name, msg);
             }
@@ -145,7 +187,7 @@ namespace TetriNET.Server
             Debug.Assert(player == GetPlayer(OperationContext.Current.GetCallbackChannel<ITetriNETCallback>()));
             if (player != null)
             {
-                Debug.Assert(player.CheckLastActionTimespan());
+                Debug.Assert(!player.IsSpammer());
                 _actionQueue.Enqueue(() => PlaceTetrimino(player, tetrimino, orientation, position));
             }
             else
@@ -160,7 +202,7 @@ namespace TetriNET.Server
             Debug.Assert(player == GetPlayer(OperationContext.Current.GetCallbackChannel<ITetriNETCallback>()));
             if (player != null)
             {
-                Debug.Assert(player.CheckLastActionTimespan());
+                Debug.Assert(!player.IsSpammer());
                 Player target = GetPlayer(targetId);
                 if (target != null)
                     _actionQueue.Enqueue(() => Attack(player, target, attack));
@@ -202,18 +244,23 @@ namespace TetriNET.Server
         {
             public Player()
             {
+                SpamCount = 0;
                 LastActionTime = DateTime.Now;
             }
 
             public string Name { get; set; }
             public ITetriNETCallback Callback { get; set; }
             public DateTime LastActionTime { get; private set; }
+            public int SpamCount { get; private set; }
 
-            public bool CheckLastActionTimespan()
+            public bool IsSpammer() // returns true if spam is detected
             {
+                Log.WriteLine("TICK:{0:hh/mm/ss.fff}", DateTime.Now);
                 TimeSpan timeSpan = DateTime.Now - LastActionTime;
                 LastActionTime = DateTime.Now;
-                return timeSpan.TotalMilliseconds > 50;
+                if (timeSpan.TotalMilliseconds <= SpamThreshold)
+                    SpamCount++;
+                return SpamCount >= MaxSpam;
             }
         }
 

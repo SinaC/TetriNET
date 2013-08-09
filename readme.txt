@@ -22,3 +22,8 @@ http://tech.pro/tutorial/914/wcf-callbacks-hanging-wpf-applications
 close gracefully proxy
 http://nimtug.org/blogs/damien-mcgivern/archive/2009/05/26/wcf-communicationobjectfaultedexception-quot-cannot-be-used-for-communication-because-it-is-in-the-faulted-state-quot-messagesecurityexception-quot-an-error-occurred-when-verifying-security-for-the-message-quot.aspx
 http://stackoverflow.com/questions/530731/how-to-make-sure-you-dont-get-wcf-faulted-state-exception
+http://stackoverflow.com/questions/1400010/closing-wcf-connection
+
+block incoming connection
+http://stackoverflow.com/questions/12089879/how-to-block-incoming-connections-from-specific-addresses
+http://stackoverflow.com/questions/1922551/wcf-basichttpbinding-stop-new-connections-but-allow-existing-connections-to-co

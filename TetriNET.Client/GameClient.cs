@@ -42,7 +42,7 @@ namespace TetriNET.Client
             //List<EndpointAddress> addresses = DiscoveryHelper.DiscoverAddresses<ITetriNET>();
             List<EndpointAddress> addresses = new List<EndpointAddress>
             {
-                new EndpointAddress("net.tcp://localhost:8765/")
+                new EndpointAddress("net.tcp://localhost:8765/TetriNET")
             };
 
             if (addresses != null && addresses.Any())
