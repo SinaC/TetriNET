@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
@@ -6,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common;
 using TetriNET.Common.Interfaces;
+using TetriNET.Common.WCF;
 
 namespace TetriNET.Client
 {
@@ -38,12 +40,14 @@ namespace TetriNET.Client
             Log.WriteLine("Searching server");
             State = States.ConnectingToServer;
 
+            //string baseAddress = "net.tcp://localhost:8765/TetriNET";
+
             InstanceContext instanceContext = new InstanceContext(this);
-            //List<EndpointAddress> addresses = DiscoveryHelper.DiscoverAddresses<ITetriNET>();
-            List<EndpointAddress> addresses = new List<EndpointAddress>
-            {
-                new EndpointAddress("net.tcp://localhost:8765/TetriNET")
-            };
+            List<EndpointAddress> addresses = DiscoveryHelper.DiscoverAddresses<ITetriNET>();
+            //List<EndpointAddress> addresses = new List<EndpointAddress>
+            //{
+            //    new EndpointAddress(baseAddress)
+            //};
 
             if (addresses != null && addresses.Any())
             {
@@ -51,15 +55,15 @@ namespace TetriNET.Client
                     Log.WriteLine("{0}:\t{1}", addresses.IndexOf(endpoint), endpoint.Uri);
 
                 Log.WriteLine("Connecting to first server");
-                Binding binding = new NetTcpBinding();
+                Binding binding = new NetTcpBinding(SecurityMode.None);
                 //http://tech.pro/tutorial/914/wcf-callbacks-hanging-wpf-applications
-                // Create channel in another thread to solve hanging
-                Task<ITetriNET> task = Task<ITetriNET>.Factory.StartNew(
-                    () => DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, addresses[0])
-                );
-                task.Wait();
-                Proxy = task.Result;
-                //Proxy = DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, addresses[0]);
+                //// Create channel in another thread to solve hanging
+                //Task<ITetriNET> task = Task<ITetriNET>.Factory.StartNew(
+                //    () => DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, addresses[0])
+                //);
+                //task.Wait();
+                //Proxy = task.Result;
+                Proxy = DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, addresses[0]);
 
                 State = States.ConnectedToServer;
             }

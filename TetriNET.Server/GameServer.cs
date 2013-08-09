@@ -47,7 +47,8 @@ namespace TetriNET.Server
     }
 
     //[ServiceBehavior(InstanceContextMode=InstanceContextMode.Single, ConcurrencyMode=ConcurrencyMode.Single)]
-    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
+    //[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
+    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
     internal class GameServer : ITetriNET
     {
         private const int MaxPlayerCount = 6;
@@ -88,15 +89,11 @@ namespace TetriNET.Server
             
             Log.WriteLine("Starting service");
             //Uri baseAddress = DiscoveryHelper.AvailableTcpBaseAddress;
-            Uri baseAddress = new Uri("net.tcp://localhost:8765/TetriNET");
+            Uri baseAddress =  new Uri("net.tcp://localhost:8765/TetriNET");
 
-            Host = new ServiceHost(this, baseAddress);
-            Host.AddDefaultEndpoints();
-            //ServiceEndpoint endpoint = Host.AddServiceEndpoint(typeof(ITetriNET), new NetTcpBinding(SecurityMode.None), "");
-            //foreach (ServiceEndpoint endpoint in Host.Description.Endpoints)
-            //    endpoint.Behaviors.Add(new MyInstanceContextInitializer());
-            Host.Description.Endpoints[2].Behaviors.Add(new MyInstanceContextInitializer());
-            //endpoint.Behaviors.Add(new MyInstanceContextInitializer());
+            Host = new ServiceHost(typeof(GameServer), baseAddress);
+            ServiceEndpoint endpoint = Host.AddServiceEndpoint(typeof(ITetriNET), new NetTcpBinding(SecurityMode.None), "");
+            endpoint.Behaviors.Add(new MyInstanceContextInitializer());
             Host.Open();
 
             foreach (var endpt in Host.Description.Endpoints)
@@ -255,7 +252,6 @@ namespace TetriNET.Server
 
             public bool IsSpammer() // returns true if spam is detected
             {
-                Log.WriteLine("TICK:{0:hh/mm/ss.fff}", DateTime.Now);
                 TimeSpan timeSpan = DateTime.Now - LastActionTime;
                 LastActionTime = DateTime.Now;
                 if (timeSpan.TotalMilliseconds <= SpamThreshold)

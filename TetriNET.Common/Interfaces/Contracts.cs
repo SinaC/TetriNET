@@ -2,7 +2,7 @@
 
 namespace TetriNET.Common.Interfaces
 {
-    [ServiceContract(CallbackContract = typeof(ITetriNETCallback))]
+    [ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(ITetriNETCallback))]
     public interface ITetriNET
     {
         [OperationContract(IsOneWay = true)]
