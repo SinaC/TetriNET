@@ -1,16 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{195BE21E-603A-4858-A805-09C59107C5A7}</ProjectGuid>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B29B9BA4-9770-4AC9-AAD4-DD32032B29A2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TetriNET.Common</RootNamespace>
-    <AssemblyName>TetriNET.Common</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>IPFiltering</RootNamespace>
+    <AssemblyName>IPFilter</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,26 +37,39 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Discovery" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameData.cs" />
-    <Compile Include="Contracts.cs" />
-    <Compile Include="Log.cs" />
+    <Compile Include="Configuration\FilterConfiguration.cs" />
+    <Compile Include="Configuration\FilterConfigurationCollection.cs" />
+    <Compile Include="Configuration\FilterConfigurationItem.cs" />
+    <Compile Include="Configuration\FilterFactory.cs" />
+    <Compile Include="Configuration\HttpModuleConfiguration.cs" />
+    <Compile Include="Configuration\IPFilterConfiguration.cs" />
+    <Compile Include="IPFilter.cs" />
+    <Compile Include="IPFilterItem.cs" />
+    <Compile Include="IPFilterModule.cs" />
+    <Compile Include="IPFilterType.cs" />
+    <Compile Include="IPFilterServiceBehavior.cs" />
+    <Compile Include="IPRange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Singleton.cs" />
-    <Compile Include="WCF\DiscoveryHelper.cs" />
-    <Compile Include="WCF\MetadataHelper.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

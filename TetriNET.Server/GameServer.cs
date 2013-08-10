@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel.Channels;
@@ -8,47 +10,14 @@ using System.ServiceModel.Dispatcher;
 using System.Threading;
 using System.Threading.Tasks;
 using System.ServiceModel;
+//using IPFiltering;
 using TetriNET.Common;
-using TetriNET.Common.Interfaces;
+using TetriNET.Common.WCF;
 
 namespace TetriNET.Server
 {
-    public class MyInstanceContextInitializer : IEndpointBehavior, IInstanceContextInitializer
-    {
-        public void AddBindingParameters(ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
-        {
-        }
-
-        public void ApplyClientBehavior(ServiceEndpoint endpoint, ClientRuntime clientRuntime)
-        {
-        }
-
-        public void ApplyDispatchBehavior(ServiceEndpoint endpoint, EndpointDispatcher endpointDispatcher)
-        {
-            endpointDispatcher.DispatchRuntime.InstanceContextInitializers.Add(this);
-        }
-
-        public void Validate(ServiceEndpoint endpoint)
-        {
-            Log.WriteLine("Validate");
-        }
-
-        public void Initialize(InstanceContext instanceContext, Message message)
-        {
-            if (message != null)
-            {
-                RemoteEndpointMessageProperty remp = (RemoteEndpointMessageProperty) message.Properties[RemoteEndpointMessageProperty.Name];
-                Log.WriteLine("Starting new session from {0}:{1}", remp.Address, remp.Port);
-                Log.WriteLine("If session should not be started, throw an exception here");
-            }
-            else
-                Log.WriteLine("MyInstanceContextInitializer:Initialize with null message");
-        }
-    }
-
     //[ServiceBehavior(InstanceContextMode=InstanceContextMode.Single, ConcurrencyMode=ConcurrencyMode.Single)]
-    //[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
-    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
+    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
     internal class GameServer : ITetriNET
     {
         private const int MaxPlayerCount = 6;
@@ -66,34 +35,40 @@ namespace TetriNET.Server
             StoppingServer, // -> WaitingStartServer
         }
 
+        private readonly ThreadSafeSingleton<TetriminoQueue> _tetriminoQueue = new ThreadSafeSingleton<TetriminoQueue>(() => new TetriminoQueue());
         public States State { get; private set; }
         private ServiceHost Host { get; set; }
 
         public GameServer()
         {
+            Log.WriteLine("***GameServer:ctor***");
+
             State = States.WaitingStartServer;
-
-            Log.WriteLine("GameServer:ctor");
-
-            _attackId = 0;
+            
+            AttackId = 0;
 
             Task.Factory.StartNew(TaskResolveActions);
         }
 
         public void StartService()
         {
+            Log.WriteLine("StartService");
             if (State != States.WaitingStartServer)
                 return; // TODO: error
             
             State = States.StartingServer;
-            
-            Log.WriteLine("Starting service");
-            //Uri baseAddress = DiscoveryHelper.AvailableTcpBaseAddress;
-            Uri baseAddress =  new Uri("net.tcp://localhost:8765/TetriNET");
 
-            Host = new ServiceHost(typeof(GameServer), baseAddress);
-            ServiceEndpoint endpoint = Host.AddServiceEndpoint(typeof(ITetriNET), new NetTcpBinding(SecurityMode.None), "");
-            endpoint.Behaviors.Add(new MyInstanceContextInitializer());
+            string port = ConfigurationManager.AppSettings["port"];
+            Uri baseAddress;
+            if (String.IsNullOrEmpty(port) || port.ToLower() == "auto")
+                baseAddress = DiscoveryHelper.AvailableTcpBaseAddress;
+            else
+                baseAddress =  new Uri("net.tcp://localhost:"+port+"/TetriNET");
+
+            //Host = new ServiceHost(typeof(GameServer), baseAddress);
+            Host = new ServiceHost(this, baseAddress);
+            Host.AddServiceEndpoint(typeof(ITetriNET), new NetTcpBinding(SecurityMode.None), "");
+            //Host.Description.Behaviors.Add(new IPFilterServiceBehavior("DenyLocal"));
             Host.Open();
 
             foreach (var endpt in Host.Description.Endpoints)
@@ -108,10 +83,12 @@ namespace TetriNET.Server
 
         public void StopService()
         {
+            Log.WriteLine("StopService");
+
             State = States.StoppingServer;
 
-            Log.WriteLine("Stopping service");
-            // TODO: notify clients
+            foreach (Player p in _players.Where(p => p != null))
+                p.Callback.OnServerStopped();
 
             // Close service host
             Host.Close();
@@ -121,12 +98,25 @@ namespace TetriNET.Server
 
         public void StartGame()
         {
-            // TODO
+            Log.WriteLine("Start game");
+            // Reset Tetrimino Queue
+            _tetriminoQueue.Instance.Reset(); // TODO: random seed
+            Tetriminos firstTetrimino = _tetriminoQueue.Instance[0];
+            Tetriminos secondTetrimino = _tetriminoQueue.Instance[1];
+            // Send start game to every connected player
+            foreach (Player p in _players.Where(p => p != null))
+            {
+                p.TetriminoIndex = 0;
+                p.Callback.OnGameStarted(firstTetrimino, secondTetrimino);
+            }
         }
 
         public void StopGame()
         {
-            // TODO
+            Log.WriteLine("Stop game");
+            // Send start game to every connected player
+            foreach (Player p in _players.Where(p => p != null))
+                p.Callback.OnGameFinished();
         }
 
         #region ITetriNET
@@ -156,79 +146,81 @@ namespace TetriNET.Server
             else
             {
                 Log.WriteLine("Register failed for player " + playerName);
-                callback.OnPlayerRegistered(false, 0);
+                callback.OnPlayerRegistered(false, -1);
             }
         }
 
-        public void PublishMessage(int playerId, string msg)
+        public void PublishMessage(string msg)
         {
-            Log.WriteLine("PublishMessage:[" + playerId + "]:" + msg);
-
-            Player player = GetPlayer(playerId);
-            Debug.Assert(player == GetPlayer(OperationContext.Current.GetCallbackChannel<ITetriNETCallback>()));
+            ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
+            Player player = GetPlayer(callback);
             if (player != null)
             {
-                Debug.Assert(!player.IsSpammer());
+                Log.WriteLine("PublishMessage:[" + player.Name + "]:" + msg);
+
+                bool isSpammer = player.CheckSpam();
                 foreach (Player p in _players.Where(p => p != null))
-                    p.Callback.OnPublishPlayerMessage(playerId, player.Name, msg);
+                    p.Callback.OnPublishPlayerMessage(player.Name, msg);
             }
             else
-                Log.WriteLine("PublishMessage from unknown player[" + playerId + "]");
+            {
+                RemoteEndpointMessageProperty clientEndpoint = OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
+                Log.WriteLine("PublishMessage from unknown player[" + (clientEndpoint == null ? callback.ToString() : clientEndpoint.Address) + "]");
+            }
         }
 
-        public void PlaceTetrimino(int playerId, Tetriminos tetrimino, Orientations orientation, Position position)
+        public void PlaceTetrimino(Tetriminos tetrimino, Orientations orientation, Position position)
         {
-            Log.WriteLine("PlaceTetrimino:[" + playerId + "]" + tetrimino + " " + orientation + " at " + position.X + "," + position.Y);
-
-            Player player = GetPlayer(playerId);
+            ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
+            Player player = GetPlayer(callback);
             Debug.Assert(player == GetPlayer(OperationContext.Current.GetCallbackChannel<ITetriNETCallback>()));
             if (player != null)
             {
-                Debug.Assert(!player.IsSpammer());
+                Log.WriteLine("PlaceTetrimino:[" + player.Name + "]" + tetrimino + " " + orientation + " at " + position.X + "," + position.Y);
+
+                bool isSpammer = player.CheckSpam();
                 _actionQueue.Enqueue(() => PlaceTetrimino(player, tetrimino, orientation, position));
             }
             else
-                Log.WriteLine("PlaceTetrimino from unknown player[" + playerId + "]");
+            {
+                RemoteEndpointMessageProperty clientEndpoint = OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
+                Log.WriteLine("PlaceTetrimino from unknown player[" + (clientEndpoint == null ? callback.ToString() : clientEndpoint.Address) + "]");
+            }
         }
 
-        public void SendAttack(int playerId, int targetId, Attacks attack)
+        public void SendAttack(int targetId, Attacks attack)
         {
-            Log.WriteLine("SendAttack:[" + playerId + "] -> [" + targetId + "]:" + attack);
-
-            Player player = GetPlayer(playerId);
+            ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
+            Player player = GetPlayer(callback);
             Debug.Assert(player == GetPlayer(OperationContext.Current.GetCallbackChannel<ITetriNETCallback>()));
             if (player != null)
             {
-                Debug.Assert(!player.IsSpammer());
+                bool isSpammer = player.CheckSpam();
                 Player target = GetPlayer(targetId);
                 if (target != null)
+                {
+                    Log.WriteLine("SendAttack:[" + player.Name + "] -> [" + targetId + "]:" + attack);
+
                     _actionQueue.Enqueue(() => Attack(player, target, attack));
+                }
                 else
-                    Log.WriteLine("SendAttack to unknown player[" + targetId + "] from [" + playerId + "]");
+                    Log.WriteLine("SendAttack to unknown player[" + targetId + "] from [" + player.Name + "]");
             }
             else
-                Log.WriteLine("SendAttack from unknown player[" + playerId + "]");
+            {
+                RemoteEndpointMessageProperty clientEndpoint = OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
+                Log.WriteLine("SendAttack from unknown player[" + (clientEndpoint == null ? callback.ToString() : clientEndpoint.Address) + "]");
+            }
         }
 
         #endregion
 
         #region Attack Id
 
-        private int _attackId;
-
         public int AttackId
         {
-            get { return _attackId; }
-        }
-
-        public int IncrementAttackId()
-        {
-            return Interlocked.Increment(ref _attackId);
-        }
-
-        public int DecrementAttackId()
-        {
-            return Interlocked.Decrement(ref _attackId);
+            get;
+            private set;
         }
 
         #endregion
@@ -237,21 +229,27 @@ namespace TetriNET.Server
 
         private readonly Player[] _players = new Player[MaxPlayerCount]; // TODO: replace with an array or dictionary or free list
 
-        public class Player
+        private class Player
         {
-            public Player()
+            public Player(string name, ITetriNETCallback callback)
             {
+                Name = name;
+                Callback = callback;
+                TetriminoIndex = 0;
                 SpamCount = 0;
                 LastActionTime = DateTime.Now;
             }
 
-            public string Name { get; set; }
-            public ITetriNETCallback Callback { get; set; }
-            public DateTime LastActionTime { get; private set; }
-            public int SpamCount { get; private set; }
+            public string Name { get; private set; }
+            public ITetriNETCallback Callback { get; private set; }
+            private DateTime LastActionTime { get; set; }
+            private int SpamCount { get; set; }
+            public int TetriminoIndex { get; set; }
 
-            public bool IsSpammer() // returns true if spam is detected
+            public bool CheckSpam() // returns true if spam is detected
             {
+                if (SpamCount >= MaxSpam)
+                    return true;
                 TimeSpan timeSpan = DateTime.Now - LastActionTime;
                 LastActionTime = DateTime.Now;
                 if (timeSpan.TotalMilliseconds <= SpamThreshold)
@@ -262,11 +260,7 @@ namespace TetriNET.Server
 
         private Player SetPlayer(int playerId, string playerName, ITetriNETCallback callback)
         {
-            Player player = new Player
-            {
-                Name = playerName,
-                Callback = callback
-            };
+            Player player = new Player(playerName, callback);
             _players[playerId] = player;
             return player;
         }
@@ -302,6 +296,51 @@ namespace TetriNET.Server
 
         #endregion
 
+        #region Tetrimino queue
+        private class TetriminoQueue
+        {
+            private int _tetriminosCount;
+            private readonly object _lock = new object();
+            private int _size;
+            private int[] _array;
+            private Random _random;
+
+            public void Reset(int seed = 0)
+            {
+                _tetriminosCount = Enum.GetValues(typeof (Tetriminos)).Length;
+                _random = new Random(seed);
+                Grow(1);
+            }
+
+            public Tetriminos this[int index]
+            {
+                get
+                {
+                    Tetriminos tetrimino;
+                    lock (_lock)
+                    {
+                        if (index >= _size)
+                            Grow(128);
+                        tetrimino = (Tetriminos)_array[index];
+                    }
+                    return tetrimino;
+                }
+            }
+
+            private void Grow(int increment)
+            {
+                int newSize = _size + increment;
+                int[] newArray = new int[newSize];
+                if (_size > 0)
+                    Array.Copy(_array, newArray, _size);
+                for (int i = _size; i < newSize; i++)
+                    newArray[i] = _random.Next(_tetriminosCount);
+                _array = newArray;
+                _size = newSize;
+            }
+        }
+        #endregion
+
         #region Action queue
 
         private readonly ConcurrentQueue<Action> _actionQueue = new ConcurrentQueue<Action>();
@@ -324,27 +363,29 @@ namespace TetriNET.Server
 
         #endregion
 
+        #region Actions
         private void Attack(Player player, Player target, Attacks attack)
         {
             Log.WriteLine("SendAttack[" + player.Name + "][" + target.Name + "]" + attack);
 
             // Store attack id locally
             int attackId = AttackId;
+            AttackId++;
             // Send attack to target
             target.Callback.OnAttackReceived(attack);
             // Send attack message to players
-            string attackString = "Attack " + attack + " from " + player.Name + " to " + target.Name;
+            string attackString = attackId + ": " + attack + " from " + player.Name + " to " + target.Name;
             foreach (Player p in _players.Where(p => p != null))
-                p.Callback.OnAttackMessageReceived(attackId, attackString);
-            // Increment attack id
-            IncrementAttackId();
+                p.Callback.OnAttackMessageReceived(attackString);
         }
 
-        public void PlaceTetrimino(Player player, Tetriminos tetrimino, Orientations orientation, Position position)
+        private void PlaceTetrimino(Player player, Tetriminos tetrimino, Orientations orientation, Position position)
         {
             Log.WriteLine("PlaceTetrimino[" + player.Name + "]" + tetrimino + " " + orientation + " at " + position.X + "," + position.Y);
-
-            // TODO:
+            player.TetriminoIndex++;
+            Tetriminos nextTetrimino = _tetriminoQueue.Instance[player.TetriminoIndex];
+            player.Callback.OnNextTetrimino(player.TetriminoIndex, nextTetrimino);
         }
+        #endregion
     }
 }

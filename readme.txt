@@ -1,8 +1,10 @@
 TODO:
 replace assert and return null/false/-1 with error management
 player disconnection: quit or connection lost
-same tetriminos for every player
-[DONE]spam prevention, no more than 1 service call every 50ms (configurable)
+[DONE]same tetriminos for every player
+replace Tetriminos enum with index
+GameStart send tetrimino definitions
+spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
 [DONE]check if playerId and callback matches when receiving a 'msg' from client
 [DONE]server state: 
 	waiting start server -> starting server -> waiting start game -> starting game -> game started -> game finished -> waiting start game
@@ -32,6 +34,11 @@ http://www.codeproject.com/Articles/37280/WCF-Service-Behavior-Example-IPFilter-
 http://stackoverflow.com/questions/12376068/how-can-i-add-an-ipfilter-to-an-wcf-odata-service
 http://stackoverflow.com/questions/722008/can-i-setup-an-ip-filter-for-a-wcf-service
 http://keyvan.io/detect-client-ip-in-wcf-3-5
+
+server->client exception
+http://beyondrelational.com/modules/2/blogs/79/posts/11543/throwing-exceptions-from-wcf-service-faultexception.aspx
+http://stackoverflow.com/questions/1369882/wcf-web-service-custom-exception-error-to-client
+https://go4answers.webhost4life.com/Example/delect-unexpected-dead-client-wcf-67814.aspx
 
 tetris GUI WPF
 http://sekagra.com/wp/2011/11/wpf-tetris/

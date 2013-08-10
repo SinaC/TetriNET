@@ -7,7 +7,7 @@ namespace TetriNET.Client
         static void Main(string[] args)
         {
             GameClient client = new GameClient();
-            client.PlayerName = "Joel";
+            client.PlayerName = "Joel_" + Guid.NewGuid().ToString().Substring(0,6);
 
             Console.WriteLine("Press any key to stop client");
 

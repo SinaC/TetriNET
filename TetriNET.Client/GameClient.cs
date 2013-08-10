@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
 using System.Collections.Generic;
 using System.ServiceModel;
@@ -6,7 +7,6 @@ using System.ServiceModel.Channels;
 using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common;
-using TetriNET.Common.Interfaces;
 using TetriNET.Common.WCF;
 
 namespace TetriNET.Client
@@ -37,24 +37,35 @@ namespace TetriNET.Client
 
         public void ConnectToServer()
         {
-            Log.WriteLine("Searching server");
+            Log.WriteLine("Connecting to server");
             State = States.ConnectingToServer;
 
             //string baseAddress = "net.tcp://localhost:8765/TetriNET";
+            string baseAddress = ConfigurationManager.AppSettings["address"];
 
-            InstanceContext instanceContext = new InstanceContext(this);
-            List<EndpointAddress> addresses = DiscoveryHelper.DiscoverAddresses<ITetriNET>();
-            //List<EndpointAddress> addresses = new List<EndpointAddress>
-            //{
-            //    new EndpointAddress(baseAddress)
-            //};
-
-            if (addresses != null && addresses.Any())
+            EndpointAddress address = null;
+            if (String.IsNullOrEmpty(baseAddress) || baseAddress.ToLower() == "auto")
             {
-                foreach (EndpointAddress endpoint in addresses)
-                    Log.WriteLine("{0}:\t{1}", addresses.IndexOf(endpoint), endpoint.Uri);
+                Log.WriteLine("Searching ITetriNET server");
+                List<EndpointAddress> addresses = DiscoveryHelper.DiscoverAddresses<ITetriNET>();
+                if (addresses != null && addresses.Any())
+                {
+                    foreach (EndpointAddress endpoint in addresses)
+                        Log.WriteLine("{0}:\t{1}", addresses.IndexOf(endpoint), endpoint.Uri);
+                    Log.WriteLine("Connecting to first server");
+                    address = addresses[0];
+                }
+                else
+                {
+                    Log.WriteLine("No server found");
+                }
+            }
+            else
+                address = new EndpointAddress(baseAddress);
 
-                Log.WriteLine("Connecting to first server");
+
+            if (address != null)
+            {
                 Binding binding = new NetTcpBinding(SecurityMode.None);
                 //http://tech.pro/tutorial/914/wcf-callbacks-hanging-wpf-applications
                 //// Create channel in another thread to solve hanging
@@ -63,14 +74,13 @@ namespace TetriNET.Client
                 //);
                 //task.Wait();
                 //Proxy = task.Result;
-                Proxy = DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, addresses[0]);
+                InstanceContext instanceContext = new InstanceContext(this);
+                Proxy = DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, address);
 
                 State = States.ConnectedToServer;
             }
             else
             {
-                Log.WriteLine("No server found");
-
                 State = States.ApplicationStarted;
             }
         }
@@ -81,7 +91,19 @@ namespace TetriNET.Client
             State = States.Registering;
 
             PlayerName = playerName;
-            Proxy.RegisterPlayer(PlayerName);
+            try
+            {
+                Proxy.RegisterPlayer(PlayerName);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                State = States.ApplicationStarted;
+                Log.WriteLine("EndpointNotFound -> ApplicationStarted");
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine("Register failed. Exception:"+ex.ToString());
+            }
         }
 
         public void Test()
@@ -92,30 +114,51 @@ namespace TetriNET.Client
                     ConnectToServer();
                     break;
                 case States.ConnectingToServer:
-                    // NOP
+                    // NOP: wait connection resolution
                     break;
                 case States.ConnectedToServer:
                     Register(PlayerName);
                     break;
                 case States.Registering:
-                    // NOP
+                    // NOP: waiting callback OnPlayerRegistered
                     break;
                 case States.WaitingStartGame:
-                    State = States.GameStarted;
+                    // NOP: waiting callback OnGameStarted
                     break;
                 case States.GameStarted:
-                    Thread.Sleep(60);
-                    Proxy.PublishMessage(PlayerId, "I'll kill you");
-                    Thread.Sleep(60);
-                    Proxy.PlaceTetrimino(PlayerId, Tetriminos.TetriminoI, Orientations.Top, new Position
+                    try
                     {
-                        X = 5,
-                        Y = 3
-                    });
-                    Thread.Sleep(60);
-                    Proxy.SendAttack(PlayerId, PlayerId, Attacks.Nuke);
+                        int rnd = new Random().Next(3);
+                        switch (rnd)
+                        {
+                            case 0:
+                                Proxy.PublishMessage("I'll kill you");
+                                break;
+                            case 1:
+                                Proxy.PlaceTetrimino(Tetriminos.TetriminoI, Orientations.Top, new Position
+                                {
+                                    X = 5,
+                                    Y = 3
+                                });
+                                break;
+                            case 2:
+                                Proxy.SendAttack(PlayerId, Attacks.Nuke);
+                                break;
+                        }
+                        Thread.Sleep(60);
+                    }
+                    catch (CommunicationObjectFaultedException ex)
+                    {
+                        State = States.ApplicationStarted;
+                        Log.WriteLine("CommunicationObjectFaultedException -> ApplicationStarted");
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.WriteLine("Register failed. Exception:" + ex.ToString());
+                    }
                     break;
                 case States.GameFinished:
+                    State = States.WaitingStartGame;
                     break;
             }
         }
@@ -126,6 +169,13 @@ namespace TetriNET.Client
         //}
 
         #region ITetriNETCallback
+
+        public void OnServerStopped()
+        {
+            Log.WriteLine("OnServerStopped");
+            State = States.ApplicationStarted;
+        }
+
         public void OnPlayerRegistered(bool succeeded, int playerId)
         {
             Log.WriteLine("OnPlayerRegistered:" + succeeded + " => " + playerId);
@@ -138,9 +188,41 @@ namespace TetriNET.Client
                 State = States.ApplicationStarted;
         }
 
-        public void OnPublishPlayerMessage(int playerId, string playerName, string msg)
+        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino)
         {
-            Log.WriteLine("OnPublishPlayerMessage:" + playerName + "[" + playerId + "]:" + msg);
+            Log.WriteLine("OnGameStarted:" + firstTetrimino+" "+secondTetrimino);
+            if (State == States.WaitingStartGame)
+            {
+                State = States.GameStarted;
+            }
+            else
+                Log.WriteLine("Was not waiting start game");
+        }
+
+        public void OnGameFinished()
+        {
+            Log.WriteLine("OnGameFinished");
+            if (State == States.GameStarted)
+            {
+                State = States.GameFinished;
+            }
+            else
+                Log.WriteLine("Game was not started");
+        }
+
+        public void OnServerAddLines(int lineCount)
+        {
+            Log.WriteLine("OnServerAddLines");
+        }
+
+        public void OnPlayerAddLines(int lineCount)
+        {
+            Log.WriteLine("OnPlayerAddLines");
+        }
+
+        public void OnPublishPlayerMessage(string playerName, string msg)
+        {
+            Log.WriteLine("OnPublishPlayerMessage:" + playerName + ":" + msg);
         }
 
         public void OnPublishServerMessage(string msg)
@@ -153,10 +235,16 @@ namespace TetriNET.Client
             Log.WriteLine("OnAttackReceived:" + attack);
         }
 
-        public void OnAttackMessageReceived(int attackId, string msg)
+        public void OnAttackMessageReceived(string msg)
         {
-            Log.WriteLine("OnAttackMessageReceived:" + attackId + " " + msg);
+            Log.WriteLine("OnAttackMessageReceived:" + msg);
         }
+
+        public void OnNextTetrimino(int index, Tetriminos tetrimino)
+        {
+            Log.WriteLine("OnNextTetrimino:" + index + " " + tetrimino);
+        }
+
         #endregion
     }
 }
