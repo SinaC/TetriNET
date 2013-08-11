@@ -1,5 +1,4 @@
 TODO:
-big problem with PlayerManager.Players[callback] -> interface ptr doesnt match
 replace assert and return null/false/-1 with error management
 player disconnection: quit or connection lost
 [DONE]same tetriminos for every player

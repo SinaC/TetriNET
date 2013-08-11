@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Configuration;
 using System.ServiceModel.Channels;
 using System.Threading;
@@ -10,11 +11,13 @@ using TetriNET.Common.WCF;
 
 namespace TetriNET.Server
 {
-    public class NetworkCallbackManager : ITetriNETCallbackManager
+    public class ExceptionFreeCallbackManager : ITetriNETCallbackManager
     {
+        // TODO: weak reference
+        private Dictionary<ITetriNETCallback, ExceptionFreeTetriNETCallback>  _callbacks = new Dictionary<ITetriNETCallback, ExceptionFreeTetriNETCallback>();
         private readonly IPlayerManager _playerManager;
 
-        public NetworkCallbackManager(IPlayerManager playerManager)
+        public ExceptionFreeCallbackManager(IPlayerManager playerManager)
         {
             _playerManager = playerManager;
         }
@@ -23,7 +26,15 @@ namespace TetriNET.Server
         {
             get
             {
-                return new ExceptionFreeTetriNETCallback(OperationContext.Current.GetCallbackChannel<ITetriNETCallback>(), _playerManager);
+                ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
+                ExceptionFreeTetriNETCallback exceptionFreeCallback;
+                bool found = _callbacks.TryGetValue(callback, out exceptionFreeCallback);
+                if (!found)
+                {
+                    exceptionFreeCallback = new ExceptionFreeTetriNETCallback(callback, _playerManager);
+                    _callbacks.Add(callback, exceptionFreeCallback);
+                }
+                return exceptionFreeCallback;
             }
         }
     }
