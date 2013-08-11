@@ -2,11 +2,15 @@
 
 namespace TetriNET.Server
 {
+    
+
     class Program
     {
         static void Main(string[] args)
         {
-            GameServer server = new GameServer();
+            //GameServer server = new GameServer(new BasicCallbackManager());
+            PlayerManager playerManager = new PlayerManager();
+            GameServer server = new GameServer(new NetworkCallbackManager(playerManager), playerManager);
             server.StartService();
 
             Console.WriteLine("Commands:");

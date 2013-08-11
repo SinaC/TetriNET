@@ -29,6 +29,15 @@ namespace IPFiltering
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="IPFilterServiceBehavior"/> class.
+        /// </summary>
+        /// <param name="filter">IP filter.</param>
+        public IPFilterServiceBehavior(IPFilter filter)
+        {
+            _verifier = filter;
+        }
+
+        /// <summary>
         /// Called after an inbound message has been received but before the message is dispatched to the intended operation.
         /// </summary>
         /// <param name="request">The request message.</param>
@@ -42,17 +51,20 @@ namespace IPFiltering
             // RemoteEndpointMessageProperty new in 3.5 allows us to get the remote endpoint address.
             RemoteEndpointMessageProperty remoteEndpoint = request.Properties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
 
-            // The address is a string so we have to parse to get as a number
-            IPAddress address = IPAddress.Parse(remoteEndpoint.Address);
-
-            // If ip address is denied clear the request mesage so service method does not get execute
-            if (_verifier.CheckAddress(address) == IPFilterType.Deny)
+            if (remoteEndpoint != null)
             {
-                request = null;
-                object result = (channel.LocalAddress.Uri.Scheme.Equals(Uri.UriSchemeHttp) ||
-                                 channel.LocalAddress.Uri.Scheme.Equals(Uri.UriSchemeHttps)) ?
-                    _httpAccessDenied : _accessDenied;
-                return result;
+                // The address is a string so we have to parse to get as a number
+                IPAddress address = IPAddress.Parse(remoteEndpoint.Address);
+
+                // If ip address is denied clear the request mesage so service method does not get execute
+                if (_verifier.CheckAddress(address) == IPFilterType.Deny)
+                {
+                    request = null;
+                    object result = (channel.LocalAddress.Uri.Scheme.Equals(Uri.UriSchemeHttp) ||
+                                     channel.LocalAddress.Uri.Scheme.Equals(Uri.UriSchemeHttps)) ?
+                        _httpAccessDenied : _accessDenied;
+                    return result;
+                }
             }
 
             return null;

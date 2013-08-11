@@ -1,29 +1,48 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
-using System.Linq;
 using System.ServiceModel.Channels;
-using System.ServiceModel.Description;
-using System.ServiceModel.Dispatcher;
 using System.Threading;
 using System.Threading.Tasks;
 using System.ServiceModel;
-//using IPFiltering;
 using TetriNET.Common;
 using TetriNET.Common.WCF;
 
 namespace TetriNET.Server
 {
+    public class NetworkCallbackManager : ITetriNETCallbackManager
+    {
+        private readonly IPlayerManager _playerManager;
+
+        public NetworkCallbackManager(IPlayerManager playerManager)
+        {
+            _playerManager = playerManager;
+        }
+
+        public ITetriNETCallback Callback
+        {
+            get
+            {
+                return new ExceptionFreeTetriNETCallback(OperationContext.Current.GetCallbackChannel<ITetriNETCallback>(), _playerManager);
+            }
+        }
+    }
+
+    public class BasicCallbackManager : ITetriNETCallbackManager
+    {
+        public ITetriNETCallback Callback
+        {
+            get
+            {
+                return OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
+            }
+        }
+    }
+
     //[ServiceBehavior(InstanceContextMode=InstanceContextMode.Single, ConcurrencyMode=ConcurrencyMode.Single)]
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
     internal class GameServer : ITetriNET
     {
-        private const int MaxPlayerCount = 6;
-        private const int MaxSpam = 5;
-        private const int SpamThreshold = 50;
-
         public enum States
         {
             WaitingStartServer, // -> StartingServer
@@ -35,16 +54,20 @@ namespace TetriNET.Server
             StoppingServer, // -> WaitingStartServer
         }
 
-        private readonly ThreadSafeSingleton<TetriminoQueue> _tetriminoQueue = new ThreadSafeSingleton<TetriminoQueue>(() => new TetriminoQueue());
-        public States State { get; private set; }
+        private readonly Common.ThreadSafeSingleton<TetriminoQueue> _tetriminoQueue = new Common.ThreadSafeSingleton<TetriminoQueue>(() => new TetriminoQueue());
         private ServiceHost Host { get; set; }
+        private ITetriNETCallbackManager CallbackManager { get; set; }
+        private IPlayerManager PlayerManager { get; set; }
+        public States State { get; private set; }
 
-        public GameServer()
+        public GameServer(ITetriNETCallbackManager callbackManager, IPlayerManager playerManager)
         {
             Log.WriteLine("***GameServer:ctor***");
 
             State = States.WaitingStartServer;
-            
+
+            CallbackManager = callbackManager;
+            PlayerManager = playerManager;
             AttackId = 0;
 
             Task.Factory.StartNew(TaskResolveActions);
@@ -87,7 +110,8 @@ namespace TetriNET.Server
 
             State = States.StoppingServer;
 
-            foreach (Player p in _players.Where(p => p != null))
+            // Inform players
+            foreach (IPlayer p in PlayerManager.Players)
                 p.Callback.OnServerStopped();
 
             // Close service host
@@ -99,12 +123,15 @@ namespace TetriNET.Server
         public void StartGame()
         {
             Log.WriteLine("Start game");
+
+            State = States.GameStarted;
+
             // Reset Tetrimino Queue
             _tetriminoQueue.Instance.Reset(); // TODO: random seed
             Tetriminos firstTetrimino = _tetriminoQueue.Instance[0];
             Tetriminos secondTetrimino = _tetriminoQueue.Instance[1];
             // Send start game to every connected player
-            foreach (Player p in _players.Where(p => p != null))
+            foreach (IPlayer p in PlayerManager.Players)
             {
                 p.TetriminoIndex = 0;
                 p.Callback.OnGameStarted(firstTetrimino, secondTetrimino);
@@ -114,9 +141,14 @@ namespace TetriNET.Server
         public void StopGame()
         {
             Log.WriteLine("Stop game");
+
+            State = States.GameFinished;
+
             // Send start game to every connected player
-            foreach (Player p in _players.Where(p => p != null))
+            foreach (IPlayer p in PlayerManager.Players)
                 p.Callback.OnGameFinished();
+
+            State = States.WaitingStartGame;
         }
 
         #region ITetriNET
@@ -125,23 +157,22 @@ namespace TetriNET.Server
         {
             Log.WriteLine("RegisterPlayer:" + playerName);
 
-            ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
+            ITetriNETCallback callback = CallbackManager.Callback;
 
-            // Get first empty slot
-            int emptySlot = GetEmptySlot(playerName, callback);
-            if (emptySlot >= 0)
+            // Try to add new player
+            IPlayer player = PlayerManager.Add(playerName, callback);
+            if (player != null)
             {
-                // Save player
-                Player player = SetPlayer(emptySlot, playerName, callback);
-                // Send playerId to player
-                if (player != null)
-                    player.Callback.OnPlayerRegistered(true, emptySlot);
-                // Inform players
-                // Send register message to players
-                foreach (Player p in _players.Where(p => p != null))
-                    p.Callback.OnPublishServerMessage(playerName + "[" + emptySlot + "] is now connected");
-                //
-                Log.WriteLine("New player:[" + emptySlot + "] " + playerName);
+                player.Callback.OnPlayerRegistered(true, player.Id);
+                // Check if OnPlayerRegistered has not failed
+                if (PlayerManager[callback] != null)
+                {
+                    // Inform players
+                    foreach (IPlayer p in PlayerManager.Players)
+                        p.Callback.OnPublishServerMessage(playerName + " is now connected");
+                    //
+                    Log.WriteLine("New player:[" + player.Id + "] " + playerName);
+                }
             }
             else
             {
@@ -152,14 +183,13 @@ namespace TetriNET.Server
 
         public void PublishMessage(string msg)
         {
-            ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
-            Player player = GetPlayer(callback);
+            ITetriNETCallback callback = CallbackManager.Callback;
+            IPlayer player = PlayerManager[callback];
             if (player != null)
             {
                 Log.WriteLine("PublishMessage:[" + player.Name + "]:" + msg);
 
-                bool isSpammer = player.CheckSpam();
-                foreach (Player p in _players.Where(p => p != null))
+                foreach (IPlayer p in PlayerManager.Players)
                     p.Callback.OnPublishPlayerMessage(player.Name, msg);
             }
             else
@@ -171,14 +201,12 @@ namespace TetriNET.Server
 
         public void PlaceTetrimino(Tetriminos tetrimino, Orientations orientation, Position position)
         {
-            ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
-            Player player = GetPlayer(callback);
-            Debug.Assert(player == GetPlayer(OperationContext.Current.GetCallbackChannel<ITetriNETCallback>()));
+            ITetriNETCallback callback = CallbackManager.Callback;
+            IPlayer player = PlayerManager[callback];
             if (player != null)
             {
                 Log.WriteLine("PlaceTetrimino:[" + player.Name + "]" + tetrimino + " " + orientation + " at " + position.X + "," + position.Y);
 
-                bool isSpammer = player.CheckSpam();
                 _actionQueue.Enqueue(() => PlaceTetrimino(player, tetrimino, orientation, position));
             }
             else
@@ -190,13 +218,11 @@ namespace TetriNET.Server
 
         public void SendAttack(int targetId, Attacks attack)
         {
-            ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
-            Player player = GetPlayer(callback);
-            Debug.Assert(player == GetPlayer(OperationContext.Current.GetCallbackChannel<ITetriNETCallback>()));
+            ITetriNETCallback callback = CallbackManager.Callback;
+            IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                bool isSpammer = player.CheckSpam();
-                Player target = GetPlayer(targetId);
+                IPlayer target = PlayerManager[targetId];
                 if (target != null)
                 {
                     Log.WriteLine("SendAttack:[" + player.Name + "] -> [" + targetId + "]:" + attack);
@@ -221,77 +247,6 @@ namespace TetriNET.Server
         {
             get;
             private set;
-        }
-
-        #endregion
-
-        #region Player
-
-        private readonly Player[] _players = new Player[MaxPlayerCount]; // TODO: replace with an array or dictionary or free list
-
-        private class Player
-        {
-            public Player(string name, ITetriNETCallback callback)
-            {
-                Name = name;
-                Callback = callback;
-                TetriminoIndex = 0;
-                SpamCount = 0;
-                LastActionTime = DateTime.Now;
-            }
-
-            public string Name { get; private set; }
-            public ITetriNETCallback Callback { get; private set; }
-            private DateTime LastActionTime { get; set; }
-            private int SpamCount { get; set; }
-            public int TetriminoIndex { get; set; }
-
-            public bool CheckSpam() // returns true if spam is detected
-            {
-                if (SpamCount >= MaxSpam)
-                    return true;
-                TimeSpan timeSpan = DateTime.Now - LastActionTime;
-                LastActionTime = DateTime.Now;
-                if (timeSpan.TotalMilliseconds <= SpamThreshold)
-                    SpamCount++;
-                return SpamCount >= MaxSpam;
-            }
-        }
-
-        private Player SetPlayer(int playerId, string playerName, ITetriNETCallback callback)
-        {
-            Player player = new Player(playerName, callback);
-            _players[playerId] = player;
-            return player;
-        }
-
-        private Player GetPlayer(int playerId)
-        {
-            Player player = null;
-            if (playerId < MaxPlayerCount)
-                player = _players[playerId];
-            return player;
-        }
-
-        private Player GetPlayer(ITetriNETCallback callback)
-        {
-            return _players.FirstOrDefault(p => p != null && p.Callback == callback);
-        }
-
-        private int GetEmptySlot(string playerName, ITetriNETCallback callback)
-        {
-            // player already registered
-            if (_players.Any(x => x != null && (x.Name == playerName || x.Callback == callback)))
-                return -1;
-            // get first empty slot
-            int emptySlot = -1;
-            for (int i = 0; i < MaxPlayerCount; i++)
-                if (_players[i] == null)
-                {
-                    emptySlot = i;
-                    break;
-                }
-            return emptySlot;
         }
 
         #endregion
@@ -354,7 +309,16 @@ namespace TetriNET.Server
                     Action action;
                     bool dequeue = _actionQueue.TryDequeue(out action);
                     if (dequeue)
-                        action();
+                    {
+                        try
+                        {
+                            action();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.WriteLine("Exception raised in TaskResolveActions. Exception:"+ex.ToString());
+                        }
+                    }
                 }
                 Thread.Sleep(0);
                 // TODO: break
@@ -364,28 +328,33 @@ namespace TetriNET.Server
         #endregion
 
         #region Actions
-        private void Attack(Player player, Player target, Attacks attack)
+
+        private void Attack(IPlayer player, IPlayer target, Attacks attack)
         {
             Log.WriteLine("SendAttack[" + player.Name + "][" + target.Name + "]" + attack);
 
             // Store attack id locally
             int attackId = AttackId;
+            // Increment attack
             AttackId++;
             // Send attack to target
             target.Callback.OnAttackReceived(attack);
             // Send attack message to players
             string attackString = attackId + ": " + attack + " from " + player.Name + " to " + target.Name;
-            foreach (Player p in _players.Where(p => p != null))
+            foreach (Player p in PlayerManager.Players)
                 p.Callback.OnAttackMessageReceived(attackString);
         }
 
-        private void PlaceTetrimino(Player player, Tetriminos tetrimino, Orientations orientation, Position position)
+        private void PlaceTetrimino(IPlayer player, Tetriminos tetrimino, Orientations orientation, Position position)
         {
             Log.WriteLine("PlaceTetrimino[" + player.Name + "]" + tetrimino + " " + orientation + " at " + position.X + "," + position.Y);
+            // Get next piece
             player.TetriminoIndex++;
             Tetriminos nextTetrimino = _tetriminoQueue.Instance[player.TetriminoIndex];
+            // Send next piece
             player.Callback.OnNextTetrimino(player.TetriminoIndex, nextTetrimino);
         }
+
         #endregion
     }
 }

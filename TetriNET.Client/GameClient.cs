@@ -78,6 +78,8 @@ namespace TetriNET.Client
                 Proxy = DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, address);
 
                 State = States.ConnectedToServer;
+
+                Log.WriteLine("Connected to server");
             }
             else
             {

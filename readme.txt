@@ -1,9 +1,10 @@
 TODO:
+big problem with PlayerManager.Players[callback] -> interface ptr doesnt match
 replace assert and return null/false/-1 with error management
 player disconnection: quit or connection lost
 [DONE]same tetriminos for every player
 replace Tetriminos enum with index
-GameStart send tetrimino definitions
+GameStart send tetrimino definitions and game rules
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
 [DONE]check if playerId and callback matches when receiving a 'msg' from client
 [DONE]server state: 
