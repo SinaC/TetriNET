@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.WebSockets;
 using System.ServiceModel;
 using TetriNET.Common;
 
@@ -36,6 +38,11 @@ namespace TetriNET.Server
             }
         }
 
+        public void OnPingReceived()
+        {
+            ExceptionFreeAction(() => _callback.OnServerStopped(), "OnServerStopped");
+        }
+
         public void OnServerStopped()
         {
             ExceptionFreeAction(() => _callback.OnServerStopped(), "OnServerStopped");
@@ -46,9 +53,9 @@ namespace TetriNET.Server
             ExceptionFreeAction(() => _callback.OnPlayerRegistered(succeeded, playerId), "OnPlayerRegistered");
         }
 
-        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino)
+        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, List<PlayerData> players)
         {
-            ExceptionFreeAction(() => _callback.OnGameStarted(firstTetrimino, secondTetrimino), "OnGameStarted");
+            ExceptionFreeAction(() => _callback.OnGameStarted(firstTetrimino, secondTetrimino, players), "OnGameStarted");
         }
 
         public void OnGameFinished()

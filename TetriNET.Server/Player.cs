@@ -1,4 +1,5 @@
-﻿using TetriNET.Common;
+﻿using System;
+using TetriNET.Common;
 
 namespace TetriNET.Server
 {
@@ -10,6 +11,7 @@ namespace TetriNET.Server
             Name = name;
             Callback = callback;
             TetriminoIndex = 0;
+            LastAction = DateTime.Now;
         }
 
         #region IPlayer
@@ -17,6 +19,7 @@ namespace TetriNET.Server
         public string Name { get; private set; }
         public ITetriNETCallback Callback { get; private set; }
         public int TetriminoIndex { get; set; }
+        public DateTime LastAction { get; set; }
         #endregion
 
     }

@@ -1,4 +1,5 @@
-﻿using TetriNET.Common;
+﻿using System;
+using TetriNET.Common;
 
 namespace TetriNET.Server
 {
@@ -8,5 +9,6 @@ namespace TetriNET.Server
         string Name { get; }
         ITetriNETCallback Callback { get; }
         int TetriminoIndex { get; set; }
+        DateTime LastAction { get; set; }
     }
 }

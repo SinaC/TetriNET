@@ -26,6 +26,7 @@ namespace TetriNET.Client
         }
         private ITetriNET Proxy { get; set; }
 
+        private DateTime LastServerAction { get; set; }
         public string PlayerName { get; set; }
         public States State { get; private set; }
         public int PlayerId { get; private set; }
@@ -54,6 +55,8 @@ namespace TetriNET.Client
                         Log.WriteLine("{0}:\t{1}", addresses.IndexOf(endpoint), endpoint.Uri);
                     Log.WriteLine("Connecting to first server");
                     address = addresses[0];
+
+                    LastServerAction = DateTime.Now;
                 }
                 else
                 {
@@ -172,15 +175,22 @@ namespace TetriNET.Client
 
         #region ITetriNETCallback
 
+        public void OnPingReceived()
+        {
+            LastServerAction = DateTime.Now;
+        }
+
         public void OnServerStopped()
         {
             Log.WriteLine("OnServerStopped");
             State = States.ApplicationStarted;
+            LastServerAction = DateTime.Now;
         }
 
         public void OnPlayerRegistered(bool succeeded, int playerId)
         {
             Log.WriteLine("OnPlayerRegistered:" + succeeded + " => " + playerId);
+            LastServerAction = DateTime.Now;
             if (succeeded)
             {
                 PlayerId = playerId;
@@ -190,11 +200,13 @@ namespace TetriNET.Client
                 State = States.ApplicationStarted;
         }
 
-        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino)
+        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, List<PlayerData> players)
         {
             Log.WriteLine("OnGameStarted:" + firstTetrimino+" "+secondTetrimino);
+            LastServerAction = DateTime.Now;
             if (State == States.WaitingStartGame)
             {
+                Log.WriteLine("Game started with players:" + players.Select(x => x.Name + "[" + x.Id + "]").Aggregate((n, i) => n + "," + i));
                 State = States.GameStarted;
             }
             else
@@ -204,6 +216,7 @@ namespace TetriNET.Client
         public void OnGameFinished()
         {
             Log.WriteLine("OnGameFinished");
+            LastServerAction = DateTime.Now;
             if (State == States.GameStarted)
             {
                 State = States.GameFinished;
@@ -215,36 +228,43 @@ namespace TetriNET.Client
         public void OnServerAddLines(int lineCount)
         {
             Log.WriteLine("OnServerAddLines");
+            LastServerAction = DateTime.Now;
         }
 
         public void OnPlayerAddLines(int lineCount)
         {
             Log.WriteLine("OnPlayerAddLines");
+            LastServerAction = DateTime.Now;
         }
 
         public void OnPublishPlayerMessage(string playerName, string msg)
         {
             Log.WriteLine("OnPublishPlayerMessage:" + playerName + ":" + msg);
+            LastServerAction = DateTime.Now;
         }
 
         public void OnPublishServerMessage(string msg)
         {
             Log.WriteLine("OnPublishServerMessage:" + msg);
+            LastServerAction = DateTime.Now;
         }
 
         public void OnAttackReceived(Attacks attack)
         {
             Log.WriteLine("OnAttackReceived:" + attack);
+            LastServerAction = DateTime.Now;
         }
 
         public void OnAttackMessageReceived(string msg)
         {
             Log.WriteLine("OnAttackMessageReceived:" + msg);
+            LastServerAction = DateTime.Now;
         }
 
         public void OnNextTetrimino(int index, Tetriminos tetrimino)
         {
             Log.WriteLine("OnNextTetrimino:" + index + " " + tetrimino);
+            LastServerAction = DateTime.Now;
         }
 
         #endregion

@@ -79,7 +79,18 @@ namespace TetriNET.Common
     {
         [DataMember]
         public int X;
+
         [DataMember]
         public int Y;
+    }
+
+    [DataContract]
+    public class PlayerData
+    {
+        [DataMember]
+        public int Id { get; set; }
+
+        [DataMember]
+        public string Name { get; set; }
     }
 }

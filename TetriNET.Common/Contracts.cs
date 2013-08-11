@@ -1,4 +1,5 @@
-﻿using System.ServiceModel;
+﻿using System.Collections.Generic;
+using System.ServiceModel;
 
 namespace TetriNET.Common
 {
@@ -7,6 +8,9 @@ namespace TetriNET.Common
     {
         [OperationContract(IsOneWay = true)]
         void RegisterPlayer(string playerName);
+
+        [OperationContract(IsOneWay = true)]
+        void Ping();
 
         [OperationContract(IsOneWay = true)]
         void PublishMessage(string msg);
@@ -21,13 +25,16 @@ namespace TetriNET.Common
     public interface ITetriNETCallback
     {
         [OperationContract(IsOneWay = true)]
+        void OnPingReceived();
+
+        [OperationContract(IsOneWay = true)]
         void OnServerStopped();
 
         [OperationContract(IsOneWay = true)]
         void OnPlayerRegistered(bool succeeded, int playerId);
 
         [OperationContract(IsOneWay = true)]
-        void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino);
+        void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, List<PlayerData> players);
 
         [OperationContract(IsOneWay = true)]
         void OnGameFinished();

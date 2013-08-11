@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.ServiceModel.Channels;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace TetriNET.Server
     public class ExceptionFreeCallbackManager : ITetriNETCallbackManager
     {
         // TODO: weak reference
-        private Dictionary<ITetriNETCallback, ExceptionFreeTetriNETCallback>  _callbacks = new Dictionary<ITetriNETCallback, ExceptionFreeTetriNETCallback>();
+        private readonly ConcurrentDictionary<ITetriNETCallback, ExceptionFreeTetriNETCallback> _callbacks = new ConcurrentDictionary<ITetriNETCallback, ExceptionFreeTetriNETCallback>();
         private readonly IPlayerManager _playerManager;
 
         public ExceptionFreeCallbackManager(IPlayerManager playerManager)
@@ -32,7 +33,8 @@ namespace TetriNET.Server
                 if (!found)
                 {
                     exceptionFreeCallback = new ExceptionFreeTetriNETCallback(callback, _playerManager);
-                    _callbacks.Add(callback, exceptionFreeCallback);
+                    bool added = _callbacks.TryAdd(callback, exceptionFreeCallback);
+                    // TODO: what to do if added is false
                 }
                 return exceptionFreeCallback;
             }
@@ -141,11 +143,18 @@ namespace TetriNET.Server
             _tetriminoQueue.Instance.Reset(); // TODO: random seed
             Tetriminos firstTetrimino = _tetriminoQueue.Instance[0];
             Tetriminos secondTetrimino = _tetriminoQueue.Instance[1];
+            // Build player list
+            List<PlayerData> players = PlayerManager.Players.Select(x => new PlayerData
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                }
+            ).ToList();
             // Send start game to every connected player
             foreach (IPlayer p in PlayerManager.Players)
             {
                 p.TetriminoIndex = 0;
-                p.Callback.OnGameStarted(firstTetrimino, secondTetrimino);
+                p.Callback.OnGameStarted(firstTetrimino, secondTetrimino, players);
             }
         }
 
@@ -199,6 +208,22 @@ namespace TetriNET.Server
             }
         }
 
+        public void Ping()
+        {
+            ITetriNETCallback callback = CallbackManager.Callback;
+            IPlayer player = PlayerManager[callback];
+            if (player != null)
+            {
+                Log.WriteLine("Ping");
+                player.LastAction = DateTime.Now;
+            }
+            else
+            {
+                RemoteEndpointMessageProperty clientEndpoint = OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
+                Log.WriteLine("Ping from unknown player[" + (clientEndpoint == null ? callback.ToString() : clientEndpoint.Address) + "]");
+            }
+        }
+
         public void PublishMessage(string msg)
         {
             ITetriNETCallback callback = CallbackManager.Callback;
@@ -207,6 +232,7 @@ namespace TetriNET.Server
             {
                 Log.WriteLine("PublishMessage:[" + player.Name + "]:" + msg);
 
+                player.LastAction = DateTime.Now;
                 foreach (IPlayer p in PlayerManager.Players)
                     p.Callback.OnPublishPlayerMessage(player.Name, msg);
             }
@@ -225,6 +251,7 @@ namespace TetriNET.Server
             {
                 Log.WriteLine("PlaceTetrimino:[" + player.Name + "]" + tetrimino + " " + orientation + " at " + position.X + "," + position.Y);
 
+                player.LastAction = DateTime.Now;
                 _actionQueue.Enqueue(() => PlaceTetrimino(player, tetrimino, orientation, position));
             }
             else
@@ -240,6 +267,8 @@ namespace TetriNET.Server
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
+                player.LastAction = DateTime.Now;
+
                 IPlayer target = PlayerManager[targetId];
                 if (target != null)
                 {
