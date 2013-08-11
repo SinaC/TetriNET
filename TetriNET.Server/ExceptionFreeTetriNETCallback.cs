@@ -23,14 +23,14 @@ namespace TetriNET.Server
             }
             catch (CommunicationObjectAbortedException ex)
             {
-                Log.WriteLine("Exception:"+ex);
-                IPlayer player = _playerManager[_callback];
+                Log.WriteLine("CommunicationObjectAbortedException");
+                IPlayer player = _playerManager[this];
                 if (player != null)
                 {
                     Log.WriteLine(actionName + ": " + player.Name + " has disconnected");
                     _playerManager.Remove(player);
                     // Caution: recursive call
-                    foreach(Player p in _playerManager.Players)
+                    foreach (Player p in _playerManager.Players)
                         p.Callback.OnPublishServerMessage(player.Name + " has disconnected");
                 }
             }

@@ -162,6 +162,13 @@ namespace TetriNET.Server
             State = States.WaitingStartGame;
         }
 
+        public void BroadcastRandomMessage()
+        {
+            // Send start game to every connected player
+            foreach (IPlayer p in PlayerManager.Players)
+                p.Callback.OnPublishServerMessage("Random message");
+        }
+
         #region ITetriNET
 
         public void RegisterPlayer(string playerName)

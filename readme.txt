@@ -1,17 +1,9 @@
 TODO:
 replace assert and return null/false/-1 with error management
-player disconnection: quit or connection lost
-[DONE]same tetriminos for every player
 replace Tetriminos enum with index
-GameStart send tetrimino definitions and game rules
+GameStart send players, tetrimino definitions and game rules
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
-[DONE]check if playerId and callback matches when receiving a 'msg' from client
-[DONE]server state: 
-	waiting start server -> starting server -> waiting start game -> starting game -> game started -> game finished -> waiting start game
-	stopping server -> waiting start server
-[DONE]client state: 
-	application started -> connecting to server -> connected to server -> registering -> waiting start game | application started if registration failed
-	waiting start game -> game started -> game finished -> waiting start game
+detect server disconnection
 
 discover
 http://msdn.microsoft.com/en-us/magazine/ee335779.aspx

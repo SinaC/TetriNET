@@ -17,6 +17,7 @@ namespace TetriNET.Server
             Console.WriteLine("x: Stop server");
             Console.WriteLine("s: Start game");
             Console.WriteLine("t: Stop game");
+            Console.WriteLine("m: Send message broadcast");
 
             bool stopped = false;
             while (!stopped)
@@ -34,6 +35,9 @@ namespace TetriNET.Server
                             break;
                         case ConsoleKey.T:
                             server.StopGame();
+                            break;
+                        case ConsoleKey.M:
+                            server.BroadcastRandomMessage();
                             break;
                     }
                 }
