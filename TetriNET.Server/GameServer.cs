@@ -26,6 +26,8 @@ namespace TetriNET.Server
             StoppingServer, // -> WaitingStartServer
         }
 
+        private const int InactivityTimeoutBeforePing = 500; // in ms
+
         private readonly Common.Singleton<TetriminoQueue> _tetriminoQueue = new Common.Singleton<TetriminoQueue>(() => new TetriminoQueue());
         private ServiceHost Host { get; set; }
         private ITetriNETCallbackManager CallbackManager { get; set; }
@@ -173,7 +175,7 @@ namespace TetriNET.Server
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                Log.WriteLine("Ping");
+                Log.WriteLine("Ping from "+player.Name);
                 player.LastAction = DateTime.Now;
             }
             else
@@ -190,8 +192,8 @@ namespace TetriNET.Server
             if (player != null)
             {
                 Log.WriteLine("PublishMessage:[" + player.Name + "]:" + msg);
+                player.LastAction = DateTime.Now; // player alive
 
-                player.LastAction = DateTime.Now;
                 foreach (IPlayer p in PlayerManager.Players)
                     p.Callback.OnPublishPlayerMessage(player.Name, msg);
             }
@@ -209,8 +211,8 @@ namespace TetriNET.Server
             if (player != null)
             {
                 Log.WriteLine("PlaceTetrimino:[" + player.Name + "]" + tetrimino + " " + orientation + " at " + position.X + "," + position.Y);
+                player.LastAction = DateTime.Now; // player alive
 
-                player.LastAction = DateTime.Now;
                 _actionQueue.Enqueue(() => PlaceTetrimino(player, tetrimino, orientation, position));
             }
             else
@@ -226,7 +228,7 @@ namespace TetriNET.Server
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                player.LastAction = DateTime.Now;
+                player.LastAction = DateTime.Now; // player alive
 
                 IPlayer target = PlayerManager[targetId];
                 if (target != null)
@@ -327,7 +329,17 @@ namespace TetriNET.Server
                     }
                 }
                 Thread.Sleep(0);
-                // TODO: break
+                foreach (IPlayer p in PlayerManager.Players)
+                {
+                    TimeSpan timespan = DateTime.Now - p.LastAction;
+                    if (timespan.TotalMilliseconds > InactivityTimeoutBeforePing)
+                    {
+                        p.Callback.OnPingReceived(); // Check if player is alive
+                        break; // TODO: use round-robin to avoid checking first players before last players
+                    }
+                }
+                Thread.Sleep(0);
+                // TODO: stop event
             }
         }
 

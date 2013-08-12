@@ -16,7 +16,7 @@ namespace TetriNET.Client
                 client.Test();
                 if (Console.KeyAvailable)
                     break;
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(250);
             }
 
             Console.ReadLine();

@@ -23,6 +23,8 @@ namespace TetriNET.Server
             try
             {
                 action();
+                IPlayer player = _playerManager[this];
+                player.LastAction = DateTime.Now; // if action didn't raise an exception, client is still alive
             }
             catch (CommunicationObjectAbortedException ex)
             {
@@ -41,7 +43,7 @@ namespace TetriNET.Server
 
         public void OnPingReceived()
         {
-            ExceptionFreeAction(() => _callback.OnServerStopped(), "OnServerStopped");
+            ExceptionFreeAction(() => _callback.OnPingReceived(), "OnPingReceived");
         }
 
         public void OnServerStopped()

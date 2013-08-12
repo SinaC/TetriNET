@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.Threading;
-using System.Threading.Tasks;
 using TetriNET.Common;
 using TetriNET.Common.WCF;
 
@@ -24,6 +23,9 @@ namespace TetriNET.Client
             GameStarted, // -> GameFinished
             GameFinished, // -> WaitingStartGame
         }
+
+        private const int InactivityTimeoutBeforePing = 500; // in ms
+
         private ITetriNET Proxy { get; set; }
 
         private DateTime LastServerAction { get; set; }
@@ -78,7 +80,7 @@ namespace TetriNET.Client
                 //task.Wait();
                 //Proxy = task.Result;
                 InstanceContext instanceContext = new InstanceContext(this);
-                Proxy = DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, address);
+                Proxy = DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, address); // Should be in fact a ExceptionFreeTetriNETProxy stored as ITetriNET  IHostManager
 
                 State = States.ConnectedToServer;
 
@@ -166,6 +168,12 @@ namespace TetriNET.Client
                     State = States.WaitingStartGame;
                     break;
             }
+            if (State >= States.ConnectedToServer)
+            {
+                TimeSpan timespan = DateTime.Now - LastServerAction;
+                if (timespan.TotalMilliseconds > InactivityTimeoutBeforePing)
+                    Proxy.Ping();
+            }
         }
 
         //public void Close()
@@ -177,6 +185,7 @@ namespace TetriNET.Client
 
         public void OnPingReceived()
         {
+            Log.WriteLine("OnPingReceived");
             LastServerAction = DateTime.Now;
         }
 
