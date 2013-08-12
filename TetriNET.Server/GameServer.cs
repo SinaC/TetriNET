@@ -12,49 +12,8 @@ using TetriNET.Common.WCF;
 
 namespace TetriNET.Server
 {
-    public class ExceptionFreeCallbackManager : ITetriNETCallbackManager
-    {
-        // TODO: weak reference
-        private readonly ConcurrentDictionary<ITetriNETCallback, ExceptionFreeTetriNETCallback> _callbacks = new ConcurrentDictionary<ITetriNETCallback, ExceptionFreeTetriNETCallback>();
-        private readonly IPlayerManager _playerManager;
-
-        public ExceptionFreeCallbackManager(IPlayerManager playerManager)
-        {
-            _playerManager = playerManager;
-        }
-
-        public ITetriNETCallback Callback
-        {
-            get
-            {
-                ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
-                ExceptionFreeTetriNETCallback exceptionFreeCallback;
-                bool found = _callbacks.TryGetValue(callback, out exceptionFreeCallback);
-                if (!found)
-                {
-                    exceptionFreeCallback = new ExceptionFreeTetriNETCallback(callback, _playerManager);
-                    bool added = _callbacks.TryAdd(callback, exceptionFreeCallback);
-                    // TODO: what to do if added is false
-                }
-                return exceptionFreeCallback;
-            }
-        }
-    }
-
-    public class BasicCallbackManager : ITetriNETCallbackManager
-    {
-        public ITetriNETCallback Callback
-        {
-            get
-            {
-                return OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
-            }
-        }
-    }
-
-    //[ServiceBehavior(InstanceContextMode=InstanceContextMode.Single, ConcurrencyMode=ConcurrencyMode.Single)]
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
-    internal class GameServer : ITetriNET
+    public class GameServer : ITetriNET
     {
         public enum States
         {
@@ -67,7 +26,7 @@ namespace TetriNET.Server
             StoppingServer, // -> WaitingStartServer
         }
 
-        private readonly Common.ThreadSafeSingleton<TetriminoQueue> _tetriminoQueue = new Common.ThreadSafeSingleton<TetriminoQueue>(() => new TetriminoQueue());
+        private readonly Common.Singleton<TetriminoQueue> _tetriminoQueue = new Common.Singleton<TetriminoQueue>(() => new TetriminoQueue());
         private ServiceHost Host { get; set; }
         private ITetriNETCallbackManager CallbackManager { get; set; }
         private IPlayerManager PlayerManager { get; set; }

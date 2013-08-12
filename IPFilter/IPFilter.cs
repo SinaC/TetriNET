@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Net;
 
 namespace IPFiltering
 {
     public class IPFilter
     {
-        private string _name;
-        private IList<IPFilterItem> _items;
-        private IPFilterType _defaultBehavior;
+        private readonly string _name;
+        private readonly IList<IPFilterItem> _items;
+        private readonly IPFilterTypes _defaultBehavior;
 
-        public IPFilter(string name,IList<IPFilterItem> items, IPFilterType defaultBehavior)
+        public IPFilter(string name,IList<IPFilterItem> items, IPFilterTypes defaultBehavior)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -38,6 +37,7 @@ namespace IPFiltering
                 return _name;
             }
         }
+
         /// <summary>
         /// Gets the filter items
         /// </summary>
@@ -49,11 +49,12 @@ namespace IPFiltering
                 return _items;
             }
         }
+
         /// <summary>
         /// Gets the behavior when no matches are found.
         /// </summary>
         /// <value>The default behavior.</value>
-        public IPFilterType DefaultBehavior
+        public IPFilterTypes DefaultBehavior
         {
             get
             {
@@ -66,7 +67,7 @@ namespace IPFiltering
         /// </summary>
         /// <param name="ipAddress">The ip address.</param>
         /// <returns></returns>
-        public IPFilterType CheckAddress(IPAddress ipAddress)
+        public IPFilterTypes CheckAddress(IPAddress ipAddress)
         {
             if (ipAddress.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork)
             {
@@ -79,18 +80,18 @@ namespace IPFiltering
             }
             return CheckAddress((uint)ipAddress.Address);
         }
+
         /// <summary>
         /// Checks the address.
         /// </summary>
         /// <param name="ipAddress">The ip address.</param>
         /// <returns></returns>
-        public IPFilterType CheckAddress(uint ipAddress)
+        public IPFilterTypes CheckAddress(uint ipAddress)
         {
-            IPFilterType result;
-            for (int i = 0; i < _items.Count; i++)
+            foreach (IPFilterItem item in _items)
             {
-                result = _items[i].CheckAddress(ipAddress);
-                if (result != IPFilterType.NoMatch)
+                IPFilterTypes result = item.CheckAddress(ipAddress);
+                if (result != IPFilterTypes.NoMatch)
                 {
                     return result;
                 }
@@ -106,7 +107,7 @@ namespace IPFiltering
         {
             get
             {
-                return new IPFilter("Allow", new IPFilterItem[0], IPFilterType.Allow);
+                return new IPFilter("Allow", new IPFilterItem[0], IPFilterTypes.Allow);
             }
         }
 
@@ -118,7 +119,7 @@ namespace IPFiltering
         {
             get
             {
-                return new IPFilter("Deny", new IPFilterItem[0], IPFilterType.Deny);
+                return new IPFilter("Deny", new IPFilterItem[0], IPFilterTypes.Deny);
             }
         }
 

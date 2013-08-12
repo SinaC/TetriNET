@@ -12,7 +12,7 @@ namespace IPFiltering.Configuration
         /// Gets or sets the type of the filter.
         /// </summary>
         /// <value>The type of the filter.</value>
-        public IPFilterType FilterType { get; set; }
+        public IPFilterTypes FilterTypes { get; set; }
         /// <summary>
         /// Gets a comma demlimited list of hosts
         /// </summary>

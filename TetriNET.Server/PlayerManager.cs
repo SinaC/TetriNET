@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TetriNET.Common;
 
@@ -11,6 +12,9 @@ namespace TetriNET.Server
         private readonly Player[] _players = new Player[MaxPlayerCount];
 
         #region IPlayerManager
+
+        public event EventHandler<ITetriNETCallback> OnPlayerRemoved;
+
         public IPlayer Add(string name, ITetriNETCallback callback)
         {
             int emptySlot = GetEmptySlot(name, callback);
@@ -28,7 +32,10 @@ namespace TetriNET.Server
             for (int i = 0; i < MaxPlayerCount; i++)
                 if (_players[i] != null)
                 {
+                    ITetriNETCallback callback = _players[i].Callback;
                     _players[i] = null;
+                    if (OnPlayerRemoved != null)
+                        OnPlayerRemoved(this, callback);
                     return true;
                 }
             return false;

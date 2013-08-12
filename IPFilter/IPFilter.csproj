@@ -61,7 +61,7 @@
     <Compile Include="IPFilter.cs" />
     <Compile Include="IPFilterItem.cs" />
     <Compile Include="IPFilterModule.cs" />
-    <Compile Include="IPFilterType.cs" />
+    <Compile Include="IPFilterTypes.cs" />
     <Compile Include="IPFilterServiceBehavior.cs" />
     <Compile Include="IPRange.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

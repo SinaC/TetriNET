@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Net;
 
@@ -47,6 +47,7 @@ namespace IPFiltering
                 return (1 << (count * 8));
             }
         }
+
         /// <summary>
         /// The address mask
         /// </summary>
@@ -57,6 +58,7 @@ namespace IPFiltering
                 return _addressMask;
             }
         }
+
         /// <summary>
         /// The mask data.
         /// </summary>
@@ -88,6 +90,7 @@ namespace IPFiltering
             int maskSize = (int)GetMaskSize((uint)subnetMask.Address);
             return new IPRange((uint)address.Address & (uint)((1 << maskSize) - 1),(byte) maskSize, Mode.Classless);
         }
+
         /// <summary>
         /// Creates a new IPRange.
         /// </summary>
@@ -106,6 +109,7 @@ namespace IPFiltering
             }
             return new IPRange((uint)address.Address & (uint)((1 << cidrCount) - 1), (byte)cidrCount, Mode.Classless);
         }
+
         /// <summary>
         /// Parses a string in CIDR notation or a wildcard address like 192.168.1.*
         /// </summary>
@@ -161,6 +165,7 @@ namespace IPFiltering
             }
             return new IPRange(mask, classData, mode);
         }
+
         /// <summary>
         /// Determines whether the specified address is a match.
         /// </summary>
@@ -192,6 +197,7 @@ namespace IPFiltering
             // Address is deprecated and but should not make a difference for ipv4 addresses though
             return IsMatch((uint)(address.Address));
         }
+
         /// <summary>
         /// Determines whether the specified address is a match.
         /// </summary>
@@ -238,6 +244,7 @@ namespace IPFiltering
             int shift = 32 - _maskData;
             return (_addressMask << shift) == (address << shift);
         }
+
         /// <summary>
         /// Gets all the address values in the range.
         /// </summary>
@@ -246,7 +253,7 @@ namespace IPFiltering
         {
             if (_mode == Mode.Class)
             {
-                IPClass classWildcard = (IPClass)_maskData;
+                //IPClass classWildcard = (IPClass)_maskData;
 
                 int aStart, aEnd, bStart, bEnd, cStart, cEnd, dStart, dEnd;
                 GetClassRange(IPClass.A, out aStart, out aEnd);
@@ -255,38 +262,26 @@ namespace IPFiltering
                 GetClassRange(IPClass.D, out dStart, out dEnd);
 
                 for (int a = aStart; a <= aEnd; a++)
-                {
                     for (int b = bStart; b <= bEnd; b++)
-                    {
                         for (int c = cStart; c <= cEnd; c++)
-                        {
                             for (int d = dStart; d <= dEnd; d++)
-                            {
                                 yield return (uint)(a | b << 8 | c << 16 | d << 24);
-                            }
-                        }
-                    }
-                }
             }
             else
             {
                 int maxValue = Count;
                 for (int i = 0; i < maxValue; i++)
-                {
-                    yield return (uint)(((uint)i << _maskData) | _addressMask);
-                }
+                    yield return (((uint)i << _maskData) | _addressMask);
             }
         }
+
         /// <summary>
         /// Gets all the ip addresses in the range.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<IPAddress> GetAddresses()
         {
-            foreach (uint address in GetAddressValues())
-            {
-                yield return new IPAddress((long)address);
-            }
+            return GetAddressValues().Select(address => new IPAddress(address));
         }
         /// <summary>
         /// Indicates whether this instance and a specified object are equal.
@@ -304,6 +299,7 @@ namespace IPFiltering
             IPRange range = (IPRange)obj;
             return range._addressMask == _addressMask && range._maskData == _maskData && range._mode == _mode;
         }
+
         /// <summary>
         /// Returns the hash code for this instance.
         /// </summary>
@@ -315,6 +311,7 @@ namespace IPFiltering
             return ((int)_mode) |
                 ((int)(_addressMask ^ (_maskData << 24)) << 1);
         }
+
         /// <summary>
         /// Converts the value of this instance to its equivalent string representation.
         /// </summary>
@@ -326,7 +323,7 @@ namespace IPFiltering
             {
                 return GetDotDecimal(_addressMask, (IPClass)_maskData);
             }
-            return GetDotDecimal(_addressMask, (IPClass)0) + "/" + _maskData.ToString();
+            return GetDotDecimal(_addressMask, (IPClass)0) + "/" + _maskData.ToString(CultureInfo.InvariantCulture);
         }
 
 
@@ -343,6 +340,7 @@ namespace IPFiltering
                 start = end = (_maskData >> shift) & 0xFF;
             }
         }
+
         private static void ParseAddress(string value, out byte ipClassWildcards, out uint address)
         {
             string[] values = value.Split('.');
@@ -350,23 +348,22 @@ namespace IPFiltering
             {
                 throw new ArgumentException(string.Format("The ip address is in invalid format {0}", value), "value");
             }
-
-            byte ipValue;
             byte classIndex = 1;
             int maskIndex = 0;
 
             address = 0;
             ipClassWildcards = 0;
 
-            for (int i = 0; i < values.Length; i++)
+            foreach (string s in values)
             {
-                if (IsWildCard(values[i]))
+                if (IsWildCard(s))
                 {
                     ipClassWildcards |= classIndex;
                 }
                 else
                 {
-                    if (!byte.TryParse(values[i], out ipValue))
+                    byte ipValue;
+                    if (!byte.TryParse(s, out ipValue))
                     {
                         throw new ArgumentException(string.Format("The ip address is in invalid format {0}", value), "value");
                     }
@@ -376,6 +373,7 @@ namespace IPFiltering
                 classIndex <<= 1;
             }
         }
+
         private static bool IsWildCard(string value)
         {
             if (value.Length != 1)
@@ -384,6 +382,7 @@ namespace IPFiltering
             }
             return _wildcardChars.Contains(value[0]);
         }
+
         private static byte GetMaskSize(uint mask)
         {
             bool complete = false;
@@ -409,13 +408,14 @@ namespace IPFiltering
             }
             return count;
         }
+
         private static string GetDotDecimal(uint address, IPClass ipClassWildcards)
         {
             return string.Format("{0}.{1}.{2}.{3}",
-                (ipClassWildcards & IPClass.A) == IPClass.A ? "*" : (address & 0xFF).ToString(),
-                (ipClassWildcards & IPClass.B) == IPClass.B ? "*" : ((address >> 8) & 0xFF).ToString(),
-                (ipClassWildcards & IPClass.C) == IPClass.C ? "*" : ((address >> 16) & 0xFF).ToString(),
-                (ipClassWildcards & IPClass.D) == IPClass.D ? "*" : ((address >> 24) & 0xFF).ToString()
+                (ipClassWildcards & IPClass.A) == IPClass.A ? "*" : (address & 0xFF).ToString(CultureInfo.InvariantCulture),
+                (ipClassWildcards & IPClass.B) == IPClass.B ? "*" : ((address >> 8) & 0xFF).ToString(CultureInfo.InvariantCulture),
+                (ipClassWildcards & IPClass.C) == IPClass.C ? "*" : ((address >> 16) & 0xFF).ToString(CultureInfo.InvariantCulture),
+                (ipClassWildcards & IPClass.D) == IPClass.D ? "*" : ((address >> 24) & 0xFF).ToString(CultureInfo.InvariantCulture)
                 );
         }
 
@@ -424,6 +424,8 @@ namespace IPFiltering
             Class = 0,
             Classless,
         }
+
+        [Flags]
         private enum IPClass : byte
         {
             A = 1,

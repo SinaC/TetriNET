@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Web;
 using System.Net;
 using IPFiltering.Configuration;
@@ -14,7 +11,7 @@ namespace IPFiltering
     public class IPFilterModule : IHttpModule
     {
 
-        private static ThreadSafeSingleton<IPFilter> _filter = new ThreadSafeSingleton<IPFilter>(Create);
+        private static readonly ThreadSafeSingleton<IPFilter> _filter = new ThreadSafeSingleton<IPFilter>(Create);
 
         /// <summary>
         /// Gets the filter.
@@ -41,7 +38,7 @@ namespace IPFiltering
         /// <param name="context">An <see cref="T:System.Web.HttpApplication"/> that provides access to the methods, properties, and events common to all application objects within an ASP.NET application</param>
         public void Init(HttpApplication context)
         {
-            context.BeginRequest += new EventHandler(context_BeginRequest);
+            context.BeginRequest += context_BeginRequest;
         }
 
         /// <summary>
@@ -51,14 +48,21 @@ namespace IPFiltering
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         private void context_BeginRequest(object sender, EventArgs e)
         {
-            HttpContext context = (sender as HttpApplication).Context;
-            IPAddress address = IPAddress.Parse(context.Request.UserHostAddress);
-            IPFilterType result = Filter.CheckAddress(address);
-            if (result == IPFilterType.Deny)
+            HttpApplication app = sender as HttpApplication;
+            if (app != null)
             {
-                context.Response.StatusCode = 401;
-                context.Response.Output.Write("<html><body>Access Denied<body></html>");
-                context.Response.End();
+                HttpContext context = app.Context;
+                if (context != null && context.Request.UserHostAddress != null)
+                {
+                    IPAddress address = IPAddress.Parse(context.Request.UserHostAddress);
+                    IPFilterTypes result = Filter.CheckAddress(address);
+                    if (result == IPFilterTypes.Deny)
+                    {
+                        context.Response.StatusCode = 401;
+                        context.Response.Output.Write("<html><body>Access Denied<body></html>");
+                        context.Response.End();
+                    }
+                }
             }
         }
 

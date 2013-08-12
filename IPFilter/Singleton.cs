@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace IPFiltering
 {
     public class ThreadSafeSingleton<T>
         where T : class
     {
-        private object _syncObject = new object();
-        private T _value;
-        private Func<T> _createHandler;
+        private readonly object _syncObject = new object();
+        private volatile T _value;
+        private readonly Func<T> _createHandler;
 
 
         /// <summary>
@@ -54,7 +51,7 @@ namespace IPFiltering
         where T : class
     {
         private T _value;
-        private Func<T> _createHandler;
+        private readonly Func<T> _createHandler;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Singleton&lt;T&gt;"/> class.
@@ -77,10 +74,7 @@ namespace IPFiltering
         {
             get
             {
-                if (_value == null)
-                {
-                    _value = _createHandler();
-                }
+                _value = _value ?? _createHandler();
                 return _value;
             }
         }

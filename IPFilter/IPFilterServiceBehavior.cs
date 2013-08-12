@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.ServiceModel.Dispatcher;
 using System.ServiceModel.Description;
 using System.ServiceModel.Channels;
@@ -15,9 +13,9 @@ namespace IPFiltering
 {
     public class IPFilterServiceBehavior : IDispatchMessageInspector, IServiceBehavior
     {
-        private static readonly object _httpAccessDenied = new object();
-        private static readonly object _accessDenied = new object();
-        private IPFilter _verifier;
+        private static readonly object HttpAccessDenied = new object();
+        private static readonly object AccessDenied = new object();
+        private readonly IPFilter _verifier;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IPFilterServiceBehavior"/> class.
@@ -25,7 +23,7 @@ namespace IPFiltering
         /// <param name="filterName">Name of the filter.</param>
         public IPFilterServiceBehavior(string filterName)
         {
-            _verifier = Configuration.FilterFactory.Create(IPFilterConfiguration.Default.Filters[filterName]);
+            _verifier = FilterFactory.Create(IPFilterConfiguration.Default.Filters[filterName]);
         }
 
         /// <summary>
@@ -57,12 +55,12 @@ namespace IPFiltering
                 IPAddress address = IPAddress.Parse(remoteEndpoint.Address);
 
                 // If ip address is denied clear the request mesage so service method does not get execute
-                if (_verifier.CheckAddress(address) == IPFilterType.Deny)
+                if (_verifier.CheckAddress(address) == IPFilterTypes.Deny)
                 {
                     request = null;
                     object result = (channel.LocalAddress.Uri.Scheme.Equals(Uri.UriSchemeHttp) ||
                                      channel.LocalAddress.Uri.Scheme.Equals(Uri.UriSchemeHttps)) ?
-                        _httpAccessDenied : _accessDenied;
+                        HttpAccessDenied : AccessDenied;
                     return result;
                 }
             }
@@ -77,10 +75,12 @@ namespace IPFiltering
         /// <param name="correlationState">The correlation object returned from the <see cref="M:System.ServiceModel.Dispatcher.IDispatchMessageInspector.AfterReceiveRequest(System.ServiceModel.Channels.Message@,System.ServiceModel.IClientChannel,System.ServiceModel.InstanceContext)"/> method.</param>
         public void BeforeSendReply(ref Message reply, object correlationState)
         {
-            if (correlationState == _httpAccessDenied)
+            if (correlationState == HttpAccessDenied)
             {
-                HttpResponseMessageProperty responseProperty = new HttpResponseMessageProperty();
-                responseProperty.StatusCode = (HttpStatusCode)401;
+                HttpResponseMessageProperty responseProperty = new HttpResponseMessageProperty
+                    {
+                        StatusCode = (HttpStatusCode) 401
+                    };
                 reply.Properties["httpResponse"] = responseProperty;                
             }
         }
@@ -92,7 +92,7 @@ namespace IPFiltering
         /// <param name="serviceHostBase">The host of the service.</param>
         /// <param name="endpoints">The service endpoints.</param>
         /// <param name="bindingParameters">Custom objects to which binding elements have access.</param>
-        public void AddBindingParameters(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase, System.Collections.ObjectModel.Collection<ServiceEndpoint> endpoints, System.ServiceModel.Channels.BindingParameterCollection bindingParameters)
+        public void AddBindingParameters(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase, System.Collections.ObjectModel.Collection<ServiceEndpoint> endpoints, BindingParameterCollection bindingParameters)
         {
 
         }
@@ -104,15 +104,18 @@ namespace IPFiltering
         /// <param name="serviceHostBase">The host that is currently being built.</param>
         public void ApplyDispatchBehavior(ServiceDescription serviceDescription, ServiceHostBase serviceHostBase)
         {
-            foreach (ChannelDispatcher channelDispatcher in serviceHostBase.ChannelDispatchers)
+            //foreach (ChannelDispatcher channelDispatcher in serviceHostBase.ChannelDispatchers)
+            //{
+            //    foreach (EndpointDispatcher endpointDispatcher in channelDispatcher.Endpoints)
+            //    {
+            //        endpointDispatcher.DispatchRuntime.MessageInspectors.Add(this);
+            //    }
+            //}  
+            foreach (EndpointDispatcher endpointDispatcher in serviceHostBase.ChannelDispatchers.Cast<ChannelDispatcher>().SelectMany(channelDispatcher => channelDispatcher.Endpoints))
             {
-                foreach (EndpointDispatcher endpointDispatcher in channelDispatcher.Endpoints)
-                {
-                    endpointDispatcher.DispatchRuntime.MessageInspectors.Add(this);
-                }
-            }  
+                endpointDispatcher.DispatchRuntime.MessageInspectors.Add(this);
+            }
         }
-
         /// <summary>
         /// Provides the ability to inspect the service host and the service description to confirm that the service can run successfully.
         /// </summary>
@@ -144,6 +147,7 @@ namespace IPFiltering
                 this["providerName"] = value;
             }
         }
+
         /// <summary>
         /// Gets the type of behavior.
         /// </summary>
@@ -163,7 +167,7 @@ namespace IPFiltering
         /// <returns>The behavior extension.</returns>
         protected override object CreateBehavior()
         {
-            return new IPFilterServiceBehavior(this.FilterName);
+            return new IPFilterServiceBehavior(FilterName);
         }
     }
 }

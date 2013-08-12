@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.WebSockets;
 using System.ServiceModel;
 using TetriNET.Common;
 
 namespace TetriNET.Server
 {
-    internal class ExceptionFreeTetriNETCallback : ITetriNETCallback
+    public class ExceptionFreeTetriNETCallback : ITetriNETCallback
     {
         private readonly IPlayerManager _playerManager;
         private readonly ITetriNETCallback _callback;
@@ -16,6 +15,8 @@ namespace TetriNET.Server
             _callback = callback;
             _playerManager = playerManager;
         }
+
+        public ITetriNETCallback Callback { get { return _callback; } }
 
         private void ExceptionFreeAction(Action action, string actionName)
         {

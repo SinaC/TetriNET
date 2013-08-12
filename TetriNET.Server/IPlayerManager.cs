@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TetriNET.Common;
 
 namespace TetriNET.Server
 {
     public interface IPlayerManager
     {
+        event EventHandler<ITetriNETCallback> OnPlayerRemoved;
+
         IPlayer Add(string name, ITetriNETCallback callback);
         bool Remove(IPlayer player);
 

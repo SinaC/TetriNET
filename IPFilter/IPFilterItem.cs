@@ -8,18 +8,15 @@ namespace IPFiltering
 {
     public class IPFilterItem
     {
-        
-        private IList<IPRange> _ranges;
-        private IPFilterType _result;
-
+        private readonly IList<IPRange> _ranges;
+        private readonly IPFilterTypes _result;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IPFilterItem"/> class.
         /// </summary>
-        /// <param name="name">The name.</param>
         /// <param name="ipranges">The ipranges.</param>
         /// <param name="result">The result.</param>
-        public IPFilterItem( IList<IPRange> ipranges, IPFilterType result)
+        public IPFilterItem( IList<IPRange> ipranges, IPFilterTypes result)
         {
             if (ipranges == null)
             {
@@ -29,12 +26,11 @@ namespace IPFiltering
             _ranges = ipranges;
         }
 
-
         /// <summary>
         /// Gets the type of the filter.
         /// </summary>
         /// <value>The type of the filter.</value>
-        public IPFilterType FilterType
+        public IPFilterTypes FilterTypes
         {
             get {
                 return _result;
@@ -53,22 +49,22 @@ namespace IPFiltering
             }
         }
 
+        /// <summary>
+        /// Checks the address.
+        /// </summary>
+        /// <param name="ipAddress">The ip address.</param>
+        /// <returns></returns>
+        public IPFilterTypes CheckAddress(IPAddress ipAddress)
+        {
+            return CheckAddress((uint)ipAddress.Address);
+        }
 
         /// <summary>
         /// Checks the address.
         /// </summary>
         /// <param name="ipAddress">The ip address.</param>
         /// <returns></returns>
-        public IPFilterType CheckAddress(IPAddress ipAddress)
-        {
-            return CheckAddress((uint)ipAddress.Address);
-        }
-        /// <summary>
-        /// Checks the address.
-        /// </summary>
-        /// <param name="ipAddress">The ip address.</param>
-        /// <returns></returns>
-        public IPFilterType CheckAddress(uint ipAddress)
+        public IPFilterTypes CheckAddress(uint ipAddress)
         {
             for (int i = 0; i < _ranges.Count; i++)
             {
@@ -77,7 +73,7 @@ namespace IPFiltering
                     return _result;
                 }
             }
-            return IPFilterType.NoMatch;
+            return IPFilterTypes.NoMatch;
         }
     }
 }

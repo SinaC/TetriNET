@@ -33,10 +33,10 @@ namespace IPFiltering.Configuration
             {
                 throw new ArgumentNullException("item");
             }
-            if (item.FilterType == IPFilterType.NoMatch)
+            if (item.FilterTypes == IPFilterTypes.NoMatch)
             {
-                throw new ArgumentException("The item has an invalid FilterType : '" +
-                    item.FilterType.ToString() + "'", "item");
+                throw new ArgumentException("The item has an invalid FilterTypes : '" +
+                    item.FilterTypes.ToString() + "'", "item");
             }
             if (string.IsNullOrEmpty(item.Hosts))
             {
@@ -44,7 +44,7 @@ namespace IPFiltering.Configuration
             }
             string[] hosts = item.Hosts.Split(',');
             IList<IPRange> ipRanges = hosts.Select((s) => IPRange.Parse(s)).ToArray();
-            return new IPFilterItem(ipRanges, item.FilterType);
+            return new IPFilterItem(ipRanges, item.FilterTypes);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace TetriNET.Server
         {
             //GameServer server = new GameServer(new BasicCallbackManager());
             PlayerManager playerManager = new PlayerManager();
-            GameServer server = new GameServer(new ExceptionFreeCallbackManager(playerManager), playerManager);
+            GameServer server = new GameServer(new ExceptionFreeTetriNETCallbackManager(playerManager), playerManager);
             server.StartService();
 
             Console.WriteLine("Commands:");

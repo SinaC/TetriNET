@@ -34,12 +34,12 @@ namespace IPFiltering.Configuration
         /// Gets the default behavior when no match is found.
         /// </summary>
         /// <value>The default behavior.</value>
-        [ConfigurationProperty(_defaultBehaviorAttribName, IsRequired = false, DefaultValue = IPFilterType.Allow)]
-        public IPFilterType DefaultBehavior
+        [ConfigurationProperty(_defaultBehaviorAttribName, IsRequired = false, DefaultValue = IPFilterTypes.Allow)]
+        public IPFilterTypes DefaultBehavior
         {
             get
             {
-                return (IPFilterType)this[_defaultBehaviorAttribName];
+                return (IPFilterTypes)this[_defaultBehaviorAttribName];
             }
         }
 
@@ -67,8 +67,8 @@ namespace IPFiltering.Configuration
         protected override bool OnDeserializeUnrecognizedElement(string elementName, XmlReader reader)
         {
 
-            IPFilterType filterType = GetFilterResult(elementName);
-            if (filterType == IPFilterType.NoMatch)
+            IPFilterTypes filterTypes = GetFilterResult(elementName);
+            if (filterTypes == IPFilterTypes.NoMatch)
             {
                 return base.OnDeserializeUnrecognizedElement(elementName, reader);
             }
@@ -88,7 +88,7 @@ namespace IPFiltering.Configuration
             {
                 throw new ConfigurationErrorsException("Host attribute not found.");
             }
-            _filterItems.Add(new FilterConfigurationItem() { FilterType = filterType, Hosts = host });
+            _filterItems.Add(new FilterConfigurationItem() { FilterTypes = filterTypes, Hosts = host });
 
             return true;
             
@@ -102,17 +102,17 @@ namespace IPFiltering.Configuration
             _filterItems = new List<FilterConfigurationItem>();
         }
 
-        private static IPFilterType GetFilterResult(string  value)
+        private static IPFilterTypes GetFilterResult(string  value)
         {
             if (value == _allowElementName)
             {
-                return IPFilterType.Allow;
+                return IPFilterTypes.Allow;
             }
             else if (value == _denyElementName)
             {
-                return IPFilterType.Deny;
+                return IPFilterTypes.Deny;
             }
-            return IPFilterType.NoMatch;
+            return IPFilterTypes.NoMatch;
         }
 
 
