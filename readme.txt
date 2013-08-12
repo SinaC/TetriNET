@@ -3,8 +3,9 @@ replace assert and return null/false/-1 with error management
 replace Tetriminos enum with index
 GameStart send players, tetrimino definitions and game rules
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
-detect server disconnection. use LastAction + LastServerAction + send ping from server + send ping from client when needed
-use interface instead of RemoteEndpointMessageProperty
+use interface instead of RemoteEndpointMessageProperty (server-side)
+implement built-in client: new ITetriNETProxyManager and new ITetriNETCallbackManager
+remove every reference to network from GameClient and GameServer
 
 discover
 http://msdn.microsoft.com/en-us/magazine/ee335779.aspx

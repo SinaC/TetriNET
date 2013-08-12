@@ -8,52 +8,61 @@ namespace TetriNET.Client
     public class ExceptionFreeTetriNETProxy : ITetriNET
     {
         private readonly ITetriNET _proxy;
+        private readonly IClient _client;
 
-        public ExceptionFreeTetriNETProxy(ITetriNET proxy)
+        public ExceptionFreeTetriNETProxy(ITetriNET proxy, IClient client)
         {
             _proxy = proxy;
+            _client = client;
         }
-
-        public ITetriNET Proxy { get { return _proxy; }}
 
         private void ExceptionFreeAction(Action action, string actionName)
         {
             try
             {
                 action();
-                // TODO: update ServerActionTime -> IProxyManager + IProxy
+                _client.LastAction = DateTime.Now;
             }
             catch (CommunicationObjectAbortedException ex)
             {
-                Log.WriteLine("CommunicationObjectAbortedException");
-                // TODO: raise 'disconnected from server' event -> IProxyManager + IProxy
-                throw new ApplicationException("Should be \"disconnected from server\" event");
+                Log.WriteLine("CommunicationObjectAbortedException:" + actionName);
+                _client.OnDisconnectedFromServer(this);
+            }
+            catch (CommunicationObjectFaultedException ex)
+            {
+                Log.WriteLine("CommunicationObjectFaultedException:" + actionName);
+                _client.OnDisconnectedFromServer(this);
+            }
+            catch (EndpointNotFoundException ex)
+            {
+                Log.WriteLine("EndpointNotFoundException:" + actionName);
+                _client.OnServerUnreachable(this);
             }
         }
 
         public void RegisterPlayer(string playerName)
         {
-            ExceptionFreeAction(() => RegisterPlayer(playerName), "RegisterPlayer");
+            ExceptionFreeAction(() => _proxy.RegisterPlayer(playerName), "RegisterPlayer");
         }
 
         public void Ping()
         {
-            ExceptionFreeAction(Ping, "Ping");
+            ExceptionFreeAction(_proxy.Ping, "Ping");
         }
 
         public void PublishMessage(string msg)
         {
-            ExceptionFreeAction(() => PublishMessage(msg), "PublishMessage");
+            ExceptionFreeAction(() => _proxy.PublishMessage(msg), "PublishMessage");
         }
 
         public void PlaceTetrimino(Tetriminos tetrimino, Orientations orientation, Position position)
         {
-            ExceptionFreeAction(() => PlaceTetrimino(tetrimino, orientation, position), "PlaceTetrimino");
+            ExceptionFreeAction(() => _proxy.PlaceTetrimino(tetrimino, orientation, position), "PlaceTetrimino");
         }
 
         public void SendAttack(int targetId, Attacks attack)
         {
-            ExceptionFreeAction(() => SendAttack(targetId, attack), "SendAttack");
+            ExceptionFreeAction(() => _proxy.SendAttack(targetId, attack), "SendAttack");
         }
     }
 }

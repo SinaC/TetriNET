@@ -28,7 +28,7 @@ namespace TetriNET.Server
             }
             catch (CommunicationObjectAbortedException ex)
             {
-                Log.WriteLine("CommunicationObjectAbortedException");
+                Log.WriteLine("CommunicationObjectAbortedException:" + actionName);
                 IPlayer player = _playerManager[this];
                 if (player != null)
                 {
