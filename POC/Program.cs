@@ -1,24 +1,152 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq.Expressions;
+using System.ServiceModel;
 using TetriNET.Client;
+using TetriNET.Common;
 using TetriNET.Server;
 
 namespace POC
 {
+    // TODO: integrated proxy : ITetriNET setting LastAction
+    // TODO: integrated callback : ITetriNETCallback setting LastAction
+    public class IntegratedProxyManager : IProxyManager
+    {
+        public ITetriNET Proxy { private get; set; }
+
+        public ITetriNET CreateProxy(ITetriNETCallback callback, IClient client)
+        {
+            return Proxy;
+        }
+    }
+
+    public class IntegratedCallback : ITetriNETCallback
+    {
+        private readonly IPlayerManager _playerManager;
+        private readonly ITetriNETCallback _callback;
+
+        public IntegratedCallback(ITetriNETCallback callback, IPlayerManager playerManager)
+        {
+            _callback = callback;
+            _playerManager = playerManager;
+        }
+
+        private void UpdateTimerOnAction(Action action)
+        {
+            try
+            {
+                ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
+            }
+            catch (Exception ex)
+            {
+            }
+
+            action();
+            IPlayer player = _playerManager[this];
+            player.LastAction = DateTime.Now;
+        }
+
+        public void OnPingReceived()
+        {
+            UpdateTimerOnAction(_callback.OnPingReceived);
+        }
+
+        public void OnServerStopped()
+        {
+            UpdateTimerOnAction(_callback.OnServerStopped);
+        }
+
+        public void OnPlayerRegistered(bool succeeded, int playerId)
+        {
+            UpdateTimerOnAction(() => _callback.OnPlayerRegistered(succeeded, playerId));
+        }
+
+        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, System.Collections.Generic.List<PlayerData> players)
+        {
+            UpdateTimerOnAction(() => _callback.OnGameStarted(firstTetrimino, secondTetrimino, players));
+        }
+
+        public void OnGameFinished()
+        {
+            UpdateTimerOnAction(_callback.OnGameFinished);
+        }
+
+        public void OnServerAddLines(int lineCount)
+        {
+            UpdateTimerOnAction(() => _callback.OnServerAddLines(lineCount));
+        }
+
+        public void OnPlayerAddLines(int lineCount)
+        {
+            UpdateTimerOnAction(() => _callback.OnPlayerAddLines(lineCount));
+        }
+
+        public void OnPublishPlayerMessage(string playerName, string msg)
+        {
+            UpdateTimerOnAction(() => _callback.OnPublishPlayerMessage(playerName, msg));
+        }
+
+        public void OnPublishServerMessage(string msg)
+        {
+            UpdateTimerOnAction(() => _callback.OnPublishServerMessage(msg));
+        }
+
+        public void OnAttackReceived(Attacks attack)
+        {
+            UpdateTimerOnAction(() => _callback.OnAttackReceived(attack));
+        }
+
+        public void OnAttackMessageReceived(string msg)
+        {
+            UpdateTimerOnAction(() => _callback.OnAttackMessageReceived(msg));
+        }
+
+        public void OnNextTetrimino(int index, Tetriminos tetrimino)
+        {
+            UpdateTimerOnAction(() => _callback.OnNextTetrimino(index, tetrimino));
+        }
+    }
+
+
+    public class IntegratedCallbackManager : ICallbackManager
+    {
+        private readonly IPlayerManager _playerManager;
+        private IntegratedCallback _callback;
+
+        public IntegratedCallbackManager(IPlayerManager playerManager)
+        {
+            _playerManager = playerManager;
+        }
+
+        public ITetriNETCallback Callback {
+            get
+            {
+                return _callback;
+            }
+            set { _callback = new IntegratedCallback(value, _playerManager);}
+        }
+    }
+
     internal class Program
     {
         private static void Main(string[] args)
         {
             //
-            string baseAddress = ConfigurationManager.AppSettings["address"];
-            ExceptionFreeProxyManager proxyManager = new ExceptionFreeProxyManager(baseAddress);
+            //string baseAddress = ConfigurationManager.AppSettings["address"];
+            //ExceptionFreeProxyManager proxyManager = new ExceptionFreeProxyManager(baseAddress);
+            IntegratedProxyManager proxyManager = new IntegratedProxyManager();
             GameClient client = new GameClient(proxyManager);
             client.PlayerName = "Joel_" + Guid.NewGuid().ToString().Substring(0, 6);
 
             //
             PlayerManager playerManager = new PlayerManager();
-            ExceptionFreeCallbackManager callbackManager = new ExceptionFreeCallbackManager(playerManager);
+            //ExceptionFreeCallbackManager callbackManager = new ExceptionFreeCallbackManager(playerManager);
+            IntegratedCallbackManager callbackManager = new IntegratedCallbackManager(playerManager);
             GameServer server = new GameServer(callbackManager, playerManager);
+
+            //
+            proxyManager.Proxy = server;
+            callbackManager.Callback = client;
 
             // Start server
             server.StartService();
@@ -29,6 +157,7 @@ namespace POC
             Console.WriteLine("s: Start game");
             Console.WriteLine("t: Stop game");
             Console.WriteLine("m: Send message broadcast");
+            Console.WriteLine("c: Close client");
 
             bool stopped = false;
             while (!stopped)
@@ -51,6 +180,9 @@ namespace POC
                             break;
                         case ConsoleKey.M:
                             server.BroadcastRandomMessage();
+                            break;
+                        case ConsoleKey.C:
+                            // TODO
                             break;
                     }
                 }
