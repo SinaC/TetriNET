@@ -10,9 +10,9 @@ namespace TetriNET.Common
         {
             string logLine;
             if (DisplayThreadId)
-                logLine = String.Format("[{0:X8}]{1}", System.Threading.Thread.CurrentThread.ManagedThreadId, line);
+                logLine = String.Format("[{0:hh:mm:ss.fff}][{1:X8}]{2}", DateTime.Now, System.Threading.Thread.CurrentThread.ManagedThreadId, line);
             else
-                logLine = line;
+                logLine = String.Format("[{0:hh:mm:ss.fff}]{1}", DateTime.Now, line);
             Console.WriteLine(logLine);
             System.Diagnostics.Debug.WriteLine(logLine);
         }

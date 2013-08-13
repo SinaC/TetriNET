@@ -6,12 +6,12 @@ using TetriNET.Common;
 
 namespace TetriNET.Server
 {
-    public class ExceptionFreeTetriNETCallbackManager : ITetriNETCallbackManager
+    public class ExceptionFreeCallbackManager : ICallbackManager
     {
-        private readonly ConcurrentDictionary<ITetriNETCallback, ExceptionFreeTetriNETCallback> _callbacks = new ConcurrentDictionary<ITetriNETCallback, ExceptionFreeTetriNETCallback>();
+        private readonly ConcurrentDictionary<ITetriNETCallback, ExceptionFreeCallback> _callbacks = new ConcurrentDictionary<ITetriNETCallback, ExceptionFreeCallback>();
         private readonly IPlayerManager _playerManager;
 
-        public ExceptionFreeTetriNETCallbackManager(IPlayerManager playerManager)
+        public ExceptionFreeCallbackManager(IPlayerManager playerManager)
         {
             if (playerManager == null)
                 throw new ArgumentNullException("playerManager");
@@ -24,11 +24,11 @@ namespace TetriNET.Server
             get
             {
                 ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
-                ExceptionFreeTetriNETCallback exceptionFreeCallback;
+                ExceptionFreeCallback exceptionFreeCallback;
                 bool found = _callbacks.TryGetValue(callback, out exceptionFreeCallback);
                 if (!found)
                 {
-                    exceptionFreeCallback = new ExceptionFreeTetriNETCallback(callback, _playerManager);
+                    exceptionFreeCallback = new ExceptionFreeCallback(callback, _playerManager);
                     _callbacks.TryAdd(callback, exceptionFreeCallback);
                 }
                 return exceptionFreeCallback;
@@ -38,12 +38,12 @@ namespace TetriNET.Server
         private void OnPlayerRemoved(object sender, ITetriNETCallback callback)
         {
             // callback is in fact of type ExceptionFreeTetriNETCallback
-            if (callback is ExceptionFreeTetriNETCallback)
+            if (callback is ExceptionFreeCallback)
             {
                 // Black magic: 
                 //  param callback must be casted to ExceptionFreeTetriNETCallback then get real transport callback
-                ITetriNETCallback transportCallback = (callback as ExceptionFreeTetriNETCallback).Callback;
-                ExceptionFreeTetriNETCallback tryRemoveResult;
+                ITetriNETCallback transportCallback = (callback as ExceptionFreeCallback).Callback;
+                ExceptionFreeCallback tryRemoveResult;
                 _callbacks.TryRemove(transportCallback, out tryRemoveResult);
                 Debug.Assert(tryRemoveResult == callback);
             }

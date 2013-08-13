@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.Text;
+using System.Threading.Tasks;
 using TetriNET.Common;
 using TetriNET.Common.WCF;
 
 namespace TetriNET.Client
 {
-    public class SimpleTetriNETProxyManager : ITetriNETProxyManager
+    public class ExceptionFreeProxyManager : IProxyManager
     {
         private readonly string _baseAddress;
 
-        public SimpleTetriNETProxyManager(string baseAddress)
+        public ExceptionFreeProxyManager(string baseAddress)
         {
             _baseAddress = baseAddress;
         }
@@ -28,7 +30,7 @@ namespace TetriNET.Client
                 {
                     foreach (EndpointAddress endpoint in addresses)
                         Log.WriteLine("{0}:\t{1}", addresses.IndexOf(endpoint), endpoint.Uri);
-                    Log.WriteLine("Connecting to first server");
+                    Log.WriteLine("Selecting first server");
                     address = addresses[0];
                 }
                 else
@@ -39,12 +41,14 @@ namespace TetriNET.Client
             else
                 address = new EndpointAddress(_baseAddress);
 
-
             if (address != null)
             {
+                Log.WriteLine("Connecting to server:" + address.Uri);
                 Binding binding = new NetTcpBinding(SecurityMode.None);
                 InstanceContext instanceContext = new InstanceContext(callback);
-                return DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, address);
+                ITetriNET proxy = DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, address);
+                if (proxy != null)
+                    return new ExceptionFreeProxy(proxy, client);
             }
             return null;
         }

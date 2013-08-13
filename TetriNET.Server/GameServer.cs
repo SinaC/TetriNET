@@ -30,11 +30,11 @@ namespace TetriNET.Server
 
         private readonly Common.Singleton<TetriminoQueue> _tetriminoQueue = new Common.Singleton<TetriminoQueue>(() => new TetriminoQueue());
         private ServiceHost Host { get; set; }
-        private ITetriNETCallbackManager CallbackManager { get; set; }
+        private ICallbackManager CallbackManager { get; set; }
         private IPlayerManager PlayerManager { get; set; }
         public States State { get; private set; }
 
-        public GameServer(ITetriNETCallbackManager callbackManager, IPlayerManager playerManager)
+        public GameServer(ICallbackManager callbackManager, IPlayerManager playerManager)
         {
             Log.WriteLine("***GameServer:ctor***");
 

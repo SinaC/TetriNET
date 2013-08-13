@@ -5,12 +5,12 @@ using TetriNET.Common;
 
 namespace TetriNET.Server
 {
-    public class ExceptionFreeTetriNETCallback : ITetriNETCallback
+    public class ExceptionFreeCallback : ITetriNETCallback
     {
         private readonly IPlayerManager _playerManager;
         private readonly ITetriNETCallback _callback;
 
-        public ExceptionFreeTetriNETCallback(ITetriNETCallback callback, IPlayerManager playerManager)
+        public ExceptionFreeCallback(ITetriNETCallback callback, IPlayerManager playerManager)
         {
             _callback = callback;
             _playerManager = playerManager;

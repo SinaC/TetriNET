@@ -3,7 +3,7 @@ using TetriNET.Common;
 
 namespace TetriNET.Server
 {
-    public class SimpleTetriNETCallbackManager : ITetriNETCallbackManager
+    public class SimpleCallbackManager : ICallbackManager
     {
         public ITetriNETCallback Callback
         {

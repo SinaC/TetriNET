@@ -4,7 +4,7 @@ replace Tetriminos enum with index
 GameStart send players, tetrimino definitions and game rules
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
 use interface instead of RemoteEndpointMessageProperty (server-side)
-implement built-in client: new ITetriNETProxyManager and new ITetriNETCallbackManager
+create server+client application using a new ICallbackManager referencing GameClient and IProxyManager referencing GameServer
 remove every reference to network from GameClient and GameServer
 
 discover

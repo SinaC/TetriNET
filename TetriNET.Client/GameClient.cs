@@ -8,7 +8,7 @@ using TetriNET.Common;
 namespace TetriNET.Client
 {
     [CallbackBehavior(UseSynchronizationContext = false)]
-    internal class GameClient : ITetriNETCallback, IClient
+    public class GameClient : ITetriNETCallback, IClient
     {
         public enum States
         {
@@ -23,14 +23,14 @@ namespace TetriNET.Client
 
         private const int InactivityTimeoutBeforePing = 500; // in ms
 
-        private readonly ITetriNETProxyManager _proxyManager;
+        private readonly IProxyManager _proxyManager;
         private ITetriNET Proxy { get; set; }
 
         public string PlayerName { get; set; }
         public States State { get; private set; }
         public int PlayerId { get; private set; }
 
-        public GameClient(ITetriNETProxyManager proxyManager)
+        public GameClient(IProxyManager proxyManager)
         {
             State = States.ApplicationStarted;
             _proxyManager = proxyManager;
@@ -121,8 +121,8 @@ namespace TetriNET.Client
 
         public void OnDisconnectedFromServer(ITetriNET proxy)
         {
-            // TODO
-            throw new ApplicationException("OnDisconnectedFromServer");
+            //throw new ApplicationException("OnDisconnectedFromServer");
+            State = States.ApplicationStarted;
         }
 
         public void OnServerUnreachable(ITetriNET proxy)

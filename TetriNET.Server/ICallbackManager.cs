@@ -2,7 +2,7 @@
 
 namespace TetriNET.Server
 {
-    public interface ITetriNETCallbackManager
+    public interface ICallbackManager
     {
         ITetriNETCallback Callback { get; }
     }
