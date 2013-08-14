@@ -47,17 +47,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TetriNET.Client\TetriNET.Client.csproj">
-      <Project>{df0e62bb-86b0-4fac-b731-0cd62c90ceb7}</Project>
-      <Name>TetriNET.Client</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Server_DEPRECATED\TetriNET.Server_DEPRECATED.csproj">
-      <Project>{76e05a72-1945-46df-8788-54aa39925024}</Project>
-      <Name>TetriNET.Server_DEPRECATED</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Configuration;
+using System.Linq;
 
 namespace TetriNET.Server
 {
@@ -6,15 +8,22 @@ namespace TetriNET.Server
     {
         static void Main(string[] args)
         {
-            DummyTetriNETCallback localCallback = new DummyTetriNETCallback();
-
+            //
             PlayerManager playerManager = new PlayerManager(6);
-            
-            WCFHost host = new WCFHost(playerManager);
-            host.LocalPlayerCallback = localCallback;
 
-            Server server = new Server(host);
+            //
+            WCFHost wcfHost = new WCFHost(playerManager, (playerName, callback) => new RemotePlayer(playerName, callback))
+            {
+                Port = ConfigurationManager.AppSettings["port"]
+            };
 
+            //
+            BuiltInHost builtInHost = new BuiltInHost(playerManager, playerName => new BuiltInPlayer(playerName, new DummyTetriNETCallback()) );
+
+            //
+            Server server = new Server(playerManager, wcfHost, builtInHost);
+
+            //
             server.StartServer();
 
             Console.WriteLine("Commands:");
@@ -46,15 +55,21 @@ namespace TetriNET.Server
                             server.BroadcastRandomMessage();
                             break;
                         case ConsoleKey.C:
-                            host.RegisterPlayer("Local-Joel");
+                            builtInHost.RegisterPlayer("BuiltIn-Joel");
                             break;
                         case ConsoleKey.D:
-                            host.UnregisterPlayer();
+                            builtInHost.UnregisterPlayer();
                             break;
                     }
                 }
                 else
                     System.Threading.Thread.Sleep(1000);
+                if (playerManager.Players.Any(x => x is BuiltInPlayer))
+                {
+                    IPlayer player = playerManager.Players.First(x => x is BuiltInPlayer);
+                    //player.
+                    // TODO: send a message from player to Server
+                }
             }
         }
     }

@@ -4,9 +4,9 @@ using TetriNET.Common;
 
 namespace TetriNET.Server
 {
-    public class LocalPlayer : IPlayer
+    public class BuiltInPlayer : IPlayer
     {
-        public LocalPlayer(string name, ITetriNETCallback callback)
+        public BuiltInPlayer(string name, ITetriNETCallback callback)
         {
             Name = name;
             Callback = callback;
@@ -22,7 +22,7 @@ namespace TetriNET.Server
 
         #region IPlayer
 
-        public event PlayerDisconnectedHandler OnDisconnected;
+        public event ConnectionLostHandler OnConnectionLost;
 
         public string Name { get; private set; }
         public int TetriminoIndex { get; set; }

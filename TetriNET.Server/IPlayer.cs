@@ -3,11 +3,11 @@ using TetriNET.Common;
 
 namespace TetriNET.Server
 {
-    public delegate void PlayerDisconnectedHandler(IPlayer player);
+    public delegate void ConnectionLostHandler(IPlayer player);
 
     public interface IPlayer : ITetriNETCallback
     {
-        event PlayerDisconnectedHandler OnDisconnected;
+        event ConnectionLostHandler OnConnectionLost;
 
         string Name { get; }
         int TetriminoIndex { get; set; }

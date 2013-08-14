@@ -2,9 +2,7 @@
 using System.Collections.Concurrent;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
-using TetriNET.Client;
 using TetriNET.Common;
-using TetriNET.Server;
 
 namespace POC
 {

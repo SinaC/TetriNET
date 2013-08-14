@@ -4,12 +4,13 @@ refactor Client as Server has been refactored  (code it first in POC/Client_POC)
 	LocalProxy : IProxy
 	RemoteProxy : IProxy
 	Client includes an IProxy
-
+simulate a message send from built-in player to Server
 replace assert and return null/false/-1 with error management
 replace Tetriminos enum with index
 GameStart send players, tetrimino definitions and game rules
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
 remove every reference to network from GameClient and GameServer
+uniformize Log.WriteLine: don't use String.Format neither "blabla"+"blibli"+"toto"
 
 discover
 http://msdn.microsoft.com/en-us/magazine/ee335779.aspx

@@ -16,9 +16,7 @@ namespace TetriNET.Server
         event PlaceTetriminoHandler OnTetriminoPlaced;
         event SendAttackHandler OnAttackSent;
 
-        IPlayerManager PlayerManager { get; }
-
-        void Start(string port);
+        void Start();
         void Stop();
     }
 }

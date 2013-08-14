@@ -1,28 +1,24 @@
 ﻿using System;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using TetriNET.Common;
-using TetriNET.Common.WCF;
 
 namespace TetriNET.Server
 {
-    [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
-    public class WCFHost : IHost
+    public class BuiltInHost : IHost
     {
-        private bool Started { get; set; }
-        private ServiceHost ServiceHost { get; set; }
-
         private readonly IPlayerManager _playerManager;
-        private readonly Func<string, ITetriNETCallback, IPlayer> _createPlayerFunc;
+        private readonly Func<string, IPlayer> _createPlayerFunc;
 
-        public string Port { get; set; }
+        private ITetriNETCallback _____TODELETE_Callback; // TODO: remove
 
-        public WCFHost(IPlayerManager playerManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc)
+        public BuiltInHost(IPlayerManager playerManager, Func<string, IPlayer> createPlayerFunc)
         {
             _playerManager = playerManager;
             _createPlayerFunc = createPlayerFunc;
-
-            Started = false;
         }
 
         #region IHost
@@ -35,44 +31,12 @@ namespace TetriNET.Server
 
         public void Start()
         {
-            if (Started)
-                return;
-
-            Uri baseAddress;
-            if (String.IsNullOrEmpty(Port) || Port.ToLower() == "auto")
-                baseAddress = DiscoveryHelper.AvailableTcpBaseAddress;
-            else
-                baseAddress = new Uri("net.tcp://localhost:" + Port + "/TetriNET");
-
-            ServiceHost = new ServiceHost(this, baseAddress);
-            ServiceHost.AddServiceEndpoint(typeof(ITetriNET), new NetTcpBinding(SecurityMode.None), "");
-            //ServiceHost.AddDefaultEndpoints();
-            //Host.Description.Behaviors.Add(new IPFilterServiceBehavior("DenyLocal"));
-            ServiceHost.Open();
-
-            foreach (var endpt in ServiceHost.Description.Endpoints)
-            {
-                Log.WriteLine("Enpoint address:\t{0}", endpt.Address);
-                Log.WriteLine("Enpoint binding:\t{0}", endpt.Binding);
-                Log.WriteLine("Enpoint contract:\t{0}\n", endpt.Contract.ContractType.Name);
-            }
-
-            Started = true;
+            // NOP
         }
 
         public void Stop()
         {
-            if (!Started)
-                return;
-
-            // Inform players
-            foreach (IPlayer p in _playerManager.Players)
-                p.OnServerStopped();
-
-            // Close service host
-            ServiceHost.Close();
-
-            Started = false;
+            // NOP
         }
 
         #endregion
@@ -83,13 +47,12 @@ namespace TetriNET.Server
         {
             Log.WriteLine("RegisterPlayer");
 
-            ITetriNETCallback callback = Callback;
-
             IPlayer player = null;
             int id = -1;
-            if (callback != null && _playerManager[playerName] == null && _playerManager.PlayerCount < _playerManager.MaxPlayers)
+            if (_playerManager[playerName] == null && _playerManager.PlayerCount < _playerManager.MaxPlayers)
             {
-                player = _createPlayerFunc(playerName, callback);
+                player = _createPlayerFunc(playerName);
+                _____TODELETE_Callback = player.Callback; // TODO: remove
                 //
                 player.OnConnectionLost += PlayerConnectionLost;
                 //
@@ -104,8 +67,7 @@ namespace TetriNET.Server
             else
             {
                 Log.WriteLine("Register failed for player " + playerName);
-                if (callback != null)
-                    callback.OnPlayerRegistered(false, -1);
+                // TODO: throw exception
             }
         }
 
@@ -124,8 +86,7 @@ namespace TetriNET.Server
             }
             else
             {
-                string endpoint = CallbackEndpoint;
-                Log.WriteLine("UnregisterPlayer from unknown player[" + endpoint + "]");
+                Log.WriteLine("UnregisterPlayer from unknown player");
             }
         }
 
@@ -141,8 +102,7 @@ namespace TetriNET.Server
             }
             else
             {
-                string endpoint = CallbackEndpoint;
-                Log.WriteLine("Ping from unknown player[" + endpoint + "]");
+                Log.WriteLine("Ping from unknown player");
             }
         }
 
@@ -160,8 +120,7 @@ namespace TetriNET.Server
             }
             else
             {
-                string endpoint = CallbackEndpoint;
-                Log.WriteLine("PublishMessage from unknown player[" + endpoint + "]");
+                Log.WriteLine("PublishMessage from unknown player");
             }
         }
 
@@ -179,8 +138,7 @@ namespace TetriNET.Server
             }
             else
             {
-                string endpoint = CallbackEndpoint;
-                Log.WriteLine("PlaceTetrimino from unknown player[" + endpoint + "]");
+                Log.WriteLine("PlaceTetrimino from unknown player");
             }
         }
 
@@ -205,8 +163,7 @@ namespace TetriNET.Server
             }
             else
             {
-                string endpoint = CallbackEndpoint;
-                Log.WriteLine("SendAttack from unknown player {0}", endpoint);
+                Log.WriteLine("SendAttack from unknown player {0}");
             }
         }
 
@@ -216,7 +173,17 @@ namespace TetriNET.Server
         {
             get
             {
-                return OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
+                StackTrace stackTrace = new StackTrace();           // get call stack
+                StackFrame[] stackFrames = stackTrace.GetFrames();  // get method calls (frames)
+
+                // write call stack method names
+                foreach (StackFrame stackFrame in stackFrames)
+                {
+                    Console.WriteLine(stackFrame.GetMethod().Name);   // write method name
+                }
+
+                // TODO: get call stack and search for a IPlayer and get callback from IPlayer
+                return _____TODELETE_Callback; // TODO: remove
             }
         }
 
@@ -224,17 +191,8 @@ namespace TetriNET.Server
         {
             get
             {
-                ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
-                return _playerManager[callback];
-            }
-        }
-
-        private string CallbackEndpoint
-        {
-            get
-            {
-                RemoteEndpointMessageProperty clientEndpoint = OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
-                return clientEndpoint == null ? "???" : clientEndpoint.Address;
+                ITetriNETCallback callback = Callback;
+                return callback == null ? null : _playerManager[callback];
             }
         }
 

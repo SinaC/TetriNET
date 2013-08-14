@@ -25,20 +25,28 @@ namespace TetriNET.Server
         private const int InactivityTimeoutBeforePing = 500; // in ms
 
         private readonly Singleton<TetriminoQueue> _tetriminoQueue = new Singleton<TetriminoQueue>(() => new TetriminoQueue());
-        private readonly IHost _host;
+        private readonly IPlayerManager _playerManager;
+        private readonly List<IHost> _hosts;
 
         public States State { get; private set; }
         public int AttackId { get; private set; }
 
-        public Server(IHost host)
+        public Server(IPlayerManager playerManager, params IHost[] hosts)
         {
-            _host = host;
+            if (hosts == null)
+                throw new ArgumentNullException("hosts");
 
-            _host.OnPlayerRegistered += RegisterPlayerHandler;
-            _host.OnPlayerUnregistered += UnregisterPlayerHandler;
-            _host.OnMessagePublished += PublishMessageHandler;
-            _host.OnTetriminoPlaced += PlaceTetriminoHandler;
-            _host.OnAttackSent += SendAttackHandler;
+            _playerManager = playerManager;
+            _hosts = hosts.ToList();
+
+            foreach (IHost host in _hosts)
+            {
+                host.OnPlayerRegistered += RegisterPlayerHandler;
+                host.OnPlayerUnregistered += UnregisterPlayerHandler;
+                host.OnMessagePublished += PublishMessageHandler;
+                host.OnTetriminoPlaced += PlaceTetriminoHandler;
+                host.OnAttackSent += SendAttackHandler;
+            }
 
             AttackId = 0;
 
@@ -52,7 +60,7 @@ namespace TetriNET.Server
         public void BroadcastRandomMessage()
         {
             // Send start game to every connected player
-            foreach (IPlayer p in _host.PlayerManager.Players)
+            foreach (IPlayer p in _playerManager.Players)
                 p.OnPublishServerMessage("Random message");
         }
         #endregion
@@ -63,9 +71,8 @@ namespace TetriNET.Server
 
             State = States.StartingServer;
 
-            string port = ConfigurationManager.AppSettings["port"];
-
-            _host.Start(port);
+            foreach (IHost host in _hosts)
+                host.Start();
 
             State = States.WaitingStartGame;
 
@@ -76,8 +83,8 @@ namespace TetriNET.Server
         {
             Log.WriteLine("Stopping server");
             State = States.StoppingServer;
-
-            _host.Stop();
+            foreach (IHost host in _hosts)
+                host.Stop();
 
             State = States.WaitingStartServer;
 
@@ -95,14 +102,14 @@ namespace TetriNET.Server
             Tetriminos firstTetrimino = _tetriminoQueue.Instance[0];
             Tetriminos secondTetrimino = _tetriminoQueue.Instance[1];
             // Build player list
-            List<PlayerData> players = _host.PlayerManager.Players.Select(x => new PlayerData
+            List<PlayerData> players = _playerManager.Players.Select(x => new PlayerData
             {
-                Id = _host.PlayerManager.GetId(x),
+                Id = _playerManager.GetId(x),
                 Name = x.Name
             }
                 ).ToList();
             // Send start game to every connected player
-            foreach (IPlayer p in _host.PlayerManager.Players)
+            foreach (IPlayer p in _playerManager.Players)
             {
                 p.TetriminoIndex = 0;
                 p.OnGameStarted(firstTetrimino, secondTetrimino, players);
@@ -118,7 +125,7 @@ namespace TetriNET.Server
             State = States.GameFinished;
 
             // Send start game to every connected player
-            foreach (IPlayer p in _host.PlayerManager.Players)
+            foreach (IPlayer p in _playerManager.Players)
                 p.OnGameFinished();
 
             State = States.WaitingStartGame;
@@ -133,7 +140,7 @@ namespace TetriNET.Server
             // Send id to player
             player.OnPlayerRegistered(true, id);
             // Inform players
-            foreach (IPlayer p in _host.PlayerManager.Players)
+            foreach (IPlayer p in _playerManager.Players)
                 p.OnPublishServerMessage(String.Format("{0} is now connected", player.Name));
         }
 
@@ -142,7 +149,7 @@ namespace TetriNET.Server
             Log.WriteLine("Player disconnected:{0}", player.Name);
 
             // Inform players
-            foreach (IPlayer p in _host.PlayerManager.Players)
+            foreach (IPlayer p in _playerManager.Players)
                 p.OnPublishServerMessage(String.Format("{0} has disconnected", player.Name));
         }
 
@@ -151,7 +158,7 @@ namespace TetriNET.Server
             Log.WriteLine("PublishMessage:[{0}]:{1}", player.Name, msg);
 
             // Send message to players
-            foreach (IPlayer p in _host.PlayerManager.Players)
+            foreach (IPlayer p in _playerManager.Players)
                 p.OnPublishPlayerMessage(player.Name, msg);
         }
 
@@ -237,7 +244,7 @@ namespace TetriNET.Server
                     }
                 }
                 Thread.Sleep(0);
-                foreach (IPlayer p in _host.PlayerManager.Players)
+                foreach (IPlayer p in _playerManager.Players)
                 {
                     TimeSpan timespan = DateTime.Now - p.LastAction;
                     if (timespan.TotalMilliseconds > InactivityTimeoutBeforePing)
@@ -278,7 +285,7 @@ namespace TetriNET.Server
             target.Callback.OnAttackReceived(attack);
             // Send attack message to players
             string attackString = String.Format("{0}: {1} from {2} to {3}", attackId, attack, player.Name, target.Name);
-            foreach (IPlayer p in _host.PlayerManager.Players)
+            foreach (IPlayer p in _playerManager.Players)
                 p.OnAttackMessageReceived(attackString);
         }
 

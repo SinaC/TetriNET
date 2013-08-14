@@ -25,14 +25,20 @@ namespace TetriNET.Server
             catch (CommunicationObjectAbortedException)
             {
                 Log.WriteLine("CommunicationObjectAbortedException:" + actionName);
-                if (OnDisconnected != null)
-                    OnDisconnected(this);
+                if (OnConnectionLost != null)
+                    OnConnectionLost(this);
+            }
+            catch (Exception)
+            {
+                Log.WriteLine("Exception:" + actionName);
+                if (OnConnectionLost != null)
+                    OnConnectionLost(this);
             }
         }
 
         #region IPlayer
 
-        public event PlayerDisconnectedHandler OnDisconnected;
+        public event ConnectionLostHandler OnConnectionLost;
 
         public string Name { get; private set; }
         public int TetriminoIndex { get; set; }
