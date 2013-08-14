@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.ServiceModel;
+using System.ServiceModel.Channels;
 using TetriNET.Common;
 
 namespace TetriNET.Server
@@ -16,9 +17,9 @@ namespace TetriNET.Server
             if (playerManager == null)
                 throw new ArgumentNullException("playerManager");
             _playerManager = playerManager;
-            _playerManager.OnPlayerRemoved += OnPlayerRemoved;
         }
 
+        #region ICallbackManager
         public ITetriNETCallback Callback
         {
             get
@@ -30,23 +31,41 @@ namespace TetriNET.Server
                 {
                     exceptionFreeCallback = new ExceptionFreeCallback(callback, _playerManager);
                     _callbacks.TryAdd(callback, exceptionFreeCallback);
+                    exceptionFreeCallback.OnPlayerDisconnected += OnPlayerDisconnected;
                 }
                 return exceptionFreeCallback;
             }
         }
 
-        private void OnPlayerRemoved(object sender, ITetriNETCallback callback)
+        public string Endpoint
         {
-            // callback is in fact of type ExceptionFreeTetriNETCallback
+            get
+            {
+                RemoteEndpointMessageProperty clientEndpoint = OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
+                return clientEndpoint == null ? "???" : clientEndpoint.Address;
+            }
+        }
+        #endregion
+
+        private void OnPlayerDisconnected(object sender, IPlayer player)
+        {
+            // TODO: inform server
+            /*
+ *                 {
+            Log.WriteLine(actionName + ": " + player.Name + " has disconnected");
+            _playerManager.Remove(player);
+            // Caution: recursive call
+            foreach (Player p in _playerManager.Players)
+                p.Callback.OnPublishServerMessage(player.Name + " has disconnected");
+        }
+*/
+            ITetriNETCallback callback = player.Callback;
             if (callback is ExceptionFreeCallback)
             {
-                // Black magic: 
-                //  param callback must be casted to ExceptionFreeTetriNETCallback then get real transport callback
-                ITetriNETCallback transportCallback = (callback as ExceptionFreeCallback).Callback;
                 ExceptionFreeCallback tryRemoveResult;
-                _callbacks.TryRemove(transportCallback, out tryRemoveResult);
-                Debug.Assert(tryRemoveResult == callback);
+                _callbacks.TryRemove(callback, out tryRemoveResult);
             }
+            _playerManager.Remove(player);
         }
     }
 }

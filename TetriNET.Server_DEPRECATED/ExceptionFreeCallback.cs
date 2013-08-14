@@ -9,7 +9,7 @@ namespace TetriNET.Server
     {
         private readonly IPlayerManager _playerManager;
         private readonly ITetriNETCallback _callback;
-
+        
         public ExceptionFreeCallback(ITetriNETCallback callback, IPlayerManager playerManager)
         {
             _callback = callback;
@@ -17,6 +17,8 @@ namespace TetriNET.Server
         }
 
         public ITetriNETCallback Callback { get { return _callback; } }
+
+        public event EventHandler<IPlayer> OnPlayerDisconnected;
 
         private void ExceptionFreeAction(Action action, string actionName)
         {
@@ -30,14 +32,8 @@ namespace TetriNET.Server
             {
                 Log.WriteLine("CommunicationObjectAbortedException:" + actionName);
                 IPlayer player = _playerManager[this];
-                if (player != null)
-                {
-                    Log.WriteLine(actionName + ": " + player.Name + " has disconnected");
-                    _playerManager.Remove(player);
-                    // Caution: recursive call
-                    foreach (Player p in _playerManager.Players)
-                        p.Callback.OnPublishServerMessage(player.Name + " has disconnected");
-                }
+                if (player != null && OnPlayerDisconnected != null)
+                    OnPlayerDisconnected(this, player);
             }
         }
 

@@ -1,10 +1,14 @@
 TODO:
+refactor Client as Server has been refactored  (code it first in POC/Client_POC)
+	IProxy : ITetriNETCallback equivalent of IHost + IPlayer
+	LocalProxy : IProxy
+	RemoteProxy : IProxy
+	Client includes an IProxy
+
 replace assert and return null/false/-1 with error management
 replace Tetriminos enum with index
 GameStart send players, tetrimino definitions and game rules
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
-use interface instead of RemoteEndpointMessageProperty (server-side)
-create server+client application using a new ICallbackManager referencing GameClient and IProxyManager referencing GameServer
 remove every reference to network from GameClient and GameServer
 
 discover

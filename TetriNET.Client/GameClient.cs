@@ -49,6 +49,15 @@ namespace TetriNET.Client
                 State = States.ApplicationStarted;
         }
 
+        public void DisconnectFromServer()
+        {
+            Log.WriteLine("Disconnecting from server");
+
+            Proxy.UnregisterPlayer();
+            //
+            State = States.ApplicationStarted;
+        }
+
         public void Register(string playerName)
         {
             Log.WriteLine("Registering");

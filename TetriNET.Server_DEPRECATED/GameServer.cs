@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.ServiceModel.Channels;
 using System.Threading;
 using System.Threading.Tasks;
 using System.ServiceModel;
@@ -52,7 +51,7 @@ namespace TetriNET.Server
             Log.WriteLine("StartService");
             if (State != States.WaitingStartServer)
                 return; // TODO: error
-            
+
             State = States.StartingServer;
 
             string port = ConfigurationManager.AppSettings["port"];
@@ -60,11 +59,11 @@ namespace TetriNET.Server
             if (String.IsNullOrEmpty(port) || port.ToLower() == "auto")
                 baseAddress = DiscoveryHelper.AvailableTcpBaseAddress;
             else
-                baseAddress =  new Uri("net.tcp://localhost:"+port+"/TetriNET");
+                baseAddress = new Uri("net.tcp://localhost:" + port + "/TetriNET");
 
             //Host = new ServiceHost(typeof(GameServer), baseAddress);
             Host = new ServiceHost(this, baseAddress);
-            Host.AddServiceEndpoint(typeof(ITetriNET), new NetTcpBinding(SecurityMode.None), "");
+            Host.AddServiceEndpoint(typeof (ITetriNET), new NetTcpBinding(SecurityMode.None), "");
             //Host.Description.Behaviors.Add(new IPFilterServiceBehavior("DenyLocal"));
             Host.Open();
 
@@ -74,7 +73,7 @@ namespace TetriNET.Server
                 Log.WriteLine("Enpoint binding:\t{0}", endpt.Binding);
                 Log.WriteLine("Enpoint contract:\t{0}\n", endpt.Contract.ContractType.Name);
             }
-            
+
             State = States.WaitingStartGame;
         }
 
@@ -110,7 +109,7 @@ namespace TetriNET.Server
                     Id = x.Id,
                     Name = x.Name
                 }
-            ).ToList();
+                ).ToList();
             // Send start game to every connected player
             foreach (IPlayer p in PlayerManager.Players)
             {
@@ -169,24 +168,44 @@ namespace TetriNET.Server
             }
         }
 
-        public void Ping()
+        public void UnregisterPlayer()
         {
+            Log.WriteLine("UnregisterPlayer");
+
+            // Get player
             ITetriNETCallback callback = CallbackManager.Callback;
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                Log.WriteLine("Ping from "+player.Name);
+                // TODO: inform CallbackManager
+                PlayerManager.Remove(player);
+                //
+                Log.WriteLine("Player " + player.Name + " unregistered");
+            }
+        }
+
+        public void Ping()
+        {
+            Log.WriteLine("Ping");
+
+            ITetriNETCallback callback = CallbackManager.Callback;
+            IPlayer player = PlayerManager[callback];
+            if (player != null)
+            {
+                Log.WriteLine("Ping from " + player.Name);
                 player.LastAction = DateTime.Now;
             }
             else
             {
-                RemoteEndpointMessageProperty clientEndpoint = OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
-                Log.WriteLine("Ping from unknown player[" + (clientEndpoint == null ? callback.ToString() : clientEndpoint.Address) + "]");
+                string endpoint = CallbackManager.Endpoint;
+                Log.WriteLine("Ping from unknown player[" + endpoint + "]");
             }
         }
 
         public void PublishMessage(string msg)
         {
+            Log.WriteLine("PublishMessage");
+
             ITetriNETCallback callback = CallbackManager.Callback;
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -199,13 +218,15 @@ namespace TetriNET.Server
             }
             else
             {
-                RemoteEndpointMessageProperty clientEndpoint = OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
-                Log.WriteLine("PublishMessage from unknown player[" + (clientEndpoint == null ? callback.ToString() : clientEndpoint.Address) + "]");
+                string endpoint = CallbackManager.Endpoint;
+                Log.WriteLine("PublishMessage from unknown player[" + endpoint + "]");
             }
         }
 
         public void PlaceTetrimino(Tetriminos tetrimino, Orientations orientation, Position position)
         {
+            Log.WriteLine("PlaceTetrimino");
+
             ITetriNETCallback callback = CallbackManager.Callback;
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -217,8 +238,8 @@ namespace TetriNET.Server
             }
             else
             {
-                RemoteEndpointMessageProperty clientEndpoint = OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
-                Log.WriteLine("PlaceTetrimino from unknown player[" + (clientEndpoint == null ? callback.ToString() : clientEndpoint.Address) + "]");
+                string endpoint = CallbackManager.Endpoint;
+                Log.WriteLine("PlaceTetrimino from unknown player[" + endpoint + "]");
             }
         }
 
@@ -242,8 +263,8 @@ namespace TetriNET.Server
             }
             else
             {
-                RemoteEndpointMessageProperty clientEndpoint = OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
-                Log.WriteLine("SendAttack from unknown player[" + (clientEndpoint == null ? callback.ToString() : clientEndpoint.Address) + "]");
+                string endpoint = CallbackManager.Endpoint;
+                Log.WriteLine("SendAttack from unknown player[" + endpoint + "]");
             }
         }
 
@@ -251,15 +272,12 @@ namespace TetriNET.Server
 
         #region Attack Id
 
-        public int AttackId
-        {
-            get;
-            private set;
-        }
+        public int AttackId { get; private set; }
 
         #endregion
 
         #region Tetrimino queue
+
         private class TetriminoQueue
         {
             private int _tetriminosCount;
@@ -284,7 +302,7 @@ namespace TetriNET.Server
                     {
                         if (index >= _size)
                             Grow(128);
-                        tetrimino = (Tetriminos)_array[index];
+                        tetrimino = (Tetriminos) _array[index];
                     }
                     return tetrimino;
                 }
@@ -302,6 +320,7 @@ namespace TetriNET.Server
                 _size = newSize;
             }
         }
+
         #endregion
 
         #region Action queue
@@ -324,7 +343,7 @@ namespace TetriNET.Server
                         }
                         catch (Exception ex)
                         {
-                            Log.WriteLine("Exception raised in TaskResolveActions. Exception:"+ex.ToString());
+                            Log.WriteLine("Exception raised in TaskResolveActions. Exception:" + ex.ToString());
                         }
                     }
                 }

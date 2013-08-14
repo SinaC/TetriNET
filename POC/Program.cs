@@ -1,16 +1,59 @@
 ﻿using System;
-using System.Configuration;
-using System.Linq.Expressions;
+using System.Collections.Concurrent;
 using System.ServiceModel;
+using System.ServiceModel.Channels;
 using TetriNET.Client;
 using TetriNET.Common;
 using TetriNET.Server;
 
 namespace POC
 {
-    // TODO: integrated proxy : ITetriNET setting LastAction
-    // TODO: integrated callback : ITetriNETCallback setting LastAction
-    public class IntegratedProxyManager : IProxyManager
+    internal class Program
+    {
+        private static void Main(string[] args)
+        {
+            POC.Server_POC.PlayerManager playerManager = new POC.Server_POC.PlayerManager(6);
+            POC.Server_POC.WCFHost host = new POC.Server_POC.WCFHost(playerManager);
+            POC.Server_POC.Server server = new POC.Server_POC.Server(host);
+
+            server.StartServer();
+
+            Console.WriteLine("Commands:");
+            Console.WriteLine("x: Stop server");
+            Console.WriteLine("s: Start game");
+            Console.WriteLine("t: Stop game");
+            Console.WriteLine("m: Send message broadcast");
+
+            bool stopped = false;
+            while (!stopped)
+            {
+                if (Console.KeyAvailable)
+                {
+                    ConsoleKeyInfo cki = Console.ReadKey(true);
+                    switch (cki.Key)
+                    {
+                        case ConsoleKey.X:
+                            stopped = true;
+                            break;
+                        case ConsoleKey.S:
+                            server.StartGame();
+                            break;
+                        case ConsoleKey.T:
+                            server.StopGame();
+                            break;
+                        case ConsoleKey.M:
+                            server.BroadcastRandomMessage();
+                            break;
+                    }
+                }
+                else
+                    System.Threading.Thread.Sleep(1000);
+            }
+        }
+    }
+
+    /*
+    public class BuiltInClientProxyManager : IProxyManager
     {
         public ITetriNET Proxy { private get; set; }
 
@@ -20,12 +63,12 @@ namespace POC
         }
     }
 
-    public class IntegratedCallback : ITetriNETCallback
+    public class BuiltInClientCallback : ITetriNETCallback
     {
         private readonly IPlayerManager _playerManager;
         private readonly ITetriNETCallback _callback;
 
-        public IntegratedCallback(ITetriNETCallback callback, IPlayerManager playerManager)
+        public BuiltInClientCallback(ITetriNETCallback callback, IPlayerManager playerManager)
         {
             _callback = callback;
             _playerManager = playerManager;
@@ -33,14 +76,6 @@ namespace POC
 
         private void UpdateTimerOnAction(Action action)
         {
-            try
-            {
-                ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
-            }
-            catch (Exception ex)
-            {
-            }
-
             action();
             IPlayer player = _playerManager[this];
             player.LastAction = DateTime.Now;
@@ -107,23 +142,90 @@ namespace POC
         }
     }
 
+    //public class BuiltInClientCallbackManager : ICallbackManager
+    //{
+    //    private readonly IPlayerManager _playerManager;
+    //    private BuiltInClientCallback _callback;
 
-    public class IntegratedCallbackManager : ICallbackManager
+    //    public BuiltInClientCallbackManager(IPlayerManager playerManager)
+    //    {
+    //        _playerManager = playerManager;
+    //    }
+
+    //    public ITetriNETCallback Callback {
+    //        get
+    //        {
+    //            return _callback;
+    //        }
+    //        set { _callback = new BuiltInClientCallback(value, _playerManager);}
+    //    }
+    //}
+
+    public class CallbackManager : ICallbackManager
     {
+        private readonly ConcurrentDictionary<ITetriNETCallback, ExceptionFreeCallback> _callbacks = new ConcurrentDictionary<ITetriNETCallback, ExceptionFreeCallback>();
         private readonly IPlayerManager _playerManager;
-        private IntegratedCallback _callback;
+        private BuiltInClientCallback _builtInClientCallback;
 
-        public IntegratedCallbackManager(IPlayerManager playerManager)
+        public CallbackManager(IPlayerManager playerManager)
         {
             _playerManager = playerManager;
         }
 
-        public ITetriNETCallback Callback {
+        public void SetBuiltInClientCallback(ITetriNETCallback callback)
+        {
+            _builtInClientCallback = new BuiltInClientCallback(callback, _playerManager);
+        }
+
+        #region ICallbackManager
+        public ITetriNETCallback Callback
+        {
             get
             {
-                return _callback;
+                if (OperationContext.Current == null)
+                {
+                    return _builtInClientCallback;
+                }
+                else
+                {
+                    ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
+                    ExceptionFreeCallback exceptionFreeCallback;
+                    bool found = _callbacks.TryGetValue(callback, out exceptionFreeCallback);
+                    if (!found)
+                    {
+                        exceptionFreeCallback = new ExceptionFreeCallback(callback, _playerManager);
+                        _callbacks.TryAdd(callback, exceptionFreeCallback);
+                        exceptionFreeCallback.OnPlayerDisconnected += OnPlayerDisconnected;
+                    }
+                    return exceptionFreeCallback;
+                }
             }
-            set { _callback = new IntegratedCallback(value, _playerManager);}
+        }
+        public string Endpoint
+        {
+            get
+            {
+                if (OperationContext.Current == null)
+                    return "BuiltIn";
+                else
+                {
+                    RemoteEndpointMessageProperty clientEndpoint = OperationContext.Current.IncomingMessageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
+                    return clientEndpoint == null ? "???" : clientEndpoint.Address;
+                }
+            }
+        }
+
+        #endregion
+
+        private void OnPlayerDisconnected(object sender, IPlayer player)
+        {
+            ITetriNETCallback callback = player.Callback;
+            if (callback is ExceptionFreeCallback)
+            {
+                ExceptionFreeCallback tryRemoveResult;
+                _callbacks.TryRemove(callback, out tryRemoveResult);
+            }
+            _playerManager.Remove(player);
         }
     }
 
@@ -134,19 +236,20 @@ namespace POC
             //
             //string baseAddress = ConfigurationManager.AppSettings["address"];
             //ExceptionFreeProxyManager proxyManager = new ExceptionFreeProxyManager(baseAddress);
-            IntegratedProxyManager proxyManager = new IntegratedProxyManager();
+            BuiltInClientProxyManager proxyManager = new BuiltInClientProxyManager();
             GameClient client = new GameClient(proxyManager);
             client.PlayerName = "Joel_" + Guid.NewGuid().ToString().Substring(0, 6);
 
             //
             PlayerManager playerManager = new PlayerManager();
             //ExceptionFreeCallbackManager callbackManager = new ExceptionFreeCallbackManager(playerManager);
-            IntegratedCallbackManager callbackManager = new IntegratedCallbackManager(playerManager);
+            //BuiltInClientCallbackManager callbackManager = new BuiltInClientCallbackManager(playerManager);
+            CallbackManager callbackManager = new CallbackManager(playerManager);
             GameServer server = new GameServer(callbackManager, playerManager);
 
             //
             proxyManager.Proxy = server;
-            callbackManager.Callback = client;
+            callbackManager.SetBuiltInClientCallback(client);
 
             // Start server
             server.StartService();
@@ -182,7 +285,8 @@ namespace POC
                             server.BroadcastRandomMessage();
                             break;
                         case ConsoleKey.C:
-                            // TODO
+                            client.DisconnectFromServer();
+                            callbackManager.SetBuiltInClientCallback(client); // workaround, we should never be able to disconnect a built-in client
                             break;
                     }
                 }
@@ -193,6 +297,7 @@ namespace POC
             server.StopService();
         }
     }
+  */
 
     ////http://stackoverflow.com/questions/12089879/how-to-block-incoming-connections-from-specific-addresses
     //public class StackOverflow_12089879

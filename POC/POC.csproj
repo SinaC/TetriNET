@@ -38,6 +38,8 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Server_POC\Implementation.cs" />
+    <Compile Include="Server_POC\Interfaces.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -53,10 +55,13 @@
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Server\TetriNET.Server.csproj">
+    <ProjectReference Include="..\TetriNET.Server_DEPRECATED\TetriNET.Server_DEPRECATED.csproj">
       <Project>{76e05a72-1945-46df-8788-54aa39925024}</Project>
-      <Name>TetriNET.Server</Name>
+      <Name>TetriNET.Server_DEPRECATED</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Client_POC\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

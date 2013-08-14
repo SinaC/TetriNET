@@ -3,12 +3,15 @@ using TetriNET.Common;
 
 namespace TetriNET.Server
 {
-    public interface IPlayer
+    public delegate void PlayerDisconnectedHandler(IPlayer player);
+
+    public interface IPlayer : ITetriNETCallback
     {
-        int Id { get; }
+        event PlayerDisconnectedHandler OnDisconnected;
+
         string Name { get; }
-        ITetriNETCallback Callback { get; }
         int TetriminoIndex { get; set; }
         DateTime LastAction { get; set; }
+        ITetriNETCallback Callback { get; } // Should never be used by anything else then IPlayerManager and IPlayer
     }
 }

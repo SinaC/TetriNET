@@ -4,7 +4,6 @@ using TetriNET.Common;
 
 namespace TetriNET.Client
 {
-    // TODO: use this instead of ITetriNET
     public class ExceptionFreeProxy : ITetriNET
     {
         private readonly ITetriNET _proxy;
@@ -43,6 +42,11 @@ namespace TetriNET.Client
         public void RegisterPlayer(string playerName)
         {
             ExceptionFreeAction(() => _proxy.RegisterPlayer(playerName), "RegisterPlayer");
+        }
+
+        public void UnregisterPlayer()
+        {
+            ExceptionFreeAction(_proxy.UnregisterPlayer, "UnregisterPlayer");
         }
 
         public void Ping()

@@ -7,35 +7,40 @@ namespace TetriNET.Server
 {
     public class PlayerManager : IPlayerManager
     {
-        private const int MaxPlayerCount = 6;
+        private readonly IPlayer[] _players;
 
-        private readonly Player[] _players = new Player[MaxPlayerCount];
+        public int MaxPlayers { get; private set; }
+
+        public PlayerManager(int maxPlayers)
+        {
+            MaxPlayers = maxPlayers;
+            _players = new IPlayer[MaxPlayers];
+        }
 
         #region IPlayerManager
 
-        public event EventHandler<ITetriNETCallback> OnPlayerRemoved;
-
-        public IPlayer Add(string name, ITetriNETCallback callback)
+        public int Add(IPlayer player)
         {
-            int emptySlot = GetEmptySlot(name, callback);
-            if (emptySlot >= 0)
+            bool alreadyExists = _players.Any(x => x != null && (x == player || x.Name == player.Name));
+            if (!alreadyExists)
             {
-                Player player = new Player(emptySlot, name, callback);
-                _players[emptySlot] = player;
-                return player;
+                // insert in first empty slot
+                for (int i = 0; i < MaxPlayers; i++)
+                    if (_players[i] == null)
+                    {
+                        _players[i] = player;
+                        return i;
+                    }
             }
-            return null;
+            return -1;
         }
 
         public bool Remove(IPlayer player)
         {
-            for (int i = 0; i < MaxPlayerCount; i++)
-                if (_players[i] != null)
+            for (int i = 0; i < MaxPlayers; i++)
+                if (_players[i] == player)
                 {
-                    ITetriNETCallback callback = _players[i].Callback;
                     _players[i] = null;
-                    if (OnPlayerRemoved != null)
-                        OnPlayerRemoved(this, callback);
                     return true;
                 }
             return false;
@@ -57,12 +62,9 @@ namespace TetriNET.Server
             }
         }
 
-        public IPlayer this[ITetriNETCallback callback]
+        public int GetId(IPlayer player)
         {
-            get
-            {
-                return _players.FirstOrDefault(x => x != null && x.Callback == callback);
-            }
+            return Array.IndexOf(_players, player);
         }
 
         public IPlayer this[string name]
@@ -77,27 +79,20 @@ namespace TetriNET.Server
         {
             get
             {
-                if (index >= MaxPlayerCount)
+                if (index >= MaxPlayers)
                     return null;
                 return _players[index];
             }
         }
-        #endregion
 
-        private int GetEmptySlot(string playerName, ITetriNETCallback callback)
+        public IPlayer this[ITetriNETCallback callback]
         {
-            // player already registered
-            if (_players.Any(x => x != null && (x.Name == playerName || x.Callback == callback)))
-                return -1;
-            // get first empty slot
-            int emptySlot = -1;
-            for (int i = 0; i < MaxPlayerCount; i++)
-                if (_players[i] == null)
-                {
-                    emptySlot = i;
-                    break;
-                }
-            return emptySlot;
+            get
+            {
+                return _players.FirstOrDefault(x => x != null && x.Callback == callback);
+            }
         }
+
+        #endregion
     }
 }

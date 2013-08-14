@@ -10,6 +10,9 @@ namespace TetriNET.Common
         void RegisterPlayer(string playerName);
 
         [OperationContract(IsOneWay = true)]
+        void UnregisterPlayer();
+
+        [OperationContract(IsOneWay = true)]
         void Ping();
 
         [OperationContract(IsOneWay = true)]

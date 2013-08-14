@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Server", "TetriNET.Server\TetriNET.Server.csproj", "{76E05A72-1945-46DF-8788-54AA39925024}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Server_DEPRECATED", "TetriNET.Server_DEPRECATED\TetriNET.Server_DEPRECATED.csproj", "{76E05A72-1945-46DF-8788-54AA39925024}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Client", "TetriNET.Client\TetriNET.Client.csproj", "{DF0E62BB-86B0-4FAC-B731-0CD62C90CEB7}"
 EndProject
@@ -15,6 +15,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POC", "POC\POC.csproj", "{D74766FE-4A1E-4668-879A-A85BD738F104}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IPFilter", "IPFilter\IPFilter.csproj", "{B29B9BA4-9770-4AC9-AAD4-DD32032B29A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Server", "TetriNET.Server\TetriNET.Server.csproj", "{A2BAD88B-73BB-4B79-B30B-ABFB4FD2C1C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,10 @@ Global
 		{B29B9BA4-9770-4AC9-AAD4-DD32032B29A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B29B9BA4-9770-4AC9-AAD4-DD32032B29A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B29B9BA4-9770-4AC9-AAD4-DD32032B29A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2BAD88B-73BB-4B79-B30B-ABFB4FD2C1C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2BAD88B-73BB-4B79-B30B-ABFB4FD2C1C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2BAD88B-73BB-4B79-B30B-ABFB4FD2C1C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2BAD88B-73BB-4B79-B30B-ABFB4FD2C1C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

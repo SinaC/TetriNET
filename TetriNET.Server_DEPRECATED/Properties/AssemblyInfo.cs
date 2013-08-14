@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("TetriNET.Server")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("N-ALLO")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("TetriNET.Server")]
-[assembly: AssemblyCopyright("Copyright © N-ALLO 2013")]
+[assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("c5e1693b-2d03-4c44-bf10-826985ea2721")]
+[assembly: Guid("3cea88ce-872d-47bf-906c-09d270f9e906")]
 
 // Version information for an assembly consists of the following four values:
 //
