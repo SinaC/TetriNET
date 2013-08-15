@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ServiceModel;
 using TetriNET.Common;
 
 namespace TetriNET.Server
 {
-    public class RemotePlayer : IPlayer
+    public class Player : IPlayer
     {
-        public RemotePlayer(string name, ITetriNETCallback callback)
+        public Player(string name, ITetriNETCallback callback)
         {
             Name = name;
             Callback = callback;
@@ -22,12 +21,12 @@ namespace TetriNET.Server
                 action();
                 LastAction = DateTime.Now; // if action didn't raise an exception, client is still alive
             }
-            catch (CommunicationObjectAbortedException)
-            {
-                Log.WriteLine("CommunicationObjectAbortedException:" + actionName);
-                if (OnConnectionLost != null)
-                    OnConnectionLost(this);
-            }
+            //catch (CommunicationObjectAbortedException)
+            //{
+            //    Log.WriteLine("CommunicationObjectAbortedException:" + actionName);
+            //    if (OnConnectionLost != null)
+            //        OnConnectionLost(this);
+            //}
             catch (Exception)
             {
                 Log.WriteLine("Exception:" + actionName);
@@ -44,6 +43,10 @@ namespace TetriNET.Server
         public int TetriminoIndex { get; set; }
         public DateTime LastAction { get; set; }
         public ITetriNETCallback Callback { get; private set; }
+
+        #endregion
+
+        #region ITetriNETCallback
 
         public void OnPingReceived()
         {

@@ -39,7 +39,7 @@ namespace POC.Server_POC
     public delegate void PlaceTetriminoHandler(IPlayer player, Tetriminos tetrimino, Orientations orientation, Position position);
     public delegate void SendAttackHandler(IPlayer player, IPlayer target, Attacks attack);
 
-    public interface IHost : ITetriNET
+    public interface IHost : IWCFTetriNET
     {
         event RegisterPlayerHandler OnPlayerRegistered;
         event UnregisterPlayerHandler OnPlayerUnregistered;

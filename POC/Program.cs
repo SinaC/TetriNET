@@ -2,10 +2,39 @@
 using System.Collections.Concurrent;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using POC.Sockets;
 using TetriNET.Common;
 
 namespace POC
 {
+    internal class Program
+    {
+        public static void OnClientConnected(TCPSocketServer server, SocketConnectArgs args)
+        {
+        }
+
+        public static void OnMessageReceived(TCPSocketServer socketServer, SocketMessageReceivedArgs e)
+        {
+        }
+
+        public static void OnClientDisconnected(TCPSocketServer socketServer, SocketEventArgs e)
+        {
+        }
+
+        private static void Main(string[] args)
+        {
+            TCPSocketServer socketServer = new TCPSocketServer(5454, 16);
+            socketServer.ClientConnected += OnClientConnected;
+            socketServer.MessageReceived += OnMessageReceived;
+            socketServer.ClientDisconnected += OnClientDisconnected;
+
+            Console.WriteLine("Press enter to stop server");
+
+            Console.ReadLine();
+        }
+    }
+
+    /*
     internal class Program
     {
         private static void Main(string[] args)
@@ -49,13 +78,13 @@ namespace POC
             }
         }
     }
-
+    */
     /*
     public class BuiltInClientProxyManager : IProxyManager
     {
-        public ITetriNET Proxy { private get; set; }
+        public IWCFTetriNET Proxy { private get; set; }
 
-        public ITetriNET CreateProxy(ITetriNETCallback callback, IClient client)
+        public IWCFTetriNET CreateProxy(ITetriNETCallback callback, IClient client)
         {
             return Proxy;
         }

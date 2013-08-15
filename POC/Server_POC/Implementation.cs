@@ -325,7 +325,7 @@ namespace POC.Server_POC
                 baseAddress = new Uri("net.tcp://localhost:" + port + "/TetriNET");
 
             ServiceHost = new ServiceHost(this, baseAddress);
-            ServiceHost.AddServiceEndpoint(typeof(ITetriNET), new NetTcpBinding(SecurityMode.None), "");
+            ServiceHost.AddServiceEndpoint(typeof(IWCFTetriNET), new NetTcpBinding(SecurityMode.None), "");
             //Host.Description.Behaviors.Add(new IPFilterServiceBehavior("DenyLocal"));
             ServiceHost.Open();
 
@@ -356,7 +356,7 @@ namespace POC.Server_POC
         
         #endregion
 
-        #region ITetriNET
+        #region IWCFTetriNET
 
         public void RegisterPlayer(string playerName)
         {

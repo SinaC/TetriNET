@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace TetriNET.Server
 {
@@ -12,16 +13,30 @@ namespace TetriNET.Server
             PlayerManager playerManager = new PlayerManager(6);
 
             //
-            WCFHost wcfHost = new WCFHost(playerManager, (playerName, callback) => new RemotePlayer(playerName, callback))
+            WCFHost wcfHost = new WCFHost(playerManager, (playerName, callback) => new Player(playerName, callback))
             {
                 Port = ConfigurationManager.AppSettings["port"]
             };
 
             //
-            BuiltInHost builtInHost = new BuiltInHost(playerManager, playerName => new BuiltInPlayer(playerName, new DummyTetriNETCallback()) );
+            BuiltInHost builtInHost = new BuiltInHost(playerManager, (playerName, callback) => new Player(playerName, callback));
 
             //
-            Server server = new Server(playerManager, wcfHost, builtInHost);
+            SocketHost socketHost = new SocketHost(playerManager, (playerName, callback) => new Player(playerName, callback))
+            {
+                Port = 5656
+            };
+
+            //
+            List<DummyBuiltInClient> clients = new List<DummyBuiltInClient>
+            {
+                new DummyBuiltInClient("BuiltIn-Joel" + Guid.NewGuid().ToString().Substring(0, 5), () => builtInHost),
+                new DummyBuiltInClient("BuiltIn-Celine" + Guid.NewGuid().ToString().Substring(0, 5), () => builtInHost)
+            };
+
+            //
+            //Server server = new Server(playerManager, wcfHost, builtInHost);
+            Server server = new Server(playerManager, socketHost);
 
             //
             server.StartServer();
@@ -55,20 +70,21 @@ namespace TetriNET.Server
                             server.BroadcastRandomMessage();
                             break;
                         case ConsoleKey.C:
-                            builtInHost.RegisterPlayer("BuiltIn-Joel");
+                            // TODO
                             break;
                         case ConsoleKey.D:
-                            builtInHost.UnregisterPlayer();
+                            // TODO
+                            //dummyBuiltInClient.DisconnectFromServer();
                             break;
                     }
                 }
                 else
-                    System.Threading.Thread.Sleep(1000);
-                if (playerManager.Players.Any(x => x is BuiltInPlayer))
                 {
-                    IPlayer player = playerManager.Players.First(x => x is BuiltInPlayer);
-                    //player.
-                    // TODO: send a message from player to Server
+                    System.Threading.Thread.Sleep(100);
+                    //dummyBuiltInClient.Test();
+                    Parallel.ForEach(
+                        clients, 
+                        client => client.Test());
                 }
             }
         }

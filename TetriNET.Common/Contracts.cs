@@ -4,7 +4,7 @@ using System.ServiceModel;
 namespace TetriNET.Common
 {
     [ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(ITetriNETCallback))]
-    public interface ITetriNET
+    public interface IWCFTetriNET
     {
         [OperationContract(IsOneWay = true)]
         void RegisterPlayer(string playerName);
@@ -23,6 +23,16 @@ namespace TetriNET.Common
 
         [OperationContract(IsOneWay = true)]
         void SendAttack(int targetId, Attacks attack);
+    }
+
+    public interface ITetriNET
+    {
+        void RegisterPlayer(ITetriNETCallback callback, string playerName);
+        void UnregisterPlayer(ITetriNETCallback callback);
+        void Ping(ITetriNETCallback callback);
+        void PublishMessage(ITetriNETCallback callback, string msg);
+        void PlaceTetrimino(ITetriNETCallback callback, Tetriminos tetrimino, Orientations orientation, Position position);
+        void SendAttack(ITetriNETCallback callback, int targetId, Attacks attack);
     }
 
     public interface ITetriNETCallback

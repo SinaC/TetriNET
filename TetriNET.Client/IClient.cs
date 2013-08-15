@@ -6,7 +6,7 @@ namespace TetriNET.Client
     public interface IClient
     {
         DateTime LastAction { get; set; }
-        void OnDisconnectedFromServer(ITetriNET proxy);
-        void OnServerUnreachable(ITetriNET proxy);
+        void OnDisconnectedFromServer(IWCFTetriNET proxy);
+        void OnServerUnreachable(IWCFTetriNET proxy);
     }
 }

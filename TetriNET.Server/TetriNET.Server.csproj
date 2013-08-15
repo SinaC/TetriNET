@@ -39,16 +39,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuiltInHost.cs" />
-    <Compile Include="DummyTetriNETCallback.cs" />
+    <Compile Include="DummyBuiltInClient.cs" />
+    <Compile Include="GenericHost.cs" />
     <Compile Include="IHost.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="IPlayerManager.cs" />
-    <Compile Include="BuiltInPlayer.cs" />
     <Compile Include="PlayerManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemotePlayer.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="SocketHost.cs" />
     <Compile Include="WCFHost.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -41,3 +41,10 @@ https://go4answers.webhost4life.com/Example/delect-unexpected-dead-client-wcf-67
 
 tetris GUI WPF
 http://sekagra.com/wp/2011/11/wpf-tetris/
+
+various
+http://signalr.net/
+http://www.hanselman.com/blog/AsynchronousScalableWebApplicationsWithRealtimePersistentLongrunningConnectionsWithSignalR.aspx
+https://github.com/clariuslabs/reactivesockets
+http://social.msdn.microsoft.com/Forums/en-US/5c62e690-2c8d-4f32-8ec4-5e9b5ea6d2a0/using-reactive-extensions-rx-for-socket-programming-practical
+http://www.cachelog.net/using-reactive-extensions-rx-tpl-for-socket-programming/

@@ -4,12 +4,12 @@ using TetriNET.Common;
 
 namespace TetriNET.Client
 {
-    public class ExceptionFreeProxy : ITetriNET
+    public class ExceptionFreeProxy : IWCFTetriNET
     {
-        private readonly ITetriNET _proxy;
+        private readonly IWCFTetriNET _proxy;
         private readonly IClient _client;
 
-        public ExceptionFreeProxy(ITetriNET proxy, IClient client)
+        public ExceptionFreeProxy(IWCFTetriNET proxy, IClient client)
         {
             _proxy = proxy;
             _client = client;

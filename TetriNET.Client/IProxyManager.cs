@@ -4,6 +4,6 @@ namespace TetriNET.Client
 {
     public interface IProxyManager
     {
-        ITetriNET CreateProxy(ITetriNETCallback callback, IClient client);
+        IWCFTetriNET CreateProxy(ITetriNETCallback callback, IClient client);
     }
 }

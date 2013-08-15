@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-using System.ServiceModel;
+using System.Linq;
 using System.Threading;
 using TetriNET.Common;
 
-namespace TetriNET.Client
+namespace TetriNET.Server
 {
-    [CallbackBehavior(UseSynchronizationContext = false)]
-    public class GameClient : ITetriNETCallback, IClient
+    public class DummyBuiltInClient : ITetriNETCallback
     {
+        private const int InactivityTimeoutBeforePing = 500; // in ms
+
         public enum States
         {
             ApplicationStarted, // -> ConnectingToServer
@@ -21,19 +21,21 @@ namespace TetriNET.Client
             GameFinished, // -> WaitingStartGame
         }
 
-        private const int InactivityTimeoutBeforePing = 500; // in ms
+        private readonly Func<ITetriNET> _getProxyFunc;
+        private ITetriNET Proxy { get; set; }
 
-        private readonly IProxyManager _proxyManager;
-        private IWCFTetriNET Proxy { get; set; }
-
-        public string PlayerName { get; set; }
+        public DateTime LastAction { get; set; }
+        public string PlayerName { get; private set; }
         public States State { get; private set; }
         public int PlayerId { get; private set; }
 
-        public GameClient(IProxyManager proxyManager)
+
+        public DummyBuiltInClient(string playerName, Func<ITetriNET> getProxyFunc)
         {
+            PlayerName = playerName;
+            _getProxyFunc = getProxyFunc;
+
             State = States.ApplicationStarted;
-            _proxyManager = proxyManager;
         }
 
         public void ConnectToServer()
@@ -41,7 +43,7 @@ namespace TetriNET.Client
             Log.WriteLine("Connecting to server");
             State = States.ConnectingToServer;
 
-            Proxy = _proxyManager.CreateProxy(this, this);
+            Proxy = _getProxyFunc();
 
             if (Proxy != null)
                 State = States.ConnectedToServer;
@@ -53,7 +55,7 @@ namespace TetriNET.Client
         {
             Log.WriteLine("Disconnecting from server");
 
-            Proxy.UnregisterPlayer();
+            Proxy.UnregisterPlayer(this);
             //
             State = States.ApplicationStarted;
         }
@@ -64,8 +66,8 @@ namespace TetriNET.Client
             State = States.Registering;
 
             PlayerName = playerName;
-            
-            Proxy.RegisterPlayer(PlayerName);
+
+            Proxy.RegisterPlayer(this, PlayerName);
         }
 
         public void Test()
@@ -92,17 +94,17 @@ namespace TetriNET.Client
                     switch (rnd)
                     {
                         case 0:
-                            Proxy.PublishMessage("I'll kill you");
+                            Proxy.PublishMessage(this, "I'll kill you");
                             break;
                         case 1:
-                            Proxy.PlaceTetrimino(Tetriminos.TetriminoI, Orientations.Top, new Position
+                            Proxy.PlaceTetrimino(this, Tetriminos.TetriminoI, Orientations.Top, new Position
                             {
                                 X = 5,
                                 Y = 3
                             });
                             break;
                         case 2:
-                            Proxy.SendAttack(PlayerId, Attacks.Nuke);
+                            Proxy.SendAttack(this, PlayerId, Attacks.Nuke);
                             break;
                     }
                     Thread.Sleep(60);
@@ -115,51 +117,28 @@ namespace TetriNET.Client
             {
                 TimeSpan timespan = DateTime.Now - LastAction;
                 if (timespan.TotalMilliseconds > InactivityTimeoutBeforePing)
-                    Proxy.Ping();
+                    Proxy.Ping(this);
             }
         }
-
-        //public void Close()
-        //{
-        //    (Proxy as ICommunicationObject).Close();
-        //}
-
-        #region IClient
-
-        public DateTime LastAction { get; set; }
-
-        public void OnDisconnectedFromServer(IWCFTetriNET proxy)
-        {
-            //throw new ApplicationException("OnDisconnectedFromServer");
-            State = States.ApplicationStarted;
-        }
-
-        public void OnServerUnreachable(IWCFTetriNET proxy)
-        {
-            // TODO
-            throw new ApplicationException("OnServerUnreachable");
-        }
-
-        #endregion
 
         #region ITetriNETCallback
 
         public void OnPingReceived()
         {
-            Log.WriteLine("OnPingReceived");
+            Log.WriteLine("OnPingReceived[{0}]", PlayerName);
             LastAction = DateTime.Now;
         }
 
         public void OnServerStopped()
         {
-            Log.WriteLine("OnServerStopped");
+            Log.WriteLine("OnServerStopped[{0}]", PlayerName);
             State = States.ApplicationStarted;
             LastAction = DateTime.Now;
         }
 
         public void OnPlayerRegistered(bool succeeded, int playerId)
         {
-            Log.WriteLine("OnPlayerRegistered:" + succeeded + " => " + playerId);
+            Log.WriteLine("OnPlayerRegistered[{0}]:{1} => {2}", PlayerName, succeeded, playerId);
             LastAction = DateTime.Now;
             if (succeeded)
             {
@@ -172,7 +151,7 @@ namespace TetriNET.Client
 
         public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, List<PlayerData> players)
         {
-            Log.WriteLine("OnGameStarted:" + firstTetrimino+" "+secondTetrimino);
+            Log.WriteLine("OnGameStarted[{0}]:{1} {2}", PlayerName, firstTetrimino, secondTetrimino);
             LastAction = DateTime.Now;
             if (State == States.WaitingStartGame)
             {
@@ -197,43 +176,43 @@ namespace TetriNET.Client
 
         public void OnServerAddLines(int lineCount)
         {
-            Log.WriteLine("OnServerAddLines");
+            Log.WriteLine("OnServerAddLines[{0}]:{1}", PlayerName, lineCount);
             LastAction = DateTime.Now;
         }
 
         public void OnPlayerAddLines(int lineCount)
         {
-            Log.WriteLine("OnPlayerAddLines");
+            Log.WriteLine("OnPlayerAddLines[{0}]:{1}", PlayerName, lineCount);
             LastAction = DateTime.Now;
         }
 
         public void OnPublishPlayerMessage(string playerName, string msg)
         {
-            Log.WriteLine("OnPublishPlayerMessage:" + playerName + ":" + msg);
+            Log.WriteLine("OnPublishPlayerMessage[{0}]:{1}:{2}", PlayerName, playerName, msg);
             LastAction = DateTime.Now;
         }
 
         public void OnPublishServerMessage(string msg)
         {
-            Log.WriteLine("OnPublishServerMessage:" + msg);
+            Log.WriteLine("OnPublishServerMessage[{0}]:{1}", PlayerName, msg);
             LastAction = DateTime.Now;
         }
 
         public void OnAttackReceived(Attacks attack)
         {
-            Log.WriteLine("OnAttackReceived:" + attack);
+            Log.WriteLine("OnAttackReceived[{0}]:{1}", PlayerName, attack);
             LastAction = DateTime.Now;
         }
 
         public void OnAttackMessageReceived(string msg)
         {
-            Log.WriteLine("OnAttackMessageReceived:" + msg);
+            Log.WriteLine("OnAttackMessageReceived[{0}]:{1}", PlayerName, msg);
             LastAction = DateTime.Now;
         }
 
         public void OnNextTetrimino(int index, Tetriminos tetrimino)
         {
-            Log.WriteLine("OnNextTetrimino:" + index + " " + tetrimino);
+            Log.WriteLine("OnNextTetrimino[{0}]:{1} {2}", PlayerName, index, tetrimino);
             LastAction = DateTime.Now;
         }
 

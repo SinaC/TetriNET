@@ -17,13 +17,13 @@ namespace TetriNET.Client
             _baseAddress = baseAddress;
         }
 
-        public ITetriNET CreateProxy(ITetriNETCallback callback, IClient client)
+        public IWCFTetriNET CreateProxy(ITetriNETCallback callback, IClient client)
         {
             EndpointAddress address = null;
             if (String.IsNullOrEmpty(_baseAddress) || _baseAddress.ToLower() == "auto")
             {
-                Log.WriteLine("Searching ITetriNET server");
-                List<EndpointAddress> addresses = DiscoveryHelper.DiscoverAddresses<ITetriNET>();
+                Log.WriteLine("Searching IWCFTetriNET server");
+                List<EndpointAddress> addresses = DiscoveryHelper.DiscoverAddresses<IWCFTetriNET>();
                 if (addresses != null && addresses.Any())
                 {
                     foreach (EndpointAddress endpoint in addresses)
@@ -44,7 +44,7 @@ namespace TetriNET.Client
             {
                 Binding binding = new NetTcpBinding(SecurityMode.None);
                 InstanceContext instanceContext = new InstanceContext(callback);
-                return DuplexChannelFactory<ITetriNET>.CreateChannel(instanceContext, binding, address);
+                return DuplexChannelFactory<IWCFTetriNET>.CreateChannel(instanceContext, binding, address);
             }
             return null;
         }
