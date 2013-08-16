@@ -43,7 +43,7 @@ namespace TetriNET.Client
 
             if (address != null)
             {
-                Log.WriteLine("Connecting to server:" + address.Uri);
+                Log.WriteLine("Connecting to server:{0}", address.Uri);
                 Binding binding = new NetTcpBinding(SecurityMode.None);
                 InstanceContext instanceContext = new InstanceContext(callback);
                 IWCFTetriNET proxy = DuplexChannelFactory<IWCFTetriNET>.CreateChannel(instanceContext, binding, address);

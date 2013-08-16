@@ -93,4 +93,17 @@ namespace TetriNET.Common
         [DataMember]
         public string Name { get; set; }
     }
+
+    [DataContract]
+    public class PlayerGrid
+    {
+        [DataMember]
+        public int Width { get; set; }
+
+        [DataMember]
+        public int Height { get; set; }
+
+        [DataMember]
+        public byte[] Data { get; set; } // an array of width*height color index
+    }
 }

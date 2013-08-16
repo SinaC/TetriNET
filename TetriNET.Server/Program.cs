@@ -22,21 +22,21 @@ namespace TetriNET.Server
             BuiltInHost builtInHost = new BuiltInHost(playerManager, (playerName, callback) => new Player(playerName, callback));
 
             //
-            SocketHost socketHost = new SocketHost(playerManager, (playerName, callback) => new Player(playerName, callback))
-            {
-                Port = 5656
-            };
+            //SocketHost socketHost = new SocketHost(playerManager, (playerName, callback) => new Player(playerName, callback))
+            //{
+            //    Port = 5656
+            //};
 
             //
             List<DummyBuiltInClient> clients = new List<DummyBuiltInClient>
             {
-                new DummyBuiltInClient("BuiltIn-Joel" + Guid.NewGuid().ToString().Substring(0, 5), () => builtInHost),
-                new DummyBuiltInClient("BuiltIn-Celine" + Guid.NewGuid().ToString().Substring(0, 5), () => builtInHost)
+                //new DummyBuiltInClient("BuiltIn-Joel" + Guid.NewGuid().ToString().Substring(0, 5), () => builtInHost),
+                //new DummyBuiltInClient("BuiltIn-Celine" + Guid.NewGuid().ToString().Substring(0, 5), () => builtInHost)
             };
 
             //
-            //Server server = new Server(playerManager, wcfHost, builtInHost);
-            Server server = new Server(playerManager, socketHost);
+            Server server = new Server(playerManager, wcfHost, builtInHost);
+            //Server server = new Server(playerManager, socketHost);
 
             //
             server.StartServer();
@@ -46,8 +46,7 @@ namespace TetriNET.Server
             Console.WriteLine("s: Start game");
             Console.WriteLine("t: Stop game");
             Console.WriteLine("m: Send message broadcast");
-            Console.WriteLine("c: Connect local player");
-            Console.WriteLine("d: Disconnect local player");
+            Console.WriteLine("a: add dummy player");
 
             bool stopped = false;
             while (!stopped)
@@ -69,19 +68,14 @@ namespace TetriNET.Server
                         case ConsoleKey.M:
                             server.BroadcastRandomMessage();
                             break;
-                        case ConsoleKey.C:
-                            // TODO
-                            break;
-                        case ConsoleKey.D:
-                            // TODO
-                            //dummyBuiltInClient.DisconnectFromServer();
+                        case ConsoleKey.A:
+                            clients.Add(new DummyBuiltInClient("BuiltIn-" + Guid.NewGuid().ToString().Substring(0, 5), () => builtInHost));
                             break;
                     }
                 }
                 else
                 {
                     System.Threading.Thread.Sleep(100);
-                    //dummyBuiltInClient.Test();
                     Parallel.ForEach(
                         clients, 
                         client => client.Test());

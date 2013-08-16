@@ -7,10 +7,10 @@ refactor Client as Server has been refactored  (code it first in POC/Client_POC)
 simulate a message send from built-in player to Server
 replace assert and return null/false/-1 with error management
 replace Tetriminos enum with index
-GameStart send players, tetrimino definitions and game rules
+GameStart tetrimino definitions and game rules
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
 remove every reference to network from GameClient and GameServer
-uniformize Log.WriteLine: don't use String.Format neither "blabla"+"blibli"+"toto"
+GUI: dissociate part and block when a block has been placed -> careful with side effects
 
 discover
 http://msdn.microsoft.com/en-us/magazine/ee335779.aspx
@@ -48,3 +48,8 @@ http://www.hanselman.com/blog/AsynchronousScalableWebApplicationsWithRealtimePer
 https://github.com/clariuslabs/reactivesockets
 http://social.msdn.microsoft.com/Forums/en-US/5c62e690-2c8d-4f32-8ec4-5e9b5ea6d2a0/using-reactive-extensions-rx-for-socket-programming-practical
 http://www.cachelog.net/using-reactive-extensions-rx-tpl-for-socket-programming/
+https://developers.google.com/protocol-buffers/docs/overview
+http://en.wikipedia.org/wiki/TetriNET
+
+Tetrinet original description
+http://gtetrinet.sourceforge.net/tetrinet.txt

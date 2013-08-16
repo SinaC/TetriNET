@@ -1,208 +1,211 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using TetriNET.Common;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Net;
+//using System.Net.Sockets;
+//using System.Text;
+//using TetriNET.Common;
 
-namespace TetriNET.Server
-{
-    public class SocketHost : GenericHost
-    {
-       
-        // store socket and handle send serialized message on socket
-        public class TetriNETSocketCallback : ITetriNETCallback
-        {
-            public const int BufferSize = 1024;
+//namespace TetriNET.Server
+//{
+//    public class SocketHost : GenericHost
+//    {
+//        // store socket and handle send serialized message on socket
+//        public class TetriNETSocketCallback : ITetriNETCallback
+//        {
+//            public const int BufferSize = 1024;
 
-            public Socket Socket { get; set; }
-            public byte[] Buffer = new byte[BufferSize];
-            public StringBuilder Message = new StringBuilder();
+//            public Socket Socket { get; set; }
+//            public byte[] Buffer = new byte[BufferSize];
+//            public StringBuilder Message = new StringBuilder();
 
-            #region ITetriNETCallback
-            public void OnPingReceived()
-            {
-                throw new NotImplementedException();
-            }
+//            // TODO: serialize message and send on socket
 
-            public void OnServerStopped()
-            {
-                throw new NotImplementedException();
-            }
+//            #region ITetriNETCallback
+//            public void OnPingReceived()
+//            {
+//                throw new NotImplementedException();
+//            }
 
-            public void OnPlayerRegistered(bool succeeded, int playerId)
-            {
-                throw new NotImplementedException();
-            }
+//            public void OnServerStopped()
+//            {
+//                throw new NotImplementedException();
+//            }
 
-            public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, List<PlayerData> players)
-            {
-                throw new NotImplementedException();
-            }
+//            public void OnPlayerRegistered(bool succeeded, int playerId)
+//            {
+//                throw new NotImplementedException();
+//            }
 
-            public void OnGameFinished()
-            {
-                throw new NotImplementedException();
-            }
+//            public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, List<PlayerData> players)
+//            {
+//                throw new NotImplementedException();
+//            }
 
-            public void OnServerAddLines(int lineCount)
-            {
-                throw new NotImplementedException();
-            }
+//            public void OnGameFinished()
+//            {
+//                throw new NotImplementedException();
+//            }
 
-            public void OnPlayerAddLines(int lineCount)
-            {
-                throw new NotImplementedException();
-            }
+//            public void OnServerAddLines(int lineCount)
+//            {
+//                throw new NotImplementedException();
+//            }
 
-            public void OnPublishPlayerMessage(string playerName, string msg)
-            {
-                throw new NotImplementedException();
-            }
+//            public void OnPlayerAddLines(int lineCount)
+//            {
+//                throw new NotImplementedException();
+//            }
 
-            public void OnPublishServerMessage(string msg)
-            {
-                throw new NotImplementedException();
-            }
+//            public void OnPublishPlayerMessage(string playerName, string msg)
+//            {
+//                throw new NotImplementedException();
+//            }
 
-            public void OnAttackReceived(Attacks attack)
-            {
-                throw new NotImplementedException();
-            }
+//            public void OnPublishServerMessage(string msg)
+//            {
+//                throw new NotImplementedException();
+//            }
 
-            public void OnAttackMessageReceived(string msg)
-            {
-                throw new NotImplementedException();
-            }
+//            public void OnAttackReceived(Attacks attack)
+//            {
+//                throw new NotImplementedException();
+//            }
 
-            public void OnNextTetrimino(int index, Tetriminos tetrimino)
-            {
-                throw new NotImplementedException();
-            }
-            #endregion
-        }
+//            public void OnAttackMessageReceived(string msg)
+//            {
+//                throw new NotImplementedException();
+//            }
 
-        private class SocketServerHost // will create TetriNETSocketCallback and receive serialized message on socket
-        {
-            private readonly Dictionary<Socket, TetriNETSocketCallback> _connections = new Dictionary<Socket, TetriNETSocketCallback>();
-            private readonly IHost _host;
-            private Socket _serverSocket;
+//            public void OnNextTetrimino(int index, Tetriminos tetrimino)
+//            {
+//                throw new NotImplementedException();
+//            }
+//            #endregion
+//        }
 
-            public int Port { get; set; }
+//        private class SocketServerHost // will create TetriNETSocketCallback and receive serialized message on socket
+//        {
+//            private readonly Dictionary<Socket, TetriNETSocketCallback> _connections = new Dictionary<Socket, TetriNETSocketCallback>();
+//            private readonly IHost _host;
+//            private Socket _serverSocket;
 
-            public SocketServerHost(IHost host)
-            {
-                _host = host;
-            }
+//            public int Port { get; set; }
 
-            public void Start()
-            {
-                // Create listening socket
-                _serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                _serverSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-                IPEndPoint ipLocal = new IPEndPoint(IPAddress.Any, Port);
-                // Bind to local IP Address
-                _serverSocket.Bind(ipLocal);
-                // Start Listening
-                _serverSocket.Listen(1000);
-                // Creat callback to handle client connections
-                _serverSocket.BeginAccept(OnClientConnected, null);
-            }
+//            public SocketServerHost(IHost host)
+//            {
+//                _host = host;
+//            }
 
-            public void Stop()
-            {
-                // TODO
-            }
+//            public void Start()
+//            {
+//                // Create listening socket
+//                _serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+//                _serverSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+//                IPEndPoint ipLocal = new IPEndPoint(IPAddress.Any, Port);
+//                // Bind to local IP Address
+//                _serverSocket.Bind(ipLocal);
+//                // Start Listening
+//                _serverSocket.Listen(1000);
+//                // Creat callback to handle client connections
+//                _serverSocket.BeginAccept(OnClientConnected, null);
+//            }
 
-            private void OnClientConnected(IAsyncResult async)
-            {
-                // Get client socket
-                Socket socket = _serverSocket.EndAccept(async);
+//            public void Stop()
+//            {
+//                // TODO
+//            }
 
-                // Create state/callback object
-                TetriNETSocketCallback stateObject = new TetriNETSocketCallback
-                {
-                    Socket = socket,
-                };
+//            private void OnClientConnected(IAsyncResult async)
+//            {
+//                // Get client socket
+//                Socket socket = _serverSocket.EndAccept(async);
 
-                // Add state object to active connections
-                _connections.Add(socket, stateObject);
+//                // Create state/callback object
+//                TetriNETSocketCallback stateObject = new TetriNETSocketCallback
+//                {
+//                    Socket = socket,
+//                };
 
-                // Release server socket to keep listening if limit is not reached
-                _serverSocket.BeginAccept(new AsyncCallback(OnClientConnected), null);
+//                // Add state object to active connections
+//                _connections.Add(socket, stateObject);
 
-                // Allow connected client to receive data and designate a callback method
-                socket.BeginReceive(stateObject.Buffer, 0, TetriNETSocketCallback.BufferSize, 0, OnReceivedClientData, stateObject);
-            }
+//                // Release server socket to keep listening if limit is not reached
+//                _serverSocket.BeginAccept(OnClientConnected, null);
 
-            private void OnReceivedClientData(IAsyncResult async)
-            {
-                // no try/catch exception will be caught by IPlayer and OnConnectionLost will be raised
+//                // Allow connected client to receive data and designate a callback method
+//                socket.BeginReceive(stateObject.Buffer, 0, TetriNETSocketCallback.BufferSize, 0, OnReceivedClientData, stateObject);
+//            }
 
-                TetriNETSocketCallback stateObject = (TetriNETSocketCallback)async.AsyncState;
+//            private void OnReceivedClientData(IAsyncResult async)
+//            {
+//                TetriNETSocketCallback stateObject = (TetriNETSocketCallback)async.AsyncState;
 
-                // Complete async receive method and read data length
-                int bytesRead = stateObject.Socket.EndReceive(async);
-                if (bytesRead > 0)
-                {
-                    stateObject.Message.Append(Encoding.ASCII.GetString(stateObject.Buffer, 0, bytesRead)); // TODO: non ascii
-                }
-                else
-                {
-                    if (stateObject.Message.Length > 0)
-                    {
-                        // All data has been received
-                        // TODO: deserialize and call IHost method
-                        Console.WriteLine("Message received:[{0}]", stateObject.Message.ToString());
+//                try
+//                {
+//                    // Complete async receive method and read data length
+//                    int bytesRead = stateObject.Socket.EndReceive(async);
+//                    if (bytesRead > 0)
+//                    {
+//                        stateObject.Message.Append(Encoding.ASCII.GetString(stateObject.Buffer, 0, bytesRead)); // TODO: non ascii
+//                    }
+//                    if (true /*TODO: check <EOF>*/)
+//                    {
+//                        // All data has been received
+//                        // TODO: deserialize and call IHost method
+//                        Console.WriteLine("Message received:[{0}]", stateObject.Message.ToString());
 
-                        stateObject.Message.Clear();
-                    }
-                }
-                stateObject.Socket.BeginReceive(stateObject.Buffer, 0, TetriNETSocketCallback.BufferSize, 0, OnReceivedClientData, stateObject);
-            }
-        }
+//                        stateObject.Message.Clear();
+//                    }
 
-        private bool Started { get; set; }
+//                    stateObject.Socket.BeginReceive(stateObject.Buffer, 0, TetriNETSocketCallback.BufferSize, 0, OnReceivedClientData, stateObject);
+//                }
+//                catch(SocketException ex)
+//                {
+//                }
+//            }
+//        }
 
-        private readonly SocketServerHost _serviceHost;
+//        private bool Started { get; set; }
 
-        public int Port
-        {
-            get { return _serviceHost.Port; }
-            set { _serviceHost.Port = value; }
-        }
+//        private readonly SocketServerHost _serviceHost;
 
-        public SocketHost(IPlayerManager playerManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc) : base(playerManager, createPlayerFunc)
-        {
-            _serviceHost = new SocketServerHost(this);
+//        public int Port
+//        {
+//            get { return _serviceHost.Port; }
+//            set { _serviceHost.Port = value; }
+//        }
 
-            Started = false;
-        }
+//        public SocketHost(IPlayerManager playerManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc) : base(playerManager, createPlayerFunc)
+//        {
+//            _serviceHost = new SocketServerHost(this);
 
-        #region IHost
-        public override void Start()
-        {
-            if (Started)
-                return;
+//            Started = false;
+//        }
 
-            _serviceHost.Start();
+//        #region IHost
+//        public override void Start()
+//        {
+//            if (Started)
+//                return;
 
-            Started = true;
-        }
+//            _serviceHost.Start();
 
-        public override void Stop()
-        {
-            if (!Started)
-                return;
+//            Started = true;
+//        }
 
-            // Inform players
-            foreach (IPlayer p in PlayerManager.Players)
-                p.OnServerStopped();
+//        public override void Stop()
+//        {
+//            if (!Started)
+//                return;
 
-            _serviceHost.Stop();
+//            // Inform players
+//            foreach (IPlayer p in PlayerManager.Players)
+//                p.OnServerStopped();
 
-            Started = false;
-        }
-        #endregion
-    }
-}
+//            _serviceHost.Stop();
+
+//            Started = false;
+//        }
+//        #endregion
+//    }
+//}

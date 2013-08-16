@@ -23,13 +23,13 @@ namespace TetriNET.Server
             }
             //catch (CommunicationObjectAbortedException)
             //{
-            //    Log.WriteLine("CommunicationObjectAbortedException:" + actionName);
+            //    Log.WriteLine("CommunicationObjectAbortedException:{0}", actionName);
             //    if (OnConnectionLost != null)
             //        OnConnectionLost(this);
             //}
             catch (Exception)
             {
-                Log.WriteLine("Exception:" + actionName);
+                Log.WriteLine("Exception:{0}", actionName);
                 if (OnConnectionLost != null)
                     OnConnectionLost(this);
             }
@@ -41,6 +41,7 @@ namespace TetriNET.Server
 
         public string Name { get; private set; }
         public int TetriminoIndex { get; set; }
+        public byte[] Grid { get; set; }
         public DateTime LastAction { get; set; }
         public ITetriNETCallback Callback { get; private set; }
 

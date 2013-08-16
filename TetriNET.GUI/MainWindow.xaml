@@ -1,0 +1,39 @@
+﻿<Window x:Class="Tetris.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Tetris.Views"
+        xmlns:model="clr-namespace:Tetris.Model.UI"
+        Title="Tetris" Height="570" Width="500" MinHeight="180" MinWidth="151" 
+        Loaded="Window_Loaded" 
+        Closed="Window_Closed"
+        KeyDown="Window_KeyDown" 
+        KeyUp="Window_KeyUp" 
+        SizeChanged="Window_SizeChanged" 
+        Deactivated="Window_Deactivated" 
+        x:Name="main" Style="{StaticResource ViewBackground}">
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static model:Commands.StartGame}" CanExecute="StartGame_CanExecute" Executed="StartGame_Executed" />
+        <CommandBinding Command="{x:Static model:Commands.EnterSettings}" CanExecute="EnterSettings_CanExecute" Executed="EnterSettings_Executed" />
+        <CommandBinding Command="{x:Static model:Commands.QuitApplication}" CanExecute="QuitApplication_CanExecute" Executed="QuitApplication_Executed" />
+        <CommandBinding Command="{x:Static model:Commands.EnterScores}" CanExecute="EnterScores_CanExecute" Executed="EnterScores_Executed" />
+        <CommandBinding Command="{x:Static model:Commands.EnterCredits}" CanExecute="EnterCredits_CanExecute" Executed="EnterCredits_Executed" />
+    </Window.CommandBindings>
+    <Border Padding="5" x:Name="border">
+        <Grid Name="grid" DataContext="{Binding ElementName=main}">
+            <controls:Titlescreen x:Name="viewTitle" HorizontalAlignment="Right">
+                <controls:Titlescreen.Visibility>
+                    <MultiBinding Converter="{StaticResource MultipleBoolToVisibilityConverter}">
+                        <Binding ElementName="viewGame" Path="IsDisplayed" />
+                        <Binding ElementName="viewSettings" Path="IsDisplayed" />
+                        <Binding ElementName="viewScores" Path="IsDisplayed" />
+                        <Binding ElementName="viewCredits" Path="IsDisplayed" />
+                    </MultiBinding>
+                </controls:Titlescreen.Visibility>
+            </controls:Titlescreen>
+            <controls:GameView x:Name="viewGame" Visibility="Hidden" HorizontalAlignment="Stretch" Style="{StaticResource ViewBackground}" />
+            <controls:SettingsView x:Name="viewSettings" Visibility="Hidden" HorizontalAlignment="Stretch" Settings="{Binding Path=Settings}" Style="{StaticResource ViewBackground}" />
+            <controls:ScoresView x:Name="viewScores" Visibility="Hidden" HorizontalAlignment="Stretch" Style="{StaticResource ViewBackground}" />
+            <controls:CreditsView x:Name="viewCredits" Visibility="Hidden" HorizontalAlignment="Stretch" Style="{StaticResource ViewBackground}" />
+        </Grid>
+    </Border>
+</Window>

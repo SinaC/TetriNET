@@ -1,0 +1,6 @@
+© Roper C. McIntyre, 2011 
+
+Stuff that can be done in the future:
+- There is no mechanism for dropping a block immediately
+- You cannot reassign the Arrow-Keys in the settings (no Key_Down event seems to trigger on them o.O)
+- Issues when OverlayUserControls are switched very fast

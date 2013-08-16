@@ -69,9 +69,9 @@ namespace TetriNET.Server
                 _host.PublishMessage(Callback, msg);
             }
 
-            public void PlaceTetrimino(Tetriminos tetrimino, Orientations orientation, Position position)
+            public void PlaceTetrimino(int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
             {
-                _host.PlaceTetrimino(Callback, tetrimino, orientation, position);
+                _host.PlaceTetrimino(Callback, index, tetrimino, orientation, position, grid);
             }
 
             public void SendAttack(int targetId, Attacks attack)

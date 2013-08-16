@@ -162,9 +162,9 @@ namespace TetriNET.Server
                 p.OnPublishPlayerMessage(player.Name, msg);
         }
 
-        private void PlaceTetriminoHandler(IPlayer player, Tetriminos tetrimino, Orientations orientation, Position position)
+        private void PlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
         {
-            _actionQueue.Enqueue(() => PlaceTetrimino(player, tetrimino, orientation, position));
+            _actionQueue.Enqueue(() => PlaceTetrimino(player, index, tetrimino, orientation, position, grid));
         }
 
         private void SendAttackHandler(IPlayer player, IPlayer target, Attacks attack)
@@ -239,7 +239,7 @@ namespace TetriNET.Server
                         }
                         catch (Exception ex)
                         {
-                            Log.WriteLine("Exception raised in TaskResolveActions. Exception:" + ex.ToString());
+                            Log.WriteLine("Exception raised in TaskResolveActions. Exception:{0}", ex);
                         }
                     }
                 }
@@ -262,10 +262,15 @@ namespace TetriNET.Server
 
         #region Actions
 
-        private void PlaceTetrimino(IPlayer player, Tetriminos tetrimino, Orientations orientation, Position position)
+        private void PlaceTetrimino(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
         {
-            Log.WriteLine("PlaceTetrimino[{0}]{1} {2} at {3},{4}", player.Name, tetrimino, orientation, position.X, position.Y);
+            Log.WriteLine("PlaceTetrimino[{0}]{1}:{2} {3} at {4},{5}", player.Name, index, tetrimino, orientation, position.X, position.Y);
+            Log.WriteLine("Grid non-empty cell count: {0}", grid.Data.Count(x => x > 0));
 
+            // TODO: check if index is equal to player.TetriminoIndex
+
+            // Set grid
+            player.Grid = grid.Data;
             // Get next piece
             player.TetriminoIndex++;
             Tetriminos nextTetrimino = _tetriminoQueue.Instance[player.TetriminoIndex];

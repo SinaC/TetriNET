@@ -449,7 +449,7 @@ namespace POC.Server_POC
             }
         }
 
-        public void PlaceTetrimino(Tetriminos tetrimino, Orientations orientation, Position position)
+        public void PlaceTetrimino(int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
         {
             Log.WriteLine("PlaceTetrimino {0} {1} {2}", tetrimino, orientation, position);
 
@@ -459,7 +459,7 @@ namespace POC.Server_POC
                 player.LastAction = DateTime.Now; // player alive
                 //
                 if (OnTetriminoPlaced != null)
-                    OnTetriminoPlaced(player, tetrimino, orientation, position);
+                    OnTetriminoPlaced(player, index, tetrimino, orientation, position, grid);
             }
             else
             {
@@ -678,9 +678,9 @@ namespace POC.Server_POC
                 p.OnPublishPlayerMessage(player.Name, msg);
         }
 
-        private void PlaceTetriminoHandler(IPlayer player, Tetriminos tetrimino, Orientations orientation, Position position)
+        private void PlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
         {
-            _actionQueue.Enqueue(() => PlaceTetrimino(player, tetrimino, orientation, position));
+            _actionQueue.Enqueue(() => PlaceTetrimino(player, index, tetrimino, orientation, position, grid));
         }
 
         private void SendAttackHandler(IPlayer player, IPlayer target, Attacks attack)
@@ -778,9 +778,12 @@ namespace POC.Server_POC
 
         #region Actions
 
-        private void PlaceTetrimino(IPlayer player, Tetriminos tetrimino, Orientations orientation, Position position)
+        private void PlaceTetrimino(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
         {
-            Log.WriteLine("PlaceTetrimino[{0}]{1} {2} at {3},{4}", player.Name, tetrimino, orientation, position.X, position.Y);
+            Log.WriteLine("PlaceTetrimino[{0}]{1}:{2} {3} at {4},{5}", player.Name, index, tetrimino, orientation, position.X, position.Y);
+            Log.WriteLine("Grid non-empty cell count: {0}", grid.Data.Count(x => x > 0));
+
+            // TODO: check if index is equal to player.TetriminoIndex
 
             // Get next piece
             player.TetriminoIndex++;

@@ -51,7 +51,7 @@ namespace TetriNET.Server
             }
             else
             {
-                Log.WriteLine("Register failed for player " + playerName);
+                Log.WriteLine("Register failed for player {0}", playerName);
                 // TODO: throw exception
             }
         }
@@ -109,9 +109,9 @@ namespace TetriNET.Server
             }
         }
 
-        public virtual void PlaceTetrimino(ITetriNETCallback callback, Tetriminos tetrimino, Orientations orientation, Position position)
+        public virtual void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
         {
-            Log.WriteLine("PlaceTetrimino {0} {1} {2}", tetrimino, orientation, position);
+            Log.WriteLine("PlaceTetrimino {0} {1} {2} {3}", index, tetrimino, orientation, position);
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -119,7 +119,7 @@ namespace TetriNET.Server
                 player.LastAction = DateTime.Now; // player alive
                 //
                 if (OnTetriminoPlaced != null)
-                    OnTetriminoPlaced(player, tetrimino, orientation, position);
+                    OnTetriminoPlaced(player, index, tetrimino, orientation, position, grid);
             }
             else
             {

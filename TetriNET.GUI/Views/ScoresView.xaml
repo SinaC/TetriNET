@@ -1,0 +1,50 @@
+﻿<model:OverlayUserControl x:Class="Tetris.Views.ScoresView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:model="clr-namespace:Tetris.Model.UI"
+             xmlns:control="clr-namespace:Tetris.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="400" x:Name="scores">
+    <Grid DataContext="{Binding ElementName=scores}" Style="{StaticResource ViewBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" MaxHeight="50" />
+        </Grid.RowDefinitions>
+        <Viewbox Grid.Row="0" StretchDirection="Both" Stretch="Uniform">
+            <TextBlock Text="High Scores" FontFamily="Calibri" FontWeight="Bold" />
+        </Viewbox>
+        <DataGrid Grid.Row="1" Name="dgrHighscores" Margin="0,0,0,10"
+            CanUserSortColumns="False"
+            CanUserResizeColumns="False"
+            CanUserResizeRows="False"
+            CanUserReorderColumns="False"
+            IsManipulationEnabled="False"
+            RowBackground="LightGray"
+            RowHeaderWidth="0"
+            IsReadOnly="True"
+            HorizontalScrollBarVisibility="Hidden"
+            VerticalScrollBarVisibility="Hidden"
+            SizeChanged="dgrHighscores_SizeChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Nr." Width="*" Binding="{Binding Path=Nr}" />
+                <DataGridTextColumn Header="Player" Width="6*" Binding="{Binding Path=Player}" />
+                <DataGridTextColumn Header="Score" Width="3*" Binding="{Binding Path=Points}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1" Name="cmdBack" Click="cmdBack_Click">
+                <Viewbox>
+                    <Label Content="Back" Foreground="White" />
+                </Viewbox>
+            </Button>
+        </Grid>
+    </Grid>
+</model:OverlayUserControl>

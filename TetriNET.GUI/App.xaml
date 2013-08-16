@@ -1,0 +1,17 @@
+﻿<Application x:Class="Tetris.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:Tetris.Converter"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <c:MultipleBoolToVisibilityConverter x:Key="MultipleBoolToVisibilityConverter" />
+            <c:SoundVolumeConverter x:Key="SoundVolumeConverter" />
+            <c:VolumeValuesConverter x:Key="VolumeValuesConverter" />
+            <c:InvertBooleanConverter x:Key="InvertBooleanConverter" />
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

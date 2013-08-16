@@ -24,17 +24,17 @@ namespace TetriNET.Client
             }
             catch (CommunicationObjectAbortedException ex)
             {
-                Log.WriteLine("CommunicationObjectAbortedException:" + actionName);
+                Log.WriteLine("CommunicationObjectAbortedException:{0}", actionName);
                 _client.OnDisconnectedFromServer(this);
             }
             catch (CommunicationObjectFaultedException ex)
             {
-                Log.WriteLine("CommunicationObjectFaultedException:" + actionName);
+                Log.WriteLine("CommunicationObjectFaultedException:{0}", actionName);
                 _client.OnDisconnectedFromServer(this);
             }
             catch (EndpointNotFoundException ex)
             {
-                Log.WriteLine("EndpointNotFoundException:" + actionName);
+                Log.WriteLine("EndpointNotFoundException:{0}", actionName);
                 _client.OnServerUnreachable(this);
             }
         }
@@ -59,9 +59,9 @@ namespace TetriNET.Client
             ExceptionFreeAction(() => _proxy.PublishMessage(msg), "PublishMessage");
         }
 
-        public void PlaceTetrimino(Tetriminos tetrimino, Orientations orientation, Position position)
+        public void PlaceTetrimino(int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
         {
-            ExceptionFreeAction(() => _proxy.PlaceTetrimino(tetrimino, orientation, position), "PlaceTetrimino");
+            ExceptionFreeAction(() => _proxy.PlaceTetrimino(index, tetrimino, orientation, position, grid), "PlaceTetrimino");
         }
 
         public void SendAttack(int targetId, Attacks attack)

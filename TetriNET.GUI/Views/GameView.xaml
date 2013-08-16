@@ -1,0 +1,28 @@
+﻿<model:OverlayUserControl x:Class="Tetris.Views.GameView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:Tetris.Controls"
+             xmlns:model="clr-namespace:Tetris.Model.UI"
+             mc:Ignorable="d" 
+             d:DesignHeight="570" d:DesignWidth="500">
+    <model:OverlayUserControl.CommandBindings>
+        <CommandBinding Command="{x:Static model:Commands.ResumeGame}" CanExecute="ResumeGame_CanExecute" Executed="ResumeGame_Executed" />
+        <CommandBinding Command="{x:Static model:Commands.QuitGame}" CanExecute="QuitGame_CanExecute" Executed="QuitGame_Executed" />
+    </model:OverlayUserControl.CommandBindings>
+    <Grid Style="{StaticResource ViewBackground}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <controls:TetrisGrid Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Tetris="{Binding}" />
+        <controls:InfoControl Grid.Column="1" Grid.Row="0" Score="{Binding Path=Score}" Level="{Binding Path=Level}" ClearedLines="{Binding Path=ClearedLines}" NextBlock="{Binding Path=NextBlock}" Margin="10,0,0,0" />
+        <controls:PauseScreen x:Name="ctrlPause" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Visibility="Hidden" Opacity="0" />
+        <controls:GameOver x:Name="ctrlGameOver" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Visibility="Hidden" Opacity="0" />
+    </Grid>
+</model:OverlayUserControl>

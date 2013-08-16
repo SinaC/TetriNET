@@ -19,7 +19,7 @@ namespace TetriNET.Common
         void PublishMessage(string msg);
 
         [OperationContract(IsOneWay = true)]
-        void PlaceTetrimino(Tetriminos tetrimino, Orientations orientation, Position position);
+        void PlaceTetrimino(int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid);
 
         [OperationContract(IsOneWay = true)]
         void SendAttack(int targetId, Attacks attack);
@@ -31,7 +31,7 @@ namespace TetriNET.Common
         void UnregisterPlayer(ITetriNETCallback callback);
         void Ping(ITetriNETCallback callback);
         void PublishMessage(ITetriNETCallback callback, string msg);
-        void PlaceTetrimino(ITetriNETCallback callback, Tetriminos tetrimino, Orientations orientation, Position position);
+        void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid);
         void SendAttack(ITetriNETCallback callback, int targetId, Attacks attack);
     }
 

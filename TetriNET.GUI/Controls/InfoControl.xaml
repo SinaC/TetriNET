@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="Tetris.Controls.InfoControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="200" x:Name="info">
+    <Grid DataContext="{Binding ElementName=info}" SizeChanged="Grid_SizeChanged">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*" />
+            <RowDefinition Height="7*" />
+            <RowDefinition Height="7*" />
+            <RowDefinition Height="15*" />
+        </Grid.RowDefinitions>
+        <GroupBox Header="Score:" Grid.Row="0" Name="grpScore">
+            <Viewbox>
+                <TextBlock Text="{Binding Path=Score}" FontWeight="Bold" HorizontalAlignment="Center" />
+            </Viewbox>
+        </GroupBox>
+        <GroupBox Header="Level:" Grid.Row="1" Name="grpLevel">
+            <Viewbox>
+                <TextBlock Text="{Binding Path=Level}" FontWeight="Bold" HorizontalAlignment="Center" />
+            </Viewbox>
+        </GroupBox>
+        <GroupBox Header="Lines:" Grid.Row="2" Name="grpLines">
+            <Viewbox>
+                <TextBlock Text="{Binding Path=ClearedLines}" FontWeight="Bold" HorizontalAlignment="Center" />
+            </Viewbox>
+        </GroupBox>
+        <GroupBox Header="Next Block:" Grid.Row="3" SizeChanged="GroupBox_SizeChanged" Name="grpNext">
+            <Grid Name="grid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

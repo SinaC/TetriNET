@@ -1,0 +1,92 @@
+﻿<model:OverlayUserControl x:Class="Tetris.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:model="clr-namespace:Tetris.Model.UI"
+             xmlns:control="clr-namespace:Tetris.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="400" x:Name="settings">
+    <Grid DataContext="{Binding ElementName=settings}" Style="{StaticResource ViewBackground}" SizeChanged="Grid_SizeChanged">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="6*" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="2*" MaxHeight="50" />
+        </Grid.RowDefinitions>
+        <Viewbox Grid.Row="0" StretchDirection="Both" Stretch="Uniform">
+            <TextBlock Text="Settings" FontFamily="Calibri" FontWeight="Bold" />
+        </Viewbox>
+        <GroupBox Grid.Row="2" Name="grpSound">
+            <GroupBox.Header>
+                <TextBlock Text="Sound" FontWeight="Bold" />
+            </GroupBox.Header>
+            <Grid Margin="5,5,5,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Volume:" />
+                <Slider Grid.Column="1" Name="sldVolume" Margin="10,0,10,0" Minimum="0" Maximum="1" SmallChange="0.1" LargeChange="0.1" IsSnapToTickEnabled="True" TickFrequency="0.1">
+                    <Slider.Value>
+                        <MultiBinding Converter="{StaticResource VolumeValuesConverter}">
+                            <Binding Mode="TwoWay" Path="Settings.MusicPlayer.Volume" />
+                            <Binding Mode="TwoWay" Path="Settings.SoundPlayer.Volume" />
+                        </MultiBinding>
+                    </Slider.Value>
+                </Slider>
+                <TextBlock Grid.Column="2" Text="{Binding ElementName=sldVolume, Path=Value, Converter={StaticResource SoundVolumeConverter}}" />
+                <CheckBox Grid.Column="3" Margin="10,0,0,0" Content="Music" IsChecked="{Binding Mode=TwoWay, Path=Settings.MusicPlayer.IsMuted, Converter={StaticResource InvertBooleanConverter}}" />
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="4" Name="grpControls">
+            <GroupBox.Header>
+                <TextBlock Text="Controls" FontWeight="Bold" />
+            </GroupBox.Header>
+            <Grid Margin="5,5,5,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="4*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Move Down:" VerticalAlignment="Center" />
+                <control:KeyBox Grid.Column="1" Grid.Row="0" KeySetting="{Binding Path=Settings.KeySettings[0], Mode=TwoWay}" />
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Move Left:" VerticalAlignment="Center" />
+                <control:KeyBox Grid.Column="1" Grid.Row="2" KeySetting="{Binding Path=Settings.KeySettings[1], Mode=TwoWay}" />
+                <TextBlock Grid.Column="0" Grid.Row="4" Text="Move Right:" VerticalAlignment="Center" />
+                <control:KeyBox Grid.Column="1" Grid.Row="4" KeySetting="{Binding Path=Settings.KeySettings[2], Mode=TwoWay}" />
+                <TextBlock Grid.Column="0" Grid.Row="6" Text="Rotate:" VerticalAlignment="Center" />
+                <control:KeyBox Grid.Column="1" Grid.Row="6" KeySetting="{Binding Path=Settings.KeySettings[3], Mode=TwoWay}" />
+                <TextBlock Grid.Column="0" Grid.Row="8" Text="Pause:" VerticalAlignment="Center" />
+                <control:KeyBox Grid.Column="1" Grid.Row="8" KeySetting="{Binding Path=Settings.KeySettings[4], Mode=TwoWay}" />
+            </Grid>
+        </GroupBox>
+        <Grid Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1" Name="cmdBack" Click="cmdBack_Click">
+                <Viewbox>
+                    <Label Content="Back" Foreground="White" />
+                </Viewbox>
+            </Button>
+        </Grid>
+    </Grid>
+</model:OverlayUserControl >

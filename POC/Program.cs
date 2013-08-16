@@ -9,28 +9,19 @@ namespace POC
 {
     internal class Program
     {
-        public static void OnClientConnected(TCPSocketServer server, SocketConnectArgs args)
-        {
-        }
-
-        public static void OnMessageReceived(TCPSocketServer socketServer, SocketMessageReceivedArgs e)
-        {
-        }
-
-        public static void OnClientDisconnected(TCPSocketServer socketServer, SocketEventArgs e)
-        {
-        }
-
         private static void Main(string[] args)
         {
-            TCPSocketServer socketServer = new TCPSocketServer(5454, 16);
-            socketServer.ClientConnected += OnClientConnected;
-            socketServer.MessageReceived += OnMessageReceived;
-            socketServer.ClientDisconnected += OnClientDisconnected;
+            TCPServer server = new TCPServer
+                {
+                    Port = 5656
+                };
+            server.Start();
 
             Console.WriteLine("Press enter to stop server");
 
             Console.ReadLine();
+
+            server.Stop();
         }
     }
 

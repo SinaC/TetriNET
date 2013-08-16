@@ -9,6 +9,8 @@ namespace TetriNET.Server
     public class DummyBuiltInClient : ITetriNETCallback
     {
         private const int InactivityTimeoutBeforePing = 500; // in ms
+        private const int Width = 12;
+        private const int Height = 20;
 
         public enum States
         {
@@ -23,18 +25,29 @@ namespace TetriNET.Server
 
         private readonly Func<ITetriNET> _getProxyFunc;
         private ITetriNET Proxy { get; set; }
+        private PlayerGrid PlayerGrid { get; set; }
+        private int TetriminoIndex { get; set; }
 
         public DateTime LastAction { get; set; }
         public string PlayerName { get; private set; }
         public States State { get; private set; }
         public int PlayerId { get; private set; }
 
-
         public DummyBuiltInClient(string playerName, Func<ITetriNET> getProxyFunc)
         {
             PlayerName = playerName;
             _getProxyFunc = getProxyFunc;
 
+            PlayerGrid = new PlayerGrid
+                {
+                    Width = Width,
+                    Height = Height,
+                    Data = new byte[Width*Height]
+                };
+            for (int i = 0; i < Height; i++)
+                PlayerGrid.Data[i * Width] = 1;
+            
+            TetriminoIndex = 0;
             State = States.ApplicationStarted;
         }
 
@@ -97,11 +110,13 @@ namespace TetriNET.Server
                             Proxy.PublishMessage(this, "I'll kill you");
                             break;
                         case 1:
-                            Proxy.PlaceTetrimino(this, Tetriminos.TetriminoI, Orientations.Top, new Position
+                            Proxy.PlaceTetrimino(this, TetriminoIndex, Tetriminos.TetriminoI, Orientations.Top, new Position
                             {
                                 X = 5,
                                 Y = 3
-                            });
+                            },
+                            PlayerGrid);
+                            TetriminoIndex++;
                             break;
                         case 2:
                             Proxy.SendAttack(this, PlayerId, Attacks.Nuke);
@@ -155,8 +170,9 @@ namespace TetriNET.Server
             LastAction = DateTime.Now;
             if (State == States.WaitingStartGame)
             {
-                Log.WriteLine("Game started with players:" + players.Select(x => x.Name + "[" + x.Id + "]").Aggregate((n, i) => n + "," + i));
+                Log.WriteLine("Game started with players:{0}", players.Select(x => x.Name + "[" + x.Id + "]").Aggregate((n, i) => n + "," + i));
                 State = States.GameStarted;
+                TetriminoIndex = 0;
             }
             else
                 Log.WriteLine("Was not waiting start game");
@@ -168,6 +184,7 @@ namespace TetriNET.Server
             LastAction = DateTime.Now;
             if (State == States.GameStarted)
             {
+                Log.WriteLine("Game finished: #tetrimino: {0}", TetriminoIndex);
                 State = States.GameFinished;
             }
             else

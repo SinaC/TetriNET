@@ -1,0 +1,66 @@
+﻿<model:OverlayUserControl x:Class="Tetris.Controls.GameOver"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:model="clr-namespace:Tetris.Model.UI"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="600" x:Name="control">
+    <Grid DataContext="{Binding ElementName=control}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Border Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Grid.RowSpan="3" Background="Black" Opacity="0.3" />
+        <Border Grid.Column="1" Grid.Row="1" CornerRadius="15" Padding="15" Style="{StaticResource ControlBackground}">
+            <Border.Effect>
+                <DropShadowEffect Color="#808080" Direction="-45" ShadowDepth="10" />
+            </Border.Effect>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="7*" />
+                    <RowDefinition Height="5*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="3*" MinHeight="20" />
+                </Grid.RowDefinitions>
+                <Viewbox Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3">
+                    <TextBlock TextAlignment="Center" Text="Game Over" FontWeight="Bold" />
+                </Viewbox>
+                <Grid Grid.Row="1" Grid.ColumnSpan="3" Margin="0,3,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Viewbox Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding Path=Score}" />
+                    </Viewbox>
+                    <Viewbox Grid.Row="0" Grid.Column="1" Margin="8,0,0,0" HorizontalAlignment="Left">
+                        <TextBlock Text="Points" />
+                    </Viewbox>
+                </Grid>
+                <GroupBox Name="grpName" Grid.Column="1" Grid.Row="2" Header="Enter your Name:" Margin="0,10,0,10" Visibility="Collapsed">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*" />
+                            <ColumnDefinition Width="3*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Name="txtName" Grid.Column="0" FontWeight="Bold" FontSize="13" Margin="0,0,5,0" />
+                        <Button Name="cmdSubmit" Grid.Column="1" Content="Submit" Click="cmdSubmit_Click" />
+                    </Grid>
+                </GroupBox>
+                <Button Grid.Column="1" Grid.Row="3" Name="cmdQuit" Content="Quit" Command="{x:Static model:Commands.QuitGame}" />
+            </Grid>
+        </Border>
+    </Grid>
+</model:OverlayUserControl>

@@ -1,0 +1,88 @@
+﻿<model:OverlayUserControl x:Class="Tetris.Views.CreditsView"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:model="clr-namespace:Tetris.Model.UI"
+            xmlns:control="clr-namespace:Tetris.Controls"
+            mc:Ignorable="d" 
+            d:DesignHeight="500" d:DesignWidth="400">
+    <Grid Style="{StaticResource ViewBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" MaxHeight="50" />
+        </Grid.RowDefinitions>
+        <Viewbox Grid.Row="0" StretchDirection="Both" Stretch="Uniform">
+            <TextBlock Text="Credits" FontFamily="Calibri" FontWeight="Bold" />
+        </Viewbox>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="6*" />
+                <RowDefinition Height="4*" />
+                <RowDefinition Height="16*" />
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="2*" />
+            </Grid.RowDefinitions>
+            <Viewbox Grid.Row="0">
+                <TextBlock Text="This version of Tetris has been created by:" />
+            </Viewbox>
+            <Viewbox Grid.Row="1">
+                <TextBlock Text="Roper C. McIntyre" FontWeight="Bold" />
+            </Viewbox>
+            <Viewbox Grid.Row="2">
+                <TextBlock TextWrapping="Wrap" Margin="00,10,0,0">
+                    Feel free to use the game and its code in any way you want.
+                    <LineBreak />
+                    If you have questions, ideas or if you want to report a bug, please write an<LineBreak/> e-mail to:
+                    <Hyperlink NavigateUri="mailto:roper@sekagra.com" ToolTip="mailto:roper@sekagra.com" Click="Hyperlink_Click">
+                        roper@sekagra.com
+                    </Hyperlink>
+                    or visit me at 
+                    <Hyperlink NavigateUri="http://www.sekagra.com" ToolTip="http://www.sekagra.com" Click="Hyperlink_Click">
+                        www.sekagra.com
+                    </Hyperlink>.
+                    <LineBreak />
+                    You can download the game's source code there as well.
+                    <LineBreak />
+                    <LineBreak />
+                    The game is written in <Bold>C# 4.0</Bold> and needs the <Bold>Microsoft .NET Framework 4.0</Bold><LineBreak/> in order to run.
+                </TextBlock>
+            </Viewbox>
+            <Viewbox Grid.Row="3">
+                <TextBlock Text="Music" />
+            </Viewbox>
+            <Viewbox Grid.Row="4">
+                <TextBlock>
+                    <Bold>Game:</Bold> 
+                    <Hyperlink NavigateUri="http://www.youtube.com/user/danjyonkimurateam#p/u/4/4fItlmVi7Wo" ToolTip="http://www.youtube.com/user/danjyonkimurateam#p/u/4/4fItlmVi7Wo" Click="Hyperlink_Click">
+                        소녀시대 - Gee (8 Bit Arrangement)
+                    </Hyperlink>
+                </TextBlock>
+            </Viewbox>
+
+            <Viewbox Grid.Row="5">
+                <TextBlock>
+                    <Bold>Credits:</Bold> 
+                    <Hyperlink NavigateUri="http://www.madore.org/~david/music/midi/" ToolTip="http://www.madore.org/~david/music/midi/" Click="Hyperlink_Click">
+                        Johann Pachelbel - Canon in D Major
+                    </Hyperlink>
+                </TextBlock>
+            </Viewbox>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1" Name="cmdBack" Click="cmdBack_Click">
+                <Viewbox>
+                    <Label Content="Back" Foreground="White" />
+                </Viewbox>
+            </Button>
+        </Grid>
+    </Grid>
+</model:OverlayUserControl>
