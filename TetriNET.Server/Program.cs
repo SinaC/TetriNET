@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace TetriNET.Server
@@ -47,6 +48,7 @@ namespace TetriNET.Server
             Console.WriteLine("t: Stop game");
             Console.WriteLine("m: Send message broadcast");
             Console.WriteLine("a: add dummy player");
+            Console.WriteLine("r: remove dummy player");
 
             bool stopped = false;
             while (!stopped)
@@ -71,6 +73,16 @@ namespace TetriNET.Server
                         case ConsoleKey.A:
                             clients.Add(new DummyBuiltInClient("BuiltIn-" + Guid.NewGuid().ToString().Substring(0, 5), () => builtInHost));
                             break;
+                        case ConsoleKey.R:
+                        {
+                            DummyBuiltInClient client = clients.LastOrDefault();
+                            if (client != null)
+                            {
+                                client.DisconnectFromServer();
+                                clients.Remove(client);
+                            }
+                            break;
+                        }
                     }
                 }
                 else

@@ -49,9 +49,9 @@ namespace TetriNET.Client
             ExceptionFreeAction(_proxy.UnregisterPlayer, "UnregisterPlayer");
         }
 
-        public void Ping()
+        public void Heartbeat()
         {
-            ExceptionFreeAction(_proxy.Ping, "Ping");
+            ExceptionFreeAction(_proxy.Heartbeat, "Heartbeat");
         }
 
         public void PublishMessage(string msg)
@@ -64,9 +64,59 @@ namespace TetriNET.Client
             ExceptionFreeAction(() => _proxy.PlaceTetrimino(index, tetrimino, orientation, position, grid), "PlaceTetrimino");
         }
 
+        public void ModifyGrid(PlayerGrid grid)
+        {
+            ExceptionFreeAction(() => _proxy.ModifyGrid(grid), "ModifyGrid");
+        }
+
         public void SendAttack(int targetId, Attacks attack)
         {
             ExceptionFreeAction(() => _proxy.SendAttack(targetId, attack), "SendAttack");
+        }
+
+        public void SendLines(int count)
+        {
+            ExceptionFreeAction(() => _proxy.SendLines(count), "SendLines");
+        }
+        
+        public void StartGame()
+        {
+            ExceptionFreeAction(_proxy.StartGame, "StartGame");
+        }
+
+        public void StopGame()
+        {
+            ExceptionFreeAction(_proxy.StopGame, "StopGame");
+        }
+
+        public void PauseGame()
+        {
+            ExceptionFreeAction(_proxy.PauseGame, "PauseGame");
+        }
+
+        public void ResumeGame()
+        {
+            ExceptionFreeAction(_proxy.ResumeGame, "ResumeGame");
+        }
+
+        public void GameLost()
+        {
+            ExceptionFreeAction(_proxy.GameLost, "ResumeGame");
+        }
+
+        public void ChangeOptions(GameOptions options)
+        {
+            ExceptionFreeAction(() => _proxy.ChangeOptions(options), "ChangeOptions");
+        }
+
+        public void KickPlayer(int playerId)
+        {
+            ExceptionFreeAction(() => _proxy.KickPlayer(playerId), "KickPlayer");
+        }
+
+        public void BanPlayer(int playerId)
+        {
+            ExceptionFreeAction(() => _proxy.BanPlayer(playerId), "BanPlayer");
         }
     }
 }

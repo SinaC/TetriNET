@@ -59,9 +59,9 @@ namespace TetriNET.Server
                 _host.UnregisterPlayer(Callback);
             }
 
-            public void Ping()
+            public void Heartbeat()
             {
-                _host.Ping(Callback);
+                _host.Heartbeat(Callback);
             }
 
             public void PublishMessage(string msg)
@@ -77,6 +77,56 @@ namespace TetriNET.Server
             public void SendAttack(int targetId, Attacks attack)
             {
                 _host.SendAttack(Callback, targetId, attack);
+            }
+
+            public void ModifyGrid(PlayerGrid grid)
+            {
+                _host.ModifyGrid(Callback, grid);
+            }
+
+            public void SendLines(int count)
+            {
+                _host.SendLines(Callback, count);
+            }
+
+            public void StartGame()
+            {
+                _host.StartGame(Callback);
+            }
+
+            public void StopGame()
+            {
+                _host.StopGame(Callback);
+            }
+
+            public void PauseGame()
+            {
+                _host.PauseGame(Callback);
+            }
+
+            public void ResumeGame()
+            {
+                _host.ResumeGame(Callback);
+            }
+
+            public void GameLost()
+            {
+                _host.GameLost(Callback);
+            }
+
+            public void ChangeOptions(GameOptions options)
+            {
+                _host.ChangeOptions(Callback, options);
+            }
+
+            public void KickPlayer(int playerId)
+            {
+                _host.KickPlayer(Callback, playerId);
+            }
+
+            public void BanPlayer(int playerId)
+            {
+                _host.BanPlayer(Callback, playerId);
             }
 
             #endregion

@@ -85,16 +85,6 @@ namespace TetriNET.Common
     }
 
     [DataContract]
-    public class PlayerData
-    {
-        [DataMember]
-        public int Id { get; set; }
-
-        [DataMember]
-        public string Name { get; set; }
-    }
-
-    [DataContract]
     public class PlayerGrid
     {
         [DataMember]
@@ -105,5 +95,27 @@ namespace TetriNET.Common
 
         [DataMember]
         public byte[] Data { get; set; } // an array of width*height color index
+    }
+
+    [DataContract]
+    public class GameOptions
+    {
+        [DataMember]
+        public int __TODO { get; set; }
+    }
+
+    [DataContract]
+    public enum LeaveReasons
+    {
+        [EnumMember]
+        ConnectionLost,
+        [EnumMember]
+        Timeout,
+        [EnumMember]
+        Kick,
+        [EnumMember]
+        Ban,
+        [EnumMember]
+        Spam
     }
 }

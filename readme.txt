@@ -7,10 +7,12 @@ refactor Client as Server has been refactored  (code it first in POC/Client_POC)
 simulate a message send from built-in player to Server
 replace assert and return null/false/-1 with error management
 replace Tetriminos enum with index
-GameStart tetrimino definitions and game rules
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
 remove every reference to network from GameClient and GameServer
 GUI: dissociate part and block when a block has been placed -> careful with side effects
+GenericHost: PlayerConnectionLost add a reason (connection closed, kicked, banned, timeout)
+Manage timeout counter, after X retry -> connection lost
+Manage new connection and disconnection at one place
 
 discover
 http://msdn.microsoft.com/en-us/magazine/ee335779.aspx

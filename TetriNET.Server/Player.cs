@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using TetriNET.Common;
 
 namespace TetriNET.Server
@@ -12,6 +11,7 @@ namespace TetriNET.Server
             Callback = callback;
             TetriminoIndex = 0;
             LastAction = DateTime.Now;
+            State = PlayerStates.Registered;
         }
 
         private void ExceptionFreeAction(Action action, string actionName)
@@ -41,17 +41,18 @@ namespace TetriNET.Server
 
         public string Name { get; private set; }
         public int TetriminoIndex { get; set; }
-        public byte[] Grid { get; set; }
+        public PlayerGrid Grid { get; set; }
         public DateTime LastAction { get; set; }
         public ITetriNETCallback Callback { get; private set; }
+        public PlayerStates State { get; set; }
 
         #endregion
 
         #region ITetriNETCallback
 
-        public void OnPingReceived()
+        public void OnHeartbeatReceived()
         {
-            ExceptionFreeAction(() => Callback.OnPingReceived(), "OnPingReceived");
+            ExceptionFreeAction(() => Callback.OnHeartbeatReceived(), "OnHeartbeatReceived");
         }
 
         public void OnServerStopped()
@@ -59,14 +60,34 @@ namespace TetriNET.Server
             ExceptionFreeAction(() => Callback.OnServerStopped(), "OnServerStopped");
         }
 
-        public void OnPlayerRegistered(bool succeeded, int playerId)
+        public void OnPlayerRegistered(bool succeeded, int playerId, bool gameStarted)
         {
-            ExceptionFreeAction(() => Callback.OnPlayerRegistered(succeeded, playerId), "OnPlayerRegistered");
+            ExceptionFreeAction(() => Callback.OnPlayerRegistered(succeeded, playerId, gameStarted), "OnPlayerRegistered");
         }
 
-        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, List<PlayerData> players)
+        public void OnPlayerJoined(int playerId, string name)
         {
-            ExceptionFreeAction(() => Callback.OnGameStarted(firstTetrimino, secondTetrimino, players), "OnGameStarted");
+            ExceptionFreeAction(() => Callback.OnPlayerJoined(playerId, name), "OnPlayerJoined");
+        }
+
+        public void OnPlayerLeft(int playerId, string name, LeaveReasons reason)
+        {
+            ExceptionFreeAction(() => Callback.OnPlayerLeft(playerId, name, reason), "OnPlayerLeft");
+        }
+
+        public void OnPlayerLost(int playerId)
+        {
+            ExceptionFreeAction(() => Callback.OnPlayerLost(playerId), "OnPlayerLost");
+        }
+
+        public void OnPlayerWon(int playerId)
+        {
+            ExceptionFreeAction(() => Callback.OnPlayerWon(playerId), "OnPlayerWon");
+        }
+
+        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, GameOptions options)
+        {
+            ExceptionFreeAction(() => Callback.OnGameStarted(firstTetrimino, secondTetrimino, options), "OnGameStarted");
         }
 
         public void OnGameFinished()
@@ -74,14 +95,24 @@ namespace TetriNET.Server
             ExceptionFreeAction(() => Callback.OnGameFinished(), "OnGameFinished");
         }
 
+        public void OnGamePaused()
+        {
+            ExceptionFreeAction(() => Callback.OnGamePaused(), "OnGamePaused");
+        }
+
+        public void OnGameResumed()
+        {
+            ExceptionFreeAction(() => Callback.OnGameResumed(), "OnGameResumed");
+        }
+
         public void OnServerAddLines(int lineCount)
         {
             ExceptionFreeAction(() => Callback.OnServerAddLines(lineCount), "OnServerAddLines");
         }
 
-        public void OnPlayerAddLines(int lineCount)
+        public void OnPlayerAddLines(int attackId, int lineCount)
         {
-            ExceptionFreeAction(() => Callback.OnPlayerAddLines(lineCount), "OnPlayerAddLines");
+            ExceptionFreeAction(() => Callback.OnPlayerAddLines(attackId, lineCount), "OnPlayerAddLines");
         }
 
         public void OnPublishPlayerMessage(string playerName, string msg)
@@ -94,19 +125,29 @@ namespace TetriNET.Server
             ExceptionFreeAction(() => Callback.OnPublishServerMessage(msg), "OnPublishServerMessage");
         }
 
-        public void OnAttackReceived(Attacks attack)
+        public void OnPublishAttackMessage(string msg)
         {
-            ExceptionFreeAction(() => Callback.OnAttackReceived(attack), "OnAttackReceived");
+            ExceptionFreeAction(() => Callback.OnPublishAttackMessage(msg), "OnPublishAttackMessage");
         }
 
-        public void OnAttackMessageReceived(string msg)
+        public void OnAttackReceived(int attackId, Attacks attack)
         {
-            ExceptionFreeAction(() => Callback.OnAttackMessageReceived(msg), "OnAttackMessageReceived");
+            ExceptionFreeAction(() => Callback.OnAttackReceived(attackId, attack), "OnAttackReceived");
         }
 
         public void OnNextTetrimino(int index, Tetriminos tetrimino)
         {
             ExceptionFreeAction(() => Callback.OnNextTetrimino(index, tetrimino), "OnNextTetrimino");
+        }
+
+        public void OnGridModified(int playerId, PlayerGrid grid)
+        {
+            ExceptionFreeAction(() => Callback.OnGridModified(playerId, grid), "OnGridModified");
+        }
+
+        public void OnServerMasterChanged(int playerId)
+        {
+            ExceptionFreeAction(() => Callback.OnServerMasterChanged(playerId), "OnServerMasterChanged");
         }
 
         #endregion

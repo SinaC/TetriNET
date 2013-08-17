@@ -7,18 +7,18 @@ namespace TetriNET.Server
 {
     public class PlayerManager : IPlayerManager
     {
+        private readonly object _lockObject;
         private readonly IPlayer[] _players;
-
-        public int MaxPlayers { get; private set; }
 
         public PlayerManager(int maxPlayers)
         {
+            _lockObject = new object();
             MaxPlayers = maxPlayers;
             _players = new IPlayer[MaxPlayers];
         }
 
         #region IPlayerManager
-
+       
         public int Add(IPlayer player)
         {
             bool alreadyExists = _players.Any(x => x != null && (x == player || x.Name == player.Name));
@@ -46,11 +46,21 @@ namespace TetriNET.Server
             return false;
         }
 
+        public int MaxPlayers { get; private set; }
+
         public int PlayerCount
         {
             get
             {
                 return _players.Count(x => x != null);
+            }
+        }
+
+        public object LockObject
+        {
+            get
+            {
+                return _lockObject;
             }
         }
 
@@ -64,7 +74,15 @@ namespace TetriNET.Server
 
         public int GetId(IPlayer player)
         {
-            return Array.IndexOf(_players, player);
+            return player == null ? -1 : Array.IndexOf(_players, player);
+        }
+
+        public IPlayer ServerMaster
+        {
+            get
+            {
+                return _players.FirstOrDefault(x => x != null);
+            }
         }
 
         public IPlayer this[string name]

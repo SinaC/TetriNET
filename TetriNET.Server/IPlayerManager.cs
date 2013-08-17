@@ -10,10 +10,13 @@ namespace TetriNET.Server
 
         int MaxPlayers { get; }
         int PlayerCount { get; }
+        object LockObject { get; }
 
         IEnumerable<IPlayer> Players { get; }
 
         int GetId(IPlayer player);
+
+        IPlayer ServerMaster { get; }
 
         IPlayer this[string name] { get; }
         IPlayer this[int index] { get; }

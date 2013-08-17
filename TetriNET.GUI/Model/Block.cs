@@ -54,7 +54,7 @@ namespace Tetris.Model
         public static Block NewBlock(List<Part> grid)
         {
             //Get all classes that inherite from block
-            var blockTypes = typeof (Block).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof (Block)) && t != typeof (BlockAdditionalRows)).ToList();
+            var blockTypes = typeof (Block).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof (Block)) && t != typeof (BlockAdditionalRows) && t != typeof (BlockBackground)).ToList();
 
             #region Get a random type from the list
 
@@ -180,7 +180,7 @@ namespace Tetris.Model
         private bool Rotation(int degrees)
         {
             //Store all operations in this list and perform them after its safe that there isn't any conflict while rotating
-            int[,] rotations = new int[4,2]; // 4: max block size   2: 0 for x and 1 for y
+            int[,] rotations = new int[4, 2]; // 4: max block size   2: 0 for x and 1 for y
 
             #region Set the center for the rotation
 
@@ -192,7 +192,7 @@ namespace Tetris.Model
             #region Calculate the Rotation for every part
 
             //Note: clockwise and couterclockwise is mixed up because the grid is upside down
-            double radians = (Math.PI * degrees / 180) * -1;
+            double radians = (Math.PI*degrees/180)*-1;
             foreach (Part p in Parts)
             {
                 #region Reduce the coordinates to a 0,0 center

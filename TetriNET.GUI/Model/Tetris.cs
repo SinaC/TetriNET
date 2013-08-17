@@ -10,6 +10,8 @@ using Tetris.Model.Blocks;
 
 namespace Tetris.Model
 {
+    // TODO: use BlockBackground non-moving parts
+    // new event to redraw only some part
     public class Tetris : INotifyPropertyChanged
     {
         #region Fields
@@ -514,6 +516,10 @@ namespace Tetris.Model
             // Inform View
             if (AttackReceived != null)
                 AttackReceived();
+
+            // Check for game over
+            if (CurrentBlock.HasPositionConflict())
+                EndGame();
         }
 
         /// <summary>
