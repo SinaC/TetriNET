@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using TetriNET.Common;
+using TetriNET.Server.Player;
 
-namespace TetriNET.Server
+namespace TetriNET.Server.Host
 {
     public abstract class GenericHost : IHost
     {
@@ -24,7 +25,7 @@ namespace TetriNET.Server
         #region IHost
 
         public event RegisterPlayerHandler OnPlayerRegistered;
-        //public event UnregisterPlayerHandler OnPlayerUnregistered;
+        public event UnregisterPlayerHandler OnPlayerUnregistered;
         public event PublishMessageHandler OnMessagePublished;
         public event PlaceTetriminoHandler OnTetriminoPlaced;
         public event UseSpecialHandler OnUseSpecial;
@@ -91,8 +92,8 @@ namespace TetriNET.Server
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                if (OnPlayerLeft != null)
-                    OnPlayerLeft(player, LeaveReasons.Disconnected);
+                if (OnPlayerUnregistered != null)
+                    OnPlayerUnregistered(player);
             }
             else
             {

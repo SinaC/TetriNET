@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using TetriNET.Common;
 
-namespace TetriNET.Server
+namespace TetriNET.Server.Player
 {
     public interface IPlayerManager
     {

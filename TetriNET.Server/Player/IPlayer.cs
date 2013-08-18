@@ -1,7 +1,7 @@
 ﻿using System;
 using TetriNET.Common;
 
-namespace TetriNET.Server
+namespace TetriNET.Server.Player
 {
     public delegate void ConnectionLostHandler(IPlayer player);
 

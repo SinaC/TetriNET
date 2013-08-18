@@ -38,19 +38,19 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuiltInHost.cs" />
+    <Compile Include="Host\BuiltInHost.cs" />
     <Compile Include="DummyBuiltInClient.cs" />
-    <Compile Include="GenericHost.cs" />
-    <Compile Include="IHost.cs" />
-    <Compile Include="IPlayer.cs" />
-    <Compile Include="IPlayerManager.cs" />
-    <Compile Include="PlayerManager.cs" />
+    <Compile Include="Host\GenericHost.cs" />
+    <Compile Include="Host\IHost.cs" />
+    <Compile Include="Player\IPlayer.cs" />
+    <Compile Include="Player\IPlayerManager.cs" />
+    <Compile Include="Player\PlayerManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Player\Player.cs" />
     <Compile Include="Server.cs" />
-    <Compile Include="SocketHost.cs" />
-    <Compile Include="WCFHost.cs" />
+    <Compile Include="Host\SocketHost.cs" />
+    <Compile Include="Host\WCFHost.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

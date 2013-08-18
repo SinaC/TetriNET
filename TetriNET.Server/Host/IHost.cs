@@ -1,9 +1,10 @@
 ﻿using TetriNET.Common;
+using TetriNET.Server.Player;
 
-namespace TetriNET.Server
+namespace TetriNET.Server.Host
 {
     public delegate void RegisterPlayerHandler(IPlayer player, int playerId);
-    //public delegate void UnregisterPlayerHandler(IPlayer player, int playerId, LeaveReasons reason);
+    public delegate void UnregisterPlayerHandler(IPlayer player);
     public delegate void PublishMessageHandler(IPlayer player, string msg);
     public delegate void PlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid);
     public delegate void UseSpecialHandler(IPlayer player, IPlayer target, Specials special);
@@ -24,7 +25,7 @@ namespace TetriNET.Server
     public interface IHost : ITetriNET
     {
         event RegisterPlayerHandler OnPlayerRegistered;
-        //event UnregisterPlayerHandler OnPlayerUnregistered;
+        event UnregisterPlayerHandler OnPlayerUnregistered;
         event PublishMessageHandler OnMessagePublished;
         event PlaceTetriminoHandler OnTetriminoPlaced;
         event UseSpecialHandler OnUseSpecial;

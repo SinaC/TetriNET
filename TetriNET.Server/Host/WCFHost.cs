@@ -2,8 +2,9 @@
 using System.ServiceModel;
 using TetriNET.Common;
 using TetriNET.Common.WCF;
+using TetriNET.Server.Player;
 
-namespace TetriNET.Server
+namespace TetriNET.Server.Host
 {
     public sealed class WCFHost : GenericHost
     {

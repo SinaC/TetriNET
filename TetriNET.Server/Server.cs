@@ -3,11 +3,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common;
 using TetriNET.Common.Helpers;
+using TetriNET.Server.Host;
+using TetriNET.Server.Player;
 
 namespace TetriNET.Server
 {
@@ -53,7 +54,7 @@ namespace TetriNET.Server
             foreach (IHost host in _hosts)
             {
                 host.OnPlayerRegistered += RegisterPlayerHandler;
-                //host.OnPlayerUnregistered += UnregisterPlayerHandler;
+                host.OnPlayerUnregistered += UnregisterPlayerHandler;
                 host.OnMessagePublished += PublishMessageHandler;
                 host.OnTetriminoPlaced += PlaceTetriminoHandler;
                 host.OnUseSpecial += UseSpecialHandler;
@@ -200,6 +201,13 @@ namespace TetriNET.Server
                 foreach (IPlayer p in _playerManager.Players)
                     p.OnServerMasterChanged(serverMasterId);
             }
+        }
+
+        private void UnregisterPlayerHandler(IPlayer player)
+        {
+            Log.WriteLine("Unregister player:{0}", player.Name);
+
+            PlayerLeftHandler(player, LeaveReasons.Disconnected);
         }
 
         private void PublishMessageHandler(IPlayer player, string msg)

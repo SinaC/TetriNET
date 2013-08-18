@@ -35,6 +35,7 @@ http://www.codeproject.com/Articles/37280/WCF-Service-Behavior-Example-IPFilter-
 http://stackoverflow.com/questions/12376068/how-can-i-add-an-ipfilter-to-an-wcf-odata-service
 http://stackoverflow.com/questions/722008/can-i-setup-an-ip-filter-for-a-wcf-service
 http://keyvan.io/detect-client-ip-in-wcf-3-5
+http://blogs.msdn.com/b/carlosfigueira/archive/2011/04/19/wcf-extensibility-message-inspectors.aspx
 
 server->client exception
 http://beyondrelational.com/modules/2/blogs/79/posts/11543/throwing-exceptions-from-wcf-service-faultexception.aspx

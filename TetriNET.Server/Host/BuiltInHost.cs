@@ -1,7 +1,8 @@
 ﻿using System;
 using TetriNET.Common;
+using TetriNET.Server.Player;
 
-namespace TetriNET.Server
+namespace TetriNET.Server.Host
 {
     public sealed class BuiltInHost : GenericHost
     {

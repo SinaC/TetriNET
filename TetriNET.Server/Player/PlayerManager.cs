@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TetriNET.Common;
 
-namespace TetriNET.Server
+namespace TetriNET.Server.Player
 {
     public sealed class PlayerManager : IPlayerManager
     {
