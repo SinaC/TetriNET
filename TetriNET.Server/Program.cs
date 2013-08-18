@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
+using TetriNET.Server.Ban;
 using TetriNET.Server.Host;
 using TetriNET.Server.Player;
 
@@ -13,16 +14,19 @@ namespace TetriNET.Server
         static void Main(string[] args)
         {
             //
+            BanManager banManager = new BanManager();
+
+            //
             PlayerManager playerManager = new PlayerManager(6);
 
             //
-            WCFHost wcfHost = new WCFHost(playerManager, (playerName, callback) => new Player.Player(playerName, callback))
+            WCFHost wcfHost = new WCFHost(playerManager, banManager, (playerName, callback) => new Player.Player(playerName, callback))
             {
                 Port = ConfigurationManager.AppSettings["port"]
             };
 
             //
-            BuiltInHost builtInHost = new BuiltInHost(playerManager, (playerName, callback) => new Player.Player(playerName, callback));
+            BuiltInHost builtInHost = new BuiltInHost(playerManager, banManager, (playerName, callback) => new Player.Player(playerName, callback));
 
             //
             //SocketHost socketHost = new SocketHost(playerManager, (playerName, callback) => new Player(playerName, callback))

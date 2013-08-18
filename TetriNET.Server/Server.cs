@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common;
 using TetriNET.Common.Helpers;
+using TetriNET.Server.Ban;
 using TetriNET.Server.Host;
 using TetriNET.Server.Player;
 

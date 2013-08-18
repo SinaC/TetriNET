@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using TetriNET.Common;
+using TetriNET.Server.Ban;
 using TetriNET.Server.Player;
 
 namespace TetriNET.Server.Host
@@ -10,9 +11,10 @@ namespace TetriNET.Server.Host
         protected readonly Func<string, ITetriNETCallback, IPlayer> CreatePlayerFunc;
         protected readonly IPlayerManager PlayerManager;
 
-        protected GenericHost(IPlayerManager playerManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc)
+        protected GenericHost(IPlayerManager playerManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc)
         {
             PlayerManager = playerManager;
+            BanManager = banManager;
             CreatePlayerFunc = createPlayerFunc;
         }
 
@@ -42,6 +44,8 @@ namespace TetriNET.Server.Host
         public event ResetWinListHandler OnResetWinList;
 
         public event PlayerLeftHandler OnPlayerLeft;
+
+        public IBanManager BanManager { get; private set; }
 
         public abstract void Start();
         public abstract void Stop();

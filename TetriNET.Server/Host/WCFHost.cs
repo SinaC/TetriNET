@@ -2,6 +2,7 @@
 using System.ServiceModel;
 using TetriNET.Common;
 using TetriNET.Common.WCF;
+using TetriNET.Server.Ban;
 using TetriNET.Server.Player;
 
 namespace TetriNET.Server.Host
@@ -31,7 +32,7 @@ namespace TetriNET.Server.Host
                 ServiceHost = new ServiceHost(this, baseAddress);
                 ServiceHost.AddServiceEndpoint(typeof(IWCFTetriNET), new NetTcpBinding(SecurityMode.None), "");
                 //ServiceHost.AddDefaultEndpoints();
-                //Host.Description.Behaviors.Add(new IPFilterServiceBehavior("DenyLocal"));
+                ServiceHost.Description.Behaviors.Add(new IPFilterServiceBehavior(_host.BanManager));
                 ServiceHost.Open();
 
                 foreach (var endpt in ServiceHost.Description.Endpoints)
@@ -155,7 +156,8 @@ namespace TetriNET.Server.Host
             set { _serviceHost.Port = value; }
         }
 
-        public WCFHost(IPlayerManager playerManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc) : base(playerManager, createPlayerFunc)
+        public WCFHost(IPlayerManager playerManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc)
+            : base(playerManager, banManager, createPlayerFunc)
         {
             _serviceHost = new WCFServiceHost(this);
 
@@ -196,6 +198,7 @@ namespace TetriNET.Server.Host
         public override void BanPlayer(IPlayer player)
         {
             // TODO
+            // how can we know this player belong to this host
         }
 
         #endregion

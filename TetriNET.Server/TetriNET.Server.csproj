@@ -38,11 +38,13 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ban\BanList.cs" />
+    <Compile Include="Ban\BanManager.cs" />
+    <Compile Include="Ban\IBanManager.cs" />
     <Compile Include="Host\BuiltInHost.cs" />
     <Compile Include="DummyBuiltInClient.cs" />
     <Compile Include="Host\GenericHost.cs" />
     <Compile Include="Host\IHost.cs" />
+    <Compile Include="Host\IPFilterServiceBehavior.cs" />
     <Compile Include="Player\IPlayer.cs" />
     <Compile Include="Player\IPlayerManager.cs" />
     <Compile Include="Player\PlayerManager.cs" />

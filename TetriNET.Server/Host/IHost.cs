@@ -1,4 +1,5 @@
 ﻿using TetriNET.Common;
+using TetriNET.Server.Ban;
 using TetriNET.Server.Player;
 
 namespace TetriNET.Server.Host
@@ -42,6 +43,8 @@ namespace TetriNET.Server.Host
         event ResetWinListHandler OnResetWinList;
 
         event PlayerLeftHandler OnPlayerLeft;
+
+        IBanManager BanManager { get; }
 
         void Start();
         void Stop();

@@ -13,6 +13,7 @@ GUI: dissociate part and block when a block has been placed -> careful with side
 Manage timeout counter, after X retry -> connection lost
 Manage new connection and disconnection at one place -> ideally in Server because there can be many hosts and we can remove a player only ince
 Handle special case: game started and everyone is disconnected -> game is never stopped
+when Server calls BanPlayer on hosts, only one host must add it to ban manager
 
 discover
 http://msdn.microsoft.com/en-us/magazine/ee335779.aspx

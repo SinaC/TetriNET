@@ -1,12 +1,14 @@
 ﻿using System;
 using TetriNET.Common;
+using TetriNET.Server.Ban;
 using TetriNET.Server.Player;
 
 namespace TetriNET.Server.Host
 {
     public sealed class BuiltInHost : GenericHost
     {
-        public BuiltInHost(IPlayerManager playerManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc) : base(playerManager, createPlayerFunc)
+        public BuiltInHost(IPlayerManager playerManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc)
+            : base(playerManager, banManager, createPlayerFunc)
         {
         }
 
@@ -29,6 +31,7 @@ namespace TetriNET.Server.Host
         public override void BanPlayer(IPlayer player)
         {
             // NOP
+            // how can we know this player belong to this host
         }
 
         #endregion
