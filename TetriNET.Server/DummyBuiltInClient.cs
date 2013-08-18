@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using TetriNET.Common;
 
 namespace TetriNET.Server
 {
-    public class DummyBuiltInClient : ITetriNETCallback
+    public sealed class DummyBuiltInClient : ITetriNETCallback
     {
         private const int InactivityTimeoutBeforePing = 500; // in ms
         private const int Width = 12;
@@ -24,7 +25,7 @@ namespace TetriNET.Server
 
         private readonly Func<ITetriNET> _getProxyFunc;
         private ITetriNET Proxy { get; set; }
-        private PlayerGrid PlayerGrid { get; set; }
+        private byte[] PlayerGrid { get; set; }
         private int TetriminoIndex { get; set; }
 
         public DateTime LastAction { get; set; }
@@ -38,14 +39,9 @@ namespace TetriNET.Server
             PlayerName = playerName;
             _getProxyFunc = getProxyFunc;
 
-            PlayerGrid = new PlayerGrid
-                {
-                    Width = Width,
-                    Height = Height,
-                    Data = new byte[Width*Height]
-                };
+            PlayerGrid = new byte[Width*Height];
             for (int i = 0; i < Height; i++)
-                PlayerGrid.Data[i * Width] = 1;
+                PlayerGrid[i * Width] = 1;
 
             IsServerMaster = false;
             TetriminoIndex = 0;
@@ -110,7 +106,7 @@ namespace TetriNET.Server
                             TetriminoIndex++;
                             break;
                         case 2:
-                            Proxy.SendAttack(this, PlayerId, Attacks.Nuke);
+                            Proxy.UseSpecial(this, PlayerId, Specials.Nuke);
                             break;
                         case 3:
                             Proxy.ModifyGrid(this, PlayerGrid);
@@ -128,6 +124,14 @@ namespace TetriNET.Server
                 if (timespan.TotalMilliseconds > InactivityTimeoutBeforePing)
                     Proxy.Heartbeat(this);
             }
+        }
+
+        public void Lose()
+        {
+            Log.WriteLine("Loseeeeeeeer");
+            State = States.WaitingStartGame;
+
+            Proxy.GameLost(this);
         }
         
         #region ITetriNETCallback
@@ -226,9 +230,9 @@ namespace TetriNET.Server
             LastAction = DateTime.Now;
         }
 
-        public void OnPlayerAddLines(int attackId, int lineCount)
+        public void OnPlayerAddLines(int specialId, int playerId, int lineCount)
         {
-            Log.WriteLine("OnPlayerAddLines[{0}]:{1} {2}", PlayerName, attackId, lineCount);
+            Log.WriteLine("OnPlayerAddLines[{0}]:{1} [{2}] {3}", PlayerName, specialId, playerId, lineCount);
             LastAction = DateTime.Now;
         }
 
@@ -244,15 +248,9 @@ namespace TetriNET.Server
             LastAction = DateTime.Now;
         }
 
-        public void OnPublishAttackMessage(string msg)
+        public void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special)
         {
-            Log.WriteLine("OnPublishAttackMessage[{0}]:{1}", PlayerName, msg);
-            LastAction = DateTime.Now;
-        }
-
-        public void OnAttackReceived(int attackId, Attacks attack)
-        {
-            Log.WriteLine("OnAttackReceived[{0}]:{1}{2}", PlayerName, attackId, attack);
+            Log.WriteLine("OnSpecialUsed[{0}]:{1} [{2}] [{3}] {4}", PlayerName, specialId, playerId, targetId, special);
             LastAction = DateTime.Now;
         }
 
@@ -262,9 +260,9 @@ namespace TetriNET.Server
             LastAction = DateTime.Now;
         }
 
-        public void OnGridModified(int playerId, PlayerGrid grid)
+        public void OnGridModified(int playerId, byte[] grid)
         {
-            Log.WriteLine("OnGridModified[{0}]:[{1}] [2]", PlayerName, playerId, grid.Data.Count(x => x > 0));
+            Log.WriteLine("OnGridModified[{0}]:[{1}] [2]", PlayerName, playerId, grid.Count(x => x > 0));
             LastAction = DateTime.Now;
         }
 
@@ -273,6 +271,12 @@ namespace TetriNET.Server
             Log.WriteLine("OnServerMasterChanged[{0}]:[{1}]", PlayerName, playerId);
             LastAction = DateTime.Now;
             IsServerMaster = (playerId == PlayerId);
+        }
+
+        public void OnWinListModified(List<WinEntry> winList)
+        {
+            Log.WriteLine("OnWinListModified:{1}", winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i));
+            LastAction = DateTime.Now;
         }
 
         #endregion

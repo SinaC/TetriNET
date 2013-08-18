@@ -7,6 +7,7 @@ namespace TetriNET.Server
     {
         int Add(IPlayer player);
         bool Remove(IPlayer player);
+        void Clear();
 
         int MaxPlayers { get; }
         int PlayerCount { get; }

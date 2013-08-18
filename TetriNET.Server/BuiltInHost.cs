@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TetriNET.Common;
 
 namespace TetriNET.Server
 {
-    public class BuiltInHost : GenericHost
+    public sealed class BuiltInHost : GenericHost
     {
         public BuiltInHost(IPlayerManager playerManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc) : base(playerManager, createPlayerFunc)
         {
@@ -24,6 +19,17 @@ namespace TetriNET.Server
         {
             // NOP
         }
+
+        public override void RemovePlayer(IPlayer player)
+        {
+            // NOP
+        }
+
+        public override void BanPlayer(IPlayer player)
+        {
+            // NOP
+        }
+
         #endregion
     }
 }

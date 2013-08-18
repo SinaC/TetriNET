@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using TetriNET.Common;
 
@@ -8,8 +6,8 @@ namespace TetriNET.Server
 {
     public abstract class GenericHost : IHost
     {
-        protected readonly IPlayerManager PlayerManager;
         protected readonly Func<string, ITetriNETCallback, IPlayer> CreatePlayerFunc;
+        protected readonly IPlayerManager PlayerManager;
 
         protected GenericHost(IPlayerManager playerManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc)
         {
@@ -17,13 +15,19 @@ namespace TetriNET.Server
             CreatePlayerFunc = createPlayerFunc;
         }
 
+        protected virtual void PlayerConnectionLost(IPlayer player)
+        {
+            if (OnPlayerLeft != null)
+                OnPlayerLeft(player, LeaveReasons.ConnectionLost);
+        }
+
         #region IHost
 
         public event RegisterPlayerHandler OnPlayerRegistered;
-        public event UnregisterPlayerHandler OnPlayerUnregistered;
+        //public event UnregisterPlayerHandler OnPlayerUnregistered;
         public event PublishMessageHandler OnMessagePublished;
         public event PlaceTetriminoHandler OnTetriminoPlaced;
-        public event SendAttackHandler OnSendAttack;
+        public event UseSpecialHandler OnUseSpecial;
         public event SendLinesHandler OnSendLines;
         public event ModifyGridHandler OnGridModified;
         public event StartGameHandler OnStartGame;
@@ -34,9 +38,14 @@ namespace TetriNET.Server
         public event ChangeOptionsHandler OnChangeOptions;
         public event KickPlayerHandler OnKickPlayer;
         public event BanPlayerHandler OnBanPlayer;
+        public event ResetWinListHandler OnResetWinList;
+
+        public event PlayerLeftHandler OnPlayerLeft;
 
         public abstract void Start();
         public abstract void Stop();
+        public abstract void RemovePlayer(IPlayer player);
+        public abstract void BanPlayer(IPlayer player);
 
         #endregion
 
@@ -45,6 +54,8 @@ namespace TetriNET.Server
         public virtual void RegisterPlayer(ITetriNETCallback callback, string playerName)
         {
             Log.WriteLine("RegisterPlayer");
+
+            // TODO: check ban list
 
             IPlayer player = null;
             int id = -1;
@@ -80,18 +91,8 @@ namespace TetriNET.Server
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                //int id;
-                //lock (PlayerManager.LockObject)
-                //{
-                //    // Get id
-                //    id = PlayerManager.GetId(player);
-                //    // Remove player from player list
-                //    PlayerManager.Remove(player);
-                //}
-                ////
-                //if (OnPlayerUnregistered != null)
-                //    OnPlayerUnregistered(player, id);
-                PlayerConnectionLost(player);
+                if (OnPlayerLeft != null)
+                    OnPlayerLeft(player, LeaveReasons.Disconnected);
             }
             else
             {
@@ -133,9 +134,9 @@ namespace TetriNET.Server
             }
         }
 
-        public virtual void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
+        public virtual void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
         {
-            Log.WriteLine("PlaceTetrimino {0} {1} {2} {3} {4}", index, tetrimino, orientation, position, grid.Data.Count(x => x > 0));
+            Log.WriteLine("PlaceTetrimino {0} {1} {2} {3} {4}", index, tetrimino, orientation, position, grid.Count(x => x > 0));
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -151,9 +152,9 @@ namespace TetriNET.Server
             }
         }
 
-        public virtual void SendAttack(ITetriNETCallback callback, int targetId, Attacks attack)
+        public virtual void UseSpecial(ITetriNETCallback callback, int targetId, Specials special)
         {
-            Log.WriteLine("SendAttack {0} {1}", targetId, attack);
+            Log.WriteLine("UseSpecial {0} {1}", targetId, special);
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -164,15 +165,15 @@ namespace TetriNET.Server
                 if (target != null)
                 {
                     //
-                    if (OnSendAttack != null)
-                        OnSendAttack(player, target, attack);
+                    if (OnUseSpecial != null)
+                        OnUseSpecial(player, target, special);
                 }
                 else
-                    Log.WriteLine("SendAttack to unknown player {0} from {1}", targetId, player.Name);
+                    Log.WriteLine("UseSpecial to unknown player {0} from {1}", targetId, player.Name);
             }
             else
             {
-                Log.WriteLine("SendAttack from unknown player {0}");
+                Log.WriteLine("UseSpecial from unknown player {0}");
             }
         }
 
@@ -188,9 +189,9 @@ namespace TetriNET.Server
             }
         }
 
-        public virtual void ModifyGrid(ITetriNETCallback callback, PlayerGrid grid)
+        public virtual void ModifyGrid(ITetriNETCallback callback, byte[] grid)
         {
-            Log.WriteLine("ModifyGrid {0}", grid.Data.Count(x => x > 0));
+            Log.WriteLine("ModifyGrid {0}", grid.Count(x => x > 0));
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -312,21 +313,20 @@ namespace TetriNET.Server
             }
         }
 
-        #endregion
-
-        protected virtual void PlayerConnectionLost(IPlayer player)
+        public virtual void ResetWinList(ITetriNETCallback callback)
         {
-            Log.WriteLine("PlayerConnectionLost:{0}", player.Name);
-            lock (PlayerManager.LockObject)
+            Log.WriteLine("ResetWinList");
+
+            IPlayer player = PlayerManager[callback];
+            if (player != null)
             {
-                // Get id
-                int id = PlayerManager.GetId(player);
-                // Remove player from player list
-                PlayerManager.Remove(player);
+                player.LastAction = DateTime.Now;
                 //
-                if (OnPlayerUnregistered != null)
-                    OnPlayerUnregistered(player, id);
+                if (OnResetWinList != null)
+                    OnResetWinList(player);
             }
         }
+
+        #endregion
     }
 }

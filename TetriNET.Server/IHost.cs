@@ -3,12 +3,12 @@
 namespace TetriNET.Server
 {
     public delegate void RegisterPlayerHandler(IPlayer player, int playerId);
-    public delegate void UnregisterPlayerHandler(IPlayer player, int playerId);
+    //public delegate void UnregisterPlayerHandler(IPlayer player, int playerId, LeaveReasons reason);
     public delegate void PublishMessageHandler(IPlayer player, string msg);
-    public delegate void PlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid);
-    public delegate void SendAttackHandler(IPlayer player, IPlayer target, Attacks attack);
+    public delegate void PlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid);
+    public delegate void UseSpecialHandler(IPlayer player, IPlayer target, Specials special);
     public delegate void SendLinesHandler(IPlayer player, int count);
-    public delegate void ModifyGridHandler(IPlayer player, PlayerGrid grid);
+    public delegate void ModifyGridHandler(IPlayer player, byte[] grid);
     public delegate void StartGameHandler(IPlayer player);
     public delegate void StopGameHandler(IPlayer player);
     public delegate void PauseGameHandler(IPlayer player);
@@ -17,14 +17,17 @@ namespace TetriNET.Server
     public delegate void ChangeOptionsHandler(IPlayer player, GameOptions options);
     public delegate void KickPlayerHandler(IPlayer player, int playerId);
     public delegate void BanPlayerHandler(IPlayer player, int playerId);
+    public delegate void ResetWinListHandler(IPlayer player);
+
+    public delegate void PlayerLeftHandler(IPlayer player, LeaveReasons reason);
 
     public interface IHost : ITetriNET
     {
         event RegisterPlayerHandler OnPlayerRegistered;
-        event UnregisterPlayerHandler OnPlayerUnregistered;
+        //event UnregisterPlayerHandler OnPlayerUnregistered;
         event PublishMessageHandler OnMessagePublished;
         event PlaceTetriminoHandler OnTetriminoPlaced;
-        event SendAttackHandler OnSendAttack;
+        event UseSpecialHandler OnUseSpecial;
         event SendLinesHandler OnSendLines;
         event ModifyGridHandler OnGridModified;
         event StartGameHandler OnStartGame;
@@ -35,10 +38,13 @@ namespace TetriNET.Server
         event ChangeOptionsHandler OnChangeOptions;
         event KickPlayerHandler OnKickPlayer;
         event BanPlayerHandler OnBanPlayer;
+        event ResetWinListHandler OnResetWinList;
 
-        // TODO: add reference to BanList
+        event PlayerLeftHandler OnPlayerLeft;
 
         void Start();
         void Stop();
+        void RemovePlayer(IPlayer player); // Should be overridden to handle local table storing reference to player
+        void BanPlayer(IPlayer player);
     }
 }

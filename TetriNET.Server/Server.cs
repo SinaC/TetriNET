@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common;
+using TetriNET.Common.Helpers;
 
 namespace TetriNET.Server
 {
@@ -30,10 +33,12 @@ namespace TetriNET.Server
         private readonly IPlayerManager _playerManager;
         private readonly List<IHost> _hosts;
 
+        private List<WinEntry> _winList;
+
         private GameOptions _options;
         
         public States State { get; private set; }
-        public int AttackId { get; private set; }
+        public int SpecialId { get; private set; }
 
         public Server(IPlayerManager playerManager, params IHost[] hosts)
         {
@@ -42,15 +47,16 @@ namespace TetriNET.Server
 
             _playerManager = playerManager;
             _hosts = hosts.ToList();
-            _options = new GameOptions();
+            _options = new GameOptions(); // TODO: get options from save file
+            _winList = new List<WinEntry>(); // TODO: get win list from save file
 
             foreach (IHost host in _hosts)
             {
                 host.OnPlayerRegistered += RegisterPlayerHandler;
-                host.OnPlayerUnregistered += UnregisterPlayerHandler;
+                //host.OnPlayerUnregistered += UnregisterPlayerHandler;
                 host.OnMessagePublished += PublishMessageHandler;
                 host.OnTetriminoPlaced += PlaceTetriminoHandler;
-                host.OnSendAttack += SendAttackHandler;
+                host.OnUseSpecial += UseSpecialHandler;
                 host.OnSendLines += SendLinesHandler;
                 host.OnGridModified += ModifyGridHandler;
                 host.OnStartGame += StartGameHandler;
@@ -61,32 +67,27 @@ namespace TetriNET.Server
                 host.OnChangeOptions += ChangeOptionsHandler;
                 host.OnKickPlayer += KickPlayerHandler;
                 host.OnBanPlayer += BanPlayerHandler;
+                host.OnResetWinList += ResetWinListHandler;
+                
+                host.OnPlayerLeft += PlayerLeftHandler;
+
+                Debug.Assert(Check.CheckEvents(host), "Every host events must be handled");
             }
 
-            AttackId = 0;
+            SpecialId = 0;
 
             Task.Factory.StartNew(TaskResolveGameActions);
 
             State = States.WaitingStartServer;
         }
 
-        // TODO: remove following region
-        #region TEST METHODS - TO REMOVE
-        public void BroadcastRandomMessage()
-        {
-            // Send start game to every connected player
-            foreach (IPlayer p in _playerManager.Players)
-                p.OnPublishServerMessage("Random message");
-        }
-        #endregion
-
-        // TODO: set following methods as private
         public void StartServer()
         {
             Log.WriteLine("Starting server");
 
             State = States.StartingServer;
 
+            // Start hosts
             foreach (IHost host in _hosts)
                 host.Start();
 
@@ -100,20 +101,23 @@ namespace TetriNET.Server
             Log.WriteLine("Stopping server");
             State = States.StoppingServer;
 
-            // Warn players
+            // Inform players
             foreach(IPlayer p in _playerManager.Players)
                 p.OnServerStopped();
 
+            // Stop hosts
             foreach (IHost host in _hosts)
                 host.Stop();
 
-            // TODO: clear PlayerManager and other object storing player/callback/...
+            // Clear player manager
+            _playerManager.Clear();
 
             State = States.WaitingStartServer;
 
             Log.WriteLine("Server stopped");
         }
 
+        // Start game and stop game should be removed and code included in StartGameHandler and StopGameHandler
         public void StartGame()
         {
             Log.WriteLine("Starting game");
@@ -131,6 +135,7 @@ namespace TetriNET.Server
                 {
                     p.TetriminoIndex = 0;
                     p.State = PlayerStates.Playing;
+                    p.LossTime = DateTime.MaxValue;
                     p.OnGameStarted(firstTetrimino, secondTetrimino, _options);
                 }
 
@@ -160,78 +165,19 @@ namespace TetriNET.Server
                 Log.WriteLine("Cannot stop game");
         }
 
-        public void PauseGame()
+        private void UpdateWinList(string playerName, int score)
         {
-            Log.WriteLine("Pausing game");
-
-            if (State == States.GameStarted)
+            WinEntry entry = _winList.SingleOrDefault(x => x.PlayerName == playerName);
+            if (entry == null)
             {
-                State = States.GamePaused;
-
-                // Send pause to players
-                foreach (IPlayer p in _playerManager.Players)
-                    p.OnGamePaused();
-
-                Log.WriteLine("Game paused");
+                entry = new WinEntry
+                {
+                    PlayerName = playerName,
+                    Score = 0
+                };
+                _winList.Add(entry);
             }
-            else
-                Log.WriteLine("Cannot pause game");
-        }
-
-        public void ResumeGame()
-        {
-            Log.WriteLine("Resuming game");
-
-            if (State == States.GamePaused)
-            {
-                State = States.GameStarted;
-
-                // Send resume to players
-                foreach (IPlayer p in _playerManager.Players)
-                    p.OnGameResumed();
-
-                Log.WriteLine("Game resumed");
-            }
-            else
-                Log.WriteLine("Cannot resume game");
-        }
-
-        public void ChangeOptions(GameOptions options)
-        {
-            Log.WriteLine("Changing options");
-
-            if (State == States.WaitingStartGame)
-            {
-                _options = options; // Options will be sent to players when starting a new game
-            }
-            else
-                Log.WriteLine("Cannot change options");
-        }
-
-        public void KickPlayer(int playerId)
-        {
-            Log.WriteLine("Kick player");
-
-            if (State == States.WaitingStartGame)
-            {
-                // TODO: remove player from PlayerManager, send ServerStopped, warn other players
-                Log.WriteLine("Not yet implemented");
-            }
-            else
-                Log.WriteLine("Cannot kick player");
-        }
-
-        public void BanPlayer(int playerId)
-        {
-            Log.WriteLine("Ban player");
-
-            if (State == States.WaitingStartGame)
-            {
-                // TODO: remove player from PlayerManager, send ServerStopped, add to BanList, warn other players
-                Log.WriteLine("Not yet implemented");
-            }
-            else
-                Log.WriteLine("Cannot ban player");
+            entry.Score = score;
         }
 
         #region IHost event handler
@@ -241,36 +187,17 @@ namespace TetriNET.Server
 
             // Send player id back to player
             player.OnPlayerRegistered(true, playerId, State == States.GameStarted);
-            
+
             // Inform players about new played connected
             foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
                 p.OnPlayerJoined(playerId, player.Name);
 
             // Send new server master id
             IPlayer serverMaster = _playerManager.ServerMaster;
-            if (serverMaster != null)
+            if (serverMaster != null && player == serverMaster)
             {
                 int serverMasterId = _playerManager.GetId(serverMaster);
                 foreach (IPlayer p in _playerManager.Players)
-                    p.OnServerMasterChanged(serverMasterId);
-            }
-
-        }
-
-        private void UnregisterPlayerHandler(IPlayer player, int playerId)
-        {
-            Log.WriteLine("Player disconnected:[{0}]{1}", playerId, player.Name);
-
-            // Inform players except disconnected player
-            foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
-                p.OnPlayerLeft(playerId, player.Name, LeaveReasons.ConnectionLost); // TODO: set real reasons
-
-            // Send new server master id
-            IPlayer serverMaster = _playerManager.ServerMaster;
-            if (serverMaster != null)
-            {
-                int serverMasterId = _playerManager.GetId(serverMaster);
-                foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
                     p.OnServerMasterChanged(serverMasterId);
             }
         }
@@ -284,24 +211,28 @@ namespace TetriNET.Server
                 p.OnPublishPlayerMessage(player.Name, msg);
         }
 
-        private void PlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
+        private void PlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
         {
-            _actionQueue.Enqueue(() => PlaceTetrimino(player, index, tetrimino, orientation, position, grid));
+            if (State == States.GameStarted)
+                _actionQueue.Enqueue(() => PlaceTetrimino(player, index, tetrimino, orientation, position, grid));
         }
 
-        private void SendAttackHandler(IPlayer player, IPlayer target, Attacks attack)
+        private void UseSpecialHandler(IPlayer player, IPlayer target, Specials special)
         {
-            _actionQueue.Enqueue(() => Attack(player, target, attack));
+            if (State == States.GameStarted)
+                _actionQueue.Enqueue(() => Special(player, target, special));
         }
 
         private void SendLinesHandler(IPlayer player, int count)
         {
-            _actionQueue.Enqueue(() => SendLines(player, count));
+            if (State == States.GameStarted)
+                _actionQueue.Enqueue(() => SendLines(player, count));
         }
 
-        private void ModifyGridHandler(IPlayer player, PlayerGrid grid)
+        private void ModifyGridHandler(IPlayer player, byte[] grid)
         {
-            _actionQueue.Enqueue(() => ModifyGrid(player, grid));
+            if (State == States.GameStarted)
+                _actionQueue.Enqueue(() => ModifyGrid(player, grid));
         }
 
         private void StartGameHandler(IPlayer player)
@@ -327,8 +258,18 @@ namespace TetriNET.Server
             Log.WriteLine("PauseGame:{0}", player.Name);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
-            if (masterPlayer == player)
-                PauseGame();
+            if (masterPlayer == player && State == States.GameStarted)
+            {
+                State = States.GamePaused;
+
+                // Send pause to players
+                foreach (IPlayer p in _playerManager.Players)
+                    p.OnGamePaused();
+
+                Log.WriteLine("Game paused");
+            }
+            else
+                Log.WriteLine("Cannot pause game");
         }
 
         private void ResumeGameHandler(IPlayer player)
@@ -336,25 +277,69 @@ namespace TetriNET.Server
             Log.WriteLine("ResumeGame:{0}", player.Name);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
-            if (masterPlayer == player)
-                ResumeGame();
+            if (masterPlayer == player && State == States.GamePaused)
+            {
+                State = States.GameStarted;
+
+                // Send resume to players
+                foreach (IPlayer p in _playerManager.Players)
+                    p.OnGameResumed();
+
+                Log.WriteLine("Game resumed");
+            }
+            else
+                Log.WriteLine("Cannot resume game");
         }
 
         private void GameLostHandler(IPlayer player)
         {
             Log.WriteLine("GameLost:{0}", player.Name);
 
-            // TODO: 
-            //  check if there is only one playing player -> winner
-            //  keep lost order
+            if (player.State == PlayerStates.Playing)
+            {
+                // Set player state
+                player.State = PlayerStates.GameLost;
+                player.LossTime = DateTime.Now;
 
-            // Set player state
-            player.State = PlayerStates.GameLost;
-            
-            // Inform players
-            int id = _playerManager.GetId(player);
-            foreach(IPlayer p in _playerManager.Players.Where(x => x != player))
-                p.OnPlayerLost(id);
+                // Inform players
+                int id = _playerManager.GetId(player);
+                foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+                    p.OnPlayerLost(id);
+
+                //
+                int playingCount = _playerManager.Players.Count(p => p.State == PlayerStates.Playing);
+                if (playingCount == 0) // there were only one playing player
+                {
+                    // Send game finished (no winner)
+                    foreach (IPlayer p in _playerManager.Players)
+                        p.OnGameFinished();
+                }
+                else if (playingCount == _playerManager.PlayerCount - 1) // only one playing left
+                {
+                    // Game won
+                    IPlayer winner = _playerManager.Players.Single(p => p.State == PlayerStates.Playing);
+                    int winnerId = _playerManager.GetId(winner);
+
+                    // Update win list
+                    UpdateWinList(winner.Name, 3);
+                    int points = 2;
+                    foreach (IPlayer p in _playerManager.Players.Where(x => x.State == PlayerStates.GameLost).OrderByDescending(x => x.LossTime))
+                    {
+                        UpdateWinList(p.Name, points);
+                        points--;
+                        if (points == 0)
+                            break;
+                    }
+
+                    // Send game finished, winner and win list
+                    foreach (IPlayer p in _playerManager.Players)
+                    {
+                        p.OnGameFinished();
+                        p.OnPlayerWon(winnerId);
+                        p.OnWinListModified(_winList);
+                    }
+                }
+            }
         }
 
         private void ChangeOptionsHandler(IPlayer player, GameOptions options)
@@ -362,8 +347,12 @@ namespace TetriNET.Server
             Log.WriteLine("ChangeOptionsHandler:{0} {1}", player.Name, options);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
-            if (masterPlayer == player)
-                ChangeOptions(options);
+            if (masterPlayer == player && State == States.WaitingStartGame)
+            {
+                _options = options; // Options will be sent to players when starting a new game
+            }
+            else
+                Log.WriteLine("Cannot change options");
         }
 
         private void KickPlayerHandler(IPlayer player, int playerId)
@@ -371,8 +360,15 @@ namespace TetriNET.Server
             Log.WriteLine("KickPlayer:{0} [{1}]", player.Name, playerId);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
-            if (masterPlayer == player)
-                KickPlayer(playerId);
+            if (masterPlayer == player && State == States.WaitingStartGame)
+            {
+                // Send server stopped
+                player.OnServerStopped();
+                // Remove player from player manager and hosts + warn other players
+                PlayerLeftHandler(player, LeaveReasons.Kick);
+            }
+            else
+                Log.WriteLine("Cannot kick player");
         }
 
         private void BanPlayerHandler(IPlayer player, int playerId)
@@ -380,10 +376,76 @@ namespace TetriNET.Server
             Log.WriteLine("BanPlayer:{0} [{1}]", player.Name, playerId);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
-            if (masterPlayer == player)
-                BanPlayer(playerId);
+            if (masterPlayer == player && State == States.WaitingStartGame)
+            {
+                // Send server stopped
+                player.OnServerStopped();
+                // Remove player from player manager and hosts + warn other players
+                PlayerLeftHandler(player, LeaveReasons.Ban);
+                // TODO: add to ban list
+            }
+            else
+                Log.WriteLine("Cannot ban player");
         }
 
+        private void ResetWinListHandler(IPlayer player)
+        {
+            Log.WriteLine("ResetWinLost:{0}", player.Name);
+
+            IPlayer masterPlayer = _playerManager.ServerMaster;
+            if (masterPlayer == player && State == States.WaitingStartGame)
+            {
+                // Reset
+                _winList = new List<WinEntry>();
+
+                // Inform player
+                foreach (IPlayer p in _playerManager.Players)
+                {
+                    p.OnPublishServerMessage("Win list has been resetted");
+                    p.OnWinListModified(_winList);
+                }
+            }
+            else
+                Log.WriteLine("Cannot reset win list");
+        }
+
+        private void PlayerLeftHandler(IPlayer player, LeaveReasons reason)
+        {
+            Log.WriteLine("Player left:{0} {1}", player.Name, reason);
+
+            bool wasServerMaster = false;
+            // Remove from player manager
+            int id;
+            lock (_playerManager.LockObject)
+            {
+                if (player == _playerManager.ServerMaster)
+                    wasServerMaster = true;
+                // Get id
+                id = _playerManager.GetId(player);
+                // Remove player from player list
+                _playerManager.Remove(player);
+            }
+
+            // Clean host tables
+            foreach(IHost host in _hosts)
+                host.RemovePlayer(player);
+
+            // Inform players except disconnected player
+            foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+                p.OnPlayerLeft(id, player.Name, reason);
+
+            // Send new server master id
+            if (wasServerMaster)
+            {
+                IPlayer serverMaster = _playerManager.ServerMaster;
+                if (serverMaster != null)
+                {
+                    int serverMasterId = _playerManager.GetId(serverMaster);
+                    foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+                        p.OnServerMasterChanged(serverMasterId);
+                }
+            }
+        }
         #endregion
 
         #region Tetrimino queue
@@ -460,14 +522,13 @@ namespace TetriNET.Server
                         }
                     }
                 }
+                // TODO: hearbeat only player on each loop ?
                 foreach (IPlayer p in _playerManager.Players)
                 {
                     TimeSpan timespan = DateTime.Now - p.LastAction;
                     if (timespan.TotalMilliseconds > InactivityTimeoutBeforePing)
-                    {
                         p.OnHeartbeatReceived(); // Check if player is alive
-                        break; // TODO: use round-robin to avoid checking first players before last players
-                    }
+                    // TODO: timeout count on player, if count > MaxTimeoutCount -> player left reason Timeout
                 }
                 if (_stopActionTaskEvent.WaitOne(0))
                     break;
@@ -478,12 +539,13 @@ namespace TetriNET.Server
 
         #region Game actions
 
-        private void PlaceTetrimino(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
+        private void PlaceTetrimino(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
         {
-            Log.WriteLine("PlaceTetrimino[{0}]{1}:{2} {3} at {4},{5}", player.Name, index, tetrimino, orientation, position.X, position.Y);
-            Log.WriteLine("Grid non-empty cell count: {0}", grid.Data.Count(x => x > 0));
+            Log.WriteLine("PlaceTetrimino[{0}]{1}:{2} {3} at {4},{5} {6}", player.Name, index, tetrimino, orientation, position.X, position.Y, grid.Count(x => x > 0));
 
             // TODO: check if index is equal to player.TetriminoIndex
+            if (index != player.TetriminoIndex)
+                Log.WriteLine("!!!! tetrimino index different for player {0} local {1} remove {2}", player.Name, player.TetriminoIndex, index);
 
             // Set grid
             player.Grid = grid;
@@ -494,65 +556,49 @@ namespace TetriNET.Server
             player.OnNextTetrimino(player.TetriminoIndex, nextTetrimino);
         }
 
-        private void Attack(IPlayer player, IPlayer target, Attacks attack)
+        private void Special(IPlayer player, IPlayer target, Specials special)
         {
-            Log.WriteLine("SendAttack[{0}][{1}]{2}", player.Name, target.Name, attack);
+            Log.WriteLine("UseSpecial[{0}][{1}]{2}", player.Name, target.Name, special);
 
-            // Store attack id locally
-            int attackId = AttackId;
-            // Increment attack
-            AttackId++;
-            // Send attack to target
-            target.OnAttackReceived(attackId, attack);
-            // If attack was a switch, call OnGridModified with switched grids
-            if (attack == Attacks.Switch)
+            //
+            int playerId = _playerManager.GetId(player);
+            int targetId = _playerManager.GetId(target);
+            // Store special id locally
+            int specialId = SpecialId;
+            // Increment special
+            SpecialId++;
+            // If special is Switch, call OnGridModified with switched grids
+            if (special == Specials.Switch)
             {
-                // Save player data
-                PlayerGrid playerGrid = new PlayerGrid
-                {
-                    Height = player.Grid.Height,
-                    Width = player.Grid.Width,
-                };
-                Array.Copy(player.Grid.Data, playerGrid.Data, player.Grid.Data.Length);
-                // Save target data
-                PlayerGrid targetGrid = new PlayerGrid
-                {
-                    Height = target.Grid.Height,
-                    Width = target.Grid.Width,
-                };
-                Array.Copy(target.Grid.Data, targetGrid.Data, target.Grid.Data.Length);
+                // Send grid to player and target
+                target.OnGridModified(targetId, player.Grid);
+                player.OnGridModified(playerId, target.Grid);
                 // Switch locally
-                target.Grid = playerGrid;
-                player.Grid = targetGrid;
-                // Send copies to everyone
-                int playerId = _playerManager.GetId(player);
-                int targetId = _playerManager.GetId(target);
-                foreach (IPlayer p in _playerManager.Players)
-                {
-                    p.OnGridModified(targetId, targetGrid);
-                    p.OnGridModified(playerId, playerGrid);
-                }
+                byte[] tmp = target.Grid;
+                target.Grid = player.Grid;
+                player.Grid = tmp;
             }
-            // Send attack message to everyone
-            string msg = String.Format("{0}: {1} sends {2} on {3}", attackId, player.Name, attack, target.Name);
-            foreach(IPlayer p in _playerManager.Players)
-                p.OnPublishAttackMessage(msg);
+            // Inform about special use
+            foreach (IPlayer p in _playerManager.Players)
+                p.OnSpecialUsed(specialId, playerId, targetId, special);
         }
 
         private void SendLines(IPlayer player, int count)
         {
             Log.WriteLine("SendLines[{0}]:{1}", player, count);
 
-            // Store attack id locally
-            int attackId = AttackId;
-            // Increment attack
-            AttackId++;
+            //
+            int playerId = _playerManager.GetId(player);
+            // Store special id locally
+            int specialId = SpecialId;
+            // Increment special id
+            SpecialId++;
             // Send lines to everyone except sender
             foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
-                p.OnPlayerAddLines(attackId, count);
+                p.OnPlayerAddLines(specialId, playerId, count);
         }
 
-        private void ModifyGrid(IPlayer player, PlayerGrid grid)
+        private void ModifyGrid(IPlayer player, byte[] grid)
         {
             Log.WriteLine("ModifyGrid");
 

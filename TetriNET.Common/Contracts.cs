@@ -1,4 +1,5 @@
-﻿using System.ServiceModel;
+﻿using System.Collections.Generic;
+using System.ServiceModel;
 
 namespace TetriNET.Common
 {
@@ -6,6 +7,7 @@ namespace TetriNET.Common
     [ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(ITetriNETCallback))]
     public interface IWCFTetriNET
     {
+        // Player connexion/deconnexion management
         [OperationContract(IsOneWay = true)]
         void RegisterPlayer(string playerName);
 
@@ -15,21 +17,27 @@ namespace TetriNET.Common
         [OperationContract(IsOneWay = true)]
         void Heartbeat();
 
+        // Chat
         [OperationContract(IsOneWay = true)] // Partyline Chat Message
         void PublishMessage(string msg);
 
+        // In-game
         [OperationContract(IsOneWay = true)]
-        void PlaceTetrimino(int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid);
+        void PlaceTetrimino(int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid);
 
         [OperationContract(IsOneWay = true)] // Field Update
-        void ModifyGrid(PlayerGrid grid);
+        void ModifyGrid(byte[] grid);
 
         [OperationContract(IsOneWay = true)]
-        void SendAttack(int targetId, Attacks attack); // Send Special
+        void UseSpecial(int targetId, Specials special); // Send Special
 
         [OperationContract(IsOneWay = true)] // Send Classic-Style Add-Lines
         void SendLines(int count);
 
+        [OperationContract(IsOneWay = true)] // Player Lost
+        void GameLost();
+
+        // Server management
         [OperationContract(IsOneWay = true)] // Start Game
         void StartGame();
 
@@ -42,9 +50,6 @@ namespace TetriNET.Common
         [OperationContract(IsOneWay = true)] // Resume Game
         void ResumeGame();
 
-        [OperationContract(IsOneWay = true)] // Player Lost
-        void GameLost();
-
         [OperationContract(IsOneWay = true)]
         void ChangeOptions(GameOptions options);
 
@@ -53,31 +58,43 @@ namespace TetriNET.Common
 
         [OperationContract(IsOneWay = true)]
         void BanPlayer(int playerId);
+
+        [OperationContract(IsOneWay = true)]
+        void ResetWinList();
     }
 
     public interface ITetriNET
     {
+        // Player connexion/deconnexion management
         void RegisterPlayer(ITetriNETCallback callback, string playerName);
         void UnregisterPlayer(ITetriNETCallback callback);
         void Heartbeat(ITetriNETCallback callback);
+        
+        // Chat
         void PublishMessage(ITetriNETCallback callback, string msg); // Partyline Chat Message
-        void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid);
-        void ModifyGrid(ITetriNETCallback callback, PlayerGrid grid);
-        void SendAttack(ITetriNETCallback callback, int targetId, Attacks attack);
+
+        // In-game
+        void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid);
+        void ModifyGrid(ITetriNETCallback callback, byte[] grid);
+        void UseSpecial(ITetriNETCallback callback, int targetId, Specials special);
         void SendLines(ITetriNETCallback callback, int count);
         void StartGame(ITetriNETCallback callback);
         void StopGame(ITetriNETCallback callback);
         void PauseGame(ITetriNETCallback callback);
         void ResumeGame(ITetriNETCallback callback);
         void GameLost(ITetriNETCallback callback);
+
+        // Server management
         void ChangeOptions(ITetriNETCallback callback, GameOptions options);
         void KickPlayer(ITetriNETCallback callback, int playerId);
         void BanPlayer(ITetriNETCallback callback, int playerId);
+        void ResetWinList(ITetriNETCallback callback);
     }
 
     // https://github.com/xale/iTetrinet/wiki/tetrinet-protocol%3A-server-to-client-messages
     public interface ITetriNETCallback
     {
+        // Player connexion/deconnexion
         [OperationContract(IsOneWay = true)]
         void OnHeartbeatReceived();
 
@@ -93,6 +110,14 @@ namespace TetriNET.Common
         [OperationContract(IsOneWay = true)] // Player Left
         void OnPlayerLeft(int playerId, string name, LeaveReasons reason);
 
+        // Chat
+        [OperationContract(IsOneWay = true)] // Partyline Chat Message
+        void OnPublishPlayerMessage(string playerName, string msg);
+
+        [OperationContract(IsOneWay = true)] // Game Chat Message
+        void OnPublishServerMessage(string msg);
+
+        // In-game
         [OperationContract(IsOneWay = true)] // Player Lost
         void OnPlayerLost(int playerId);
 
@@ -115,27 +140,22 @@ namespace TetriNET.Common
         void OnServerAddLines(int lineCount);
 
         [OperationContract(IsOneWay = true)] // Classic-Style Add-Lines
-        void OnPlayerAddLines(int attackId, int lineCount);
-
-        [OperationContract(IsOneWay = true)] // Partyline Chat Message
-        void OnPublishPlayerMessage(string playerName, string msg);
-
-        [OperationContract(IsOneWay = true)] // Game Chat Message
-        void OnPublishServerMessage(string msg);
+        void OnPlayerAddLines(int specialId, int playerId, int lineCount);
 
         [OperationContract(IsOneWay = true)]
-        void OnPublishAttackMessage(string msg);
-
-        [OperationContract(IsOneWay = true)]
-        void OnAttackReceived(int attackId, Attacks attack); // Special Used
+        void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special); // Special Used
 
         [OperationContract(IsOneWay = true)]
         void OnNextTetrimino(int index, Tetriminos tetrimino);
 
         [OperationContract(IsOneWay = true)] // Field Update
-        void OnGridModified(int playerId, PlayerGrid grid);
+        void OnGridModified(int playerId, byte[] grid);
 
+        // Server master command
         [OperationContract(IsOneWay = true)]
         void OnServerMasterChanged(int playerId);
+
+        [OperationContract(IsOneWay = true)] // Win list
+        void OnWinListModified(List<WinEntry> winList);
     }
 }

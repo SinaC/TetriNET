@@ -40,8 +40,11 @@
   <ItemGroup>
     <Compile Include="GameData.cs" />
     <Compile Include="Contracts.cs" />
+    <Compile Include="Helpers\Check.cs" />
+    <Compile Include="Helpers\Singleton.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Randomizer\RangeRandom.cs" />
     <Compile Include="WCF\DiscoveryHelper.cs" />
     <Compile Include="WCF\MetadataHelper.cs" />
   </ItemGroup>

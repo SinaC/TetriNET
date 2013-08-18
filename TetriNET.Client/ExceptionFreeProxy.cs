@@ -59,19 +59,19 @@ namespace TetriNET.Client
             ExceptionFreeAction(() => _proxy.PublishMessage(msg), "PublishMessage");
         }
 
-        public void PlaceTetrimino(int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
+        public void PlaceTetrimino(int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
         {
             ExceptionFreeAction(() => _proxy.PlaceTetrimino(index, tetrimino, orientation, position, grid), "PlaceTetrimino");
         }
 
-        public void ModifyGrid(PlayerGrid grid)
+        public void ModifyGrid(byte[] grid)
         {
             ExceptionFreeAction(() => _proxy.ModifyGrid(grid), "ModifyGrid");
         }
 
-        public void SendAttack(int targetId, Attacks attack)
+        public void UseSpecial(int targetId, Specials special)
         {
-            ExceptionFreeAction(() => _proxy.SendAttack(targetId, attack), "SendAttack");
+            ExceptionFreeAction(() => _proxy.UseSpecial(targetId, special), "UseSpecial");
         }
 
         public void SendLines(int count)
@@ -117,6 +117,11 @@ namespace TetriNET.Client
         public void BanPlayer(int playerId)
         {
             ExceptionFreeAction(() => _proxy.BanPlayer(playerId), "BanPlayer");
+        }
+
+        public void ResetWinList()
+        {
+            ExceptionFreeAction(_proxy.ResetWinList, "ResetWinList");
         }
     }
 }

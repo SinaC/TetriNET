@@ -7,7 +7,7 @@
 
 //namespace TetriNET.Server
 //{
-//    public class SocketHost : GenericHost
+//    public sealed class SocketHost : GenericHost
 //    {
 //        // store socket and handle send serialized message on socket
 //        public class TetriNETSocketCallback : ITetriNETCallback

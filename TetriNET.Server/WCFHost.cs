@@ -5,7 +5,7 @@ using TetriNET.Common.WCF;
 
 namespace TetriNET.Server
 {
-    public class WCFHost : GenericHost
+    public sealed class WCFHost : GenericHost
     {
         [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
         private class WCFServiceHost : IWCFTetriNET
@@ -69,17 +69,17 @@ namespace TetriNET.Server
                 _host.PublishMessage(Callback, msg);
             }
 
-            public void PlaceTetrimino(int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
+            public void PlaceTetrimino(int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
             {
                 _host.PlaceTetrimino(Callback, index, tetrimino, orientation, position, grid);
             }
 
-            public void SendAttack(int targetId, Attacks attack)
+            public void UseSpecial(int targetId, Specials special)
             {
-                _host.SendAttack(Callback, targetId, attack);
+                _host.UseSpecial(Callback, targetId, special);
             }
 
-            public void ModifyGrid(PlayerGrid grid)
+            public void ModifyGrid(byte[] grid)
             {
                 _host.ModifyGrid(Callback, grid);
             }
@@ -127,6 +127,11 @@ namespace TetriNET.Server
             public void BanPlayer(int playerId)
             {
                 _host.BanPlayer(Callback, playerId);
+            }
+
+            public void ResetWinList()
+            {
+                _host.ResetWinList(Callback);
             }
 
             #endregion
@@ -180,6 +185,16 @@ namespace TetriNET.Server
             _serviceHost.Stop();
 
             Started = false;
+        }
+
+        public override void RemovePlayer(IPlayer player)
+        {
+            // NOP
+        }
+
+        public override void BanPlayer(IPlayer player)
+        {
+            // TODO
         }
 
         #endregion

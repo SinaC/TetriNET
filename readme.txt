@@ -10,9 +10,9 @@ replace Tetriminos enum with index
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
 remove every reference to network from GameClient and GameServer
 GUI: dissociate part and block when a block has been placed -> careful with side effects
-GenericHost: PlayerConnectionLost add a reason (connection closed, kicked, banned, timeout)
 Manage timeout counter, after X retry -> connection lost
-Manage new connection and disconnection at one place
+Manage new connection and disconnection at one place -> ideally in Server because there can be many hosts and we can remove a player only ince
+Handle special case: game started and everyone is disconnected -> game is never stopped
 
 discover
 http://msdn.microsoft.com/en-us/magazine/ee335779.aspx

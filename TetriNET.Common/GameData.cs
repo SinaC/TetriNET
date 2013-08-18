@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace TetriNET.Common
 {
@@ -54,7 +55,7 @@ namespace TetriNET.Common
     }
 
     [DataContract]
-    public enum Attacks
+    public enum Specials
     {
         [EnumMember]
         AddLine,
@@ -85,37 +86,39 @@ namespace TetriNET.Common
     }
 
     [DataContract]
-    public class PlayerGrid
-    {
-        [DataMember]
-        public int Width { get; set; }
-
-        [DataMember]
-        public int Height { get; set; }
-
-        [DataMember]
-        public byte[] Data { get; set; } // an array of width*height color index
-    }
-
-    [DataContract]
     public class GameOptions
     {
         [DataMember]
-        public int __TODO { get; set; }
+        public List<int> TetriminoProbabilities { get; set; } // number of entries should match Tetriminos enum length
+
+        [DataMember]
+        public List<int> SpecialProbabilities { get; set; } // number of entries should match Specials enum length
     }
 
     [DataContract]
     public enum LeaveReasons
     {
         [EnumMember]
-        ConnectionLost,
+        Disconnected, // player called Unregister
         [EnumMember]
-        Timeout,
+        ConnectionLost, // exception while calling player callback
         [EnumMember]
-        Kick,
+        Timeout, // timeout
         [EnumMember]
-        Ban,
+        Kick, // kicked by server master
         [EnumMember]
-        Spam
+        Ban, // banned by server master
+        [EnumMember]
+        Spam // kicked by host because of spam
+    }
+
+    [DataContract]
+    public class WinEntry
+    {
+        [DataMember]
+        public string PlayerName { get; set; }
+
+        [DataMember]
+        public int Score { get; set; }
     }
 }

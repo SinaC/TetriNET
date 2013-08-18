@@ -5,7 +5,7 @@ using TetriNET.Common;
 
 namespace TetriNET.Server
 {
-    public class PlayerManager : IPlayerManager
+    public sealed class PlayerManager : IPlayerManager
     {
         private readonly object _lockObject;
         private readonly IPlayer[] _players;
@@ -44,6 +44,12 @@ namespace TetriNET.Server
                     return true;
                 }
             return false;
+        }
+
+        public void Clear()
+        {
+            for (int i = 0; i < MaxPlayers; i++)
+                _players[i] = null;
         }
 
         public int MaxPlayers { get; private set; }

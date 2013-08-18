@@ -46,9 +46,10 @@ namespace TetriNET.Server
             Console.WriteLine("x: Stop server");
             Console.WriteLine("s: Start game");
             Console.WriteLine("t: Stop game");
-            Console.WriteLine("m: Send message broadcast");
             Console.WriteLine("a: add dummy player");
             Console.WriteLine("r: remove dummy player");
+            Console.WriteLine("l: dummy player lose");
+            Console.WriteLine("d: dump player list");
 
             bool stopped = false;
             while (!stopped)
@@ -67,9 +68,6 @@ namespace TetriNET.Server
                         case ConsoleKey.T:
                             server.StopGame();
                             break;
-                        case ConsoleKey.M:
-                            server.BroadcastRandomMessage();
-                            break;
                         case ConsoleKey.A:
                             clients.Add(new DummyBuiltInClient("BuiltIn-" + Guid.NewGuid().ToString().Substring(0, 5), () => builtInHost));
                             break;
@@ -83,6 +81,17 @@ namespace TetriNET.Server
                             }
                             break;
                         }
+                        case ConsoleKey.L:
+                        {
+                            DummyBuiltInClient client = clients.LastOrDefault();
+                            if (client != null)
+                                client.Lose();
+                            break;
+                        }
+                        case ConsoleKey.D:
+                            foreach (IPlayer p in playerManager.Players)
+                                Console.WriteLine("{0}) {1} {2} {3} {4:HH:mm:ss.fff}", playerManager.GetId(p), p.Name, p.State, p.TetriminoIndex, p.LastAction);
+                            break;
                     }
                 }
                 else

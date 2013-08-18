@@ -28,7 +28,7 @@ namespace TetriNET.Client
 
         private readonly IProxyManager _proxyManager;
         private IWCFTetriNET Proxy { get; set; }
-        private PlayerGrid PlayerGrid { get; set; }
+        private byte[] PlayerGrid { get; set; }
         private int TetriminoIndex { get; set; }
 
         public string PlayerName { get; set; }
@@ -41,14 +41,9 @@ namespace TetriNET.Client
             State = States.ApplicationStarted;
             _proxyManager = proxyManager;
 
-            PlayerGrid = new PlayerGrid
-            {
-                Width = Width,
-                Height = Height,
-                Data = new byte[Width * Height]
-            };
+            PlayerGrid = new byte[Width*Height];
             for (int i = 0; i < Height; i++)
-                PlayerGrid.Data[i * Width] = 1;
+                PlayerGrid[i * Width] = 1;
 
             TetriminoIndex = 0;
             IsServerMaster = false;
@@ -122,7 +117,7 @@ namespace TetriNET.Client
                             TetriminoIndex++;
                             break;
                         case 2:
-                            Proxy.SendAttack(PlayerId, Attacks.Nuke);
+                            Proxy.UseSpecial(PlayerId, Specials.Nuke);
                             break;
                     }
                     Thread.Sleep(60);
@@ -258,9 +253,9 @@ namespace TetriNET.Client
             LastAction = DateTime.Now;
         }
 
-        public void OnPlayerAddLines(int attackId, int lineCount)
+        public void OnPlayerAddLines(int specialId, int playerId, int lineCount)
         {
-            Log.WriteLine("OnPlayerAddLines:{0}", lineCount);
+            Log.WriteLine("OnPlayerAddLines:{0} [{1}] {2}", specialId, playerId, lineCount);
             LastAction = DateTime.Now;
         }
 
@@ -276,15 +271,9 @@ namespace TetriNET.Client
             LastAction = DateTime.Now;
         }
 
-        public void OnPublishAttackMessage(string msg)
+        public void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special)
         {
-            Log.WriteLine("OnPublishAttackMessage:{0}", msg);
-            LastAction = DateTime.Now;
-        }
-
-        public void OnAttackReceived(int attackId, Attacks attack)
-        {
-            Log.WriteLine("OnAttackReceived:{0}", attack);
+            Log.WriteLine("OnSpecialUsed[{0}]:{1} [{2}] [{3}] {4}", PlayerName, specialId, playerId, targetId, special);
             LastAction = DateTime.Now;
         }
 
@@ -294,9 +283,9 @@ namespace TetriNET.Client
             LastAction = DateTime.Now;
         }
 
-        public void OnGridModified(int playerId, PlayerGrid grid)
+        public void OnGridModified(int playerId, byte[] grid)
         {
-            Log.WriteLine("OnGridModified:[{0}] [1]", playerId, grid.Data.Count(x => x > 0));
+            Log.WriteLine("OnGridModified:[{0}] [1]", playerId, grid.Count(x => x > 0));
             LastAction = DateTime.Now;
         }
 
@@ -306,6 +295,13 @@ namespace TetriNET.Client
             LastAction = DateTime.Now;
             IsServerMaster = (playerId == PlayerId);
         }
+
+        public void OnWinListModified(List<WinEntry> winList)
+        {
+            Log.WriteLine("OnWinListModified:{1}", winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i));
+            LastAction = DateTime.Now;
+        }
+
 
         #endregion
     }
