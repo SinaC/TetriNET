@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.Threading;
 using TetriNET.Common;
+using TetriNET.Common.Contracts;
 
 namespace TetriNET.Client
 {

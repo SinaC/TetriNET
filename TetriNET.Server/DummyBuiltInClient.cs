@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using TetriNET.Common;
+using TetriNET.Common.Contracts;
 
 namespace TetriNET.Server
 {

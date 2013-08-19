@@ -1,5 +1,4 @@
-﻿using System;
-using TetriNET.Common;
+﻿using TetriNET.Common.Contracts;
 
 namespace TetriNET.Client
 {

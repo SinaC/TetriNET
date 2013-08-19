@@ -12,7 +12,10 @@ remove every reference to network from GameClient and GameServer
 GUI: dissociate part and block when a block has been placed -> careful with side effects
 Manage new connection and disconnection at one place -> ideally in Server because there can be many hosts and we can remove a player only ince
 Handle special case: game started and everyone is disconnected -> game is never stopped
-when Server calls BanPlayer on hosts, only one host must add it to ban manager
+when Server calls BanPlayer on hosts, only one host must add it to ban manager:
+	use a common object for every transport address, ban list Add and isBanned take this common object instead of a real transport address
+	-> everyone can manage ban without knowing in which host it has been created
+	-> this object is stored in IPlayer and created by createPlayerFunc in host so server or host can ban a player using IPlayer info
 discovery doesn't work on cross/multiple machine
 
 timeout management:

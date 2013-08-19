@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TetriNET.Common;
+using TetriNET.Common.Contracts;
 
 namespace TetriNET.Server.Player
 {

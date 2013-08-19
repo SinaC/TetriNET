@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using TetriNET.Common;
+using TetriNET.Common.Contracts;
 using TetriNET.Server.Ban;
 using TetriNET.Server.Player;
 

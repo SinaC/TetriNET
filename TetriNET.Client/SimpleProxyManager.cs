@@ -4,6 +4,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using TetriNET.Common;
+using TetriNET.Common.Contracts;
 using TetriNET.Common.WCF;
 
 namespace TetriNET.Client

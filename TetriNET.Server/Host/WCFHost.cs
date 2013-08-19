@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ServiceModel;
 using TetriNET.Common;
+using TetriNET.Common.Contracts;
 using TetriNET.Common.WCF;
 using TetriNET.Server.Ban;
 using TetriNET.Server.Player;

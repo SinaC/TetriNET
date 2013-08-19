@@ -41,8 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\ITetriNET.cs" />
+    <Compile Include="Contracts\ITetriNETCallback.cs" />
+    <Compile Include="Contracts\IWCFTetriNET.cs" />
     <Compile Include="GameData.cs" />
-    <Compile Include="Contracts.cs" />
     <Compile Include="Helpers\Check.cs" />
     <Compile Include="Helpers\Singleton.cs" />
     <Compile Include="Log.cs" />
