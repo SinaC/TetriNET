@@ -113,7 +113,7 @@ namespace TetriNET.Server.Host
             if (player != null)
             {
                 Log.WriteLine("Heartbeat from {0}", player.Name);
-                player.LastAction = DateTime.Now; // player alive
+                player.ResetTimeout(); // player alive
             }
             else
             {
@@ -128,7 +128,7 @@ namespace TetriNET.Server.Host
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                player.LastAction = DateTime.Now; // player alive
+                player.ResetTimeout(); // player alive
                 //
                 if (OnMessagePublished != null)
                     OnMessagePublished(player, msg);
@@ -146,7 +146,7 @@ namespace TetriNET.Server.Host
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                player.LastAction = DateTime.Now; // player alive
+                player.ResetTimeout(); // player alive
                 //
                 if (OnTetriminoPlaced != null)
                     OnTetriminoPlaced(player, index, tetrimino, orientation, position, grid);
@@ -164,7 +164,7 @@ namespace TetriNET.Server.Host
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                player.LastAction = DateTime.Now;
+                player.ResetTimeout();
 
                 IPlayer target = PlayerManager[targetId];
                 if (target != null)
@@ -213,7 +213,7 @@ namespace TetriNET.Server.Host
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                player.LastAction = DateTime.Now;
+                player.ResetTimeout();
                 //
                 if (OnStartGame != null)
                     OnStartGame(player);
@@ -227,7 +227,7 @@ namespace TetriNET.Server.Host
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                player.LastAction = DateTime.Now;
+                player.ResetTimeout();
                 //
                 if (OnStopGame != null)
                     OnStopGame(player);
@@ -241,7 +241,7 @@ namespace TetriNET.Server.Host
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                player.LastAction = DateTime.Now;
+                player.ResetTimeout();
                 //
                 if (OnPauseGame != null)
                     OnPauseGame(player);
@@ -255,7 +255,7 @@ namespace TetriNET.Server.Host
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                player.LastAction = DateTime.Now;
+                player.ResetTimeout();
                 //
                 if (OnResumeGame != null)
                     OnResumeGame(player);
@@ -269,7 +269,7 @@ namespace TetriNET.Server.Host
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                player.LastAction = DateTime.Now;
+                player.ResetTimeout();
                 //
                 if (OnGameLost != null)
                     OnGameLost(player);
@@ -283,7 +283,7 @@ namespace TetriNET.Server.Host
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                player.LastAction = DateTime.Now;
+                player.ResetTimeout();
                 //
                 if (OnChangeOptions != null)
                     OnChangeOptions(player, options);
@@ -297,7 +297,7 @@ namespace TetriNET.Server.Host
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                player.LastAction = DateTime.Now;
+                player.ResetTimeout();
                 //
                 if (OnKickPlayer != null)
                     OnKickPlayer(player, playerId);
@@ -311,7 +311,7 @@ namespace TetriNET.Server.Host
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                player.LastAction = DateTime.Now;
+                player.ResetTimeout();
                 //
                 if (OnBanPlayer != null)
                     OnBanPlayer(player, playerId);
@@ -325,7 +325,7 @@ namespace TetriNET.Server.Host
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                player.LastAction = DateTime.Now;
+                player.ResetTimeout();
                 //
                 if (OnResetWinList != null)
                     OnResetWinList(player);

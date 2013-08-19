@@ -13,6 +13,7 @@ namespace TetriNET.Server.Player
             TetriminoIndex = 0;
             LastAction = DateTime.Now;
             State = PlayerStates.Registered;
+            TimeoutCount = 0;
         }
 
         private void ExceptionFreeAction(Action action, string actionName)
@@ -20,7 +21,7 @@ namespace TetriNET.Server.Player
             try
             {
                 action();
-                LastAction = DateTime.Now; // if action didn't raise an exception, client is still alive
+                //RefreshLastAction(); // if action didn't raise an exception, client is still alive // TODO: only true with WCF
             }
             //catch (CommunicationObjectAbortedException)
             //{
@@ -43,10 +44,26 @@ namespace TetriNET.Server.Player
         public string Name { get; private set; }
         public int TetriminoIndex { get; set; }
         public byte[] Grid { get; set; }
-        public DateTime LastAction { get; set; }
+        //
         public ITetriNETCallback Callback { get; private set; }
+        //
         public PlayerStates State { get; set; }
         public DateTime LossTime { get; set; }
+        // Timeout management
+        public DateTime LastAction { get; private set; }
+        public int TimeoutCount { get; private set; }
+
+        public void ResetTimeout()
+        {
+            TimeoutCount = 0;
+            LastAction = DateTime.Now;
+        }
+
+        public void SetTimeout()
+        {
+            TimeoutCount++;
+            LastAction = DateTime.Now;
+        }
 
         #endregion
 

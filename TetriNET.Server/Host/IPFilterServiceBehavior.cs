@@ -5,6 +5,7 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
+using TetriNET.Common;
 using TetriNET.Server.Ban;
 
 namespace TetriNET.Server.Host
@@ -42,6 +43,8 @@ namespace TetriNET.Server.Host
                 // If ip address is denied clear the request mesage so service method does not get execute
                 if (_verifier.IsBanned(address))
                 {
+                    Log.WriteLine("Banned player {0} tried to connect", address);
+
                     request = null;
                     object result = (channel.LocalAddress.Uri.Scheme.Equals(Uri.UriSchemeHttp) ||
                                      channel.LocalAddress.Uri.Scheme.Equals(Uri.UriSchemeHttps)) ?

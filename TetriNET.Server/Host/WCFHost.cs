@@ -10,7 +10,7 @@ namespace TetriNET.Server.Host
     public sealed class WCFHost : GenericHost
     {
         [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
-        private class WCFServiceHost : IWCFTetriNET
+        public class WCFServiceHost : IWCFTetriNET
         {
             private ServiceHost ServiceHost { get; set; }
             private readonly IHost _host;

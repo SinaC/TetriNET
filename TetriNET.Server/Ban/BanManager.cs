@@ -27,7 +27,7 @@ namespace TetriNET.Server.Ban
         public BanManager()
         {
             // TODO: read from file
-            Ban("joel", IPAddress.Parse("127.0.0.1"), BanReasons.Ban);
+            //Ban("joel", IPAddress.Parse("127.0.0.1"), BanReasons.Ban);
         }
 
         public void Ban(string name, IPAddress address, BanReasons reason)

@@ -19,9 +19,17 @@ namespace TetriNET.Server.Player
         string Name { get; }
         int TetriminoIndex { get; set; }
         byte[] Grid { get; set; }
-        DateTime LastAction { get; set; }
+        //
         ITetriNETCallback Callback { get; } // Should never be used by anything else then IPlayerManager and IPlayer
+        //
         PlayerStates State { get; set; }
         DateTime LossTime { get; set; }
+        // Timeout management
+        DateTime LastAction { get; }
+        int TimeoutCount { get; }
+
+        //
+        void ResetTimeout();
+        void SetTimeout();
     }
 }

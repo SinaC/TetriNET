@@ -16,7 +16,7 @@ namespace TetriNET.Client
         {
             _baseAddress = baseAddress;
         }
-
+       
         public IWCFTetriNET CreateProxy(ITetriNETCallback callback, IClient client)
         {
             EndpointAddress address = null;

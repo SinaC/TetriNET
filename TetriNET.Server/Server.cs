@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common;
 using TetriNET.Common.Helpers;
-using TetriNET.Server.Ban;
 using TetriNET.Server.Host;
 using TetriNET.Server.Player;
 
@@ -25,18 +24,20 @@ namespace TetriNET.Server
             GameFinished, // -> WaitingStartGame
             StoppingServer, // -> WaitingStartServer
 
-            GamePaused, // GameStarted
+            GamePaused, // -> GameStarted
         }
 
+        private const int HeartBeatDelay = 500; // in ms
         private const int InactivityTimeoutBeforePing = 500; // in ms
+        private const int MaxTimeoutCountBeforeDisconnection = 3;
 
         private readonly TetriminoQueue _tetriminoQueue = new TetriminoQueue();
         private readonly ManualResetEvent _stopActionTaskEvent = new ManualResetEvent(false);
         private readonly IPlayerManager _playerManager;
         private readonly List<IHost> _hosts;
 
+        private DateTime _lastHeartbeat;
         private List<WinEntry> _winList;
-
         private GameOptions _options;
         
         public States State { get; private set; }
@@ -47,6 +48,7 @@ namespace TetriNET.Server
             if (hosts == null)
                 throw new ArgumentNullException("hosts");
 
+            _lastHeartbeat = DateTime.Now;
             _playerManager = playerManager;
             _hosts = hosts.ToList();
             _options = new GameOptions(); // TODO: get options from save file
@@ -531,14 +533,31 @@ namespace TetriNET.Server
                         }
                     }
                 }
-                // TODO: hearbeat only player on each loop ?
+                // TODO: 
+                //  hearbeat only one player on each loop ?
+                //  move in host ?
+                bool sendHeartbeat = (DateTime.Now - _lastHeartbeat).TotalMilliseconds >= HeartBeatDelay;
                 foreach (IPlayer p in _playerManager.Players)
                 {
+                    // Check player timeout
                     TimeSpan timespan = DateTime.Now - p.LastAction;
                     if (timespan.TotalMilliseconds > InactivityTimeoutBeforePing)
+                    {
+                        Log.WriteLine("Timeout++ for player {0}", p.Name);
+                        // Update timeout count
+                        p.SetTimeout();
+                        if (p.TimeoutCount >= MaxTimeoutCountBeforeDisconnection)
+                           PlayerLeftHandler(p, LeaveReasons.Timeout);
+                    }
+
+                    // Send heartbeat
+                    if (sendHeartbeat)
                         p.OnHeartbeatReceived(); // Check if player is alive
-                    // TODO: timeout count on player, if count > MaxTimeoutCount -> player left reason Timeout
                 }
+                if (sendHeartbeat)
+                    _lastHeartbeat = DateTime.Now;
+               
+                // Stop task if stop event is raised
                 if (_stopActionTaskEvent.WaitOne(0))
                     break;
             }

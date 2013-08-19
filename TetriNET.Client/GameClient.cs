@@ -10,6 +10,8 @@ namespace TetriNET.Client
     [CallbackBehavior(UseSynchronizationContext = false)]
     public class GameClient : ITetriNETCallback, IClient
     {
+        private const int InactivityTimeoutBeforePing = 500; // in ms
+        private const int HeartBeatDelay = 500; // in ms
         private const int Width = 12;
         private const int Height = 20;
 
@@ -24,8 +26,6 @@ namespace TetriNET.Client
             GameFinished, // -> WaitingStartGame
         }
 
-        private const int InactivityTimeoutBeforePing = 500; // in ms
-
         private readonly IProxyManager _proxyManager;
         private IWCFTetriNET Proxy { get; set; }
         private byte[] PlayerGrid { get; set; }
@@ -35,6 +35,8 @@ namespace TetriNET.Client
         public States State { get; private set; }
         public int PlayerId { get; private set; }
         public bool IsServerMaster { get; private set; }
+
+        private DateTime _lastHeartbeat;
 
         public GameClient(IProxyManager proxyManager)
         {
@@ -47,6 +49,8 @@ namespace TetriNET.Client
 
             TetriminoIndex = 0;
             IsServerMaster = false;
+
+            _lastHeartbeat = DateTime.Now;
         }
 
         public void ConnectToServer()
@@ -128,9 +132,15 @@ namespace TetriNET.Client
             }
             if (State == States.WaitingStartGame || State == States.GameStarted || State == States.GameFinished)
             {
-                TimeSpan timespan = DateTime.Now - LastAction;
-                if (timespan.TotalMilliseconds > InactivityTimeoutBeforePing)
+                // TODO: server timeout
+                //TimeSpan timespan = DateTime.Now - LastAction;
+                //if (timespan.TotalMilliseconds > InactivityTimeoutBeforePing)
+                //    Proxy.Heartbeat();
+                if ((DateTime.Now - _lastHeartbeat).TotalMilliseconds >= HeartBeatDelay)
+                {
                     Proxy.Heartbeat();
+                    _lastHeartbeat = DateTime.Now;
+                }
             }
         }
 
