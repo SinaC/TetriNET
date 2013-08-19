@@ -13,6 +13,7 @@ GUI: dissociate part and block when a block has been placed -> careful with side
 Manage new connection and disconnection at one place -> ideally in Server because there can be many hosts and we can remove a player only ince
 Handle special case: game started and everyone is disconnected -> game is never stopped
 when Server calls BanPlayer on hosts, only one host must add it to ban manager
+discovery doesn't work on cross/multiple machine
 
 timeout management:
 	client-side
@@ -22,9 +23,12 @@ timeout management:
 		every x ms, server send Heartbeat [DONE]
 		if no message from a client during x ms and x times, leave reason timeout [DONE]
 
+
 discover
 http://msdn.microsoft.com/en-us/magazine/ee335779.aspx
 http://www.freddes.se/2010/05/16/announcement-and-discovery-in-wcf-4/
+http://social.msdn.microsoft.com/Forums/vstudio/en-US/256b272b-9885-40ae-b512-8253815c2a14/trying-to-get-example-wcf-discovery-to-work-on-multiple-machines
+http://stackoverflow.com/questions/14059493/wcf-discovery-doesnt-work-between-two-computers-on-the-same-subnet-with-the-fir
 
 callback hanging
 http://stackoverflow.com/questions/14393386/prevent-deadlock-issue-with-wcf-duplex-callback-service
