@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.Threading;
+using System.Threading.Tasks;
 using TetriNET.Common;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.WCF;
 
+// TODO: use ResetTimeout in Proxy instead of Client
 namespace POC.Client_POC
 {
     public sealed class WCFProxy : IProxy
@@ -152,13 +155,21 @@ namespace POC.Client_POC
 
     public sealed class Client : ITetriNETCallback
     {
+        private const int HeartbeatDelay = 500; // in ms
+        private const int TimeoutDelay = 300; // in ms
+        private const int MaxTimeoutCountBeforeDisconnection = 3;
+
         internal readonly IProxy _proxy; // TODO: set as private
         private readonly string[] _players = new string[6];
+        private readonly ManualResetEvent _stopBackgroundTaskEvent = new ManualResetEvent(false);
 
+        private List<WinEntry> _winList;
         private GameOptions _options;
-        private List<Tetriminos> _tetriminos = new List<Tetriminos>();
+        private List<Tetriminos> _tetriminos;
+        private DateTime _lastHeartbeat;
         private DateTime _lastServerAction;
-        private bool _registered; // TODO: set to false when call RegisterPlayer
+        private int _timeoutCount;
+        private bool _registered; // TODO: set to false before calling RegisterPlayer
         private int _playerId;
 
         public Client(Func<ITetriNETCallback, IProxy> createProxyFunc )
@@ -166,8 +177,11 @@ namespace POC.Client_POC
             _proxy = createProxyFunc(this);
             _proxy.OnConnectionLost += ConnectionLostHandler;
 
+            _lastHeartbeat = DateTime.Now.AddMilliseconds(-HeartbeatDelay);
             _playerId = -1;
             _registered = false;
+
+            Task.Factory.StartNew(TaskBackground);
         }
 
         #region IProxy event handler
@@ -183,7 +197,7 @@ namespace POC.Client_POC
 
         public void OnHeartbeatReceived()
         {
-            _lastServerAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnServerStopped()
@@ -193,6 +207,7 @@ namespace POC.Client_POC
 
         public void OnPlayerRegistered(bool succeeded, int playerId, bool gameStarted)
         {
+            ResetTimeout();
             if (succeeded)
             {
                 Log.WriteLine("Registered as player {0} game started {1}", playerId, gameStarted);
@@ -214,6 +229,7 @@ namespace POC.Client_POC
         {
             Log.WriteLine("Player {0}[{1}] joined", name, playerId);
 
+            ResetTimeout();
             if (playerId != _playerId && playerId >= 0) // don't update ourself
                 _players[playerId] = name;
             // TODO: update chat list + display msg in out-game chat + fill player screen with random blocks if game started
@@ -223,6 +239,7 @@ namespace POC.Client_POC
         {
             Log.WriteLine("Player {0}[{1}] left ({2})", name, playerId, reason);
 
+            ResetTimeout();
             if (playerId != _playerId && playerId >= 0)
                 _players[playerId] = null;
             // TODO: update chat list + display msg in out-game chat + fill player screen with random blocks if game started
@@ -231,24 +248,32 @@ namespace POC.Client_POC
         public void OnPublishPlayerMessage(string playerName, string msg)
         {
             Log.WriteLine("{0}:{1}", playerName, msg);
+
+            ResetTimeout();
             // TODO: display msg in out-game chat
         }
 
         public void OnPublishServerMessage(string msg)
         {
             Log.WriteLine("{0}", msg);
+
+            ResetTimeout();
             // TODO: display msg in out-game chat
         }
 
         public void OnPlayerLost(int playerId)
         {
             Log.WriteLine("Player [{0}] {1} has lost", playerId, _players[playerId]);
+
+            ResetTimeout();
             // TODO: fill player screen with random blocks + display msg in in-game chat + update player status
         }
 
         public void OnPlayerWon(int playerId)
         {
             Log.WriteLine("Player [{0}] {1} has won", playerId, _players[playerId]);
+
+            ResetTimeout();
             // TODO: display msg in in-game chat + out-game chat + update player status
         }
 
@@ -256,6 +281,7 @@ namespace POC.Client_POC
         {
             Log.WriteLine("Game started");
 
+            ResetTimeout();
             _options = options;
             _tetriminos = new List<Tetriminos>
                 {
@@ -267,31 +293,37 @@ namespace POC.Client_POC
 
         public void OnGameFinished()
         {
+            ResetTimeout();
             throw new NotImplementedException();
         }
 
         public void OnGamePaused()
         {
+            ResetTimeout();
             throw new NotImplementedException();
         }
 
         public void OnGameResumed()
         {
+            ResetTimeout();
             throw new NotImplementedException();
         }
 
         public void OnServerAddLines(int lineCount)
         {
+            ResetTimeout();
             throw new NotImplementedException();
         }
 
         public void OnPlayerAddLines(int specialId, int playerId, int lineCount)
         {
+            ResetTimeout();
             throw new NotImplementedException();
         }
 
         public void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special)
         {
+            ResetTimeout();
             throw new NotImplementedException();
         }
 
@@ -299,17 +331,21 @@ namespace POC.Client_POC
         {
             Log.WriteLine("Tetrimino {0}: {1}", index, tetrimino);
 
+            ResetTimeout();
             _tetriminos[index] = tetrimino;
         }
 
         public void OnGridModified(int playerId, byte[] grid)
         {
             Log.WriteLine("Player [{0}] {1} modified", playerId, _players[playerId]);
+
+            ResetTimeout();
             // TODO: update player screen
         }
 
         public void OnServerMasterChanged(int playerId)
         {
+            ResetTimeout();
             if (playerId == _playerId)
             {
                 Log.WriteLine("Yeehaw ... power is ours");
@@ -325,9 +361,55 @@ namespace POC.Client_POC
         public void OnWinListModified(List<WinEntry> winList)
         {
             Log.WriteLine("Win list: {0}", winList.Select(x => x.PlayerName + ":" + x.Score).Aggregate((n, i) => n + "(" + i + ")"));
+
+            ResetTimeout();
+            _winList = winList;
             // TODO: update win list
         }
         
         #endregion
+
+        private void ResetTimeout()
+        {
+            _timeoutCount = 0;
+            _lastServerAction = DateTime.Now;
+        }
+
+        private void SetTimeout()
+        {
+            _timeoutCount++;
+            _lastServerAction = DateTime.Now;
+        }
+
+        private void TaskBackground()
+        {
+            while (true)
+            {
+                if (_registered)
+                {
+                    // Check server timeout
+                    TimeSpan timespan = DateTime.Now - _lastServerAction;
+                    if (timespan.TotalMilliseconds > TimeoutDelay)
+                    {
+                        Log.WriteLine("Timeout++");
+                        SetTimeout();
+                        if (_timeoutCount >= MaxTimeoutCountBeforeDisconnection)
+                            ConnectionLostHandler(); // timeout
+                    }
+
+                    // Send heartbeat if needed // TODO: reset this when sending a message
+                    TimeSpan delayFromPreviousHeartbeat = DateTime.Now - _lastHeartbeat;
+                    if (delayFromPreviousHeartbeat.TotalMilliseconds > HeartbeatDelay)
+                    {
+                        _proxy.Heartbeat(this);
+                        _lastHeartbeat = DateTime.Now;
+                    }
+
+                    // Stop task if stop event is raised
+                    if (_stopBackgroundTaskEvent.WaitOne(0))
+                        break;
+                }
+            }
+        }
     }
 }

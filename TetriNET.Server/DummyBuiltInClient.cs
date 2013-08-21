@@ -7,9 +7,10 @@ using TetriNET.Common.Contracts;
 
 namespace TetriNET.Server
 {
+    // TODO: dissociate LastAction from server than LastAction to server
     public sealed class DummyBuiltInClient : ITetriNETCallback
     {
-        private const int InactivityTimeoutBeforePing = 300; // in ms
+        private const int HeartbeatDelay = 300; // in ms
         private const int Width = 12;
         private const int Height = 20;
 
@@ -46,6 +47,7 @@ namespace TetriNET.Server
 
             IsServerMaster = false;
             TetriminoIndex = 0;
+            LastAction = DateTime.Now.AddMilliseconds(-HeartbeatDelay);
             State = States.ApplicationStarted;
         }
 
@@ -122,7 +124,8 @@ namespace TetriNET.Server
             if (State == States.WaitingStartGame || State == States.GameStarted || State == States.GameFinished)
             {
                 TimeSpan timespan = DateTime.Now - LastAction;
-                if (timespan.TotalMilliseconds > InactivityTimeoutBeforePing)
+                Log.WriteLine("TEST {0} {1} {2}", PlayerName, State, timespan.TotalMilliseconds);
+                if (timespan.TotalMilliseconds > HeartbeatDelay)
                     Proxy.Heartbeat(this);
             }
         }

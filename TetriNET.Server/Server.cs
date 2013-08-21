@@ -27,8 +27,8 @@ namespace TetriNET.Server
             GamePaused, // -> GameStarted
         }
 
-        private const int HeartBeatDelay = 500; // in ms
-        private const int InactivityTimeoutBeforePing = 500; // in ms
+        private const int HeartbeatDelay = 300; // in ms
+        private const int TimeoutDelay = 500; // in ms
         private const int MaxTimeoutCountBeforeDisconnection = 3;
 
         private readonly TetriminoQueue _tetriminoQueue = new TetriminoQueue();
@@ -48,7 +48,7 @@ namespace TetriNET.Server
             if (hosts == null)
                 throw new ArgumentNullException("hosts");
 
-            _lastHeartbeat = DateTime.Now;
+            _lastHeartbeat = DateTime.Now.AddMilliseconds(-HeartbeatDelay);
             _playerManager = playerManager;
             _hosts = hosts.ToList();
             _options = new GameOptions(); // TODO: get options from save file
@@ -533,15 +533,14 @@ namespace TetriNET.Server
                         }
                     }
                 }
-                // TODO: 
-                //  hearbeat only one player on each loop ?
-                //  move in host ?
-                bool sendHeartbeat = (DateTime.Now - _lastHeartbeat).TotalMilliseconds >= HeartBeatDelay;
+                
+                // Check player timeout + send heartbeat if needed
+                bool sendHeartbeat = (DateTime.Now - _lastHeartbeat).TotalMilliseconds > HeartbeatDelay; // TODO: should reset this when a message is sent to player
                 foreach (IPlayer p in _playerManager.Players)
                 {
                     // Check player timeout
                     TimeSpan timespan = DateTime.Now - p.LastAction;
-                    if (timespan.TotalMilliseconds > InactivityTimeoutBeforePing)
+                    if (timespan.TotalMilliseconds > TimeoutDelay)
                     {
                         Log.WriteLine("Timeout++ for player {0}", p.Name);
                         // Update timeout count

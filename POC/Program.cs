@@ -26,7 +26,6 @@ namespace POC
                 else
                 {
                     System.Threading.Thread.Sleep(100);
-                    client._proxy.Heartbeat(client);
                 }
             }
 
