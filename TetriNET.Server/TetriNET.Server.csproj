@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ban\BanManager.cs" />
+    <Compile Include="Ban\HostTransportAddress.cs" />
     <Compile Include="Ban\IBanManager.cs" />
     <Compile Include="Host\BuiltInHost.cs" />
     <Compile Include="DummyBuiltInClient.cs" />

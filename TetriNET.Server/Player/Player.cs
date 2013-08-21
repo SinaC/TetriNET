@@ -30,9 +30,9 @@ namespace TetriNET.Server.Player
             //    if (OnConnectionLost != null)
             //        OnConnectionLost(this);
             //}
-            catch (Exception)
+            catch (Exception ex)
             {
-                Log.WriteLine("Exception:{0}", actionName);
+                Log.WriteLine("Exception:{0} {1}", actionName, ex);
                 if (OnConnectionLost != null)
                     OnConnectionLost(this);
             }

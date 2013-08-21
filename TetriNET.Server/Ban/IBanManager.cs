@@ -8,7 +8,6 @@ namespace TetriNET.Server.Ban
         Spam,   // server banned automatically because of spam
     }
 
-    // TODO: should use more than IPAddress
     public interface IBanManager
     {
         bool IsBanned(IPAddress address);

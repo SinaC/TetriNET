@@ -38,6 +38,8 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client_POC\Implementation.cs" />
+    <Compile Include="Client_POC\Interfaces.cs" />
     <Compile Include="Server_POC\Implementation.cs" />
     <Compile Include="Server_POC\Interfaces.cs" />
     <Compile Include="Program.cs" />
@@ -54,9 +56,7 @@
       <Name>TetriNET.Common</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Client_POC\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

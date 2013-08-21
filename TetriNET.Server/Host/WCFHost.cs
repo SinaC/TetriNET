@@ -11,10 +11,11 @@ namespace TetriNET.Server.Host
     public sealed class WCFHost : GenericHost
     {
         [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
-        public class WCFServiceHost : IWCFTetriNET
+        public sealed class WCFServiceHost : IWCFTetriNET
         {
-            private ServiceHost ServiceHost { get; set; }
+            private ServiceHost _serviceHost;
             private readonly IHost _host;
+
             public string Port { get; set; }
 
             public WCFServiceHost(IHost host)
@@ -30,13 +31,13 @@ namespace TetriNET.Server.Host
                 else
                     baseAddress = new Uri("net.tcp://localhost:" + Port + "/TetriNET");
 
-                ServiceHost = new ServiceHost(this, baseAddress);
-                ServiceHost.AddServiceEndpoint(typeof(IWCFTetriNET), new NetTcpBinding(SecurityMode.None), "");
+                _serviceHost = new ServiceHost(this, baseAddress);
+                _serviceHost.AddServiceEndpoint(typeof(IWCFTetriNET), new NetTcpBinding(SecurityMode.None), "");
                 //ServiceHost.AddDefaultEndpoints();
-                ServiceHost.Description.Behaviors.Add(new IPFilterServiceBehavior(_host.BanManager));
-                ServiceHost.Open();
+                _serviceHost.Description.Behaviors.Add(new IPFilterServiceBehavior(_host.BanManager));
+                _serviceHost.Open();
 
-                foreach (var endpt in ServiceHost.Description.Endpoints)
+                foreach (var endpt in _serviceHost.Description.Endpoints)
                 {
                     Log.WriteLine("Enpoint address:\t{0}", endpt.Address);
                     Log.WriteLine("Enpoint binding:\t{0}", endpt.Binding);
@@ -47,7 +48,7 @@ namespace TetriNET.Server.Host
             public void Stop()
             {
                 // Close service host
-                ServiceHost.Close();
+                _serviceHost.Close();
             }
 
             #region IWCFTetriNET
@@ -148,7 +149,7 @@ namespace TetriNET.Server.Host
             }
         }
 
-        private bool Started { get; set; }
+        private bool _started;
 
         private readonly WCFServiceHost _serviceHost;
 
@@ -162,24 +163,24 @@ namespace TetriNET.Server.Host
         {
             _serviceHost = new WCFServiceHost(this);
 
-            Started = false;
+            _started = false;
         }
 
         #region IHost
 
         public override void Start()
         {
-            if (Started)
+            if (_started)
                 return;
 
             _serviceHost.Start();
 
-            Started = true;
+            _started = true;
         }
 
         public override void Stop()
         {
-            if (!Started)
+            if (!_started)
                 return;
 
             // Inform players
@@ -188,7 +189,7 @@ namespace TetriNET.Server.Host
             
             _serviceHost.Stop();
 
-            Started = false;
+            _started = false;
         }
 
         public override void RemovePlayer(IPlayer player)

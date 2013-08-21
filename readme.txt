@@ -26,6 +26,12 @@ timeout management:
 		every x ms, server send Heartbeat [DONE]
 		if no message from a client during x ms and x times, leave reason timeout [DONE]
 
+wcf
+http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf
+http://gafferongames.com/networking-for-game-programmers/udp-vs-tcp/
+http://msdn.microsoft.com/en-us/library/ms751494.aspx
+http://blog.the-blair.com/2010/04/02/wcf-tutorial.html
+http://www.codeproject.com/Articles/331599/What-s-new-in-WCF-4-5-UDP-transport-support
 
 discover
 http://msdn.microsoft.com/en-us/magazine/ee335779.aspx

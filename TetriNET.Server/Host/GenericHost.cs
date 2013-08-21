@@ -108,12 +108,12 @@ namespace TetriNET.Server.Host
 
         public virtual void Heartbeat(ITetriNETCallback callback)
         {
-            Log.WriteLine("Heartbeat");
+            //Log.WriteLine("Heartbeat");
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                Log.WriteLine("Heartbeat from {0}", player.Name);
+                //Log.WriteLine("Heartbeat from {0}", player.Name);
                 player.ResetTimeout(); // player alive
             }
             else

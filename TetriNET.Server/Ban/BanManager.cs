@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Runtime.CompilerServices;
 using TetriNET.Common;
 
 namespace TetriNET.Server.Ban
@@ -48,6 +46,12 @@ namespace TetriNET.Server.Ban
             address = FixAddress(address);
 
             return _banList.ContainsKey(address);
+        }
+
+        public void Dump()
+        {
+            foreach(BanEntry entry in _banList.Values)
+                Log.WriteLine("{0} {1} {2}", entry.Address, entry.Name, entry.Reason);
         }
 
         private static IPAddress FixAddress(IPAddress address)

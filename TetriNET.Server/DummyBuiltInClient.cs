@@ -9,7 +9,7 @@ namespace TetriNET.Server
 {
     public sealed class DummyBuiltInClient : ITetriNETCallback
     {
-        private const int InactivityTimeoutBeforePing = 500; // in ms
+        private const int InactivityTimeoutBeforePing = 300; // in ms
         private const int Width = 12;
         private const int Height = 20;
 

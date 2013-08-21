@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
-using POC.Sockets;
-using TetriNET.Common;
+using POC.Client_POC;
 
 namespace POC
 {
@@ -11,17 +7,40 @@ namespace POC
     {
         private static void Main(string[] args)
         {
-            TCPServer server = new TCPServer
+            Client client = new Client(callback => new WCFProxy(@"net.tcp://localhost:8765/TetriNET", callback));
+            client._proxy.RegisterPlayer(client, "joel-wpf-client");
+
+            bool stopped = false;
+            while (!stopped)
+            {
+                if (Console.KeyAvailable)
                 {
-                    Port = 5656
-                };
-            server.Start();
+                    ConsoleKeyInfo cki = Console.ReadKey(true);
+                    switch (cki.Key)
+                    {
+                        case ConsoleKey.X:
+                            stopped = true;
+                            break;
+                    }
+                }
+                else
+                {
+                    System.Threading.Thread.Sleep(100);
+                    client._proxy.Heartbeat(client);
+                }
+            }
 
-            Console.WriteLine("Press enter to stop server");
+            //TCPServer server = new TCPServer
+            //    {
+            //        Port = 5656
+            //    };
+            //server.Start();
 
-            Console.ReadLine();
+            //Console.WriteLine("Press enter to stop server");
 
-            server.Stop();
+            //Console.ReadLine();
+
+            //server.Stop();
         }
     }
 
