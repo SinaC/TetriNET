@@ -66,6 +66,10 @@ https://go4answers.webhost4life.com/Example/delect-unexpected-dead-client-wcf-67
 tetris GUI WPF
 http://sekagra.com/wp/2011/11/wpf-tetris/
 
+console application .NET
+http://broadcast.oreilly.com/2010/08/understanding-c-text-mode-games.html
+http://www.c-sharpcorner.com/uploadfile/scottlysle/colorful-console-mode-applications-in-C-Sharp/
+
 various
 http://signalr.net/
 http://www.hanselman.com/blog/AsynchronousScalableWebApplicationsWithRealtimePersistentLongrunningConnectionsWithSignalR.aspx
