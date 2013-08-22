@@ -63,6 +63,10 @@ http://beyondrelational.com/modules/2/blogs/79/posts/11543/throwing-exceptions-f
 http://stackoverflow.com/questions/1369882/wcf-web-service-custom-exception-error-to-client
 https://go4answers.webhost4life.com/Example/delect-unexpected-dead-client-wcf-67814.aspx
 
+wpf image
+http://www.codeproject.com/Articles/25672/Simple-slide-game-using-ViewBox
+http://stackoverflow.com/questions/1195208/wpf-how-can-i-show-a-cropped-region-of-an-imagesource-in-an-image-control
+
 tetris GUI WPF
 http://sekagra.com/wp/2011/11/wpf-tetris/
 
