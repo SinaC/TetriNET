@@ -71,6 +71,7 @@ namespace Tetris.Model
         Right = 3,
         Rotate = 4,
         Pause = 5,
-        Attack = 6,
+        Drop = 6,
+        Attack = 7,
     }
 }

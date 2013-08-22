@@ -105,6 +105,7 @@ namespace Tetris.Model
                         new KeySetting(Key.Right, TetrisCommand.Right),
                         new KeySetting(Key.Up, TetrisCommand.Rotate),
                         new KeySetting(Key.Escape, TetrisCommand.Pause),
+                        new KeySetting(Key.Space, TetrisCommand.Drop),
                         new KeySetting(Key.A, TetrisCommand.Attack)
                     };
             }

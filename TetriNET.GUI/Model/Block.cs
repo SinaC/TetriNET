@@ -53,8 +53,6 @@ namespace Tetris.Model
         /// <param name="grid">Reference to the grid object, the block will be a part of.</param>
         public static Block NewBlock(List<Part> grid)
         {
-            return new BlockO(grid);
-
             //Get all classes that inherite from block
             var blockTypes = typeof (Block).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof (Block))).ToList();
 

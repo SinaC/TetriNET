@@ -390,7 +390,9 @@ namespace Tetris.Model
 
             if (!ret)
             {
+                // Place block
                 CurrentBlock.DissociateParts();
+                //
                 FinishRound();
             }
             else if (sender as DispatcherTimer == null)
@@ -446,6 +448,29 @@ namespace Tetris.Model
             {
                 BlockMoved();
             }
+        }
+
+        /// <summary>
+        /// Moves the CurrentBlock down until it cannot move anymore
+        /// </summary>
+        public void Drop()
+        {
+            if (BlockMoving != null)
+            {
+                BlockMoving();
+            }
+            // Perform move
+            while (CurrentBlock.MoveDown())
+                ;
+            if (BlockMoved != null)
+            {
+                BlockMoved();
+            }
+            // Place block
+            CurrentBlock.DissociateParts();
+
+            //
+            FinishRound();
         }
 
         #endregion
