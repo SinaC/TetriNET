@@ -11,6 +11,8 @@ namespace TetriNET.Server
     public sealed class DummyBuiltInClient : ITetriNETCallback
     {
         private const int HeartbeatDelay = 300; // in ms
+        private const int TimeoutDelay = 500; // in ms
+        private const int MaxTimeoutCountBeforeDisconnection = 3;
         private const int Width = 12;
         private const int Height = 20;
 
@@ -29,8 +31,10 @@ namespace TetriNET.Server
         private ITetriNET Proxy { get; set; }
         private byte[] PlayerGrid { get; set; }
         private int TetriminoIndex { get; set; }
+        private DateTime _lastServerAction;
+        private int _timeoutCount;
+        private DateTime _lastHeartbeat;
 
-        public DateTime LastAction { get; set; }
         public string PlayerName { get; private set; }
         public States State { get; private set; }
         public int PlayerId { get; private set; }
@@ -47,7 +51,11 @@ namespace TetriNET.Server
 
             IsServerMaster = false;
             TetriminoIndex = 0;
-            LastAction = DateTime.Now.AddMilliseconds(-HeartbeatDelay);
+
+            _lastHeartbeat = DateTime.Now.AddMilliseconds(-HeartbeatDelay);
+            _lastServerAction = DateTime.Now;
+            _timeoutCount = 0;
+
             State = States.ApplicationStarted;
         }
 
@@ -123,10 +131,23 @@ namespace TetriNET.Server
             }
             if (State == States.WaitingStartGame || State == States.GameStarted || State == States.GameFinished)
             {
-                TimeSpan timespan = DateTime.Now - LastAction;
-                Log.WriteLine("TEST {0} {1} {2}", PlayerName, State, timespan.TotalMilliseconds);
-                if (timespan.TotalMilliseconds > HeartbeatDelay)
+                // Check server timeout
+                TimeSpan timespan = DateTime.Now - _lastServerAction;
+                if (timespan.TotalMilliseconds > TimeoutDelay)
+                {
+                    Log.WriteLine("Timeout++");
+                    SetTimeout();
+                    if (_timeoutCount >= MaxTimeoutCountBeforeDisconnection)
+                        OnServerStopped(); // timeout
+                }
+
+                // Send heartbeat if needed // TODO: reset this when sending a message
+                TimeSpan delayFromPreviousHeartbeat = DateTime.Now - _lastHeartbeat;
+                if (delayFromPreviousHeartbeat.TotalMilliseconds > HeartbeatDelay)
+                {
                     Proxy.Heartbeat(this);
+                    _lastHeartbeat = DateTime.Now;
+                }
             }
         }
 
@@ -137,26 +158,37 @@ namespace TetriNET.Server
 
             Proxy.GameLost(this);
         }
+
+        private void ResetTimeout()
+        {
+            _timeoutCount = 0;
+            _lastServerAction = DateTime.Now;
+        }
+
+        private void SetTimeout()
+        {
+            _timeoutCount++;
+            _lastServerAction = DateTime.Now;
+        }
         
         #region ITetriNETCallback
 
         public void OnHeartbeatReceived()
         {
-            Log.WriteLine("OnHeartbeatReceived[{0}]", PlayerName);
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnServerStopped()
         {
             Log.WriteLine("OnServerStopped[{0}]", PlayerName);
             State = States.ApplicationStarted;
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnPlayerRegistered(bool succeeded, int playerId, bool gameStarted)
         {
             Log.WriteLine("OnPlayerRegistered[{0}]:{1} => {2} {3}", PlayerName, succeeded, playerId, gameStarted);
-            LastAction = DateTime.Now;
+            ResetTimeout();
             if (succeeded)
             {
                 PlayerId = playerId;
@@ -169,31 +201,31 @@ namespace TetriNET.Server
         public void OnPlayerJoined(int playerId, string name)
         {
             Log.WriteLine("OnPlayerJoined[{0}]:{1}[{2}]", PlayerName, name, playerId);
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnPlayerLeft(int playerId, string name, LeaveReasons reason)
         {
             Log.WriteLine("OnPlayedLeft[{0}]:{1}[{2}] {3}", PlayerName, name, playerId, reason);
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnPlayerLost(int playerId)
         {
             Log.WriteLine("OnPlayerLost[{0}]:[{1}]", PlayerName, playerId);
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnPlayerWon(int playerId)
         {
             Log.WriteLine("OnPlayerWon[{0}]:[{1}]", PlayerName, playerId);
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, GameOptions options)
         {
             Log.WriteLine("OnGameStarted[{0}]:{1} {2}", PlayerName, firstTetrimino, secondTetrimino);
-            LastAction = DateTime.Now;
+            ResetTimeout();
             if (State == States.WaitingStartGame)
             {
                 State = States.GameStarted;
@@ -206,7 +238,7 @@ namespace TetriNET.Server
         public void OnGameFinished()
         {
             Log.WriteLine("OnGameFinished[{0}]", PlayerName);
-            LastAction = DateTime.Now;
+            ResetTimeout();
             if (State == States.GameStarted)
             {
                 Log.WriteLine("Game finished: #tetrimino: {0}", TetriminoIndex);
@@ -219,68 +251,68 @@ namespace TetriNET.Server
         public void OnGamePaused()
         {
             Log.WriteLine("OnGamePaused[{0}]", PlayerName);
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnGameResumed()
         {
             Log.WriteLine("OnGameResumed[{0}]", PlayerName);
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnServerAddLines(int lineCount)
         {
             Log.WriteLine("OnServerAddLines[{0}]:{1}", PlayerName, lineCount);
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnPlayerAddLines(int specialId, int playerId, int lineCount)
         {
             Log.WriteLine("OnPlayerAddLines[{0}]:{1} [{2}] {3}", PlayerName, specialId, playerId, lineCount);
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnPublishPlayerMessage(string playerName, string msg)
         {
             Log.WriteLine("OnPublishPlayerMessage[{0}]:{1}:{2}", PlayerName, playerName, msg);
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnPublishServerMessage(string msg)
         {
             Log.WriteLine("OnPublishServerMessage[{0}]:{1}", PlayerName, msg);
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special)
         {
             Log.WriteLine("OnSpecialUsed[{0}]:{1} [{2}] [{3}] {4}", PlayerName, specialId, playerId, targetId, special);
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnNextTetrimino(int index, Tetriminos tetrimino)
         {
             Log.WriteLine("OnNextTetrimino[{0}]:{1} {2}", PlayerName, index, tetrimino);
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnGridModified(int playerId, byte[] grid)
         {
             Log.WriteLine("OnGridModified[{0}]:[{1}] [2]", PlayerName, playerId, grid.Count(x => x > 0));
-            LastAction = DateTime.Now;
+            ResetTimeout();
         }
 
         public void OnServerMasterChanged(int playerId)
         {
             Log.WriteLine("OnServerMasterChanged[{0}]:[{1}]", PlayerName, playerId);
-            LastAction = DateTime.Now;
+            ResetTimeout();
             IsServerMaster = (playerId == PlayerId);
         }
 
         public void OnWinListModified(List<WinEntry> winList)
         {
-            Log.WriteLine("OnWinListModified:{1}", winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i));
-            LastAction = DateTime.Now;
+            Log.WriteLine("OnWinListModified:{0}", winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i));
+            ResetTimeout();
         }
 
         #endregion

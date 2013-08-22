@@ -46,7 +46,9 @@ namespace Tetris.Controls
                         {
                             Background = new SolidColorBrush(Colors.Transparent),
                             BorderBrush = new SolidColorBrush(Colors.Transparent),
-                            BorderThickness = new Thickness(1.0)
+                            BorderThickness = new Thickness(1.0),
+                            HorizontalContentAlignment = HorizontalAlignment.Center,
+                            VerticalContentAlignment = VerticalAlignment.Center
                         };
                     grid.Children.Add(lbl);
                     Grid.SetRow(lbl, i);
@@ -85,7 +87,7 @@ namespace Tetris.Controls
         private void Tetris_RowsCompleted(int[] rows)
         {
             //Get all parts
-            var rowParts = grid.Children.Cast<Control>().Where(e => rows.Contains(Grid.GetRow(e))).ToList();
+            var rowParts = grid.Children.Cast<Label>().Where(e => rows.Contains(Grid.GetRow(e))).ToList();
 
             //Use a WPF Storyboard to display an effect on the row (Thread.Sleep() after setting the opacity will just not display anything)
             Storyboard storyboard = new Storyboard();
@@ -163,8 +165,9 @@ namespace Tetris.Controls
         {
             foreach (Part p in Tetris.CurrentBlock.Parts)
             {
-                var uiPart = grid.Children.Cast<Control>().Single(e => Grid.GetRow(e) == p.PosY && Grid.GetColumn(e) == p.PosX);
+                var uiPart = grid.Children.Cast<Label>().Single(e => Grid.GetRow(e) == p.PosY && Grid.GetColumn(e) == p.PosX);
                 uiPart.Background = new SolidColorBrush(p.Color);
+                uiPart.Content = p.Special;
             }
         }
 
@@ -176,8 +179,9 @@ namespace Tetris.Controls
         {
             foreach (Part p in Tetris.CurrentBlock.Parts)
             {
-                var uiPart = grid.Children.Cast<Control>().Single(e => Grid.GetRow(e) == p.PosY && Grid.GetColumn(e) == p.PosX);
+                var uiPart = grid.Children.Cast<Label>().Single(e => Grid.GetRow(e) == p.PosY && Grid.GetColumn(e) == p.PosX);
                 uiPart.Background = new SolidColorBrush(Colors.Transparent);
+                uiPart.Content = null;
             }
         }
 
@@ -187,11 +191,12 @@ namespace Tetris.Controls
         /// </summary>
         private void ClearGrid()
         {
-            var controls = grid.Children.Cast<Control>().ToList();
-            foreach (var c in controls)
+            var labels = grid.Children.Cast<Label>().ToList();
+            foreach (var l in labels)
             {
-                c.Opacity = 1;
-                c.Background = new SolidColorBrush(Colors.Transparent);
+                l.Opacity = 1;
+                l.Background = new SolidColorBrush(Colors.Transparent);
+                l.Content = null;
             }
         }
 
@@ -204,8 +209,9 @@ namespace Tetris.Controls
 
             foreach (var p in Tetris.Grid)
             {
-                var uiPart = grid.Children.Cast<Control>().Single(e => Grid.GetRow(e) == p.PosY && Grid.GetColumn(e) == p.PosX);
+                var uiPart = grid.Children.Cast<Label>().Single(e => Grid.GetRow(e) == p.PosY && Grid.GetColumn(e) == p.PosX);
                 uiPart.Background = new SolidColorBrush(p.Color);
+                uiPart.Content = p.Special;
             }
 
             #endregion

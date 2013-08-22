@@ -50,6 +50,5 @@ namespace TetriNET.Server.Host
         void Start();
         void Stop();
         void RemovePlayer(IPlayer player); // Should be overridden to handle local table storing reference to player
-        void BanPlayer(IPlayer player);
     }
 }

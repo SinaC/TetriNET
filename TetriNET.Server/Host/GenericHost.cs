@@ -51,7 +51,6 @@ namespace TetriNET.Server.Host
         public abstract void Start();
         public abstract void Stop();
         public abstract void RemovePlayer(IPlayer player);
-        public abstract void BanPlayer(IPlayer player);
 
         #endregion
 

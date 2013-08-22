@@ -1,7 +1,7 @@
 ﻿using System;
 using TetriNET.Common.Contracts;
 
-namespace POC.Client_POC
+namespace TetriNET.Client
 {
     public delegate void ConnectionLostHandler();
 

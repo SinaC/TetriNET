@@ -15,13 +15,13 @@
         void ModifyGrid(ITetriNETCallback callback, byte[] grid);
         void UseSpecial(ITetriNETCallback callback, int targetId, Specials special);
         void SendLines(ITetriNETCallback callback, int count);
+        void GameLost(ITetriNETCallback callback);
+
+        // Server management
         void StartGame(ITetriNETCallback callback);
         void StopGame(ITetriNETCallback callback);
         void PauseGame(ITetriNETCallback callback);
         void ResumeGame(ITetriNETCallback callback);
-        void GameLost(ITetriNETCallback callback);
-
-        // Server management
         void ChangeOptions(ITetriNETCallback callback, GameOptions options);
         void KickPlayer(ITetriNETCallback callback, int playerId);
         void BanPlayer(ITetriNETCallback callback, int playerId);

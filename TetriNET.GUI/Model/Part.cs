@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows.Media;
+using TetriNET.Common;
 
 namespace Tetris.Model
 {
@@ -7,8 +8,9 @@ namespace Tetris.Model
     {
         #region Fields
 
-        private readonly Block _parentBlock;
+        private Block _parentBlock;
         private Color? _color;
+        private Specials? _special;
 
         #endregion
 
@@ -20,17 +22,21 @@ namespace Tetris.Model
         {
             get { return _parentBlock; }
         }
-       
+
+        public string Special
+        {
+            get { return _special == null ? null : _special.ToString().Substring(0, 1).ToUpper(); }
+        }
 
         //The public properties for PosX/PosY will return the absolute position in the Grid (based on the values of the parent block).
         public int PosX
         {
-            get { return ParentBlock.PosX + PosXInBlock; }
+            get { return (ParentBlock == null ? 0 : ParentBlock.PosX) + PosXInBlock; }
         }
 
         public int PosY
         {
-            get { return ParentBlock.PosY + PosYInBlock; }
+            get { return (ParentBlock == null ? 0 : ParentBlock.PosY) + PosYInBlock; }
         }
 
         public Color Color
@@ -50,9 +56,42 @@ namespace Tetris.Model
             PosYInBlock = posy;
         }
 
+        public Part(int posx, int posy)
+        {
+            PosXInBlock = posx;
+            PosYInBlock = posy;
+        }
+
         #endregion
 
-        #region Methods
+        #region Method
+
+        public void SetSpecial(Specials special)
+        {
+            _special = special;
+        }
+
+        public void ClearSpecial()
+        {
+            _special = null;
+        }
+
+        public void DissociateFromBlock()
+        {
+            if (_parentBlock != null)
+            {
+                _color = _parentBlock.Color;
+                PosXInBlock = ParentBlock.PosX + PosXInBlock;
+                PosYInBlock = ParentBlock.PosY + PosYInBlock;
+                _parentBlock = null;
+            }
+        }
+
+        public void SetAbsolutePosition(int x, int y)
+        {
+            PosXInBlock = x;
+            PosYInBlock = y;
+        }
 
         /// <summary>
         /// Determine if the part can move to the new position x/y

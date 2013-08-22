@@ -58,12 +58,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -128,8 +124,6 @@
     <Compile Include="Converter\InvertBooleanConverter.cs" />
     <Compile Include="Converter\SoundVolumeConverter.cs" />
     <Compile Include="Converter\VolumeValuesConverter.cs" />
-    <Compile Include="Model\Blocks\BlockAdditionalRows.cs" />
-    <Compile Include="Model\Blocks\BlockBackground.cs" />
     <Compile Include="Model\Highscores.cs" />
     <Compile Include="Sounds\ResourceMediaPlayer.cs" />
     <Compile Include="Sounds\ParallelSoundPlayer.cs" />
@@ -254,6 +248,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
+      <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
+      <Name>TetriNET.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

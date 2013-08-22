@@ -53,8 +53,10 @@ namespace Tetris.Model
         /// <param name="grid">Reference to the grid object, the block will be a part of.</param>
         public static Block NewBlock(List<Part> grid)
         {
+            return new BlockO(grid);
+
             //Get all classes that inherite from block
-            var blockTypes = typeof (Block).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof (Block)) && t != typeof (BlockAdditionalRows) && t != typeof (BlockBackground)).ToList();
+            var blockTypes = typeof (Block).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof (Block))).ToList();
 
             #region Get a random type from the list
 
@@ -73,6 +75,12 @@ namespace Tetris.Model
 
             //Create a concrete instance of the determined type
             return (Block) Activator.CreateInstance(randType, grid);
+        }
+
+        public void DissociateParts()
+        {
+            foreach (Part p in Parts)
+                p.DissociateFromBlock();
         }
 
         /// <summary>
@@ -231,19 +239,19 @@ namespace Tetris.Model
             return true;
         }
 
-        /// <summary>
-        /// Removes all parts in the row from the block and rearranges the rest. (Every part below moves up. Used while deleting a row.)
-        /// </summary>
-        /// <param name="row">The row to remove </param>
-        public void DeleteRow(int row)
-        {
-            //Remove the parts
-            Parts.RemoveAll(p => p.PosY == row);
+        ///// <summary>
+        ///// Removes all parts in the row from the block and rearranges the rest. (Every part below moves up. Used while deleting a row.)
+        ///// </summary>
+        ///// <param name="row">The row to remove </param>
+        //public void DeleteRow(int row)
+        //{
+        //    //Remove the parts
+        //    Parts.RemoveAll(p => p.PosY == row);
 
-            //Rearrange the rest (!! Only do this if there is a part above the just deleted row, otherwise the block wont be moved down later)
-            if (Parts.Count(p => p.PosY < row) > 0)
-                Parts.Where(p => p.PosY > row).ToList().ForEach(p => p.RearrangePart(p.PosXInBlock, p.PosYInBlock - 1));
-        }
+        //    //Rearrange the rest (!! Only do this if there is a part above the just deleted row, otherwise the block wont be moved down later)
+        //    if (Parts.Count(p => p.PosY < row) > 0)
+        //        Parts.Where(p => p.PosY > row).ToList().ForEach(p => p.RearrangePart(p.PosXInBlock, p.PosYInBlock - 1));
+        //}
 
         /// <summary>
         /// Check if there are any conflicts with other parts.

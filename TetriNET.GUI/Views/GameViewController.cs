@@ -66,8 +66,9 @@ namespace Tetris.Views
                         _tetris.PauseGame();
                         break;
                     case TetrisCommand.Attack:
-                        _tetris.AddLines(4);
+                        //_tetris.AddLines(4);
                         //_tetris.RandomBlocksClear(10);
+                        _tetris.Quake();
                         break;
                     default:
                         break;

@@ -4,23 +4,38 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 using System.Windows.Threading;
 using System.ComponentModel;
+using TetriNET.Common;
 using Tetris.Model.Blocks;
 
 namespace Tetris.Model
 {
-    // TODO: use BlockBackground non-moving parts
-    // new event to redraw only some part
+    // TODO
+    //  new event to redraw only some part
     public class Tetris : INotifyPropertyChanged
     {
+        #region Constants
+        private static readonly Color[] AvailableColors =
+            {
+                Colors.Brown, // I
+                Colors.Red, // J
+                Colors.Green, // L
+                Colors.HotPink, // O
+                Colors.Gray, // S
+                Colors.LimeGreen, // T
+                Colors.Blue // Z
+            };
+        #endregion
+
         #region Fields
 
         private int _level;
         private int _clearedLines;
         private int _score;
         private Block _nextBlock;
-        private Random _random;
+        private readonly Random _random;
 
         #endregion
 
@@ -193,11 +208,11 @@ namespace Tetris.Model
 
             var rows = CheckForCompleteRows();
 
-            if (rows.Count() > 0)
-                if (RowsCompleting != null)
-                {
-                    RowsCompleting(rows);
-                }
+            //if (rows.Count() > 0)
+            //    if (RowsCompleting != null)
+            //    {
+            //        RowsCompleting(rows);
+            //    }
 
             #region Delete all parts in every completed row
 
@@ -206,13 +221,17 @@ namespace Tetris.Model
                 DeleteRow(row);
             }
 
-            if (rows.Count() > 0)
-                if (RowsCompleted != null)
-                {
-                    RowsCompleted(rows);
-                }
+            //if (rows.Count() > 0)
+            //    if (RowsCompleted != null)
+            //    {
+            //        RowsCompleted(rows);
+            //    }
 
             #endregion
+
+            // Add special blocks
+            if (rows.Length > 0)
+                AddSpecialBlocks(rows.Count());
 
             //Increase the counter for the cleared Lines
             ClearedLines += rows.Count();
@@ -272,7 +291,7 @@ namespace Tetris.Model
 
             #endregion
 
-            //Turn it into an int array
+            //Turn it into an int array and order them from top to bottom
             return completeRows.Select(i => i.Row).OrderBy(r => r).ToArray();
         }
 
@@ -282,33 +301,38 @@ namespace Tetris.Model
         /// <param name="row">The row in the complete Grid that will be deleted.</param>
         private void DeleteRow(int row)
         {
-            //Get all parts which have to be removed
-            var parts = Grid.Where(p => p.PosY == row).ToList();
+            ////Get all parts which have to be removed
+            //var parts = Grid.Where(p => p.PosY == row).ToList();
 
             //Remove them from the Grid
             Grid.RemoveAll(p => p.PosY == row);
 
-            #region Perform the deletion on every affected block to delete the parts from their blocks and rearrange the remaining ones
+            //#region Perform the deletion on every affected block to delete the parts from their blocks and rearrange the remaining ones
 
-            //Get all affected blocks
-            parts.GroupBy(p => p.ParentBlock)
-                .Select(ps => ps.First().ParentBlock)
-                .ToList()
-                .ForEach(b => b.DeleteRow(row));
+            ////Get all affected blocks
+            //parts.GroupBy(p => p.ParentBlock)
+            //    .Select(ps => ps.First().ParentBlock)
+            //    .ToList()
+            //    .ForEach(b => b.DeleteRow(row));
 
-            #endregion
+            //#endregion
 
-            #region Rearrange the rest
+            //#region Rearrange the rest
 
-            //Get all blocks above the just deleted row (parts grouped by their block so every block only moves down once)
-            var blocks = Grid.Where(p => p.PosY < row)
-                .GroupBy(p => p.ParentBlock)
-                .Select(ps => ps.First().ParentBlock).ToList();
+            ////Get all blocks above the just deleted row (parts grouped by their block so every block only moves down once)
+            //var blocks = Grid.Where(p => p.PosY < row)
+            //    .GroupBy(p => p.ParentBlock)
+            //    .Select(ps => ps.First().ParentBlock).ToList();
 
-            //Move the blocks (conflicts dont matter because the blocks are already locked)
-            blocks.ForEach(b => b.MoveDown());
+            ////Move the blocks (conflicts dont matter because the blocks are already locked)
+            //blocks.ForEach(b => b.MoveDown());
 
-            #endregion
+            //#endregion
+
+            // Move everything one line below (except current block)
+            List<Part> partsToMove = Grid.Where(p => p.ParentBlock != CurrentBlock && p.PosY < row).ToList();
+            foreach (Part p in partsToMove)
+                p.SetAbsolutePosition(p.PosXInBlock, p.PosYInBlock + 1);
         }
 
         /// <summary>
@@ -364,9 +388,12 @@ namespace Tetris.Model
 
             #region Handle the moves result
 
-            if (!ret) 
+            if (!ret)
+            {
+                CurrentBlock.DissociateParts();
                 FinishRound();
-            else if (sender as DispatcherTimer == null) 
+            }
+            else if (sender as DispatcherTimer == null)
                 SoftDrops++;
             //A user invoked MoveDown() is awarded with points
 
@@ -477,7 +504,29 @@ namespace Tetris.Model
             Debug.WriteLine("==================================================");
         }
 
-        #region Attacks
+        #region Specials
+        public void AddSpecialBlocks(int count)
+        {
+            if (Grid.Any())
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    // Get list of part without special blocks
+                    List<Part> parts = Grid.Where(x => x.ParentBlock != CurrentBlock && x.Special == null).ToList();
+                    if (parts.Any())
+                    {
+                        int r = _random.Next(parts.Count);
+                        // TODO: get random special
+                        parts[r].SetSpecial(Specials.AddLine);
+                    }
+                }
+                // TODO: redraw only modified parts
+                // Inform View
+                if (AttackReceived != null)
+                    AttackReceived();
+            }
+        }
+
         /// <summary>
         /// Add <param name="count"/> junk lines
         /// </summary>
@@ -487,31 +536,30 @@ namespace Tetris.Model
             if (count <= 0)
                 return;
 
-            // Create block in bottom row
-            BlockAdditionalRows blockAdditionalRows = new BlockAdditionalRows(Grid, count)
+            // Random part in bottom line
+            List<Part> parts = new List<Part>();
+            for (int i = 0; i < count; i++)
             {
-                PosX = 0,
-                PosY = 18 - count
-            };
-
-            // Move all parts 'rows' line above (except current block)
-            var blocks = Grid
-                .Where(p => p.PosY <= 17 && p.ParentBlock != CurrentBlock)
-                .GroupBy(p => p.ParentBlock)
-                .Select(ps => ps.First().ParentBlock).ToList();
-            blocks.ForEach(block =>
-            {
-                // Remove parts
-                block.Parts.ForEach(p => Grid.Remove(p));
-                // Move up
-                block.PosY -= count;
-                // Readd parts
-                Grid.AddRange(block.Parts);
+                int hole = _random.Next(10);
+                parts.AddRange(Enumerable.Range(0, 10)
+                                   .Where(x => x != hole)
+                                   .Select(
+                                       x => new Part(x, 17-i)
+                                       {
+                                           Color = AvailableColors[_random.Next(AvailableColors.Length)]
+                                       }
+                                   ));
             }
-            );
 
-            // Add block to grid
-            Grid.AddRange(blockAdditionalRows.Parts);
+            // Move everything x line above (except current block)
+            List<Part> partsToMove = Grid.Where(p => p.ParentBlock != CurrentBlock && p.PosY <= 17).ToList();
+            foreach (Part p in partsToMove)
+                p.SetAbsolutePosition(p.PosXInBlock, p.PosYInBlock - count);
+
+            // Add parts to grid
+            Grid.AddRange(parts);
+
+            DebugOutput();
 
             // Inform View
             if (AttackReceived != null)
@@ -559,15 +607,99 @@ namespace Tetris.Model
                 // Remove parts
                 Grid.RemoveAll(p => p.ParentBlock != CurrentBlock && p.PosX == x && p.PosY == y);
             }
+
             // Inform View
             if (AttackReceived != null)
                 AttackReceived();
         }
 
         //TODO: public void SwitchField()           impossible while part and block are associated
-        //TODO: public void ClearSpecialBlocks()    special blocks to yet implemented
-        //TODO: public void Gravity()               impossible while part and block are associated
-        //TODO: public void Quake()                 impossible while part and block are associated
+        
+        /// <summary>
+        /// Removes all special blocks from a players field
+        /// </summary>
+        public void ClearSpecialBlocks()
+        {
+            // Clear special block
+            foreach(Part p in Grid.Where(x => x.ParentBlock != CurrentBlock))
+                p.ClearSpecial();
+
+            // Inform View
+            if (AttackReceived != null)
+                AttackReceived();
+        }
+
+        /// <summary>
+        /// Takes all the blocks on the field and "pulls" them all towards the bottom of the field eliminating any gaps in the blockstack
+        /// </summary>
+        public void Gravity()
+        {
+            for (int x = 0; x < 10; x++)
+            {
+                // At least a part in column
+                if (Grid.Any(p => p.ParentBlock != CurrentBlock && p.PosX == x))
+                {
+                    for (int y = 17; y > 0; y--)
+                    {
+                        // At least a part above this position
+                        if (Grid.Any(p => p.ParentBlock != CurrentBlock && p.PosX == x && p.PosY < y))
+                        {
+                            while (true)
+                            {
+                                bool moved = false;
+                                // If there is a hole, move every piece above to the bottom
+                                if (!Grid.Any(p => p.ParentBlock != CurrentBlock && p.PosX == x && p.PosY == y))
+                                    foreach (Part p in Grid.Where(p => p.ParentBlock != CurrentBlock && p.PosX == x && p.PosY < y))
+                                    {
+                                        p.SetAbsolutePosition(x, p.PosY + 1);
+                                        moved = true;
+                                    }
+                                if (!moved)
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Check completed rows
+            int[] rows = CheckForCompleteRows();
+            if (rows != null && rows.Any())
+                foreach (var row in rows)
+                    DeleteRow(row);
+
+            // Inform View
+            if (AttackReceived != null)
+                AttackReceived();
+        }
+
+        /// <summary>
+        /// Each of the lines of blocks on a players field to randomly shift left or right or not at all
+        /// </summary>
+        public void Quake()
+        {
+            for (int y = 17; y > 0; y--)
+            {
+                // At least one part in row
+                if (Grid.Any(p => p.ParentBlock != CurrentBlock && p.PosY == y))
+                {
+                    int shift = _random.Next(3) - 1; // -1 -> 1
+                    if (shift != 0)
+                    {
+                        // Remove every part out of grid after shift
+                        Grid.RemoveAll(p => p.ParentBlock != CurrentBlock && p.PosY == y && (p.PosX + shift < 0 || p.PosX + shift > 9));
+                        // Shift other part in row
+                        foreach (Part p in Grid.Where(p => p.ParentBlock != CurrentBlock && p.PosY == y))
+                            p.SetAbsolutePosition(p.PosX + shift, p.PosY);
+                    }
+                }
+            }
+
+            // Inform View
+            if (AttackReceived != null)
+                AttackReceived();
+        }
+
         //TODO: public void Bomb()                  impossible while part and block are associated
 
         #endregion

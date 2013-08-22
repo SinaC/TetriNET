@@ -197,13 +197,6 @@ namespace TetriNET.Server.Host
             // NOP
         }
 
-        public override void BanPlayer(IPlayer player)
-        {
-            // TODO
-            // how can we know this player belong to this host
-        }
-
         #endregion
-       
     }
 }

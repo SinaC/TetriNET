@@ -8,7 +8,8 @@ namespace POC
         private static void Main(string[] args)
         {
             Client client = new Client(callback => new WCFProxy(@"net.tcp://localhost:8765/TetriNET", callback));
-            client._proxy.RegisterPlayer(client, "joel-wpf-client");
+            client.Name = "joel-wpf-client";
+            client._proxy.RegisterPlayer(client, client.Name);
 
             bool stopped = false;
             while (!stopped)
