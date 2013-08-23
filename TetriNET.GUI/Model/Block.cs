@@ -186,7 +186,7 @@ namespace Tetris.Model
         private bool Rotation(int degrees)
         {
             //Store all operations in this list and perform them after its safe that there isn't any conflict while rotating
-            int[,] rotations = new int[4, 2]; // 4: max block size   2: 0 for x and 1 for y
+            int[,] rotations = new int[4, 2]; // 4: max part count   2: 0 for x and 1 for y
 
             #region Set the center for the rotation
 

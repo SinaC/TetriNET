@@ -8,23 +8,39 @@ using TetriNET.Common.Contracts;
 
 namespace TetriNET.Client
 {
-    public sealed class Client : ITetriNETCallback
+    public class Player
+    {
+        public string Name { get; set; }
+        public byte[] Grid { get; set; }
+    }
+
+    public sealed class Client : ITetriNETCallback, IClient
     {
         private const int HeartbeatDelay = 300; // in ms
         private const int TimeoutDelay = 500; // in ms
         private const int MaxTimeoutCountBeforeDisconnection = 3;
 
+        public enum States
+        {
+            Created,
+            Registering,
+            Registered,
+            Playing
+        }
+
         internal readonly IProxy _proxy; // TODO: set as private
-        private readonly string[] _players = new string[6];
+        private readonly Player[] _players = new Player[6];
         private readonly ManualResetEvent _stopBackgroundTaskEvent = new ManualResetEvent(false);
+
+        public States State { get; private set; }
 
         private List<WinEntry> _winList;
         private GameOptions _options;
         private List<Tetriminos> _tetriminos;
         private int _tetriminoIndex;
         private DateTime _lastHeartbeat;
-        private bool _registered; // TODO: set to false before calling RegisterPlayer
         private int _playerId;
+        private bool _isServerMaster;
 
         public string Name { get; set; } // TODO: private setter and method to set it only if not already registered
 
@@ -35,7 +51,9 @@ namespace TetriNET.Client
 
             _lastHeartbeat = DateTime.Now.AddMilliseconds(-HeartbeatDelay);
             _playerId = -1;
-            _registered = false;
+            _isServerMaster = false;
+
+            State = States.Created;
 
             Task.Factory.StartNew(BackgroundTask);
         }
@@ -64,21 +82,22 @@ namespace TetriNET.Client
         public void OnPlayerRegistered(bool succeeded, int playerId, bool gameStarted)
         {
             _proxy.ResetTimeout();
-            if (succeeded)
+            if (succeeded && State == States.Registering)
             {
                 Log.WriteLine("Registered as player {0} game started {1}", playerId, gameStarted);
 
                 // TODO: if gameStarted fill our screen with random blocks
 
                 _playerId = playerId;
-                _players[_playerId] = Name;
-                _registered = true;
+                _players[_playerId] = new Player
+                    {
+                        Name = Name
+                    };
+                State = States.Registered;
             }
             else
             {
                 Log.WriteLine("Registration failed");
-
-                _registered = false;
             }
         }
 
@@ -88,7 +107,10 @@ namespace TetriNET.Client
 
             _proxy.ResetTimeout();
             if (playerId != _playerId && playerId >= 0) // don't update ourself
-                _players[playerId] = name;
+                _players[playerId] = new Player
+                    {
+                        Name = name
+                    };
             // TODO: update chat list + display msg in out-game chat + fill player screen with random blocks if game started
         }
 
@@ -139,6 +161,7 @@ namespace TetriNET.Client
             Log.WriteLine("Game started");
 
             _proxy.ResetTimeout();
+            State = States.Playing;
             _options = options;
             _tetriminos = new List<Tetriminos>
                 {
@@ -154,6 +177,7 @@ namespace TetriNET.Client
             Log.WriteLine("Game finished");
 
             _proxy.ResetTimeout();
+            State = States.Registered;
             // TODO:
         }
 
@@ -211,6 +235,8 @@ namespace TetriNET.Client
             Log.WriteLine("Player [{0}] {1} modified", playerId, _players[playerId]);
 
             _proxy.ResetTimeout();
+            if (_players[playerId] != null)
+                _players[playerId].Grid = grid;
             // TODO: update player screen
         }
 
@@ -220,11 +246,15 @@ namespace TetriNET.Client
             if (playerId == _playerId)
             {
                 Log.WriteLine("Yeehaw ... power is ours");
+
+                _isServerMaster = true;
                 // TODO: enable server settings, start/stop/pause/resume buttons, ...
             }
             else
             {
                 Log.WriteLine("The power is for another one");
+
+                _isServerMaster = false;
                 // TODO: disable server settings, start/stop/pause/resume buttons, ...
             }
         }
@@ -240,11 +270,15 @@ namespace TetriNET.Client
 
         #endregion
 
+        #region IClient
+
+        #endregion
+
         private void BackgroundTask()
         {
             while (true)
             {
-                if (_registered)
+                if (State == States.Registered || State == States.Playing)
                 {
                     // Check server timeout
                     TimeSpan timespan = DateTime.Now - _proxy.LastServerAction;

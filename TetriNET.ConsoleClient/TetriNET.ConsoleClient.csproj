@@ -42,7 +42,10 @@
     <Reference Include="System.Xml.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Blocks\Block.cs" />
+    <Compile Include="Blocks\BlockT.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="IClient.cs" />
     <Compile Include="IProxy.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
