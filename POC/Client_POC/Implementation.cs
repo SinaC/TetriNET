@@ -299,7 +299,7 @@ namespace POC.Client_POC
             // TODO: display msg in in-game chat + out-game chat + update player status
         }
 
-        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, GameOptions options)
+        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, Tetriminos thirdTetrimino, GameOptions options)
         {
             Log.WriteLine("Game started");
 
@@ -308,7 +308,8 @@ namespace POC.Client_POC
             _tetriminos = new List<Tetriminos>
                 {
                     firstTetrimino,
-                    secondTetrimino
+                    secondTetrimino,
+                    thirdTetrimino
                 };
             _tetriminoIndex = 0;
             // TODO: update current/next piece, clear every player screen

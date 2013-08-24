@@ -76,7 +76,7 @@ namespace TetriNET.Common
     }
 
     [DataContract]
-    public struct Position
+    public class Position
     {
         [DataMember]
         public int X;

@@ -105,9 +105,9 @@ namespace TetriNET.Server.Player
             ExceptionFreeAction(() => Callback.OnPlayerWon(playerId), "OnPlayerWon");
         }
 
-        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, GameOptions options)
+        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, Tetriminos thirdTetrimino, GameOptions options)
         {
-            ExceptionFreeAction(() => Callback.OnGameStarted(firstTetrimino, secondTetrimino, options), "OnGameStarted");
+            ExceptionFreeAction(() => Callback.OnGameStarted(firstTetrimino, secondTetrimino, thirdTetrimino, options), "OnGameStarted");
         }
 
         public void OnGameFinished()

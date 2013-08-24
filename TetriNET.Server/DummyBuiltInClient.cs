@@ -222,9 +222,9 @@ namespace TetriNET.Server
             ResetTimeout();
         }
 
-        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, GameOptions options)
+        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, Tetriminos thirdTetrimino, GameOptions options)
         {
-            Log.WriteLine("OnGameStarted[{0}]:{1} {2}", PlayerName, firstTetrimino, secondTetrimino);
+            Log.WriteLine("OnGameStarted[{0}]:{1} {2} {3}", PlayerName, firstTetrimino, secondTetrimino, thirdTetrimino);
             ResetTimeout();
             if (State == States.WaitingStartGame)
             {

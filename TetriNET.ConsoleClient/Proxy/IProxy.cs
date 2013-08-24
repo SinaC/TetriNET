@@ -1,7 +1,7 @@
 ﻿using System;
 using TetriNET.Common.Contracts;
 
-namespace TetriNET.Client
+namespace TetriNET.Client.Proxy
 {
     public delegate void ConnectionLostHandler();
 

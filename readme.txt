@@ -18,6 +18,8 @@ when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 	-> this object is stored in IPlayer and created by createPlayerFunc in host so server or host can ban a player using IPlayer info
 discovery doesn't work on cross/multiple machine
 
+tetriminos array in client must be rewritten
+
 timeout management:
 	client-side
 		every x ms without any message sent to server, client send Heartbeat
@@ -85,3 +87,12 @@ http://en.wikipedia.org/wiki/TetriNET
 
 Tetrinet original description
 http://gtetrinet.sourceforge.net/tetrinet.txt
+
+tetris
+http://tetris.wikia.com/wiki/ARS
+http://tetris.wikia.com/wiki/Nintendo_Rotation_System
+http://tetris.wikia.com/wiki/Original_Rotation_System
+http://tetris.wikia.com/wiki/SRS
+http://tetris.wikia.com/wiki/DTET_Rotation_System
+http://tetris.wikia.com/wiki/TetriNet_Rotation_System
+http://tetrisconcept.net/wiki/TetriNet_Rotation_System

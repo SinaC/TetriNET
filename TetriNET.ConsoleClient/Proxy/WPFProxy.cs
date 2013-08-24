@@ -7,7 +7,7 @@ using TetriNET.Common;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.WCF;
 
-namespace TetriNET.Client
+namespace TetriNET.Client.Proxy
 {
     public sealed class WCFProxy : IProxy
     {
@@ -102,7 +102,7 @@ namespace TetriNET.Client
             ExceptionFreeAction(() => _proxy.PublishMessage(msg), "PublishMessage");
         }
 
-        public void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
+        public void PlaceTetrimino(ITetriNETCallback callback, int index, Common.Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
         {
             ExceptionFreeAction(() => _proxy.PlaceTetrimino(index, tetrimino, orientation, position, grid), "PlaceTetrimino");
         }

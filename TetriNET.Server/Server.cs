@@ -134,13 +134,14 @@ namespace TetriNET.Server
                 _tetriminoQueue.Reset(); // TODO: random seed
                 Tetriminos firstTetrimino = _tetriminoQueue[0];
                 Tetriminos secondTetrimino = _tetriminoQueue[1];
+                Tetriminos thirdTetrimino = _tetriminoQueue[2];
                 // Send start game to every connected player
                 foreach (IPlayer p in _playerManager.Players)
                 {
                     p.TetriminoIndex = 0;
                     p.State = PlayerStates.Playing;
                     p.LossTime = DateTime.MaxValue;
-                    p.OnGameStarted(firstTetrimino, secondTetrimino, _options);
+                    p.OnGameStarted(firstTetrimino, secondTetrimino, thirdTetrimino, _options);
                 }
 
                 Log.WriteLine("Game started");
@@ -568,7 +569,7 @@ namespace TetriNET.Server
 
         private void PlaceTetrimino(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
         {
-            Log.WriteLine("PlaceTetrimino[{0}]{1}:{2} {3} at {4},{5} {6}", player.Name, index, tetrimino, orientation, position.X, position.Y, grid.Count(x => x > 0));
+            Log.WriteLine("PlaceTetrimino[{0}]{1}:{2} {3} at {4},{5} {6}", player.Name, index, tetrimino, orientation, position == null ? -1 : position.X, position == null ? -1 : position.Y, grid == null ? -1 : grid.Count(x => x > 0));
 
             // TODO: check if index is equal to player.TetriminoIndex
             if (index != player.TetriminoIndex)
@@ -578,9 +579,10 @@ namespace TetriNET.Server
             player.Grid = grid;
             // Get next piece
             player.TetriminoIndex++;
-            Tetriminos nextTetrimino = _tetriminoQueue[player.TetriminoIndex];
+            int indexToSend = player.TetriminoIndex + 2; // indices 0, 1 and 2 have been sent when starting game
+            Tetriminos nextTetriminoToSend = _tetriminoQueue[indexToSend];
             // Send next piece
-            player.OnNextTetrimino(player.TetriminoIndex, nextTetrimino);
+            player.OnNextTetrimino(indexToSend, nextTetriminoToSend);
         }
 
         private void Special(IPlayer player, IPlayer target, Specials special)

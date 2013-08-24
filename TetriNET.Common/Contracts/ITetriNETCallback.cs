@@ -36,7 +36,7 @@ namespace TetriNET.Common.Contracts
         void OnPlayerWon(int playerId);
 
         [OperationContract(IsOneWay = true)] // New Game
-        void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, GameOptions options);
+        void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, Tetriminos thirdTetrimino, GameOptions options);
 
         [OperationContract(IsOneWay = true)] // End Game
         void OnGameFinished();
