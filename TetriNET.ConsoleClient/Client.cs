@@ -20,6 +20,41 @@ namespace TetriNET.Client
         public byte[] Grid { get; set; }
     }
 
+    public class TetriminoArray
+    {
+        private int _size;
+        private Tetriminos[] _array;
+
+        public TetriminoArray(int size)
+        {
+            _size = size;
+            _array = new Tetriminos[_size];
+        }
+
+        public Tetriminos this[int index]
+        {
+            get
+            {
+                return _array[index];
+            }
+            set
+            {
+                if (index > _size)
+                    Grow(16);
+            }
+        }
+
+        private void Grow(int increment)
+        {
+            int newSize = _size + increment;
+            Tetriminos[] newArray = new Tetriminos[newSize];
+            if (_size > 0)
+                Array.Copy(_array, newArray, _size);
+            _array = newArray;
+            _size = newSize;
+        }
+    }
+
     public sealed class Client : ITetriNETCallback, IClient
     {
         private const int HeartbeatDelay = 300; // in ms
@@ -43,6 +78,7 @@ namespace TetriNET.Client
         private readonly Func<Tetriminos, int, int, ITetrimino>  _createTetriminoFunc;
         private readonly Player[] _players = new Player[6];
         private readonly ManualResetEvent _stopBackgroundTaskEvent = new ManualResetEvent(false);
+        private readonly TetriminoArray _tetriminos;
 
         public States State { get; private set; }
 
@@ -54,7 +90,6 @@ namespace TetriNET.Client
 
         private System.Timers.Timer _gameTimer;
 
-        private List<Tetriminos> _tetriminos;
         private int _tetriminoIndex;
         private ITetrimino _currentTetrimino;
         private ITetrimino _nextTetrimino;
@@ -80,6 +115,8 @@ namespace TetriNET.Client
             _createTetriminoFunc = createTetrimino;
 
             _random = new Random();
+
+            _tetriminos = new TetriminoArray(64);
 
             _gameTimer = new System.Timers.Timer();
             _gameTimer.Interval = 500; // TODO: use a function to compute interval in function of level
@@ -240,12 +277,9 @@ namespace TetriNET.Client
             _proxy.ResetTimeout();
             State = States.Playing;
             _options = options;
-            _tetriminos = new List<Tetriminos>
-                {
-                    firstTetrimino,
-                    secondTetrimino,
-                    thirdTetrimino
-                };
+            _tetriminos[0] = firstTetrimino;
+            _tetriminos[1] = secondTetrimino;
+            _tetriminos[2] = thirdTetrimino;
             _tetriminoIndex = 0;
             _currentTetrimino = _createTetriminoFunc(firstTetrimino, Width, Height);
             _nextTetrimino = _createTetriminoFunc(secondTetrimino, Width, Height);
@@ -316,7 +350,7 @@ namespace TetriNET.Client
             Log.WriteLine("Tetrimino {0}: {1}", index, tetrimino);
 
             _proxy.ResetTimeout();
-            _tetriminos[index] = tetrimino; // TODO: use a resizable array (check in server)
+            _tetriminos[index] = tetrimino;
             // TODO: update next piece if index == _tetriminoIndex+1
         }
 

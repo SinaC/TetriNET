@@ -464,19 +464,27 @@ namespace TetriNET.Server
 
         private class TetriminoQueue
         {
-            private int _tetriminosCount;
+            private readonly int _tetriminosCount;
             private readonly object _lock = new object();
             private int _size;
             private int[] _array;
-            private Random _random;
+            private readonly Random _random;
 
-            public void Reset(int seed = 0)
+            public TetriminoQueue(int seed = 0)
             {
                 _tetriminosCount = Enum.GetValues(typeof(Tetriminos)).Length;
                 _random = new Random(seed);
                 lock (_lock)
                 {
-                    Grow(1);
+                    Grow(64);
+                }
+            }
+
+            public void Reset()
+            {
+                lock (_lock)
+                {
+                    Fill(0, _size);
                 }
             }
 
@@ -501,10 +509,15 @@ namespace TetriNET.Server
                 int[] newArray = new int[newSize];
                 if (_size > 0)
                     Array.Copy(_array, newArray, _size);
-                for (int i = _size; i < newSize; i++)
-                    newArray[i] = _random.Next(_tetriminosCount);
                 _array = newArray;
+                Fill(_size, increment);
                 _size = newSize;
+            }
+
+            private void Fill(int from, int count)
+            {
+                for(int i = from; i < from+count; i++)
+                    _array[i] = _random.Next(_tetriminosCount);
             }
         }
 
