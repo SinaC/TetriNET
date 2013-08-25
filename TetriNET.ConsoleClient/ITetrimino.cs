@@ -15,6 +15,8 @@
         int Width { get; }
         int Height { get; }
 
+        int LinearPosInGrid(int linearPosInPart);
+
         bool CheckConflict(byte[] grid);
 
         bool MoveLeft(byte[] grid);

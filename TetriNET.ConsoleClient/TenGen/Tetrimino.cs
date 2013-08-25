@@ -32,10 +32,23 @@ namespace TetriNET.Client.TenGen
             GridWidth = gridWidth;
             GridHeight = gridHeight;
 
-            PosX = 1; // TODO: center
-            PosY = 1;
+            PosX = gridWidth/2 - width/2;
+            PosY = 0;
 
             _rotation = 0; // TODO: random
+        }
+
+        public int LinearPosInGrid(int linearPosInPart)
+        {
+            // Get part coordinates
+            int partX = linearPosInPart % Width;
+            int partY = linearPosInPart / Width;
+
+            // Transpose coordinates into grid coordinates
+            int gridX = PosX + partX;
+            int gridY = PosY + partY;
+
+            return gridY * GridWidth + gridX;
         }
 
         public bool CheckConflict(byte[] grid)
@@ -54,7 +67,7 @@ namespace TetriNET.Client.TenGen
                     int partX = i%Width;
                     int partY = i/Width;
 
-                    // Transport coordinates into grid coordinates and perform move
+                    // Transpose coordinates into grid coordinates and perform move
                     int gridX = PosX + partX - 1;
                     int gridY = PosY + partY;
                     int linearGridCoordinate = gridY*GridWidth + gridX;
@@ -83,7 +96,7 @@ namespace TetriNET.Client.TenGen
                     int partX = i%Width;
                     int partY = i/Width;
 
-                    // Transport coordinates into grid coordinates and perform move
+                    // Transpose coordinates into grid coordinates and perform move
                     int gridX = PosX + partX + 1;
                     int gridY = PosY + partY;
                     int linearGridCoordinate = gridY*GridWidth + gridX;
@@ -112,7 +125,7 @@ namespace TetriNET.Client.TenGen
                     int partX = i%Width;
                     int partY = i/Width;
 
-                    // Transport coordinates into grid coordinates and perform move
+                    // Transpose coordinates into grid coordinates and perform move
                     int gridX = PosX + partX;
                     int gridY = PosY + partY + 1;
                     int linearGridCoordinate = gridY*GridWidth + gridX;
@@ -141,7 +154,7 @@ namespace TetriNET.Client.TenGen
                     int partX = i%Width;
                     int partY = i/Width;
 
-                    // Transport coordinates into grid coordinates and perform move
+                    // Transpose coordinates into grid coordinates and perform move
                     int gridX = PosX + partX;
                     int gridY = PosY + partY - 1;
                     int linearGridCoordinate = gridY*GridWidth + gridX;
@@ -190,7 +203,7 @@ namespace TetriNET.Client.TenGen
                     int partX = i % Width;
                     int partY = i / Width;
 
-                    // Transport coordinates into grid coordinates
+                    // Transpose coordinates into grid coordinates
                     int gridX = PosX + partX;
                     int gridY = PosY + partY;
                     int linearGridCoordinate = gridY * GridWidth + gridX;

@@ -117,7 +117,7 @@ namespace TetriNET.Server
                             TetriminoIndex++;
                             break;
                         case 2:
-                            Proxy.UseSpecial(this, PlayerId, Specials.Nuke);
+                            Proxy.UseSpecial(this, PlayerId, Specials.NukeField);
                             break;
                         case 3:
                             Proxy.ModifyGrid(this, PlayerGrid);

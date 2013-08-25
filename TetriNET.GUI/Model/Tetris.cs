@@ -542,7 +542,7 @@ namespace Tetris.Model
                     {
                         int r = _random.Next(parts.Count);
                         // TODO: get random special
-                        parts[r].SetSpecial(Specials.AddLine);
+                        parts[r].SetSpecial(Specials.AddLines);
                     }
                 }
                 // TODO: redraw only modified parts

@@ -20,6 +20,8 @@ namespace TetriNET.Server.Host
 
             public WCFServiceHost(IHost host)
             {
+                if (host == null)
+                    throw new ArgumentNullException("host");
                 _host = host;
             }
 

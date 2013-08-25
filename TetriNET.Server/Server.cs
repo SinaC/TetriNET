@@ -3,10 +3,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common;
 using TetriNET.Common.Helpers;
+using TetriNET.Common.Randomizer;
 using TetriNET.Server.Host;
 using TetriNET.Server.Player;
 
@@ -31,7 +33,7 @@ namespace TetriNET.Server
         private const int TimeoutDelay = 500; // in ms
         private const int MaxTimeoutCountBeforeDisconnection = 3;
 
-        private readonly TetriminoQueue _tetriminoQueue = new TetriminoQueue();
+        private readonly TetriminoQueue _tetriminoQueue;
         private readonly ManualResetEvent _stopActionTaskEvent = new ManualResetEvent(false);
         private readonly IPlayerManager _playerManager;
         private readonly List<IHost> _hosts;
@@ -39,19 +41,47 @@ namespace TetriNET.Server
         private DateTime _lastHeartbeat;
         private List<WinEntry> _winList;
         private GameOptions _options;
-        
+
         public States State { get; private set; }
         public int SpecialId { get; private set; }
 
         public Server(IPlayerManager playerManager, params IHost[] hosts)
         {
+            if (playerManager == null)
+                throw new ArgumentNullException("playerManager");
             if (hosts == null)
                 throw new ArgumentNullException("hosts");
 
+            _options = new GameOptions
+            {
+                TetriminoProbabilities = new List<int>
+                {
+                    14, // J
+                    14, // Z
+                    15, // O
+                    14, // L
+                    14, // S
+                    14, // T
+                    15 // I
+                },
+                SpecialProbabilities = new List<int>
+                {
+                    19, // Add lines
+                    16, // Clear lines
+                    3, // Nuke field
+                    14, // Random blocks clear
+                    3, // Switch fields
+                    14, // Clear special blocks
+                    6, // Block gravity
+                    11, // Block quake
+                    14, // Block bomb
+                }
+            }; // TODO: get options from save file
+
+            _tetriminoQueue = new TetriminoQueue(() => RangeRandom.Random(_options.TetriminoProbabilities));
             _lastHeartbeat = DateTime.Now.AddMilliseconds(-HeartbeatDelay);
             _playerManager = playerManager;
             _hosts = hosts.ToList();
-            _options = new GameOptions(); // TODO: get options from save file
             _winList = new List<WinEntry>(); // TODO: get win list from save file
 
             foreach (IHost host in _hosts)
@@ -72,7 +102,7 @@ namespace TetriNET.Server
                 host.OnKickPlayer += KickPlayerHandler;
                 host.OnBanPlayer += BanPlayerHandler;
                 host.OnResetWinList += ResetWinListHandler;
-                
+
                 host.OnPlayerLeft += PlayerLeftHandler;
 
                 Debug.Assert(Check.CheckEvents(host), "Every host events must be handled");
@@ -106,7 +136,7 @@ namespace TetriNET.Server
             State = States.StoppingServer;
 
             // Inform players
-            foreach(IPlayer p in _playerManager.Players)
+            foreach (IPlayer p in _playerManager.Players)
                 p.OnServerStopped();
 
             // Stop hosts
@@ -128,13 +158,19 @@ namespace TetriNET.Server
 
             if (State == States.WaitingStartGame)
             {
-                State = States.GameStarted;
+                // Reset action list
+                Action outAction;
+                while (!_actionQueue.IsEmpty)
+                    _actionQueue.TryDequeue(out outAction);
 
                 // Reset Tetrimino Queue
                 _tetriminoQueue.Reset(); // TODO: random seed
                 Tetriminos firstTetrimino = _tetriminoQueue[0];
                 Tetriminos secondTetrimino = _tetriminoQueue[1];
                 Tetriminos thirdTetrimino = _tetriminoQueue[2];
+
+                Log.WriteLine("Starting game with {0} {1} {2}", firstTetrimino, secondTetrimino, thirdTetrimino);
+
                 // Send start game to every connected player
                 foreach (IPlayer p in _playerManager.Players)
                 {
@@ -143,6 +179,7 @@ namespace TetriNET.Server
                     p.LossTime = DateTime.MaxValue;
                     p.OnGameStarted(firstTetrimino, secondTetrimino, thirdTetrimino, _options);
                 }
+                State = States.GameStarted;
 
                 Log.WriteLine("Game started");
             }
@@ -186,12 +223,17 @@ namespace TetriNET.Server
         }
 
         #region IHost event handler
+
         private void RegisterPlayerHandler(IPlayer player, int playerId)
         {
             Log.WriteLine("New player:[{0}]{1}", playerId, player.Name);
 
             // Send player id back to player
-            player.OnPlayerRegistered(true, playerId, State == States.GameStarted);
+            player.OnPlayerRegistered(true, playerId, State == States.GameStarted || State == States.GamePaused);
+
+            // Inform player about other players
+            foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+                player.OnPlayerJoined(_playerManager.GetId(p), p.Name);
 
             // Inform players about new played connected
             foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
@@ -225,26 +267,22 @@ namespace TetriNET.Server
 
         private void PlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
         {
-            if (State == States.GameStarted)
-                _actionQueue.Enqueue(() => PlaceTetrimino(player, index, tetrimino, orientation, position, grid));
+            _actionQueue.Enqueue(() => PlaceTetrimino(player, index, tetrimino, orientation, position, grid));
         }
 
         private void UseSpecialHandler(IPlayer player, IPlayer target, Specials special)
         {
-            if (State == States.GameStarted)
-                _actionQueue.Enqueue(() => Special(player, target, special));
+            _actionQueue.Enqueue(() => Special(player, target, special));
         }
 
         private void SendLinesHandler(IPlayer player, int count)
         {
-            if (State == States.GameStarted)
-                _actionQueue.Enqueue(() => SendLines(player, count));
+            _actionQueue.Enqueue(() => SendLines(player, count));
         }
 
         private void ModifyGridHandler(IPlayer player, byte[] grid)
         {
-            if (State == States.GameStarted)
-                _actionQueue.Enqueue(() => ModifyGrid(player, grid));
+            _actionQueue.Enqueue(() => ModifyGrid(player, grid));
         }
 
         private void StartGameHandler(IPlayer player)
@@ -305,53 +343,7 @@ namespace TetriNET.Server
 
         private void GameLostHandler(IPlayer player)
         {
-            Log.WriteLine("GameLost:{0}", player.Name);
-
-            if (player.State == PlayerStates.Playing)
-            {
-                // Set player state
-                player.State = PlayerStates.GameLost;
-                player.LossTime = DateTime.Now;
-
-                // Inform players
-                int id = _playerManager.GetId(player);
-                foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
-                    p.OnPlayerLost(id);
-
-                //
-                int playingCount = _playerManager.Players.Count(p => p.State == PlayerStates.Playing);
-                if (playingCount == 0) // there were only one playing player
-                {
-                    // Send game finished (no winner)
-                    foreach (IPlayer p in _playerManager.Players)
-                        p.OnGameFinished();
-                }
-                else if (playingCount == _playerManager.PlayerCount - 1) // only one playing left
-                {
-                    // Game won
-                    IPlayer winner = _playerManager.Players.Single(p => p.State == PlayerStates.Playing);
-                    int winnerId = _playerManager.GetId(winner);
-
-                    // Update win list
-                    UpdateWinList(winner.Name, 3);
-                    int points = 2;
-                    foreach (IPlayer p in _playerManager.Players.Where(x => x.State == PlayerStates.GameLost).OrderByDescending(x => x.LossTime))
-                    {
-                        UpdateWinList(p.Name, points);
-                        points--;
-                        if (points == 0)
-                            break;
-                    }
-
-                    // Send game finished, winner and win list
-                    foreach (IPlayer p in _playerManager.Players)
-                    {
-                        p.OnGameFinished();
-                        p.OnPlayerWon(winnerId);
-                        p.OnWinListModified(_winList);
-                    }
-                }
-            }
+            _actionQueue.Enqueue(() => GameLost(player));
         }
 
         private void ChangeOptionsHandler(IPlayer player, GameOptions options)
@@ -439,8 +431,23 @@ namespace TetriNET.Server
             }
 
             // Clean host tables
-            foreach(IHost host in _hosts)
+            foreach (IHost host in _hosts)
                 host.RemovePlayer(player);
+
+            // If game was running, check if only one player left (see GameLostHandler)
+            if (State == States.GameStarted || State == States.GamePaused)
+            {
+                int playingCount = _playerManager.Players.Count(p => p.State == PlayerStates.Playing);
+                if (playingCount == 0 || playingCount == 1)
+                {
+                    Log.WriteLine("Game finished by forfeit no winner");
+                    State = States.GameFinished;
+                    // Send game finished (no winner)
+                    foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
+                        p.OnGameFinished();
+                    State = States.WaitingStartGame;
+                }
+            }
 
             // Inform players except disconnected player
             foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
@@ -458,22 +465,21 @@ namespace TetriNET.Server
                 }
             }
         }
+
         #endregion
 
         #region Tetrimino queue
 
         private class TetriminoQueue
         {
-            private readonly int _tetriminosCount;
             private readonly object _lock = new object();
+            private readonly Func<int> _randomFunc;
             private int _size;
             private int[] _array;
-            private readonly Random _random;
 
-            public TetriminoQueue(int seed = 0)
+            public TetriminoQueue(Func<int> randomFunc, int seed = 0)
             {
-                _tetriminosCount = Enum.GetValues(typeof(Tetriminos)).Length;
-                _random = new Random(seed);
+                _randomFunc = randomFunc;
                 lock (_lock)
                 {
                     Grow(64);
@@ -497,7 +503,7 @@ namespace TetriNET.Server
                     {
                         if (index >= _size)
                             Grow(128);
-                        tetrimino = (Tetriminos)_array[index];
+                        tetrimino = (Tetriminos) _array[index];
                     }
                     return tetrimino;
                 }
@@ -516,8 +522,8 @@ namespace TetriNET.Server
 
             private void Fill(int from, int count)
             {
-                for(int i = from; i < from+count; i++)
-                    _array[i] = _random.Next(_tetriminosCount);
+                for (int i = from; i < from + count; i++)
+                    _array[i] = _randomFunc();
             }
         }
 
@@ -531,6 +537,7 @@ namespace TetriNET.Server
         {
             while (true)
             {
+                // Perform game actions
                 if (State == States.GameStarted && !_actionQueue.IsEmpty)
                 {
                     Action action;
@@ -547,7 +554,18 @@ namespace TetriNET.Server
                         }
                     }
                 }
-                
+
+                // Check running game without any player
+                if (State == States.GameStarted || State == States.GamePaused)
+                {
+                    if (_playerManager.Players.Count(x => x.State == PlayerStates.Playing) == 0)
+                    {
+                        Log.WriteLine("Game finished because no more playing players");
+                        // Stop game
+                        StopGame();
+                    }
+                }
+
                 // Check player timeout + send heartbeat if needed
                 bool sendHeartbeat = (DateTime.Now - _lastHeartbeat).TotalMilliseconds > HeartbeatDelay; // TODO: should reset this when a message is sent to player
                 foreach (IPlayer p in _playerManager.Players)
@@ -560,7 +578,7 @@ namespace TetriNET.Server
                         // Update timeout count
                         p.SetTimeout();
                         if (p.TimeoutCount >= MaxTimeoutCountBeforeDisconnection)
-                           PlayerLeftHandler(p, LeaveReasons.Timeout);
+                            PlayerLeftHandler(p, LeaveReasons.Timeout);
                     }
 
                     // Send heartbeat
@@ -569,13 +587,13 @@ namespace TetriNET.Server
                 }
                 if (sendHeartbeat)
                     _lastHeartbeat = DateTime.Now;
-               
+
                 // Stop task if stop event is raised
-                if (_stopActionTaskEvent.WaitOne(0))
+                if (_stopActionTaskEvent.WaitOne(10))
                     break;
             }
         }
-        
+
         #endregion
 
         #region Game actions
@@ -594,6 +612,8 @@ namespace TetriNET.Server
             player.TetriminoIndex++;
             int indexToSend = player.TetriminoIndex + 2; // indices 0, 1 and 2 have been sent when starting game
             Tetriminos nextTetriminoToSend = _tetriminoQueue[indexToSend];
+
+            //Log.WriteLine("Send next tetrimino {0} {1} to {2}", nextTetriminoToSend, indexToSend, player.Name);
             // Send next piece
             player.OnNextTetrimino(indexToSend, nextTetriminoToSend);
         }
@@ -610,7 +630,7 @@ namespace TetriNET.Server
             // Increment special
             SpecialId++;
             // If special is Switch, call OnGridModified with switched grids
-            if (special == Specials.Switch)
+            if (special == Specials.SwitchFields)
             {
                 // Send grid to player and target
                 target.OnGridModified(targetId, player.Grid);
@@ -627,7 +647,7 @@ namespace TetriNET.Server
 
         private void SendLines(IPlayer player, int count)
         {
-            Log.WriteLine("SendLines[{0}]:{1}", player, count);
+            Log.WriteLine("SendLines[{0}]:{1}", player.Name, count);
 
             //
             int playerId = _playerManager.GetId(player);
@@ -642,7 +662,7 @@ namespace TetriNET.Server
 
         private void ModifyGrid(IPlayer player, byte[] grid)
         {
-            Log.WriteLine("ModifyGrid");
+            Log.WriteLine("ModifyGrid[{0}]", player.Name);
 
             // Set grid
             player.Grid = grid;
@@ -651,6 +671,67 @@ namespace TetriNET.Server
             // Send grid modification to everyone except sender
             foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
                 p.OnGridModified(id, player.Grid);
+        }
+
+        private void GameLost(IPlayer player)
+        {
+            Log.WriteLine("GameLost[{0}]  {1}", player.Name, State);
+
+            if (player.State == PlayerStates.Playing)
+            {
+                // Set player state
+                player.State = PlayerStates.GameLost;
+                player.LossTime = DateTime.Now;
+
+                // Inform players
+                int id = _playerManager.GetId(player);
+                foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+                    p.OnPlayerLost(id);
+
+                //
+                int playingCount = _playerManager.Players.Count(p => p.State == PlayerStates.Playing);
+                if (playingCount == 0) // there were only one playing player
+                {
+                    Log.WriteLine("Game finished with only one player playing, no winner");
+                    State = States.GameFinished;
+                    // Send game finished (no winner)
+                    foreach (IPlayer p in _playerManager.Players)
+                        p.OnGameFinished();
+                    State = States.WaitingStartGame;
+                }
+                else if (playingCount == 1) // only one playing left
+                {
+                    Log.WriteLine("Game finished checking winner");
+                    State = States.GameFinished;
+                    // Game won
+                    IPlayer winner = _playerManager.Players.Single(p => p.State == PlayerStates.Playing);
+                    int winnerId = _playerManager.GetId(winner);
+                    winner.State = PlayerStates.Registered;
+                    Log.WriteLine("Winner: {0}[{1}]", winner.Name, winnerId);
+
+                    // Update win list
+                    UpdateWinList(winner.Name, 3);
+                    int points = 2;
+                    foreach (IPlayer p in _playerManager.Players.Where(x => x.State == PlayerStates.GameLost).OrderByDescending(x => x.LossTime))
+                    {
+                        UpdateWinList(p.Name, points);
+                        points--;
+                        if (points == 0)
+                            break;
+                    }
+
+                    // Send game finished, winner and win list
+                    foreach (IPlayer p in _playerManager.Players)
+                    {
+                        p.OnGameFinished();
+                        p.OnPlayerWon(winnerId);
+                        p.OnWinListModified(_winList);
+                    }
+                    State = States.WaitingStartGame;
+                }
+            }
+            else
+                Log.WriteLine("Game lost from non-playing player {0} {1}", player.Name, player.State);
         }
 
         #endregion

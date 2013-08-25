@@ -18,6 +18,9 @@ namespace TetriNET.Server.Host
 
         public IPFilterServiceBehavior(IBanManager verifier)
         {
+            if (verifier == null)
+                throw new ArgumentNullException("verifier");
+
             _verifier = verifier;
         }
 

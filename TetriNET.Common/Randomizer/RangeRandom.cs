@@ -15,7 +15,7 @@ namespace TetriNET.Common.Randomizer
         /// </summary>
         /// <param name="ranges">List of probabilities for each index</param>
         /// <returns></returns>
-        private static int Random(List<int> ranges)
+        public static int Random(List<int> ranges)
         {
             int sum = ranges.Aggregate((n, i) => n + i);
             int random = Randomizer.Instance.Next(sum);

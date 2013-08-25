@@ -4,7 +4,7 @@ namespace TetriNET.Client.TenGen
 {
     public class TetriminoO : Tetrimino
     {
-        private static readonly byte[] Rotations = new byte[]
+        private static readonly byte[] Rotations =
         {
             4, 4, 0, 0,
             4, 4, 0, 0,

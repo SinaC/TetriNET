@@ -16,7 +16,7 @@ namespace TetriNET.Client.Proxy
         public DateTime LastServerAction { get; private set; }
         public int TimeoutCount { get; private set; }
 
-        public WCFProxy(string address, ITetriNETCallback callback)
+        public WCFProxy(ITetriNETCallback callback, string address)
         {
             TimeoutCount = 0;
             LastServerAction = DateTime.Now;
@@ -102,7 +102,7 @@ namespace TetriNET.Client.Proxy
             ExceptionFreeAction(() => _proxy.PublishMessage(msg), "PublishMessage");
         }
 
-        public void PlaceTetrimino(ITetriNETCallback callback, int index, Common.Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
+        public void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
         {
             ExceptionFreeAction(() => _proxy.PlaceTetrimino(index, tetrimino, orientation, position, grid), "PlaceTetrimino");
         }

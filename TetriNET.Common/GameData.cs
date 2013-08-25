@@ -6,39 +6,39 @@ namespace TetriNET.Common
     [DataContract]
     public enum Tetriminos
     {
-        // (*)* * *
-        [EnumMember]
-        TetriminoI,
-
-        // (*)* *
+        //  * * *
         //      *
         [EnumMember]
         TetriminoJ,
 
-        // (*)* *
-        //  *
+        //  * *
+        //    * *
         [EnumMember]
-        TetriminoL,
+        TetriminoZ,
 
-        // (*)*
+        //  * *
         //  * *
         [EnumMember]
         TetriminoO,
 
-        // ()* *
+        //  * * *
+        //  *
+        [EnumMember]
+        TetriminoL,
+
+        //   * *
         // * *
         [EnumMember]
         TetriminoS,
 
-        // (*)* *
+        //  * * *
         //    *
         [EnumMember]
         TetriminoT,
 
-        // (*)*
-        //    * *
+        //  * * * *
         [EnumMember]
-        TetriminoZ,
+        TetriminoI,
     }
 
     [DataContract]
@@ -58,19 +58,21 @@ namespace TetriNET.Common
     public enum Specials
     {
         [EnumMember]
-        AddLine,
+        AddLines,
         [EnumMember]
-        ClearLine,
+        ClearLines,
         [EnumMember]
-        Nuke,
+        NukeField,
         [EnumMember]
-        Switch,
+        RandomBlocksClear,
         [EnumMember]
-        Gravity,
+        SwitchFields,
         [EnumMember]
         ClearSpecialBlocks,
         [EnumMember]
-        RandomBlocksClear,
+        BlockGravity,
+        [EnumMember]
+        BlockQuake,
         [EnumMember]
         BlockBomb
     }
@@ -89,10 +91,17 @@ namespace TetriNET.Common
     public class GameOptions
     {
         [DataMember]
-        public List<int> TetriminoProbabilities { get; set; } // number of entries should match Tetriminos enum length
+        public List<int> TetriminoProbabilities { get; set; } // number of entries must match Tetriminos enum length
 
         [DataMember]
-        public List<int> SpecialProbabilities { get; set; } // number of entries should match Specials enum length
+        public List<int> SpecialProbabilities { get; set; } // number of entries must match Specials enum length
+
+        [DataMember]
+        public bool ClassicStyleMultiplayerRules { get; set; }
+
+        [DataMember]
+        public int StartingLevel { get; set; }
+
     }
 
     [DataContract]

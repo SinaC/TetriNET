@@ -14,6 +14,13 @@ namespace TetriNET.Server.Host
 
         protected GenericHost(IPlayerManager playerManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc)
         {
+            if (playerManager == null)
+                throw new ArgumentNullException("playerManager");
+            if (banManager == null)
+                throw new ArgumentNullException("banManager");
+            if (createPlayerFunc == null)
+                throw new ArgumentNullException("createPlayerFunc");
+
             PlayerManager = playerManager;
             BanManager = banManager;
             CreatePlayerFunc = createPlayerFunc;
@@ -141,7 +148,7 @@ namespace TetriNET.Server.Host
 
         public virtual void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
         {
-            Log.WriteLine("PlaceTetrimino {0} {1} {2} {3} {4}", index, tetrimino, orientation, position, grid.Count(x => x > 0));
+            Log.WriteLine("PlaceTetrimino {0} {1} {2} {3} {4}", index, tetrimino, orientation, position, grid == null ? -1 : grid.Count(x => x > 0));
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -196,7 +203,7 @@ namespace TetriNET.Server.Host
 
         public virtual void ModifyGrid(ITetriNETCallback callback, byte[] grid)
         {
-            Log.WriteLine("ModifyGrid {0}", grid.Count(x => x > 0));
+            Log.WriteLine("ModifyGrid {0}", grid == null ? -1 : grid.Count(x => x > 0));
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -292,7 +299,7 @@ namespace TetriNET.Server.Host
 
         public virtual void KickPlayer(ITetriNETCallback callback, int playerId)
         {
-            Log.WriteLine("KickPlayer");
+            Log.WriteLine("KickPlayer {0}", playerId);
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -306,7 +313,7 @@ namespace TetriNET.Server.Host
 
         public virtual void BanPlayer(ITetriNETCallback callback, int playerId)
         {
-            Log.WriteLine("BanPlayer");
+            Log.WriteLine("BanPlayer {0}", playerId);
 
             IPlayer player = PlayerManager[callback];
             if (player != null)

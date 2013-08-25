@@ -1,32 +1,15 @@
 TODO:
-refactor Client as Server has been refactored  (code it first in POC/Client_POC)
-	IProxy : ITetriNETCallback equivalent of IHost + IPlayer
-	LocalProxy : IProxy
-	RemoteProxy : IProxy
-	Client includes an IProxy
-simulate a message send from built-in player to Server
 replace assert and return null/false/-1 with error management
 replace Tetriminos enum with index
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
-remove every reference to network from GameClient and GameServer
 GUI: dissociate part and block when a block has been placed -> careful with side effects
 Manage new connection and disconnection at one place -> ideally in Server because there can be many hosts and we can remove a player only ince
-Handle special case: game started and everyone is disconnected -> game is never stopped
 when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 	use a common object for every transport address, ban list Add and isBanned take this common object instead of a real transport address
 	-> everyone can manage ban without knowing in which host it has been created
 	-> this object is stored in IPlayer and created by createPlayerFunc in host so server or host can ban a player using IPlayer info
 discovery doesn't work on cross/multiple machine
 
-tetriminos array in client must be rewritten
-
-timeout management:
-	client-side
-		every x ms without any message sent to server, client send Heartbeat
-		if no message from server during x ms and x times, disconnect from server
-	server-side
-		every x ms, server send Heartbeat [DONE]
-		if no message from a client during x ms and x times, leave reason timeout [DONE]
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf
