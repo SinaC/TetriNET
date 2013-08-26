@@ -3,14 +3,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common;
 using TetriNET.Common.Helpers;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Randomizer;
-using TetriNET.Server.Host;
-using TetriNET.Server.Player;
 
 namespace TetriNET.Server
 {
@@ -219,7 +217,7 @@ namespace TetriNET.Server
                 };
                 _winList.Add(entry);
             }
-            entry.Score = score;
+            entry.Score += score;
         }
 
         #region IHost event handler
@@ -567,11 +565,10 @@ namespace TetriNET.Server
                 }
 
                 // Check player timeout + send heartbeat if needed
-                bool sendHeartbeat = (DateTime.Now - _lastHeartbeat).TotalMilliseconds > HeartbeatDelay; // TODO: should reset this when a message is sent to player
                 foreach (IPlayer p in _playerManager.Players)
                 {
                     // Check player timeout
-                    TimeSpan timespan = DateTime.Now - p.LastAction;
+                    TimeSpan timespan = DateTime.Now - p.LastActionFromClient;
                     if (timespan.TotalMilliseconds > TimeoutDelay)
                     {
                         Log.WriteLine("Timeout++ for player {0}", p.Name);
@@ -581,12 +578,13 @@ namespace TetriNET.Server
                             PlayerLeftHandler(p, LeaveReasons.Timeout);
                     }
 
-                    // Send heartbeat
-                    if (sendHeartbeat)
-                        p.OnHeartbeatReceived(); // Check if player is alive
+                    // Send heartbeat if needed
+                    TimeSpan delayFromPreviousHeartbeat = DateTime.Now - p.LastActionToClient;
+                    if (delayFromPreviousHeartbeat.TotalMilliseconds > HeartbeatDelay)
+                    {
+                        p.OnHeartbeatReceived();
+                    }
                 }
-                if (sendHeartbeat)
-                    _lastHeartbeat = DateTime.Now;
 
                 // Stop task if stop event is raised
                 if (_stopActionTaskEvent.WaitOne(10))

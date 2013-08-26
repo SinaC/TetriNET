@@ -4,16 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{195BE21E-603A-4858-A805-09C59107C5A7}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{DF0E62BB-86B0-4FAC-B731-0CD62C90CEB7}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TetriNET.Common</RootNamespace>
-    <AssemblyName>TetriNET.Common</AssemblyName>
+    <RootNamespace>TetriNET.ConsoleWCFClient</RootNamespace>
+    <AssemblyName>TetriNET.ConsoleWCFClient</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -21,46 +21,56 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>TetriNET.ConsoleWCFClient.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Discovery" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Contracts\ITetriNET.cs" />
-    <Compile Include="Contracts\ITetriNETCallback.cs" />
-    <Compile Include="Contracts\IWCFTetriNET.cs" />
-    <Compile Include="GameData.cs" />
-    <Compile Include="Helpers\Check.cs" />
-    <Compile Include="Helpers\Singleton.cs" />
-    <Compile Include="Interfaces\IBanManager.cs" />
-    <Compile Include="Interfaces\IClient.cs" />
-    <Compile Include="Interfaces\IHost.cs" />
-    <Compile Include="Interfaces\IPlayer.cs" />
-    <Compile Include="Interfaces\IPlayerManager.cs" />
-    <Compile Include="Interfaces\IProxy.cs" />
-    <Compile Include="Interfaces\ITetrimino.cs" />
-    <Compile Include="Log.cs" />
+    <Compile Include="GameController\FirstBot.cs" />
+    <Compile Include="GameController\GameController.cs" />
+    <Compile Include="TenGen\Tetrimino.cs" />
+    <Compile Include="TenGen\TetriminoI.cs" />
+    <Compile Include="TenGen\TetriminoJ.cs" />
+    <Compile Include="TenGen\TetriminoL.cs" />
+    <Compile Include="TenGen\TetriminoO.cs" />
+    <Compile Include="TenGen\TetriminoS.cs" />
+    <Compile Include="TenGen\TetriminoT.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Randomizer\RangeRandom.cs" />
-    <Compile Include="WCF\DiscoveryHelper.cs" />
-    <Compile Include="WCF\MetadataHelper.cs" />
+    <Compile Include="TenGen\TetriminoZ.cs" />
+    <Compile Include="Proxy\WCFProxy.cs" />
+    <Compile Include="UI\NaiveConsoleUI.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\TetriNET.Client\TetriNET.Client.csproj">
+      <Project>{fd867b2e-a1c2-4052-af79-ef69aed92597}</Project>
+      <Name>TetriNET.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
+      <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
+      <Name>TetriNET.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

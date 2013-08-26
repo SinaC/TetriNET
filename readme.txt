@@ -2,14 +2,13 @@ TODO:
 replace assert and return null/false/-1 with error management
 replace Tetriminos enum with index
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
-GUI: dissociate part and block when a block has been placed -> careful with side effects
 Manage new connection and disconnection at one place -> ideally in Server because there can be many hosts and we can remove a player only ince
 when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 	use a common object for every transport address, ban list Add and isBanned take this common object instead of a real transport address
 	-> everyone can manage ban without knowing in which host it has been created
 	-> this object is stored in IPlayer and created by createPlayerFunc in host so server or host can ban a player using IPlayer info
 discovery doesn't work on cross/multiple machine
-
+client/server version
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf
@@ -66,12 +65,16 @@ https://github.com/clariuslabs/reactivesockets
 http://social.msdn.microsoft.com/Forums/en-US/5c62e690-2c8d-4f32-8ec4-5e9b5ea6d2a0/using-reactive-extensions-rx-for-socket-programming-practical
 http://www.cachelog.net/using-reactive-extensions-rx-tpl-for-socket-programming/
 https://developers.google.com/protocol-buffers/docs/overview
-http://en.wikipedia.org/wiki/TetriNET
 
 Tetrinet original description
 http://gtetrinet.sourceforge.net/tetrinet.txt
 
+bot
+http://luckytoilet.wordpress.com/2011/05/27/coding-a-tetris-ai-using-a-genetic-algorithm/
+http://www.ccs.neu.edu/home/punkball/tetris/
+
 tetris
+http://en.wikipedia.org/wiki/TetriNET
 http://tetris.wikia.com/wiki/ARS
 http://tetris.wikia.com/wiki/Nintendo_Rotation_System
 http://tetris.wikia.com/wiki/Original_Rotation_System

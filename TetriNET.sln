@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.ConsoleClient", "TetriNET.ConsoleClient\TetriNET.ConsoleClient.csproj", "{DF0E62BB-86B0-4FAC-B731-0CD62C90CEB7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.ConsoleWCFClient", "TetriNET.ConsoleWCFClient\TetriNET.ConsoleWCFClient.csproj", "{DF0E62BB-86B0-4FAC-B731-0CD62C90CEB7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Common", "TetriNET.Common\TetriNET.Common.csproj", "{195BE21E-603A-4858-A805-09C59107C5A7}"
 EndProject
@@ -12,11 +12,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POC", "POC\POC.csproj", "{D74766FE-4A1E-4668-879A-A85BD738F104}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Server", "TetriNET.Server\TetriNET.Server.csproj", "{A2BAD88B-73BB-4B79-B30B-ABFB4FD2C1C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.ConsoleWCFServer", "TetriNET.ConsoleWCFServer\TetriNET.ConsoleWCFServer.csproj", "{A2BAD88B-73BB-4B79-B30B-ABFB4FD2C1C4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.GUI", "TetriNET.GUI\TetriNET.GUI.csproj", "{C928B78C-2277-4DAD-9A76-6F0FA775B701}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.WPFClient", "TetriNET.WPFClient\TetriNET.WPFClient.csproj", "{D05799E0-190C-43E8-BD67-9D825739B024}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Client", "TetriNET.Client\TetriNET.Client.csproj", "{FD867B2E-A1C2-4052-AF79-EF69AED92597}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Server", "TetriNET.Server\TetriNET.Server.csproj", "{161C5DDA-F2A8-400E-9702-3C4B45FFB772}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -88,6 +92,26 @@ Global
 		{D05799E0-190C-43E8-BD67-9D825739B024}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D05799E0-190C-43E8-BD67-9D825739B024}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D05799E0-190C-43E8-BD67-9D825739B024}.Release|x86.ActiveCfg = Release|Any CPU
+		{FD867B2E-A1C2-4052-AF79-EF69AED92597}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD867B2E-A1C2-4052-AF79-EF69AED92597}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD867B2E-A1C2-4052-AF79-EF69AED92597}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FD867B2E-A1C2-4052-AF79-EF69AED92597}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FD867B2E-A1C2-4052-AF79-EF69AED92597}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FD867B2E-A1C2-4052-AF79-EF69AED92597}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD867B2E-A1C2-4052-AF79-EF69AED92597}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD867B2E-A1C2-4052-AF79-EF69AED92597}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FD867B2E-A1C2-4052-AF79-EF69AED92597}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FD867B2E-A1C2-4052-AF79-EF69AED92597}.Release|x86.ActiveCfg = Release|Any CPU
+		{161C5DDA-F2A8-400E-9702-3C4B45FFB772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{161C5DDA-F2A8-400E-9702-3C4B45FFB772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{161C5DDA-F2A8-400E-9702-3C4B45FFB772}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{161C5DDA-F2A8-400E-9702-3C4B45FFB772}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{161C5DDA-F2A8-400E-9702-3C4B45FFB772}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{161C5DDA-F2A8-400E-9702-3C4B45FFB772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{161C5DDA-F2A8-400E-9702-3C4B45FFB772}.Release|Any CPU.Build.0 = Release|Any CPU
+		{161C5DDA-F2A8-400E-9702-3C4B45FFB772}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{161C5DDA-F2A8-400E-9702-3C4B45FFB772}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{161C5DDA-F2A8-400E-9702-3C4B45FFB772}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

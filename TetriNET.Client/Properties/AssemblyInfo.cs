@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TetriNET.Server")]
+[assembly: AssemblyTitle("TetriNET.Client")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("N-ALLO")]
-[assembly: AssemblyProduct("TetriNET.Server")]
+[assembly: AssemblyProduct("TetriNET.Client")]
 [assembly: AssemblyCopyright("Copyright © N-ALLO 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6826570d-e615-4938-a0e0-e90f651b66ff")]
+[assembly: Guid("22b44717-6274-49d7-9967-c418a5324c62")]
 
 // Version information for an assembly consists of the following four values:
 //
