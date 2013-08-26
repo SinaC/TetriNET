@@ -20,6 +20,7 @@ namespace TetriNET.Client
 
     public class TetriminoArray
     {
+        private readonly object _lock = new object();
         private int _size;
         private Tetriminos[] _array;
 
@@ -33,13 +34,21 @@ namespace TetriNET.Client
         {
             get
             {
-                return _array[index];
+                Tetriminos tetrimino;
+                lock (_lock)
+                {
+                    tetrimino = _array[index];
+                }
+                return tetrimino;
             }
             set
             {
-                if (index > _size)
-                    Grow(16);
-                _array[index] = value;
+                lock (_lock)
+                {
+                    if (index >= _size)
+                        Grow(64);
+                    _array[index] = value;
+                }
             }
         }
 
@@ -314,8 +323,6 @@ namespace TetriNET.Client
             if (ClientOnGameStarted != null)
                 ClientOnGameStarted();
 
-            Log.WriteLine("Current:{0} Next:{1}", CurrentTetrimino.TetriminoValue, NextTetrimino.TetriminoValue);
-
             //Log.WriteLine("TETRIMINOS:{0}", _tetriminos.Dump(8));
             // TODO: update current/next piece, clear every player screen
         }
@@ -380,12 +387,8 @@ namespace TetriNET.Client
 
         public void OnNextTetrimino(int index, Tetriminos tetrimino)
         {
-            Log.WriteLine("Tetrimino {0}: {1}", index, tetrimino);
-
             ResetTimeout();
             _tetriminos[index] = tetrimino;
-            // TODO: update next piece if index == _tetriminoIndex+1
-            //Log.WriteLine("TETRIMINOS:{0}", _tetriminos.Dump(8));
         }
 
         public void OnGridModified(int playerId, byte[] grid)
@@ -465,11 +468,23 @@ namespace TetriNET.Client
         private void FinishRound()
         {
             //
-            Log.WriteLine("Round finished with tetrimino {0} {1}  next {2}", CurrentTetrimino.TetriminoValue, _tetriminoIndex, NextTetrimino.TetriminoValue);
+            //Log.WriteLine("Round finished with tetrimino {0} {1}  next {2}", CurrentTetrimino.TetriminoValue, _tetriminoIndex, NextTetrimino.TetriminoValue);
             // Stop game
             _gameTimer.Stop();
             //Log.WriteLine("TETRIMINOS:{0}", _tetriminos.Dump(8));
-            // TODO: Delete rows
+            // Delete rows
+            int deletedRows = DeleteRows();
+            if (deletedRows > 0)
+                Log.WriteLine("{0} lines deleted", deletedRows);
+            _lineCount += deletedRows;
+            // Check level increase
+            if (_level < _lineCount/10)
+            {
+                _level = _lineCount/10;
+                Log.WriteLine("Level increased: {0}", _level);
+                // TODO: change game timer interval
+            }
+            // Send tetrimino places to server
             _proxy.PlaceTetrimino(this, _tetriminoIndex, CurrentTetrimino.TetriminoValue, Orientations.Top/*TODO*/, null/*TODO*/, Grid);
             // Set new current tetrimino to next, increment tetrimino index and create next tetrimino
             CurrentTetrimino = NextTetrimino;
@@ -493,6 +508,34 @@ namespace TetriNET.Client
                 if (ClientOnTetriminoPlaced != null)
                     ClientOnTetriminoPlaced();
             }
+        }
+
+        private int DeleteRows()
+        {
+            int rows = 0;
+            for (int y = 1; y < Height; y++)
+            {
+                // Count number of part in row
+                int countPart = 0;
+                for (int x = 0; x < Width; x++)
+                {
+                    int linearIndex = y * Width + x;
+                    countPart += Grid[linearIndex] > 0 ? 1 : 0;
+                }
+                // Full row, delete it and move part above one step below
+                if (countPart == Width)
+                {
+                    rows++;
+                    for (int yMove = y; yMove > 0; yMove--)
+                        for (int x = 0; x < Width; x++)
+                        {
+                            int linearIndexTo = yMove * Width + x;
+                            int linearIndexFrom = (yMove - 1) * Width + x;
+                            Grid[linearIndexTo] = Grid[linearIndexFrom];
+                        }
+                }
+            }
+            return rows;
         }
 
         private void GameTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
@@ -683,7 +726,9 @@ namespace TetriNET.Client
 
             if (!movedDown)
             {
+                //
                 PlaceCurrentTetrimino();
+                //
                 FinishRound();
             }
 

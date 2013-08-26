@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.ServiceModel.Security;
+using System.Text;
 using TetriNET.Client;
+using TetriNET.Common;
 using TetriNET.Common.Interfaces;
 
 namespace TetriNET.ConsoleWCFClient.TenGen
@@ -77,7 +80,7 @@ namespace TetriNET.ConsoleWCFClient.TenGen
                     // Check conflict
                     if (gridX < 0 || grid[linearGridCoordinate] > 0)
                     {
-                        Console.WriteLine("Conflict at {0},{1} part {2},{3}", gridX, gridY, partX, partY);
+                        //Log.WriteLine("Conflict at {0},{1} part {2},{3}", gridX, gridY, partX, partY);
                         return false; // Conflict
                     }
                 }
@@ -106,7 +109,7 @@ namespace TetriNET.ConsoleWCFClient.TenGen
                     // Check conflict
                     if (gridX >= GridWidth || grid[linearGridCoordinate] > 0)
                     {
-                        Console.WriteLine("Conflict at {0},{1} part {2},{3}", gridX, gridY, partX, partY);
+                        //Log.WriteLine("Conflict at {0},{1} part {2},{3}", gridX, gridY, partX, partY);
                         return false; // Conflict
                     }
                 }
@@ -135,7 +138,7 @@ namespace TetriNET.ConsoleWCFClient.TenGen
                     // Check conflict
                     if (gridY >= GridHeight || grid[linearGridCoordinate] > 0)
                     {
-                        Console.WriteLine("Conflict at {0},{1} part {2},{3}", gridX, gridY, partX, partY);
+                        //Log.WriteLine("Conflict at {0},{1} part {2},{3}", gridX, gridY, partX, partY);
                         return false; // Conflict
                     }
                 }
@@ -164,7 +167,7 @@ namespace TetriNET.ConsoleWCFClient.TenGen
                     // Check conflict
                     if (gridY < 0 || grid[linearGridCoordinate] > 0)
                     {
-                        Console.WriteLine("Conflict at {0},{1} part {2},{3}", gridX, gridY, partX, partY);
+                        //Log.WriteLine("Conflict at {0},{1} part {2},{3}", gridX, gridY, partX, partY);
                         return false; // Conflict
                     }
                 }
@@ -224,12 +227,16 @@ namespace TetriNET.ConsoleWCFClient.TenGen
                 value = x,
                 index = i
             }).Where(x => x.value > 0).Aggregate(String.Empty, (n, i) => n + "{" + ((i.index%Width) + PosX) + "," + ((i.index/Width) + PosY) + "}");
-            Console.WriteLine("Global coordinates:{0}", coordinates);
+            Log.WriteLine("Global coordinates:{0}", coordinates);
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < Width*Height; i++)
             {
-                Console.Write(Parts[i]);
-                if ((i + 1) % Width == 0)
-                    Console.WriteLine();
+                sb.Append(Parts[i]);
+                if ((i + 1)%Width == 0)
+                {
+                    Log.WriteLine(sb.ToString());
+                    sb.Clear();
+                }
             }
         }
     }

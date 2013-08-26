@@ -72,6 +72,9 @@ http://gtetrinet.sourceforge.net/tetrinet.txt
 bot
 http://luckytoilet.wordpress.com/2011/05/27/coding-a-tetris-ai-using-a-genetic-algorithm/
 http://www.ccs.neu.edu/home/punkball/tetris/
+http://www.colinfahey.com/tetris/tetris.html
+http://www.cs.cornell.edu/boom/1999sp/projects/tetris/
+http://tetrisconcept.net/wiki/Tetris_AI
 
 tetris
 http://en.wikipedia.org/wiki/TetriNET

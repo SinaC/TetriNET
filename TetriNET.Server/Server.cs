@@ -478,10 +478,7 @@ namespace TetriNET.Server
             public TetriminoQueue(Func<int> randomFunc, int seed = 0)
             {
                 _randomFunc = randomFunc;
-                lock (_lock)
-                {
-                    Grow(64);
-                }
+                Grow(64);
             }
 
             public void Reset()

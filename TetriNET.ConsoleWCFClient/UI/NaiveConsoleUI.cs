@@ -51,7 +51,9 @@ namespace TetriNET.ConsoleWCFClient.UI
                     sb.Clear();
                 }
             }
-            Console.SetCursorPosition(0, _client.Width + 1);
+            Console.SetCursorPosition(0, _client.Height);
+            Console.WriteLine("============================");
+            Console.SetCursorPosition(_client.Width+1, 0);
         }
     }
 }
