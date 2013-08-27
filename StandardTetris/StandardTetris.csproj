@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3B3E216B-6A76-49BC-B64A-4561D0A7B0CC}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CPF.StandardTetris</RootNamespace>
+    <AssemblyName>StandardTetris</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+    <ApplicationIcon>CPF.StandardTetris.Icon.ico</ApplicationIcon>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CPF.GRV10.GRControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CPF.StandardTetris.STBoard.cs" />
+    <Compile Include="CPF.StandardTetris.STConsole.cs" />
+    <Compile Include="CPF.StandardTetris.STEngine.cs" />
+    <Compile Include="CPF.StandardTetris.STFileList.cs" />
+    <Compile Include="CPF.StandardTetris.STFileReader.cs" />
+    <Compile Include="CPF.StandardTetris.STFileWriter.cs" />
+    <Compile Include="CPF.StandardTetris.STForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CPF.StandardTetris.STForm.Designer.cs">
+      <DependentUpon>CPF.StandardTetris.STForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CPF.StandardTetris.STFormHandler.cs">
+    </Compile>
+    <Compile Include="CPF.StandardTetris.STGame.cs" />
+    <Compile Include="CPF.StandardTetris.STGameDrawing.cs" />
+    <Compile Include="CPF.StandardTetris.STGameFile.cs" />
+    <Compile Include="CPF.StandardTetris.STGameState.cs" />
+    <Compile Include="CPF.StandardTetris.STOpenGLFont.cs" />
+    <Compile Include="CPF.StandardTetris.STPiece.cs" />
+    <Compile Include="CPF.StandardTetris.STPieceSequence.cs" />
+    <Compile Include="CPF.StandardTetris.STPrecisionTimer.cs" />
+    <Compile Include="CPF.StandardTetris.STProgram.cs" />
+    <Compile Include="CPF.StandardTetris.STRandom.cs" />
+    <Compile Include="CPF.StandardTetris.STStrategyRogerLLimaLaurentBercotSebastienBlondeelOnePiece1996.cs" />
+    <Compile Include="CPF.StandardTetris.STRS232.cs" />
+    <Compile Include="CPF.StandardTetris.STStrategy.cs" />
+    <Compile Include="CPF.StandardTetris.STStrategyColinFaheyTwoPiece2003.cs" />
+    <Compile Include="CPF.StandardTetris.STStrategyManager.cs" />
+    <Compile Include="CPF.StandardTetris.STStrategyPierreDellacherieOnePiece2003.cs" />
+    <Compile Include="CPF.StandardTetris.STStrategyUserDefined.cs" />
+    <Compile Include="CPF.StandardTetris.STUserInterface.cs" />
+    <Compile Include="CPF.StandardTetris.STVideoCapture.cs" />
+    <Compile Include="CPF.StandardTetris.STVideoProcessing.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="CPF.StandardTetris.STForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CPF.StandardTetris.STForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CPF.StandardTetris.Icon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

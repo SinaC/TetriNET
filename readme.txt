@@ -1,4 +1,6 @@
 TODO:
+recode totally piece/board management ... get inspiration from http://www.colinfahey.com/tetris/tetris.html
+
 replace assert and return null/false/-1 with error management
 replace Tetriminos enum with index
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
