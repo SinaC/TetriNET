@@ -16,9 +16,7 @@
         ITetrimino CurrentTetrimino { get; }
         ITetrimino NextTetrimino { get; }
 
-        int Width { get; }
-        int Height { get; }
-        byte[] Grid { get; }
+        IBoard Board { get; }
 
         event ClientTetriminoPlacedHandler OnTetriminoPlaced;
         event ClientStartGameHandler OnGameStarted;

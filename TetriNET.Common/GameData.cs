@@ -9,72 +9,72 @@ namespace TetriNET.Common
         //  * * *
         //      *
         [EnumMember]
-        TetriminoJ,
+        TetriminoJ = 1,
 
         //  * *
         //    * *
         [EnumMember]
-        TetriminoZ,
+        TetriminoZ = 2,
 
         //  * *
         //  * *
         [EnumMember]
-        TetriminoO,
+        TetriminoO = 3,
 
         //  * * *
         //  *
         [EnumMember]
-        TetriminoL,
+        TetriminoL = 4,
 
         //   * *
         // * *
         [EnumMember]
-        TetriminoS,
+        TetriminoS = 5,
 
         //  * * *
         //    *
         [EnumMember]
-        TetriminoT,
+        TetriminoT = 6,
 
         //  * * * *
         [EnumMember]
-        TetriminoI,
+        TetriminoI = 7,
     }
 
     [DataContract]
     public enum Orientations
     {
         [EnumMember]
-        Top, // start position
+        Top = 1, // start position
         [EnumMember]
-        Left, // 90° clockwise
+        Left = 2, // 90° clockwise
         [EnumMember]
-        Bottom, // 180°
+        Bottom = 3, // 180°
         [EnumMember]
-        Right // 90° counter-clockwise
+        Right = 4 // 90° counter-clockwise
     }
 
     [DataContract]
     public enum Specials
     {
         [EnumMember]
-        AddLines,
+        AddLines = 1,
         [EnumMember]
-        ClearLines,
+        ClearLines = 2,
         [EnumMember]
-        NukeField,
+        NukeField = 3,
         [EnumMember]
-        RandomBlocksClear,
+        RandomBlocksClear = 4,
         [EnumMember]
-        SwitchFields,
+        SwitchFields = 5,
         [EnumMember]
-        ClearSpecialBlocks,
+        ClearSpecialBlocks = 6,
         [EnumMember]
-        BlockGravity,
+        BlockGravity = 7,
         [EnumMember]
-        BlockQuake,
+        BlockQuake = 8,
         [EnumMember]
-        BlockBomb
+        BlockBomb = 9
     }
 
     [DataContract]

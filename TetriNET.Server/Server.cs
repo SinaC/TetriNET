@@ -36,7 +36,6 @@ namespace TetriNET.Server
         private readonly IPlayerManager _playerManager;
         private readonly List<IHost> _hosts;
 
-        private DateTime _lastHeartbeat;
         private List<WinEntry> _winList;
         private GameOptions _options;
 
@@ -76,8 +75,7 @@ namespace TetriNET.Server
                 }
             }; // TODO: get options from save file
 
-            _tetriminoQueue = new TetriminoQueue(() => RangeRandom.Random(_options.TetriminoProbabilities));
-            _lastHeartbeat = DateTime.Now.AddMilliseconds(-HeartbeatDelay);
+            _tetriminoQueue = new TetriminoQueue(() => 1 + RangeRandom.Random(_options.TetriminoProbabilities));
             _playerManager = playerManager;
             _hosts = hosts.ToList();
             _winList = new List<WinEntry>(); // TODO: get win list from save file

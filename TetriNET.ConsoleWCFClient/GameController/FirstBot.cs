@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq.Expressions;
 using System.Timers;
-using TetriNET.Common;
 using TetriNET.Common.Interfaces;
 
 namespace TetriNET.ConsoleWCFClient.GameController
@@ -17,20 +15,16 @@ namespace TetriNET.ConsoleWCFClient.GameController
         private const double EdgeTouchingFloorMultiplier = 5.0;
 
         private readonly IClient _client;
-        private readonly Func<ITetrimino, ITetrimino> _cloneTetrimino;
         private readonly Timer _timer;
 
         private readonly Random _random;
 
-        public FirstBot(IClient client, Func<ITetrimino, ITetrimino> cloneTetrimino)
+        public FirstBot(IClient client)
         {
             if (client == null)
                 throw new ArgumentNullException("client");
-            if (cloneTetrimino == null)
-                throw new ArgumentNullException("cloneTetrimino");
 
             _client = client;
-            _cloneTetrimino = cloneTetrimino;
 
             _timer = new Timer(100);
             _timer.Elapsed += TimerOnElapsed;
@@ -70,88 +64,89 @@ namespace TetriNET.ConsoleWCFClient.GameController
         private void TimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
             _timer.Stop();
+            // TODO
 
-            // Get own copy of grid
-            byte[] grid = new byte[_client.Width*_client.Height];
-            Array.Copy(_client.Grid, grid, _client.Width*_client.Height);
+            //// Get own copy of grid
+            //byte[] grid = new byte[_client.Width*_client.Height];
+            //Array.Copy(_client.Grid, grid, _client.Width*_client.Height);
 
-            double bestScore = -9999.99;
-            int bestRotation = -99;
-            int bestPosX = -99;
+            //double bestScore = -9999.99;
+            //int bestRotation = -99;
+            //int bestPosX = -99;
 
-            //http://luckytoilet.wordpress.com/2011/05/27/coding-a-tetris-ai-using-a-genetic-algorithm/
-            // Simulate all combinations
-            for (int rotation = 0; rotation < 4; rotation++)
-            {
-                // Clone
-                ITetrimino currentRotation = _cloneTetrimino(_client.CurrentTetrimino);
-                // Rotate
-                for (int i = 0; i < rotation; i++)
-                    currentRotation.RotateClockwise(grid);
-                for (int posX = 0; posX < _client.Width; posX++)
-                {
-                    // Move to posX
-                    int originalPosX = currentRotation.PosX;
-                    if (originalPosX > posX)
-                        while (currentRotation.PosX > posX && currentRotation.MoveLeft(grid))
-                        {
-                            // NOP
-                        }
-                    else if (originalPosX < posX)
-                        while (currentRotation.PosX < posX && currentRotation.MoveRight(grid))
-                        {
-                            // NOP
-                        }
-                    // Check if moving to posX was possible
-                    if (currentRotation.PosX == posX)
-                    {
-                        // Drop
-                        while (currentRotation.MoveDown(grid))
-                        {
-                            // NOP
-                        }
-                        // Compute score, store x, y, rotation if best than previous
-                        int hole = CountHoles(grid, _client.Width, _client.Height, currentRotation, posX, currentRotation.PosY);
-                        int clears = CountClears(grid, _client.Width, _client.Height, currentRotation, posX, currentRotation.PosY);
-                        int blockades = CountBlockades(grid, _client.Width, _client.Height, currentRotation, posX, currentRotation.PosY);
-                        int edgeTouchingBlock = 0;
-                        int edgeTouchingWall = 0;
-                        int edgeTouchingFloor = 0;
-                        //
-                        double score =
-                            (22 - currentRotation.PosY) * HeightMultiplier +
-                            hole * HoleMultiplier +
-                            blockades * BlocadeMultiplier +
-                            clears * ClearMultiplier +
-                            edgeTouchingBlock * EdgeTouchingAnotherBlockMultiplier +
-                            edgeTouchingWall * EdgeTouchingWallMultiplier +
-                            edgeTouchingFloor * EdgeTouchingFloorMultiplier;
-                        if (score > bestScore)
-                        {
-                            bestScore = score;
-                            bestRotation = rotation;
-                            bestPosX = posX;
-                        }
-                    }
-                }
-            }
+            ////http://luckytoilet.wordpress.com/2011/05/27/coding-a-tetris-ai-using-a-genetic-algorithm/
+            //// Simulate all combinations
+            //for (int rotation = 0; rotation < 4; rotation++)
+            //{
+            //    // Clone
+            //    ITetrimino currentRotation = _client.CurrentTetrimino.Clone();
+            //    // Rotate
+            //    for (int i = 0; i < rotation; i++)
+            //        currentRotation.RotateClockwise(grid);
+            //    for (int posX = 0; posX < _client.Width; posX++)
+            //    {
+            //        // Move to posX
+            //        int originalPosX = currentRotation.PosX;
+            //        if (originalPosX > posX)
+            //            while (currentRotation.PosX > posX && currentRotation.MoveLeft(grid))
+            //            {
+            //                // NOP
+            //            }
+            //        else if (originalPosX < posX)
+            //            while (currentRotation.PosX < posX && currentRotation.MoveRight(grid))
+            //            {
+            //                // NOP
+            //            }
+            //        // Check if moving to posX was possible
+            //        if (currentRotation.PosX == posX)
+            //        {
+            //            // Drop
+            //            while (currentRotation.MoveDown(grid))
+            //            {
+            //                // NOP
+            //            }
+            //            // Compute score, store x, y, rotation if best than previous
+            //            int hole = CountHoles(grid, _client.Width, _client.Height, currentRotation, posX, currentRotation.PosY);
+            //            int clears = CountClears(grid, _client.Width, _client.Height, currentRotation, posX, currentRotation.PosY);
+            //            int blockades = CountBlockades(grid, _client.Width, _client.Height, currentRotation, posX, currentRotation.PosY);
+            //            int edgeTouchingBlock = 0;
+            //            int edgeTouchingWall = 0;
+            //            int edgeTouchingFloor = 0;
+            //            //
+            //            double score =
+            //                (22 - currentRotation.PosY) * HeightMultiplier +
+            //                hole * HoleMultiplier +
+            //                blockades * BlocadeMultiplier +
+            //                clears * ClearMultiplier +
+            //                edgeTouchingBlock * EdgeTouchingAnotherBlockMultiplier +
+            //                edgeTouchingWall * EdgeTouchingWallMultiplier +
+            //                edgeTouchingFloor * EdgeTouchingFloorMultiplier;
+            //            if (score > bestScore)
+            //            {
+            //                bestScore = score;
+            //                bestRotation = rotation;
+            //                bestPosX = posX;
+            //            }
+            //        }
+            //    }
+            //}
 
-            Console.WriteLine("\t\tBest score: {0:0.000000} r:{1} x:{2}", bestScore, bestRotation, bestPosX);
+            //Console.WriteLine("\t\tBest score: {0:0.000000} r:{1} x:{2}", bestScore, bestRotation, bestPosX);
 
-            for (int i = 0; i < bestRotation; i++)
-                _client.RotateClockwise();
-            if (_client.CurrentTetrimino.PosX != bestPosX)
-            {
-                // Move to posX
-                int moves = bestPosX - _client.CurrentTetrimino.PosX;
-                if (moves < 0)
-                    for(int i = 0; i < Math.Abs(moves); i++)
-                        _client.MoveLeft();
-                else                     
-                    for(int i = 0; i < Math.Abs(moves); i++)
-                        _client.MoveRight();
+            //for (int i = 0; i < bestRotation; i++)
+            //    _client.RotateClockwise();
+            //if (_client.CurrentTetrimino.PosX != bestPosX)
+            //{
+            //    // Move to posX
+            //    int moves = bestPosX - _client.CurrentTetrimino.PosX;
+            //    if (moves < 0)
+            //        for(int i = 0; i < Math.Abs(moves); i++)
+            //            _client.MoveLeft();
+            //    else                     
+            //        for(int i = 0; i < Math.Abs(moves); i++)
+            //            _client.MoveRight();
 
-            }
+            //}
 
             System.Threading.Thread.Sleep(100);
             

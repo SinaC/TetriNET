@@ -1,56 +1,34 @@
 ﻿using System;
 using System.Configuration;
+using TetriNET.Client;
 using TetriNET.Common;
 using TetriNET.Common.Interfaces;
 using TetriNET.ConsoleWCFClient.GameController;
 using TetriNET.ConsoleWCFClient.Proxy;
-using TetriNET.ConsoleWCFClient.TenGen;
 using TetriNET.ConsoleWCFClient.UI;
 
 namespace TetriNET.ConsoleWCFClient
 {
     public class Program
     {
-        public static ITetrimino CreateTetrimino(Tetriminos tetrimino, int width, int height)
+        public static ITetrimino CreateTetrimino(Tetriminos tetrimino, int spawnX, int spawnY, int spawnOrientation)
         {
             switch (tetrimino)
             {
                 case Tetriminos.TetriminoI:
-                    return new TetriminoI(width, height);
+                    return new TetriminoI(spawnX, spawnY, spawnOrientation);
                 case Tetriminos.TetriminoJ:
-                    return new TetriminoJ(width, height);
+                    return new TetriminoJ(spawnX, spawnY, spawnOrientation);
                 case Tetriminos.TetriminoL:
-                    return new TetriminoL(width, height);
+                    return new TetriminoL(spawnX, spawnY, spawnOrientation);
                 case Tetriminos.TetriminoO:
-                    return new TetriminoO(width, height);
+                    return new TetriminoO(spawnX, spawnY, spawnOrientation);
                 case Tetriminos.TetriminoS:
-                    return new TetriminoS(width, height);
+                    return new TetriminoS(spawnX, spawnY, spawnOrientation);
                 case Tetriminos.TetriminoT:
-                    return new TetriminoT(width, height);
+                    return new TetriminoT(spawnX, spawnY, spawnOrientation);
                 case Tetriminos.TetriminoZ:
-                    return new TetriminoZ(width, height);
-            }
-            return null;
-        }
-
-        public static ITetrimino CloneTetrimino(ITetrimino tetrimino)
-        {
-            switch (tetrimino.TetriminoValue)
-            {
-                case Tetriminos.TetriminoI:
-                    return new TetriminoI(tetrimino.GridWidth, tetrimino.GridHeight);
-                case Tetriminos.TetriminoJ:
-                    return new TetriminoJ(tetrimino.GridWidth, tetrimino.GridHeight);
-                case Tetriminos.TetriminoL:
-                    return new TetriminoL(tetrimino.GridWidth, tetrimino.GridHeight);
-                case Tetriminos.TetriminoO:
-                    return new TetriminoO(tetrimino.GridWidth, tetrimino.GridHeight);
-                case Tetriminos.TetriminoS:
-                    return new TetriminoS(tetrimino.GridWidth, tetrimino.GridHeight);
-                case Tetriminos.TetriminoT:
-                    return new TetriminoT(tetrimino.GridWidth, tetrimino.GridHeight);
-                case Tetriminos.TetriminoZ:
-                    return new TetriminoZ(tetrimino.GridWidth, tetrimino.GridHeight);
+                    return new TetriminoZ(spawnX, spawnY, spawnOrientation);
             }
             return null;
         }
@@ -60,13 +38,13 @@ namespace TetriNET.ConsoleWCFClient
             //
             //string baseAddress = @"net.tcp://localhost:8765/TetriNET";
             string baseAddress = ConfigurationManager.AppSettings["address"];
-            IClient client = new Client.Client(callback => new WCFProxy(callback, baseAddress), CreateTetrimino);
+            IClient client = new Client.Client(callback => new WCFProxy(callback, baseAddress), CreateTetrimino, () => new Board(12,22));
             string name = "joel-wpf-client" + Guid.NewGuid().ToString().Substring(0, 5);
             client.Register(name);
 
             //
-            //GameController.GameController controller = new GameController.GameController(client);
-            FirstBot bot = new FirstBot(client, CloneTetrimino);
+            GameController.GameController controller = new GameController.GameController(client);
+            //FirstBot bot = new FirstBot(client);
             //
             NaiveConsoleUI ui = new NaiveConsoleUI(client);
 
@@ -87,26 +65,26 @@ namespace TetriNET.ConsoleWCFClient
                         case ConsoleKey.D:
                             client.Dump();
                             break;
-                        //case ConsoleKey.LeftArrow:
-                        //    controller.KeyDown(Commands.Left);
-                        //    controller.KeyUp(Commands.Left);
-                        //    break;
-                        //case ConsoleKey.RightArrow:
-                        //    controller.KeyDown(Commands.Right);
-                        //    controller.KeyUp(Commands.Right);
-                        //    break;
-                        //case ConsoleKey.DownArrow:
-                        //    controller.KeyDown(Commands.Down);
-                        //    controller.KeyUp(Commands.Down);
-                        //    break;
-                        //case ConsoleKey.Spacebar:
-                        //    controller.KeyDown(Commands.Drop);
-                        //    controller.KeyUp(Commands.Drop);
-                        //    break;
-                        //case ConsoleKey.UpArrow:
-                        //    controller.KeyDown(Commands.RotateClockwise);
-                        //    controller.KeyUp(Commands.RotateClockwise);
-                        //    break;
+                        case ConsoleKey.LeftArrow:
+                            controller.KeyDown(Commands.Left);
+                            controller.KeyUp(Commands.Left);
+                            break;
+                        case ConsoleKey.RightArrow:
+                            controller.KeyDown(Commands.Right);
+                            controller.KeyUp(Commands.Right);
+                            break;
+                        case ConsoleKey.DownArrow:
+                            controller.KeyDown(Commands.Down);
+                            controller.KeyUp(Commands.Down);
+                            break;
+                        case ConsoleKey.Spacebar:
+                            controller.KeyDown(Commands.Drop);
+                            controller.KeyUp(Commands.Drop);
+                            break;
+                        case ConsoleKey.UpArrow:
+                            controller.KeyDown(Commands.RotateClockwise);
+                            controller.KeyUp(Commands.RotateClockwise);
+                            break;
                     }
                 }
                 else

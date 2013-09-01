@@ -48,6 +48,7 @@
     <Compile Include="Helpers\Check.cs" />
     <Compile Include="Helpers\Singleton.cs" />
     <Compile Include="Interfaces\IBanManager.cs" />
+    <Compile Include="Interfaces\IBoard.cs" />
     <Compile Include="Interfaces\IClient.cs" />
     <Compile Include="Interfaces\IHost.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />
