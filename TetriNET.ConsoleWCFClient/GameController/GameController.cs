@@ -103,7 +103,7 @@ namespace TetriNET.ConsoleWCFClient.GameController
 
         #endregion
 
-        private Timer CreateTimer(double interval, ElapsedEventHandler handler)
+        private static Timer CreateTimer(double interval, ElapsedEventHandler handler)
         {
             Timer timer = new Timer(interval);
             timer.Elapsed += handler;

@@ -31,6 +31,7 @@ namespace TetriNET.ConsoleWCFClient
                     return new TetriminoZ(spawnX, spawnY, spawnOrientation);
             }
             return null;
+            //return new TetriminoZ(spawnX, spawnY, spawnOrientation);
         }
 
         static void Main(string[] args)
@@ -45,6 +46,7 @@ namespace TetriNET.ConsoleWCFClient
             //
             GameController.GameController controller = new GameController.GameController(client);
             //FirstBot bot = new FirstBot(client);
+            PierreDellacherieOnePieceBot bot = new PierreDellacherieOnePieceBot(client);
             //
             NaiveConsoleUI ui = new NaiveConsoleUI(client);
 

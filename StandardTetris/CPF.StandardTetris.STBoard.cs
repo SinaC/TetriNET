@@ -43,8 +43,8 @@ namespace CPF.StandardTetris
         private int mHeight;
         private byte[] mCells;
 
-        private const int mDefaultWidth = 10;
-        private const int mDefaultHeight = 20;
+        private const int mDefaultWidth = 12;
+        private const int mDefaultHeight = 22;
 
         // Junk row generator
         private STRandom mSTRandomForJunkRows;

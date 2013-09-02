@@ -11,6 +11,7 @@
         IBoard Clone();
         bool CopyFrom(IBoard board);
         void Clear();
+        void FillWithRandomCells();
 
         bool SetCells(byte[] cells);
         int TotalCells { get; }

@@ -66,7 +66,7 @@ namespace TetriNET.ConsoleWCFClient
 
         public void Rotate(int count)
         {
-            int total = ((count/MaxOrientations) + MaxOrientations)%MaxOrientations; // 0 -> 3
+            int total = ((count%MaxOrientations) + MaxOrientations)%MaxOrientations; // 0 -> 3
 
             for (int step = 0; step < total; step++)
                 RotateClockwise();

@@ -205,14 +205,14 @@ namespace TetriNET.Client
             {
                 Log.WriteLine("Registered as player {0} game started {1}", playerId, gameStarted);
 
-                // TODO: if gameStarted fill our screen with random blocks
-
                 _playerId = playerId;
                 _players[_playerId] = new Player
                     {
                         Name = Name,
                         Board = _createBoardFunc()
                     };
+                if (gameStarted)
+                    _players[_playerId].Board.FillWithRandomCells();
                 State = States.Registered;
             }
             else
@@ -226,12 +226,18 @@ namespace TetriNET.Client
             Log.WriteLine("Player {0}[{1}] joined", name, playerId);
 
             ResetTimeout();
-            if (playerId != _playerId && playerId >= 0) // don't update ourself
+            if (playerId != _playerId && playerId >= 0)
+            {
+                // don't update ourself
                 _players[playerId] = new Player
-                    {
-                        Name = name
-                    };
-            // TODO: update chat list + display msg in out-game chat + fill player screen with random blocks if game started
+                {
+                    Name = name,
+                    Board = _createBoardFunc()
+                };
+                if (IsGameStarted)
+                    _players[_playerId].Board.FillWithRandomCells();
+            }
+            // TODO: update chat list + display msg in out-game chat
         }
 
         public void OnPlayerLeft(int playerId, string name, LeaveReasons reason)
@@ -241,7 +247,7 @@ namespace TetriNET.Client
             ResetTimeout();
             if (playerId != _playerId && playerId >= 0)
                 _players[playerId] = null;
-            // TODO: update chat list + display msg in out-game chat + fill player screen with random blocks if game started
+            // TODO: update chat list + display msg in out-game chat
         }
 
         public void OnPublishPlayerMessage(string playerName, string msg)
@@ -295,7 +301,7 @@ namespace TetriNET.Client
             _level = 0;
             // Reset boards
             for (int i = 0; i < 6; i++)
-                if (_players[i] != null)
+                if (_players[i] != null && _players[i].Board != null)
                     _players[i].Board.Clear();
             // Restart timer
             _gameTimer.Start();
@@ -304,7 +310,6 @@ namespace TetriNET.Client
                 ClientOnGameStarted();
 
             //Log.WriteLine("TETRIMINOS:{0}", _tetriminos.Dump(8));
-            // TODO: update current/next piece, clear every player screen
         }
 
         public void OnGameFinished()
@@ -314,9 +319,9 @@ namespace TetriNET.Client
             ResetTimeout();
             State = States.Registered;
             _gameTimer.Stop();
+            // TODO:
             if (ClientOnGameFinished != null)
                 ClientOnGameFinished();
-            // TODO:
         }
 
         public void OnGamePaused()
@@ -354,7 +359,8 @@ namespace TetriNET.Client
             Log.WriteLine("Player {0} add {1} lines (special [{2}])", playerId, lineCount, specialId);
 
             ResetTimeout();
-            // TODO: perform attack
+            if (playerId == _playerId) // Perform attack only on ourself
+                Board.AddLines(lineCount);
         }
 
         public void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special)
@@ -363,6 +369,39 @@ namespace TetriNET.Client
 
             ResetTimeout();
             // TODO: if targetId == own id, perform attack + display in-game msg
+            if (targetId == _playerId)
+            {
+                switch (special)
+                {
+                    case Specials.AddLines: 
+                        Board.AddLines(1);
+                        break;
+                    case Specials.ClearLines:
+                        Board.ClearLine();
+                        break;
+                    case Specials.NukeField:
+                        Board.NukeField();
+                        break;
+                    case Specials.RandomBlocksClear:
+                        Board.RandomBlocksClear(10);
+                        break;
+                    case Specials.SwitchFields:
+                        // NOP: Managed by Server
+                        break;
+                    case Specials.ClearSpecialBlocks:
+                        Board.ClearSpecialBlocks();
+                        break;
+                    case Specials.BlockGravity:
+                        Board.BlockGravity();
+                        break;
+                    case Specials.BlockQuake:
+                        Board.BlockQuake();
+                        break;
+                    case Specials.BlockBomb:
+                        Board.BlockBomb();
+                        break;
+                }
+            }
         }
 
         public void OnNextTetrimino(int index, Tetriminos tetrimino)
@@ -378,6 +417,7 @@ namespace TetriNET.Client
             ResetTimeout();
             if (_players[playerId] != null)
                 _players[playerId].Board.SetCells(grid);
+            
             // TODO: update player screen
         }
 

@@ -1226,6 +1226,8 @@ namespace CPF.StandardTetris
             nextShape = this.mGameState.mSTPieceSequence.ClientPeekSelectedPieceNext();
             this.mGameState.mSTPieceSequence.ClientRequestSelectionUpdate();
 
+            //nextShape = STPiece.STPieceShape.Z;
+            //currentShape = STPiece.STPieceShape.Z;
 
             if (nextShape != STPiece.STPieceShape.None)
             {

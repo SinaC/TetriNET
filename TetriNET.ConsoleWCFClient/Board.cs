@@ -42,6 +42,12 @@ namespace TetriNET.ConsoleWCFClient
                 Cells[i] = 0;
         }
 
+        public void FillWithRandomCells()
+        {
+            for (int i = 0; i < Width * Height; i++)
+                Cells[i] = (byte)(1 + (_random.Next() % TetriminosCount));
+        }
+
         public bool SetCells(byte[] cells)
         {
             if (cells.Length != Width*Height)
@@ -97,7 +103,7 @@ namespace TetriNET.ConsoleWCFClient
 
         public int TetriminoSpawnY
         {
-            get { return Height; }
+            get { return Height-1; }
         }
 
         public int CollapseCompletedRows()
@@ -182,8 +188,7 @@ namespace TetriNET.ConsoleWCFClient
             isMovePossible = true;
 
             // Scan from center to left to find left limit.
-            bool stillAcceptable = true;
-            for (int trial = 0; trial >= -Width && stillAcceptable; trial--)
+            for (int trial = 0; trial >= -Width; trial--)
             {
                 // Copy piece
                 tempPiece.CopyFrom(piece);
@@ -194,12 +199,11 @@ namespace TetriNET.ConsoleWCFClient
                 if (moveAcceptable)
                     minDeltaX = trial;
                 else
-                    stillAcceptable = false;
+                    break;
             }
 
             // Scan from center to right to find right limit.
-            stillAcceptable = true;
-            for (int trial = 0; trial <= Width && stillAcceptable; trial++)
+            for (int trial = 0; trial <= Width; trial++)
             {
                 // Copy piece
                 tempPiece.CopyFrom(piece);
@@ -210,7 +214,7 @@ namespace TetriNET.ConsoleWCFClient
                 if (moveAcceptable)
                     maxDeltaX = trial;
                 else
-                    stillAcceptable = false;
+                    break;
             }
         }
 
@@ -374,7 +378,8 @@ namespace TetriNET.ConsoleWCFClient
 
         public void ClearSpecialBlocks()
         {
-            // TODO
+            for (int i = 0; i < Width*Height; i++)
+                Cells[i] = (byte)(Cells[i] & 0x0F); // remove special
         }
 
         public void BlockGravity()
@@ -418,52 +423,5 @@ namespace TetriNET.ConsoleWCFClient
                 this[x, 1] = cellValue;
             }
         }
-
-        //public int GetTotalOccupiedCells() // result range: 0..(Width * Height)
-        //{
-        //    return Cells.Count(x => x > 0);
-        //}
-
-        //public int GetTotalShadowedHoles()
-        //{
-        //    // For each column we search top-down through the rows,
-        //    // noting the first occupied cell, and counting any
-        //    // unoccupied cells after that point...
-        //    int holes = 0;
-        //    for (int x = 1; x <= Width; x++)
-        //    {
-        //        bool encounteredOccupiedCell = false;
-        //        for (int y = Height; y >= 1; y--) // top-to-bottom
-        //        {
-        //            byte cellValue = this[x, y];
-
-        //            if (cellValue != 0)
-        //                encounteredOccupiedCell = true;
-        //            else
-        //                // cell is un-occupied...
-        //                if (encounteredOccupiedCell)
-        //                    // ...and we already encountered an occupied cell above,
-        //                    // so this counts as a hole.
-        //                    holes++;
-        //        }
-        //    }
-        //    return holes;
-        //}
-
-        //public int GetPileMaxHeight() // result range: 0..Height
-        //{
-        //    // top-down search for non-empty cell
-        //    for (int y = Height; y >= 1; y--)
-        //    {
-        //        for (int x = 1; x <= Width; x++)
-        //        {
-        //            byte cellValue = this[x, y];
-        //            if (0 != cellValue)
-        //                return y;
-        //        }
-        //    }
-        //    return 0; // entire board is empty
-        //}
-
     }
 }
