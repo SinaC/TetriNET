@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using TetriNET.Client;
+using TetriNET.Client.DefaultBoardAndTetriminos;
 using TetriNET.Common;
 using TetriNET.Common.Interfaces;
 using TetriNET.ConsoleWCFClient.GameController;
@@ -13,25 +14,25 @@ namespace TetriNET.ConsoleWCFClient
     {
         public static ITetrimino CreateTetrimino(Tetriminos tetrimino, int spawnX, int spawnY, int spawnOrientation)
         {
-            switch (tetrimino)
-            {
-                case Tetriminos.TetriminoI:
-                    return new TetriminoI(spawnX, spawnY, spawnOrientation);
-                case Tetriminos.TetriminoJ:
-                    return new TetriminoJ(spawnX, spawnY, spawnOrientation);
-                case Tetriminos.TetriminoL:
-                    return new TetriminoL(spawnX, spawnY, spawnOrientation);
-                case Tetriminos.TetriminoO:
-                    return new TetriminoO(spawnX, spawnY, spawnOrientation);
-                case Tetriminos.TetriminoS:
-                    return new TetriminoS(spawnX, spawnY, spawnOrientation);
-                case Tetriminos.TetriminoT:
-                    return new TetriminoT(spawnX, spawnY, spawnOrientation);
-                case Tetriminos.TetriminoZ:
-                    return new TetriminoZ(spawnX, spawnY, spawnOrientation);
-            }
-            return null; // TODO: sometimes server takes time to send next tetrimino, it should send 2 or 3 next pieces to ensure this never happens
-            //return new TetriminoZ(spawnX, spawnY, spawnOrientation);
+            //switch (tetrimino)
+            //{
+            //    case Tetriminos.TetriminoI:
+            //        return new TetriminoI(spawnX, spawnY, spawnOrientation);
+            //    case Tetriminos.TetriminoJ:
+            //        return new TetriminoJ(spawnX, spawnY, spawnOrientation);
+            //    case Tetriminos.TetriminoL:
+            //        return new TetriminoL(spawnX, spawnY, spawnOrientation);
+            //    case Tetriminos.TetriminoO:
+            //        return new TetriminoO(spawnX, spawnY, spawnOrientation);
+            //    case Tetriminos.TetriminoS:
+            //        return new TetriminoS(spawnX, spawnY, spawnOrientation);
+            //    case Tetriminos.TetriminoT:
+            //        return new TetriminoT(spawnX, spawnY, spawnOrientation);
+            //    case Tetriminos.TetriminoZ:
+            //        return new TetriminoZ(spawnX, spawnY, spawnOrientation);
+            //}
+            //return null; // TODO: sometimes server takes time to send next tetrimino, it should send 2 or 3 next pieces to ensure this never happens
+            return new TetriminoI(spawnX, spawnY, spawnOrientation);
         }
 
         static void Main(string[] args)
@@ -44,8 +45,7 @@ namespace TetriNET.ConsoleWCFClient
 
             //
             GameController.GameController controller = new GameController.GameController(client);
-            //FirstBot bot = new FirstBot(client);
-            PierreDellacherieOnePieceBot bot = new PierreDellacherieOnePieceBot(client);
+            //PierreDellacherieOnePieceBot bot = new PierreDellacherieOnePieceBot(client);
             //
             NaiveConsoleUI ui = new NaiveConsoleUI(client);
 

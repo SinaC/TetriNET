@@ -1,6 +1,6 @@
 ﻿using TetriNET.Common.Interfaces;
 
-namespace TetriNET.ConsoleWCFClient
+namespace TetriNET.Client.DefaultBoardAndTetriminos
 {
     public abstract class Tetrimino : ITetrimino
     {
@@ -8,17 +8,8 @@ namespace TetriNET.ConsoleWCFClient
         public int PosY { get; protected set; } // coordinates in board
         public int Orientation { get; protected set; } // 1 -> 4
 
-        public byte Value { get; protected set; } // bit 0->3: color     bit 4->7: special
+        public byte Value { get; protected set; } // bit 0->3: color     bit 4->7: special      use ByteHelper to get Tetrimino(color) and Special
         
-        public byte Color {
-            get { return (byte)(Value & 0x0F); }
-        }
-
-        public byte Special
-        {
-            get { return (byte)((Value & 0xF0) >> 4); }
-        }
-
         public abstract int MaxOrientations { get; }
         public abstract int TotalCells { get; }
         public abstract void GetCellAbsolutePosition(int cellIndex, out int x, out int y); // cell: 1->#cells

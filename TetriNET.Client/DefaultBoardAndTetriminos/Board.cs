@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using TetriNET.Common.Interfaces;
+using TetriNET.Common.Randomizer;
 
-namespace TetriNET.ConsoleWCFClient
+namespace TetriNET.Client.DefaultBoardAndTetriminos
 {
     public class Board : IBoard
     {
-        private const int TetriminosCount = 7; // TODO: move this elsewhere
         private readonly Random _random; // TODO: create own static thread-safe random class
 
         public int Width { get; private set; }
@@ -42,10 +44,10 @@ namespace TetriNET.ConsoleWCFClient
                 Cells[i] = 0;
         }
 
-        public void FillWithRandomCells()
+        public void FillWithRandomCells(int tetriminosCount)
         {
             for (int i = 0; i < Width * Height; i++)
-                Cells[i] = (byte)(1 + (_random.Next() % TetriminosCount));
+                Cells[i] = (byte)(1 + _random.Next(tetriminosCount));
         }
 
         public bool SetCells(byte[] cells)
@@ -348,11 +350,43 @@ namespace TetriNET.ConsoleWCFClient
         }
 
         #region Specials
-        
-        public void AddLines(int count)
+
+        public void SpawnSpecialBlocks(int count, List<int> specialProbabilities)
+        {
+            // Build list of cells without any specials
+            List<int> cellsOccupiedWithoutSpecials = Cells.Select((cell, index) => new
+            {
+                cell,
+                index
+            })
+                .Where(x => x.cell > 0 && ((byte)(x.cell & 0x0F) == x.cell))
+                .Select(x => x.index)
+                .ToList();
+            for (int i = 0; i < count; i++)
+            {
+                int n = cellsOccupiedWithoutSpecials.Count;
+                if (n > 0)
+                {
+                    // get random cell without specials
+                    int randomCell = _random.Next(n);
+                    int cellIndex = cellsOccupiedWithoutSpecials[randomCell];
+                    // get random special
+                    byte randomSpecial = (byte)((1 + RangeRandom.Random(specialProbabilities)) << 4);//(byte)((1 + _random.Next(SpecialsCount))<< 4);
+                    // add special
+                    Cells[cellIndex] |= randomSpecial;
+
+                    // remove cell from list
+                    cellsOccupiedWithoutSpecials.RemoveAt(randomCell);
+                }
+                else
+                    break; // no more cells without specials
+            }
+        }
+
+        public void AddLines(int count, int tetriminosCount)
         {
             for(int i = 0; i < count; i++)
-                AddJunkLine();
+                AddJunkLine(tetriminosCount);
         }
 
         public void ClearLine()
@@ -399,7 +433,7 @@ namespace TetriNET.ConsoleWCFClient
 
         #endregion
 
-        protected void AddJunkLine()
+        protected void AddJunkLine(int tetriminosCount)
         {
             // First, do top-down row copying to raise all rows by 'count' row, with the top row being discarded.
             for (int y = Height; y > 1; y--) // top-down
@@ -419,7 +453,7 @@ namespace TetriNET.ConsoleWCFClient
                 if (x == hole)
                     cellValue = 0;
                 else
-                    cellValue = (byte) (1 + (_random.Next()%TetriminosCount));
+                    cellValue = (byte)(1 + _random.Next(tetriminosCount));
                 this[x, 1] = cellValue;
             }
         }

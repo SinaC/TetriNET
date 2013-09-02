@@ -1,6 +1,6 @@
 ﻿using TetriNET.Common.Interfaces;
 
-namespace TetriNET.ConsoleWCFClient
+namespace TetriNET.Client.DefaultBoardAndTetriminos
 {
     public class TetriminoO : Tetrimino
     {

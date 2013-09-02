@@ -30,6 +30,7 @@ namespace TetriNET.Server
         private const int HeartbeatDelay = 300; // in ms
         private const int TimeoutDelay = 500; // in ms
         private const int MaxTimeoutCountBeforeDisconnection = 3;
+        private const bool IsTimeoutDetectionActive = false;
 
         private readonly TetriminoQueue _tetriminoQueue;
         private readonly ManualResetEvent _stopActionTaskEvent = new ManualResetEvent(false);
@@ -564,7 +565,7 @@ namespace TetriNET.Server
                 {
                     // Check player timeout
                     TimeSpan timespan = DateTime.Now - p.LastActionFromClient;
-                    if (timespan.TotalMilliseconds > TimeoutDelay)
+                    if (timespan.TotalMilliseconds > TimeoutDelay && IsTimeoutDetectionActive)
                     {
                         Log.WriteLine("Timeout++ for player {0}", p.Name);
                         // Update timeout count

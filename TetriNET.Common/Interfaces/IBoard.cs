@@ -1,4 +1,6 @@
-﻿namespace TetriNET.Common.Interfaces
+﻿using System.Collections.Generic;
+
+namespace TetriNET.Common.Interfaces
 {
     //  x-axis: 1 -> Width
     //  y-axis: 1(Bottom) -> Height(Top)
@@ -11,7 +13,7 @@
         IBoard Clone();
         bool CopyFrom(IBoard board);
         void Clear();
-        void FillWithRandomCells();
+        void FillWithRandomCells(int tetriminosCount);
 
         bool SetCells(byte[] cells);
         int TotalCells { get; }
@@ -35,7 +37,10 @@
         bool RotateCounterClockwise(ITetrimino piece);
 
         #region Specials
-        void AddLines(int count);
+
+        void SpawnSpecialBlocks(int count, List<int> specialProbabilities);
+
+        void AddLines(int count, int tetriminosCount);
         void ClearLine();
         void NukeField();
         void RandomBlocksClear(int count);
@@ -44,7 +49,7 @@
         void BlockGravity();
         void BlockQuake();
         void BlockBomb();
+
         #endregion
     }
-
 }

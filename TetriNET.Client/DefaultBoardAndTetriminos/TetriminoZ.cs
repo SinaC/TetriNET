@@ -1,16 +1,16 @@
 ﻿using TetriNET.Common.Interfaces;
 
-namespace TetriNET.ConsoleWCFClient
+namespace TetriNET.Client.DefaultBoardAndTetriminos
 {
-    public class TetriminoS : Tetrimino
+    public class TetriminoZ : Tetrimino
     {
-        protected TetriminoS()
+        protected TetriminoZ()
         {
         }
 
-        public TetriminoS(int spawnX, int spawnY, int spawnOrientation) : base(spawnX, spawnY, spawnOrientation)
+        public TetriminoZ(int spawnX, int spawnY, int spawnOrientation) : base(spawnX, spawnY, spawnOrientation)
         {
-            Value = 5;
+            Value = 7;
         }
 
         public override int MaxOrientations
@@ -26,26 +26,26 @@ namespace TetriNET.ConsoleWCFClient
         public override void GetCellAbsolutePosition(int cellIndex, out int x, out int y)
         {
             x = y = 0;
-            // orientation 1,3: (-1, -1),  ( 0, -1),  ( 0,  0),  ( 1,  0)
-            // orientation 2,4: ( 1, -1),  ( 0,  0),  ( 1,  0),  ( 0,  1)
+            // orientation 1,3: ( 0, -1),  ( 1, -1),  (-1,  0),  ( 0,  0)
+            // orientation 2,4: ( 0, -1),  ( 0,  0),  ( 1,  0),  ( 1,  1)
             if (Orientation == 1 || Orientation == 3)
             {
                 switch (cellIndex)
                 {
                     case 1:
-                        x = -1;
+                        x = 0;
                         y = -1;
                         break;
                     case 2:
-                        x = 0;
+                        x = 1;
                         y = -1;
                         break;
                     case 3:
-                        x = 0;
+                        x = -1;
                         y = 0;
                         break;
                     case 4:
-                        x = 1;
+                        x = 0;
                         y = 0;
                         break;
                 }
@@ -55,7 +55,7 @@ namespace TetriNET.ConsoleWCFClient
                 switch (cellIndex)
                 {
                     case 1:
-                        x = 1;
+                        x = 0;
                         y = -1;
                         break;
                     case 2:
@@ -67,7 +67,7 @@ namespace TetriNET.ConsoleWCFClient
                         y = 0;
                         break;
                     case 4:
-                        x = 0;
+                        x = 1;
                         y = 1;
                         break;
                 }
@@ -79,7 +79,7 @@ namespace TetriNET.ConsoleWCFClient
 
         public override ITetrimino Clone()
         {
-            return new TetriminoS
+            return new TetriminoZ
             {
                 PosX = PosX,
                 PosY = PosY,

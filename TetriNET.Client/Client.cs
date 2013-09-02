@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using TetriNET.Common;
 using TetriNET.Common.Contracts;
+using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Client
@@ -71,10 +72,11 @@ namespace TetriNET.Client
 
     public sealed class Client : ITetriNETCallback, IClient
     {
+        private const int TetriminosCount = 7; // TODO: get value from tetriminos enum
         private const int HeartbeatDelay = 300; // in ms
         private const int TimeoutDelay = 500; // in ms
         private const int MaxTimeoutCountBeforeDisconnection = 3;
-        private const int TetriminosCount = 7;
+        private const bool IsTimeoutDetectionActive = false;
 
         public enum States
         {
@@ -86,7 +88,6 @@ namespace TetriNET.Client
         }
 
         private readonly IProxy _proxy;
-        private readonly Random _random;
         private readonly Func<Tetriminos, int, int, int, ITetrimino> _createTetriminoFunc;
         private readonly Func<IBoard> _createBoardFunc;
         private readonly Player[] _players = new Player[6];
@@ -99,7 +100,7 @@ namespace TetriNET.Client
         public ITetrimino NextTetrimino { get; private set; }
 
         private List<WinEntry> _winList;
-        private GameOptions _options;
+        private GameOptions _options; // TODO: check if an entry for each specials and for each tetriminos (set to dummy/default values otherwise)
         private int _playerId;
         private bool _isServerMaster;
 
@@ -128,14 +129,14 @@ namespace TetriNET.Client
                 throw new ArgumentNullException("createProxyFunc");
             if (createTetriminoFunc == null)
                 throw new ArgumentNullException("createTetriminoFunc");
+            if (createBoardFunc == null)
+                throw new ArgumentNullException("createBoardFunc");
 
             _proxy = createProxyFunc(this);
             _proxy.OnConnectionLost += ConnectionLostHandler;
 
             _createTetriminoFunc = createTetriminoFunc;
             _createBoardFunc = createBoardFunc;
-
-            _random = new Random();
 
             _tetriminos = new TetriminoArray(64);
 
@@ -183,23 +184,32 @@ namespace TetriNET.Client
             {
                 Log.WriteLine("Registered as player {0} game started {1}", playerId, gameStarted);
 
-                _playerId = playerId;
-                _players[_playerId] = new Player
+                if (playerId >= 0)
+                {
+                    _playerId = playerId;
+                    _players[_playerId] = new Player
                     {
                         Name = Name,
                         Board = _createBoardFunc()
                     };
-                if (gameStarted)
-                {
-                    _players[_playerId].Board.FillWithRandomCells();
+                    if (gameStarted)
+                    {
+                        _players[_playerId].Board.FillWithRandomCells(TetriminosCount);
 
-                    if (ClientOnRedraw != null)
-                        ClientOnRedraw();
+                        if (ClientOnRedraw != null)
+                            ClientOnRedraw();
+                    }
+                    State = States.Registered;
                 }
-                State = States.Registered;
+                else
+                {
+                    State = States.Created;
+                    Log.WriteLine("Wrong id {0}", playerId);
+                }
             }
             else
             {
+                State = States.Created;
                 Log.WriteLine("Registration failed");
             }
         }
@@ -219,7 +229,7 @@ namespace TetriNET.Client
                 };
                 if (IsGameStarted)
                 {
-                    _players[_playerId].Board.FillWithRandomCells();
+                    _players[_playerId].Board.FillWithRandomCells(TetriminosCount);
 
                     if (ClientOnRedrawBoard != null)
                         ClientOnRedrawBoard(_playerId);
@@ -277,14 +287,14 @@ namespace TetriNET.Client
             ResetTimeout();
             State = States.Playing;
             _options = options;
-            //
+            // reset tetriminos
             _tetriminos[0] = firstTetrimino;
             _tetriminos[1] = secondTetrimino;
             _tetriminos[2] = thirdTetrimino;
             _tetriminoIndex = 0;
             CurrentTetrimino = _createTetriminoFunc(firstTetrimino, Board.TetriminoSpawnX, Board.TetriminoSpawnY, 1);
             NextTetrimino = _createTetriminoFunc(secondTetrimino, Board.TetriminoSpawnX, Board.TetriminoSpawnY, 1);
-            //
+            // reset line and level
             _lineCount = 0;
             _level = 0;
             // Reset boards
@@ -297,6 +307,7 @@ namespace TetriNET.Client
             if (ClientOnGameStarted != null)
                 ClientOnGameStarted();
 
+            // TODO: update player status
             //Log.WriteLine("TETRIMINOS:{0}", _tetriminos.Dump(8));
         }
 
@@ -347,8 +358,7 @@ namespace TetriNET.Client
             Log.WriteLine("Player {0} add {1} lines (special [{2}])", playerId, lineCount, specialId);
 
             ResetTimeout();
-            if (playerId == _playerId) // Perform attack only on ourself
-                AddLines(lineCount);
+            AddLines(lineCount);
         }
 
         public void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special)
@@ -488,7 +498,7 @@ namespace TetriNET.Client
                 // TODO: change game timer interval
             }
             // Send tetrimino places to server
-            _proxy.PlaceTetrimino(this, _tetriminoIndex, (Tetriminos)CurrentTetrimino.Color/*TODO handle this in a better way*/, CurrentTetrimino.Orientation, CurrentTetrimino.PosX, CurrentTetrimino.PosY, Board.Cells);
+            _proxy.PlaceTetrimino(this, _tetriminoIndex, ByteHelper.Tetrimino(CurrentTetrimino.Value), CurrentTetrimino.Orientation, CurrentTetrimino.PosX, CurrentTetrimino.PosY, Board.Cells);
             // Set new current tetrimino to next, increment tetrimino index and create next tetrimino
             CurrentTetrimino = NextTetrimino;
             _tetriminoIndex++;
@@ -504,6 +514,10 @@ namespace TetriNET.Client
                     ClientOnRedraw();
 
                 // TODO: transform cell into special blocks
+                if (deletedRows > 1)
+                {
+                    Board.SpawnSpecialBlocks(deletedRows - 1, _options.SpecialProbabilities);
+                }
 
                 // Send lines if classic style
                 if (_options.ClassicStyleMultiplayerRules && deletedRows > 1)
@@ -542,7 +556,7 @@ namespace TetriNET.Client
         {
             if (count <= 0)
                 return;
-            Board.AddLines(count);
+            Board.AddLines(count, TetriminosCount);
 
             if (ClientOnRedraw != null)
                 ClientOnRedraw();
@@ -716,7 +730,46 @@ namespace TetriNET.Client
                 {
                     StringBuilder sb = new StringBuilder();
                     for (int x = 1; x <= Board.Width; x++)
-                        sb.Append(Board[x, y]);
+                    {
+                        byte cellValue = Board[x, y];
+                        Tetriminos cellTetrimino = ByteHelper.Tetrimino(cellValue);
+                        Specials cellSpecial = ByteHelper.Special(cellValue);
+                        if (cellSpecial == 0)
+                            sb.Append((int)cellTetrimino);
+                        else
+                        {
+                            switch (cellSpecial)
+                            {
+                                case Specials.AddLines:
+                                    sb.Append('A');
+                                    break;
+                                case Specials.ClearLines:
+                                    sb.Append('C');
+                                    break;
+                                case Specials.NukeField:
+                                    sb.Append('N');
+                                    break;
+                                case Specials.RandomBlocksClear:
+                                    sb.Append('R');
+                                    break;
+                                case Specials.SwitchFields:
+                                    sb.Append('S');
+                                    break;
+                                case Specials.ClearSpecialBlocks:
+                                    sb.Append('B');
+                                    break;
+                                case Specials.BlockGravity:
+                                    sb.Append('G');
+                                    break;
+                                case Specials.BlockQuake:
+                                    sb.Append('Q');
+                                    break;
+                                case Specials.BlockBomb:
+                                    sb.Append('O');
+                                    break;
+                            }
+                        }
+                    }
                     Log.WriteLine(sb.ToString());
                 }
                 Log.WriteLine("========================");
@@ -862,7 +915,7 @@ namespace TetriNET.Client
                 {
                     // Check server timeout
                     TimeSpan timespan = DateTime.Now - _lastActionFromServer;
-                    if (timespan.TotalMilliseconds > TimeoutDelay)
+                    if (timespan.TotalMilliseconds > TimeoutDelay && IsTimeoutDetectionActive)
                     {
                         Log.WriteLine("Timeout++");
                         // Update timeout count

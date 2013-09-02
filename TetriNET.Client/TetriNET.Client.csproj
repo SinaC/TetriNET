@@ -34,8 +34,17 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultBoardAndTetriminos\Board.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DefaultBoardAndTetriminos\Tetrimino.cs" />
+    <Compile Include="DefaultBoardAndTetriminos\TetriminoI.cs" />
+    <Compile Include="DefaultBoardAndTetriminos\TetriminoJ.cs" />
+    <Compile Include="DefaultBoardAndTetriminos\TetriminoL.cs" />
+    <Compile Include="DefaultBoardAndTetriminos\TetriminoO.cs" />
+    <Compile Include="DefaultBoardAndTetriminos\TetriminoS.cs" />
+    <Compile Include="DefaultBoardAndTetriminos\TetriminoT.cs" />
+    <Compile Include="DefaultBoardAndTetriminos\TetriminoZ.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">

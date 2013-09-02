@@ -35,9 +35,7 @@
         int PosY { get; } // coordinates in board
         int Orientation { get; } // 1 -> 4
 
-        byte Value { get; } // bit 0->3: color     bit 4->7: special
-        byte Color { get; }
-        byte Special { get; }
+        byte Value { get; } // bit 0->3: color     bit 4->7: special      use ByteHelper to get Tetrimino(color) and Special
 
         int MaxOrientations { get; }
         int TotalCells { get; }
