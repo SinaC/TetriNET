@@ -30,7 +30,7 @@ namespace TetriNET.ConsoleWCFClient
                 case Tetriminos.TetriminoZ:
                     return new TetriminoZ(spawnX, spawnY, spawnOrientation);
             }
-            return null;
+            return null; // TODO: sometimes server takes time to send next tetrimino, it should send 2 or 3 next pieces to ensure this never happens
             //return new TetriminoZ(spawnX, spawnY, spawnOrientation);
         }
 
@@ -41,7 +41,6 @@ namespace TetriNET.ConsoleWCFClient
             string baseAddress = ConfigurationManager.AppSettings["address"];
             IClient client = new Client.Client(callback => new WCFProxy(callback, baseAddress), CreateTetrimino, () => new Board(12,22));
             string name = "joel-wpf-client" + Guid.NewGuid().ToString().Substring(0, 5);
-            client.Register(name);
 
             //
             GameController.GameController controller = new GameController.GameController(client);
@@ -49,6 +48,9 @@ namespace TetriNET.ConsoleWCFClient
             PierreDellacherieOnePieceBot bot = new PierreDellacherieOnePieceBot(client);
             //
             NaiveConsoleUI ui = new NaiveConsoleUI(client);
+
+            //
+            client.Register(name);
 
             //
             Console.Title = name;

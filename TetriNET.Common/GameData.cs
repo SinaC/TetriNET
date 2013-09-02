@@ -42,19 +42,6 @@ namespace TetriNET.Common
     }
 
     [DataContract]
-    public enum Orientations
-    {
-        [EnumMember]
-        Top = 1, // start position
-        [EnumMember]
-        Left = 2, // 90° clockwise
-        [EnumMember]
-        Bottom = 3, // 180°
-        [EnumMember]
-        Right = 4 // 90° counter-clockwise
-    }
-
-    [DataContract]
     public enum Specials
     {
         [EnumMember]
@@ -75,16 +62,6 @@ namespace TetriNET.Common
         BlockQuake = 8,
         [EnumMember]
         BlockBomb = 9
-    }
-
-    [DataContract]
-    public class Position
-    {
-        [DataMember]
-        public int X;
-
-        [DataMember]
-        public int Y;
     }
 
     [DataContract]

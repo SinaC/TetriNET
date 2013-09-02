@@ -5,7 +5,7 @@ namespace TetriNET.Common.Interfaces
     public delegate void HostRegisterPlayerHandler(IPlayer player, int playerId);
     public delegate void HostUnregisterPlayerHandler(IPlayer player);
     public delegate void HostPublishMessageHandler(IPlayer player, string msg);
-    public delegate void HostPlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid);
+    public delegate void HostPlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid);
     public delegate void HostUseSpecialHandler(IPlayer player, IPlayer target, Specials special);
     public delegate void HostSendLinesHandler(IPlayer player, int count);
     public delegate void HostModifyGridHandler(IPlayer player, byte[] grid);

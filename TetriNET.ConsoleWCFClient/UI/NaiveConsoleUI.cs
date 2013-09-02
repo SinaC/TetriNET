@@ -34,13 +34,14 @@ namespace TetriNET.ConsoleWCFClient.UI
                 Console.Write(sb.ToString());
             }
             // Piece
-            for (int i = 1; i <= _client.CurrentTetrimino.TotalCells; i++)
-            {
-                int x, y;
-                _client.CurrentTetrimino.GetCellAbsolutePosition(i, out x, out y);
-                Console.SetCursorPosition(x-1, _client.Board.Height - y);
-                Console.Write(_client.CurrentTetrimino.Value);
-            }
+            if (_client.CurrentTetrimino != null)
+                for (int i = 1; i <= _client.CurrentTetrimino.TotalCells; i++)
+                {
+                    int x, y;
+                    _client.CurrentTetrimino.GetCellAbsolutePosition(i, out x, out y);
+                    Console.SetCursorPosition(x-1, _client.Board.Height - y);
+                    Console.Write(_client.CurrentTetrimino.Value);
+                }
             //
             Console.SetCursorPosition(_client.Board.Width + 1, 0);
         }

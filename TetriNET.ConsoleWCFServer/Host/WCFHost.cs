@@ -75,9 +75,9 @@ namespace TetriNET.ConsoleWCFServer.Host
                 _host.PublishMessage(Callback, msg);
             }
 
-            public void PlaceTetrimino(int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
+            public void PlaceTetrimino(int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid)
             {
-                _host.PlaceTetrimino(Callback, index, tetrimino, orientation, position, grid);
+                _host.PlaceTetrimino(Callback, index, tetrimino, orientation, posX, posY, grid);
             }
 
             public void UseSpecial(int targetId, Specials special)

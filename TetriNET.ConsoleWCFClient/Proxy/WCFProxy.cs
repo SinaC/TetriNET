@@ -90,9 +90,9 @@ namespace TetriNET.ConsoleWCFClient.Proxy
             ExceptionFreeAction(() => _proxy.PublishMessage(msg), "PublishMessage");
         }
 
-        public void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
+        public void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid)
         {
-            ExceptionFreeAction(() => _proxy.PlaceTetrimino(index, tetrimino, orientation, position, grid), "PlaceTetrimino");
+            ExceptionFreeAction(() => _proxy.PlaceTetrimino(index, tetrimino, orientation, posX, posY, grid), "PlaceTetrimino");
         }
 
         public void ModifyGrid(ITetriNETCallback callback, byte[] grid)

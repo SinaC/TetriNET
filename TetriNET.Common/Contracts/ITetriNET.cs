@@ -11,7 +11,7 @@
         void PublishMessage(ITetriNETCallback callback, string msg); // Partyline Chat Message
 
         // In-game
-        void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid);
+        void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid);
         void ModifyGrid(ITetriNETCallback callback, byte[] grid);
         void UseSpecial(ITetriNETCallback callback, int targetId, Specials special);
         void SendLines(ITetriNETCallback callback, int count);

@@ -22,7 +22,7 @@ namespace TetriNET.Common.Contracts
 
         // In-game
         [OperationContract(IsOneWay = true)]
-        void PlaceTetrimino(int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid);
+        void PlaceTetrimino(int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid);
 
         [OperationContract(IsOneWay = true)] // Field Update
         void ModifyGrid(byte[] grid);

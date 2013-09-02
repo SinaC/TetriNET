@@ -108,12 +108,7 @@ namespace TetriNET.ConsoleWCFServer
                             Proxy.PublishMessage(this, "I'll kill you");
                             break;
                         case 1:
-                            Proxy.PlaceTetrimino(this, TetriminoIndex, Tetriminos.TetriminoI, Orientations.Top, new Position
-                            {
-                                X = 5,
-                                Y = 3
-                            },
-                            PlayerGrid);
+                            Proxy.PlaceTetrimino(this, TetriminoIndex, Tetriminos.TetriminoI, 1, 5, 3, PlayerGrid);
                             TetriminoIndex++;
                             break;
                         case 2:

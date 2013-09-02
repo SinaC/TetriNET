@@ -261,9 +261,9 @@ namespace TetriNET.Server
                 p.OnPublishPlayerMessage(player.Name, msg);
         }
 
-        private void PlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
+        private void PlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid)
         {
-            _actionQueue.Enqueue(() => PlaceTetrimino(player, index, tetrimino, orientation, position, grid));
+            _actionQueue.Enqueue(() => PlaceTetrimino(player, index, tetrimino, orientation, posX, posY, grid));
         }
 
         private void UseSpecialHandler(IPlayer player, IPlayer target, Specials special)
@@ -591,9 +591,9 @@ namespace TetriNET.Server
 
         #region Game actions
 
-        private void PlaceTetrimino(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
+        private void PlaceTetrimino(IPlayer player, int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid)
         {
-            Log.WriteLine("PlaceTetrimino[{0}]{1}:{2} {3} at {4},{5} {6}", player.Name, index, tetrimino, orientation, position == null ? -1 : position.X, position == null ? -1 : position.Y, grid == null ? -1 : grid.Count(x => x > 0));
+            Log.WriteLine("PlaceTetrimino[{0}]{1}:{2} {3} at {4},{5} {6}", player.Name, index, tetrimino, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
 
             // TODO: check if index is equal to player.TetriminoIndex
             if (index != player.TetriminoIndex)

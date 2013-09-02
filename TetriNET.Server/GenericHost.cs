@@ -151,9 +151,9 @@ namespace TetriNET.Server
             }
         }
 
-        public virtual void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
+        public virtual void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid)
         {
-            Log.WriteLine("PlaceTetrimino {0} {1} {2} {3} {4}", index, tetrimino, orientation, position, grid == null ? -1 : grid.Count(x => x > 0));
+            Log.WriteLine("PlaceTetrimino {0} {1} {2} {3},{4} {5}", index, tetrimino, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -161,7 +161,7 @@ namespace TetriNET.Server
                 player.ResetTimeout(); // player alive
                 //
                 if (OnTetriminoPlaced != null)
-                    OnTetriminoPlaced(player, index, tetrimino, orientation, position, grid);
+                    OnTetriminoPlaced(player, index, tetrimino, orientation, posX, posY, grid);
             }
             else
             {
