@@ -1,11 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
+using TetriNET.Common.Contracts;
+using TetriNET.Common.Randomizer;
 
 namespace TetriNET.Common
 {
     [DataContract]
     public enum Tetriminos
     {
+        [EnumMember]
+        Invalid = 0,
+
         //  * * *
         //      *
         [EnumMember]
@@ -45,6 +50,8 @@ namespace TetriNET.Common
     public enum Specials
     {
         [EnumMember]
+        Invalid = 0,
+        [EnumMember]
         AddLines = 1,
         [EnumMember]
         ClearLines = 2,
@@ -65,20 +72,54 @@ namespace TetriNET.Common
     }
 
     [DataContract]
+    public class TetriminoOccurancy : IOccurancy<Tetriminos>
+    {
+        [DataMember]
+        public Tetriminos Value { get; set; }
+
+        [DataMember]
+        public int Occurancy { get; set; }
+    }
+
+    [DataContract]
+    public class SpecialOccurancy : IOccurancy<Specials>
+    {
+        [DataMember]
+        public Specials Value { get; set; }
+
+        [DataMember]
+        public int Occurancy { get; set; }
+    }
+
+    [DataContract]
     public class GameOptions
     {
         [DataMember]
-        public List<int> TetriminoProbabilities { get; set; } // number of entries must match Tetriminos enum length
+        public List<TetriminoOccurancy> TetriminoOccurancies { get; set; } // in %, number of entries must match Tetriminos enum length
 
         [DataMember]
-        public List<int> SpecialProbabilities { get; set; } // number of entries must match Specials enum length
+        public List<SpecialOccurancy> SpecialOccurancies { get; set; } // in %, number of entries must match Specials enum length
 
         [DataMember]
-        public bool ClassicStyleMultiplayerRules { get; set; }
+        public bool ClassicStyleMultiplayerRules { get; set; } // if true, lines are send to other players when collapsing multiple lines (2->1, 3->2, Tetris->4)
 
         [DataMember]
         public int StartingLevel { get; set; }
 
+        [DataMember]
+        public int InventorySize { get; set; }
+
+        [DataMember]
+        public int LinesToMakeForSpecials { get; set; }
+
+        [DataMember]
+        public int SpecialsAddedEachTime { get; set; }
+
+        [DataMember]
+        public int DelayBeforeSuddenDeath { get; set; } // in minutes, 0 means no sudden death
+
+        [DataMember]
+        public int SuddenDeathTick { get; set; } // in seconds
     }
 
     [DataContract]

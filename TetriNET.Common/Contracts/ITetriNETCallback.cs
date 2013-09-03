@@ -57,7 +57,7 @@ namespace TetriNET.Common.Contracts
         void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special); // Special Used
 
         [OperationContract(IsOneWay = true)]
-        void OnNextTetrimino(int index, Tetriminos tetrimino); // TODO: send 3 next pieces
+        void OnNextTetrimino(int index, Tetriminos tetrimino); // TODO: send 3 next tetriminoes
 
         [OperationContract(IsOneWay = true)] // Field Update
         void OnGridModified(int playerId, byte[] grid);

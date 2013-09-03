@@ -37,11 +37,15 @@ namespace TetriNET.Server
         private readonly IPlayerManager _playerManager;
         private readonly List<IHost> _hosts;
 
-        private List<WinEntry> _winList;
         private GameOptions _options;
+
+        private bool _isSuddenDeathActive;
+        private DateTime _suddenDeathStartTime;
+        private DateTime _lastSuddenDeathAddLines;
 
         public States State { get; private set; }
         public int SpecialId { get; private set; }
+        public List<WinEntry> WinList { get; private set; }
 
         public Server(IPlayerManager playerManager, params IHost[] hosts)
         {
@@ -49,37 +53,108 @@ namespace TetriNET.Server
                 throw new ArgumentNullException("playerManager");
             if (hosts == null)
                 throw new ArgumentNullException("hosts");
-
             _options = new GameOptions
             {
-                TetriminoProbabilities = new List<int>
+                TetriminoOccurancies = new List<TetriminoOccurancy>
                 {
-                    14, // J
-                    14, // Z
-                    15, // O
-                    14, // L
-                    14, // S
-                    14, // T
-                    15 // I
+                    new TetriminoOccurancy
+                    {
+                        Value  = Tetriminos.TetriminoJ,
+                        Occurancy = 14
+                    },
+                    new TetriminoOccurancy
+                    {
+                        Value  = Tetriminos.TetriminoZ,
+                        Occurancy = 14
+                    },
+                    new TetriminoOccurancy
+                    {
+                        Value  = Tetriminos.TetriminoO,
+                        Occurancy = 15
+                    },
+                    new TetriminoOccurancy
+                    {
+                        Value  = Tetriminos.TetriminoL,
+                        Occurancy = 14
+                    },
+                    new TetriminoOccurancy
+                    {
+                        Value  = Tetriminos.TetriminoS,
+                        Occurancy = 14
+                    },
+                    new TetriminoOccurancy
+                    {
+                        Value  = Tetriminos.TetriminoT,
+                        Occurancy = 14
+                    },
+                    new TetriminoOccurancy
+                    {
+                        Value  = Tetriminos.TetriminoI,
+                        Occurancy = 15
+                    },
                 },
-                SpecialProbabilities = new List<int>
+                SpecialOccurancies = new List<SpecialOccurancy>
                 {
-                    19, // Add lines
-                    16, // Clear lines
-                    3, // Nuke field
-                    14, // Random blocks clear
-                    3, // Switch fields
-                    14, // Clear special blocks
-                    6, // Block gravity
-                    11, // Block quake
-                    14, // Block bomb
-                }
+                    new SpecialOccurancy
+                    {
+                        Value = Specials.AddLines,
+                        Occurancy = 19
+                    },
+                    new SpecialOccurancy
+                    {
+                        Value = Specials.ClearLines,
+                        Occurancy = 16
+                    },
+                    new SpecialOccurancy
+                    {
+                        Value = Specials.NukeField,
+                        Occurancy = 3
+                    },
+                    new SpecialOccurancy
+                    {
+                        Value = Specials.RandomBlocksClear,
+                        Occurancy = 14
+                    },
+                    new SpecialOccurancy
+                    {
+                        Value = Specials.SwitchFields,
+                        Occurancy = 3
+                    },
+                    new SpecialOccurancy
+                    {
+                        Value = Specials.ClearSpecialBlocks,
+                        Occurancy = 14
+                    },
+                    new SpecialOccurancy
+                    {
+                        Value = Specials.BlockGravity,
+                        Occurancy = 6
+                    },
+                    new SpecialOccurancy
+                    {
+                        Value = Specials.BlockQuake,
+                        Occurancy = 11
+                    },
+                    new SpecialOccurancy
+                    {
+                        Value = Specials.BlockBomb,
+                        Occurancy = 14
+                    },
+                },
+                ClassicStyleMultiplayerRules = true,
+                InventorySize = 10,
+                LinesToMakeForSpecials = 1,
+                SpecialsAddedEachTime = 1,
+                StartingLevel = 0,
+                DelayBeforeSuddenDeath = 0,
+                SuddenDeathTick = 1
             }; // TODO: get options from save file
 
-            _tetriminoQueue = new TetriminoQueue(() => 1 + RangeRandom.Random(_options.TetriminoProbabilities));
+            _tetriminoQueue = new TetriminoQueue(() => RangeRandom.Random(_options.TetriminoOccurancies));
             _playerManager = playerManager;
             _hosts = hosts.ToList();
-            _winList = new List<WinEntry>(); // TODO: get win list from save file
+            
+            WinList = new List<WinEntry>(); // TODO: get win list from save file
 
             foreach (IHost host in _hosts)
             {
@@ -148,7 +223,6 @@ namespace TetriNET.Server
             Log.WriteLine("Server stopped");
         }
 
-        // Start game and stop game should be removed and code included in StartGameHandler and StopGameHandler
         public void StartGame()
         {
             Log.WriteLine("Starting game");
@@ -167,6 +241,15 @@ namespace TetriNET.Server
                 Tetriminos thirdTetrimino = _tetriminoQueue[2];
 
                 Log.WriteLine("Starting game with {0} {1} {2}", firstTetrimino, secondTetrimino, thirdTetrimino);
+
+                // Reset sudden death
+                _isSuddenDeathActive = false;
+                if (_options.DelayBeforeSuddenDeath > 0)
+                {
+                    _suddenDeathStartTime = DateTime.Now.AddMinutes(_options.DelayBeforeSuddenDeath);
+                    _isSuddenDeathActive = true;
+                    Log.WriteLine("Sudden death will be activated after {0} minutes and send lines every {1} seconds", _options.DelayBeforeSuddenDeath, _options.SuddenDeathTick);
+                }
 
                 // Send start game to every connected player
                 foreach (IPlayer p in _playerManager.Players)
@@ -204,9 +287,47 @@ namespace TetriNET.Server
                 Log.WriteLine("Cannot stop game");
         }
 
+        public void PauseGame()
+        {
+            Log.WriteLine("Pausing game");
+
+            if (State == States.GameStarted)
+            {
+                State = States.GamePaused;
+
+                // Send pause to players
+                foreach (IPlayer p in _playerManager.Players)
+                    p.OnGamePaused();
+
+                Log.WriteLine("Game paused");
+            }
+            else
+                Log.WriteLine("Cannot pause game");
+        }
+
+        public void ResumeGame()
+        {
+            Log.WriteLine("Resuming game");
+            if (State == States.GamePaused)
+            {
+                State = States.GameStarted;
+
+                // Reset sudden death
+                _lastSuddenDeathAddLines = DateTime.Now; // TODO: should be previous _lastSuddenDeathAddLines + pause delay
+
+                // Send resume to players
+                foreach (IPlayer p in _playerManager.Players)
+                    p.OnGameResumed();
+
+                Log.WriteLine("Game resumed");
+            }
+            else
+                Log.WriteLine("Cannot resume game");
+        }
+
         private void UpdateWinList(string playerName, int score)
         {
-            WinEntry entry = _winList.SingleOrDefault(x => x.PlayerName == playerName);
+            WinEntry entry = WinList.SingleOrDefault(x => x.PlayerName == playerName);
             if (entry == null)
             {
                 entry = new WinEntry
@@ -214,7 +335,7 @@ namespace TetriNET.Server
                     PlayerName = playerName,
                     Score = 0
                 };
-                _winList.Add(entry);
+                WinList.Add(entry);
             }
             entry.Score += score;
         }
@@ -288,7 +409,9 @@ namespace TetriNET.Server
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
             if (masterPlayer == player)
+            {
                 StartGame();
+            }
         }
 
         private void StopGameHandler(IPlayer player)
@@ -297,7 +420,9 @@ namespace TetriNET.Server
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
             if (masterPlayer == player)
+            {
                 StopGame();
+            }
         }
 
         private void PauseGameHandler(IPlayer player)
@@ -305,18 +430,10 @@ namespace TetriNET.Server
             Log.WriteLine("PauseGame:{0}", player.Name);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
-            if (masterPlayer == player && State == States.GameStarted)
+            if (masterPlayer == player)
             {
-                State = States.GamePaused;
-
-                // Send pause to players
-                foreach (IPlayer p in _playerManager.Players)
-                    p.OnGamePaused();
-
-                Log.WriteLine("Game paused");
+                PauseGame();
             }
-            else
-                Log.WriteLine("Cannot pause game");
         }
 
         private void ResumeGameHandler(IPlayer player)
@@ -324,18 +441,10 @@ namespace TetriNET.Server
             Log.WriteLine("ResumeGame:{0}", player.Name);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
-            if (masterPlayer == player && State == States.GamePaused)
+            if (masterPlayer == player)
             {
-                State = States.GameStarted;
-
-                // Send resume to players
-                foreach (IPlayer p in _playerManager.Players)
-                    p.OnGameResumed();
-
-                Log.WriteLine("Game resumed");
+                ResumeGame();
             }
-            else
-                Log.WriteLine("Cannot resume game");
         }
 
         private void GameLostHandler(IPlayer player)
@@ -350,7 +459,12 @@ namespace TetriNET.Server
             IPlayer masterPlayer = _playerManager.ServerMaster;
             if (masterPlayer == player && State == States.WaitingStartGame)
             {
-                _options = options; // Options will be sent to players when starting a new game
+                // Check options before accepting them
+                bool accepted = RangeRandom.SumOccurancies(options.TetriminoOccurancies) == 100 && RangeRandom.SumOccurancies(options.SpecialOccurancies) == 100;
+                if (accepted)
+                    _options = options; // Options will be sent to players when starting a new game
+                else
+                    Log.WriteLine("Invalid options");
             }
             else
                 Log.WriteLine("Cannot change options");
@@ -397,13 +511,13 @@ namespace TetriNET.Server
             if (masterPlayer == player && State == States.WaitingStartGame)
             {
                 // Reset
-                _winList = new List<WinEntry>();
+                WinList.Clear();
 
                 // Inform player
                 foreach (IPlayer p in _playerManager.Players)
                 {
                     p.OnPublishServerMessage("Win list has been resetted");
-                    p.OnWinListModified(_winList);
+                    p.OnWinListModified(WinList);
                 }
             }
             else
@@ -431,8 +545,8 @@ namespace TetriNET.Server
             foreach (IHost host in _hosts)
                 host.RemovePlayer(player);
 
-            // If game was running, check if only one player left (see GameLostHandler)
-            if (State == States.GameStarted || State == States.GamePaused)
+            // If game was running and player was playing, check if only one player left (see GameLostHandler)
+            if ((State == States.GameStarted || State == States.GamePaused) && player.State == PlayerStates.Playing)
             {
                 int playingCount = _playerManager.Players.Count(p => p.State == PlayerStates.Playing);
                 if (playingCount == 0 || playingCount == 1)
@@ -470,11 +584,11 @@ namespace TetriNET.Server
         private class TetriminoQueue
         {
             private readonly object _lock = new object();
-            private readonly Func<int> _randomFunc;
+            private readonly Func<Tetriminos> _randomFunc;
             private int _size;
-            private int[] _array;
+            private Tetriminos[] _array;
 
-            public TetriminoQueue(Func<int> randomFunc, int seed = 0)
+            public TetriminoQueue(Func<Tetriminos> randomFunc, int seed = 0)
             {
                 _randomFunc = randomFunc;
                 Grow(64);
@@ -497,7 +611,7 @@ namespace TetriNET.Server
                     {
                         if (index >= _size)
                             Grow(128);
-                        tetrimino = (Tetriminos) _array[index];
+                        tetrimino = _array[index];
                     }
                     return tetrimino;
                 }
@@ -506,7 +620,7 @@ namespace TetriNET.Server
             private void Grow(int increment)
             {
                 int newSize = _size + increment;
-                int[] newArray = new int[newSize];
+                Tetriminos[] newArray = new Tetriminos[newSize];
                 if (_size > 0)
                     Array.Copy(_array, newArray, _size);
                 _array = newArray;
@@ -549,6 +663,22 @@ namespace TetriNET.Server
                     }
                 }
 
+                // Check sudden death
+                if (State == States.GameStarted && _isSuddenDeathActive)
+                {
+                    if (DateTime.Now > _suddenDeathStartTime)
+                    {
+                        TimeSpan timespan = DateTime.Now - _lastSuddenDeathAddLines;
+                        if (timespan.TotalSeconds >= _options.SuddenDeathTick)
+                        {
+                            // Delay elapsed, send lines
+                            foreach (IPlayer p in _playerManager.Players.Where(p => p.State == PlayerStates.Playing))
+                                p.OnServerAddLines(1);
+                            _lastSuddenDeathAddLines = DateTime.Now;
+                        }
+                    }
+                }
+
                 // Check running game without any player
                 if (State == States.GameStarted || State == States.GamePaused)
                 {
@@ -577,9 +707,7 @@ namespace TetriNET.Server
                     // Send heartbeat if needed
                     TimeSpan delayFromPreviousHeartbeat = DateTime.Now - p.LastActionToClient;
                     if (delayFromPreviousHeartbeat.TotalMilliseconds > HeartbeatDelay)
-                    {
                         p.OnHeartbeatReceived();
-                    }
                 }
 
                 // Stop task if stop event is raised
@@ -602,13 +730,13 @@ namespace TetriNET.Server
 
             // Set grid
             player.Grid = grid;
-            // Get next piece
+            // Get next tetrimino
             player.TetriminoIndex++;
             int indexToSend = player.TetriminoIndex + 2; // indices 0, 1 and 2 have been sent when starting game
             Tetriminos nextTetriminoToSend = _tetriminoQueue[indexToSend];
 
             //Log.WriteLine("Send next tetrimino {0} {1} to {2}", nextTetriminoToSend, indexToSend, player.Name);
-            // Send next piece
+            // Send next tetrimino
             player.OnNextTetrimino(indexToSend, nextTetriminoToSend);
         }
 
@@ -650,7 +778,7 @@ namespace TetriNET.Server
             // Increment special id
             SpecialId++;
             // Send lines to everyone except sender
-            foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+            foreach (IPlayer p in _playerManager.Players.Where(x => x != player && x.State == PlayerStates.Playing))
                 p.OnPlayerAddLines(specialId, playerId, count);
         }
 
@@ -719,7 +847,7 @@ namespace TetriNET.Server
                     {
                         p.OnGameFinished();
                         p.OnPlayerWon(winnerId);
-                        p.OnWinListModified(_winList);
+                        p.OnWinListModified(WinList);
                     }
                     State = States.WaitingStartGame;
                 }

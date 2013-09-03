@@ -46,7 +46,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Proxy\WCFProxy.cs" />
-    <Compile Include="UI\NaiveConsoleUI.cs" />
+    <Compile Include="UI\ConsoleUI.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TetriNET.Client\TetriNET.Client.csproj">

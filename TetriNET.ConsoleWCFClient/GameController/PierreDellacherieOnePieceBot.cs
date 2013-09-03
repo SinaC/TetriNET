@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Timers;
+using TetriNET.Common;
 using TetriNET.Common.Interfaces;
 
 namespace TetriNET.ConsoleWCFClient.GameController
@@ -9,6 +11,7 @@ namespace TetriNET.ConsoleWCFClient.GameController
     {
         private readonly IClient _client;
         private readonly Timer _timer;
+        private bool _activated;
 
         public PierreDellacherieOnePieceBot(IClient client)
         {
@@ -17,7 +20,10 @@ namespace TetriNET.ConsoleWCFClient.GameController
             _timer = new Timer(100);
             _timer.Elapsed += _timer_Elapsed;
 
-            _client.OnTetriminoPlaced += _client_OnTetriminoPlaced;
+            _activated = false;
+            SleepTime = 100;
+
+            _client.OnRoundStarted += _client_OnRoundStarted;
             _client.OnGameStarted += client_OnGameStarted;
             _client.OnGameFinished += _client_OnGameFinished;
             _client.OnGameOver += _client_OnGameOver;
@@ -25,14 +31,32 @@ namespace TetriNET.ConsoleWCFClient.GameController
             _client.OnGameResumed += _client_OnGameResumed;
         }
 
-        private void _client_OnTetriminoPlaced()
+        public bool Activated
         {
-            _timer.Start();
+            get { return _activated; }
+            set
+            {
+                _activated = value;
+                if (_activated)
+                    _timer.Start();
+                else
+                    _timer.Stop();
+                Log.WriteLine("Bot activated: {0}", _activated);
+            }
+        }
+
+        public int SleepTime { get; set; }
+
+        private void _client_OnRoundStarted()
+        {
+            if (Activated)
+                _timer.Start();
         }
 
         private void client_OnGameStarted()
         {
-            _timer.Start();    
+            if (Activated)
+                _timer.Start();    
         }
 
         private void _client_OnGameFinished()
@@ -52,12 +76,16 @@ namespace TetriNET.ConsoleWCFClient.GameController
         
         private void _client_OnGameResumed()
         {
-            _timer.Start();
+            if (Activated) 
+                _timer.Start();
         }
 
         private void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             _timer.Stop();
+
+            if (_client.Board == null || _client.CurrentTetrimino == null)
+                return;
 
             // Get best move
             int bestRotationDelta;
@@ -81,40 +109,42 @@ namespace TetriNET.ConsoleWCFClient.GameController
                     _client.MoveRight();
 
             // DROP
-            System.Threading.Thread.Sleep(100); // delay drop
+            System.Threading.Thread.Sleep(SleepTime); // delay drop instead of animating
             _client.Drop();
         }
 
-        private void GetBestMove(IBoard board, ITetrimino piece, out int bestRotationDelta, out int bestTranslationDelta)
+        private void GetBestMove(IBoard board, ITetrimino tetrimino, out int bestRotationDelta, out int bestTranslationDelta)
         {
             int currentBestTranslationDelta = 0;
             int currentBestRotationDelta = 0;
             double currentBestRating = -1.0e+20; // Really bad!
             int currentBestPriority = 0;
 
+            tetrimino.Translate(0,-1);
+
             IBoard tempBoard = board.Clone();
-            ITetrimino tempPiece = piece.Clone();
+            ITetrimino tempTetrimino = tetrimino.Clone();
 
             // Consider all possible rotations
-            for (int trialRotationDelta = 0; trialRotationDelta < piece.MaxOrientations; trialRotationDelta++)
+            for (int trialRotationDelta = 0; trialRotationDelta < tetrimino.MaxOrientations; trialRotationDelta++)
             {
-                // Copy piece
-                tempPiece.CopyFrom(piece);
+                // Copy tetrimino
+                tempTetrimino.CopyFrom(tetrimino);
                 // Rotate
-                tempPiece.Rotate(trialRotationDelta);
+                tempTetrimino.Rotate(trialRotationDelta);
 
                 // Get translation range
                 bool isMovePossible;
                 int minDeltaX;
                 int maxDeltaX;
-                board.GetAccessibleTranslationsForOrientation(tempPiece, out isMovePossible, out minDeltaX, out maxDeltaX);
+                board.GetAccessibleTranslationsForOrientation(tempTetrimino, out isMovePossible, out minDeltaX, out maxDeltaX);
 
                 StringBuilder sb = new StringBuilder();
-                for (int i = 1; i <= tempPiece.TotalCells; i++)
+                for (int i = 1; i <= tempTetrimino.TotalCells; i++)
                 {
                     int x, y;
-                    tempPiece.GetCellAbsolutePosition(i, out x, out y);
-                    sb.Append(String.Format("[{0}->{1},{2}]", i, x-tempPiece.PosX, y-tempPiece.PosY));
+                    tempTetrimino.GetCellAbsolutePosition(i, out x, out y);
+                    sb.Append(String.Format("[{0}->{1},{2}]", i, x-tempTetrimino.PosX, y-tempTetrimino.PosY));
                 }
                 //Log.WriteLine("{0} {1} -> {2}  {3}", trialRotationDelta, minDeltaX, maxDeltaX, sb.ToString());
                 if (isMovePossible)
@@ -124,25 +154,25 @@ namespace TetriNET.ConsoleWCFClient.GameController
                     {
                         // Evaluate this move
 
-                        // Copy piece
-                        tempPiece.CopyFrom(piece);
+                        // Copy tetrimino
+                        tempTetrimino.CopyFrom(tetrimino);
                         // Rotate
-                        tempPiece.Rotate(trialRotationDelta);
+                        tempTetrimino.Rotate(trialRotationDelta);
                         // Translate
-                        tempPiece.Translate(trialTranslationDelta, 0);
+                        tempTetrimino.Translate(trialTranslationDelta, 0);
 
                         // Check if move is acceptable
-                        if (board.CheckNoConflict(tempPiece))
+                        if (board.CheckNoConflict(tempTetrimino))
                         {
                             // Copy board
                             tempBoard.CopyFrom(board);
-                            // Drop piece
-                            tempBoard.DropAndCommit(tempPiece);
+                            // Drop tetrimino
+                            tempBoard.DropAndCommit(tempTetrimino);
 
                             // Evaluate
                             double trialRating;
                             int trialPriority;
-                            EvaluteMove(tempBoard, tempPiece, out trialRating, out trialPriority);
+                            EvaluteMove(tempBoard, tempTetrimino, out trialRating, out trialPriority);
 
                             //Log.WriteLine("R:{0:0.0000} P:{1} R:{2} T:{3}", trialRating, trialPriority, trialRotationDelta, trialTranslationDelta);
 
@@ -170,45 +200,46 @@ namespace TetriNET.ConsoleWCFClient.GameController
         // The following evaluation function was adapted from Pascal code submitted by:
         // Pierre Dellacherie (France).  (E-mail : dellache@club-internet.fr)
         //
-        // This amazing one-piece algorithm completes an average of roughly 600 000 
+        // This amazing one-tetrimino algorithm completes an average of roughly 600 000 
         // rows, and often attains 2 000 000 or 2 500 000 rows.  However, the algorithm
         // sometimes completes as few as 15 000 rows.  I am fairly certain that this
-        // is NOT due to statistically abnormal patterns in the falling piece sequence.
+        // is NOT due to statistically abnormal patterns in the falling tetrimino sequence.
         //
         // Pierre Dellacherie corresponded with me via e-mail to help me with the 
         // conversion of his Pascal code to C++.
         //
         // WARNING:
-        //     If there is a single board and piece combination with the highest
+        //     If there is a single board and tetrimino combination with the highest
         //     'rating' value, it is the best combination.  However, among
-        //     board and piece combinations with EQUAL 'rating' values,
+        //     board and tetrimino combinations with EQUAL 'rating' values,
         //     the highest 'priority' value wins.
         //
         //     So, the complete rating is: { rating, priority }.
-        private static void EvaluteMove(IBoard board, ITetrimino piece, out double rating, out int priority)
+        private static void EvaluteMove(IBoard board, ITetrimino tetrimino, out double rating, out int priority)
         {
-            int pieceMinX;
-            int pieceMinY;
-            int pieceMaxX;
-            int pieceMaxY;
-            GetAbsoluteBoundingRectangle(piece, out pieceMinX, out pieceMinY, out pieceMaxX, out pieceMaxY);
+            int tetriminoMinX;
+            int tetriminoMinY;
+            int tetriminoMaxX;
+            int tetriminoMaxY;
+            tetrimino.GetAbsoluteBoundingRectangle(out tetriminoMinX, out tetriminoMinY, out tetriminoMaxX, out tetriminoMaxY);
 
             // Landing Height (vertical midpoint)
-            double landingHeight = 0.5 * (pieceMinY + pieceMaxY);
+            double landingHeight = 0.5 * (tetriminoMinY + tetriminoMaxY);
 
             //
             int completedRows = GetTotalCompletedRows(board);
             int erodedPieceCellsMetric = 0;
             if (completedRows > 0)
             {
-                // Count piece cells eroded by completed rows before doing collapse on pile.
-                int pieceCellsEliminated = CountPieceCellsEliminated(board, piece);
+                // Count tetrimino cells eroded by completed rows before doing collapse on pile.
+                int tetriminoCellsEliminated = CountPieceCellsEliminated(board, tetrimino);
 
                 // Now it's okay to collapse completed rows
-                board.CollapseCompletedRows();
+                List<Specials> specials;
+                board.CollapseCompletedRows(out specials);
 
                 // Weight eroded cells by completed rows
-                erodedPieceCellsMetric = (completedRows * pieceCellsEliminated);
+                erodedPieceCellsMetric = (completedRows * tetriminoCellsEliminated);
             }
 
             //
@@ -237,7 +268,7 @@ namespace TetriNET.ConsoleWCFClient.GameController
 
             // Final rating
             //   [1] Punish landing height
-            //   [2] Reward eroded piece cells
+            //   [2] Reward eroded tetrimino cells
             //   [3] Punish row    transitions
             //   [4] Punish column transitions
             //   [5] Punish buried holes (cellars)
@@ -255,7 +286,7 @@ namespace TetriNET.ConsoleWCFClient.GameController
             //   Priority is further differentiation between possible moves.
             //   We further rate moves accoding to the following:
             //            * Reward deviation from center of board
-            //            * Reward pieces to the left of center of the board
+            //            * Reward tetriminos to the left of center of the board
             //            * Punish rotation
             //   Priority is less important than the rating, but among equal
             //   ratings we select the option with the greatest priority.
@@ -266,43 +297,13 @@ namespace TetriNET.ConsoleWCFClient.GameController
             //   is too much to tolerate.  So, this priority is stored in a
             //   separate variable.
 
-            int absoluteDistanceX = Math.Abs(piece.PosX - board.TetriminoSpawnX);
+            int absoluteDistanceX = Math.Abs(tetrimino.PosX - board.TetriminoSpawnX);
 
             priority = 0;
             priority += (100 * absoluteDistanceX);
-            if (piece.PosX < board.TetriminoSpawnX)
+            if (tetrimino.PosX < board.TetriminoSpawnX)
                 priority += 10;
-            priority -= piece.Orientation - 1;
-        }
-
-        private static void GetAbsoluteBoundingRectangle(ITetrimino tetrimino, out int minX, out int minY, out int maxX, out int maxY)
-        {
-            minX = 0;
-            minY = 0;
-            maxX = 0;
-            maxY = 0;
-
-            if (tetrimino.TotalCells < 1) return;
-
-            int x;
-            int y;
-
-            // start bounding limits using first cell
-            tetrimino.GetCellAbsolutePosition(1, out x, out y); // first cell
-            minX = x;
-            maxX = x;
-            minY = y;
-            maxY = y;
-
-            // expand bounding limits with other cells
-            for (int cellIndex = 2; cellIndex <= tetrimino.TotalCells; cellIndex++)
-            {
-                tetrimino.GetCellAbsolutePosition(cellIndex, out x, out y);
-                if (x < minX) minX = x;
-                if (y < minY) minY = y;
-                if (x > maxX) maxX = x;
-                if (y > maxY) maxY = y;
-            }
+            priority -= tetrimino.Orientation - 1;
         }
 
         private static int GetTotalCompletedRows(IBoard board) // result range: 0..Height
@@ -332,21 +333,21 @@ namespace TetriNET.ConsoleWCFClient.GameController
             return totalCompletedRows;
         }
 
-        // The following counts the number of cells (0..4) of a piece that would
-        // be eliminated by dropping the piece.
-        private static int CountPieceCellsEliminated(IBoard board, ITetrimino piece)
+        // The following counts the number of cells (0..4) of a tetrimino that would
+        // be eliminated by dropping the tetrimino.
+        private static int CountPieceCellsEliminated(IBoard board, ITetrimino tetrimino)
         {
-            // Copy piece and board so that this measurement is not destructive.
+            // Copy tetrimino and board so that this measurement is not destructive.
             IBoard copyOfBoard = board.Clone();
-            ITetrimino copyOfPiece = piece.Clone();
+            ITetrimino copyOfPiece = tetrimino.Clone();
 
-            // Drop copy of piece on to the copy of the board
+            // Drop copy of tetrimino on to the copy of the board
             copyOfBoard.DropAndCommit(copyOfPiece);
 
             // Scan rows.  For each full row, check all board Y values for the
-            // piece.  If any board Y of the piece matches the full row Y,
+            // tetrimino.  If any board Y of the tetrimino matches the full row Y,
             // increment the total eliminated cells.
-            int pieceCellsEliminated = 0;
+            int tetriminoCellsEliminated = 0;
             for (int y = 1; y <= copyOfBoard.Height; y++)
             {
 
@@ -363,19 +364,19 @@ namespace TetriNET.ConsoleWCFClient.GameController
 
                 if (fullRow)
                 {
-                    // Find any matching board-relative Y values in dropped copy of piece.
-                    for (int cellIndex = 1; cellIndex <= piece.TotalCells; cellIndex++)
+                    // Find any matching board-relative Y values in dropped copy of tetrimino.
+                    for (int cellIndex = 1; cellIndex <= tetrimino.TotalCells; cellIndex++)
                     {
                         int boardX;
                         int boardY;
                         copyOfPiece.GetCellAbsolutePosition(cellIndex, out boardX, out boardY);
                         if (boardY == y)
-                            pieceCellsEliminated++;  // Moohahahaaa!
+                            tetriminoCellsEliminated++;  // Moohahahaaa!
                     }
                 }
             }
 
-            return pieceCellsEliminated;
+            return tetriminoCellsEliminated;
         }
 
         private static int GetPileMaxHeight(IBoard board) // result range: 0..Height

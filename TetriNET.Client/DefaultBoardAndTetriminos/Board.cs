@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using TetriNET.Common;
+using TetriNET.Common.Contracts;
+using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
-using TetriNET.Common.Randomizer;
 
 namespace TetriNET.Client.DefaultBoardAndTetriminos
 {
@@ -44,10 +48,10 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
                 Cells[i] = 0;
         }
 
-        public void FillWithRandomCells(int tetriminosCount)
+        public void FillWithRandomCells(Func<Tetriminos> randomFunc)
         {
             for (int i = 0; i < Width * Height; i++)
-                Cells[i] = (byte)(1 + _random.Next(tetriminosCount));
+                Cells[i] = CellHelper.SetTetrimino(randomFunc());
         }
 
         public bool SetCells(byte[] cells)
@@ -105,11 +109,12 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
 
         public int TetriminoSpawnY
         {
-            get { return Height-1; }
+            get { return Height; }
         }
 
-        public int CollapseCompletedRows()
+        public int CollapseCompletedRows(out List<Specials> specials)
         {
+            specials = new List<Specials>();
             // Scan each row of the current board, starting from the bottom of the pile.
             // If any row is completely filled, then "eliminate" the row by collapsing
             // all rows above the complete row down to fill the gap.  Note that we must
@@ -134,6 +139,15 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
                 {
                     rows++; // A full row is to be collapsed
 
+                    // Get specials from row
+                    for (int x = 1; x <= Width; x++)
+                    {
+                        Specials cellSpecial = CellHelper.Special(this[x, y]);
+                        if (cellSpecial > 0)
+                            specials.Add(cellSpecial);
+                    }
+
+                    // Copy rows
                     for (int copySourceY = (y + 1); copySourceY <= Height; copySourceY++)
                         for (int copySourceX = 1; copySourceX <= Width; copySourceX++)
                         {
@@ -152,17 +166,17 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             return rows;
         }
 
-        public bool CheckNoConflict(ITetrimino piece)
+        public bool CheckNoConflict(ITetrimino tetrimino)
         {
-            if (piece.PosX < 1 || piece.PosX > Width)
+            if (tetrimino.PosX < 1 || tetrimino.PosX > Width)
                 return false;
-            if (piece.PosY < 1 || piece.PosY > Height)
+            if (tetrimino.PosY < 1 || tetrimino.PosY > Height)
                 return false;
-            for (int i = 1; i <= piece.TotalCells; i++)
+            for (int i = 1; i <= tetrimino.TotalCells; i++)
             {
                 // Get cell position in board
                 int x, y;
-                piece.GetCellAbsolutePosition(i, out x, out y);
+                tetrimino.GetCellAbsolutePosition(i, out x, out y);
                 // Check out of board
                 if (x < 1 || x > Width)
                     return false;
@@ -175,16 +189,16 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             return true;
         }
 
-        public void GetAccessibleTranslationsForOrientation(ITetrimino piece, out bool isMovePossible, out int minDeltaX, out int maxDeltaX)
+        public void GetAccessibleTranslationsForOrientation(ITetrimino tetrimino, out bool isMovePossible, out int minDeltaX, out int maxDeltaX)
         {
             isMovePossible = false;
             minDeltaX = 0;
             maxDeltaX = 0;
 
-            ITetrimino tempPiece = piece.Clone();
+            ITetrimino tempTetrimino = tetrimino.Clone();
             
             // Check if we can move
-            bool moveAcceptable = CheckNoConflict(tempPiece);
+            bool moveAcceptable = CheckNoConflict(tempTetrimino);
             if (!moveAcceptable)
                 return;
             isMovePossible = true;
@@ -192,12 +206,12 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             // Scan from center to left to find left limit.
             for (int trial = 0; trial >= -Width; trial--)
             {
-                // Copy piece
-                tempPiece.CopyFrom(piece);
+                // Copy tetrimino
+                tempTetrimino.CopyFrom(tetrimino);
                 // Translate
-                tempPiece.Translate(trial, 0);
+                tempTetrimino.Translate(trial, 0);
                 // Check if move is valid
-                moveAcceptable = CheckNoConflict(tempPiece);
+                moveAcceptable = CheckNoConflict(tempTetrimino);
                 if (moveAcceptable)
                     minDeltaX = trial;
                 else
@@ -207,12 +221,12 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             // Scan from center to right to find right limit.
             for (int trial = 0; trial <= Width; trial++)
             {
-                // Copy piece
-                tempPiece.CopyFrom(piece);
+                // Copy tetrimino
+                tempTetrimino.CopyFrom(tetrimino);
                 // Translate
-                tempPiece.Translate(trial, 0);
+                tempTetrimino.Translate(trial, 0);
                 // Check if move is valid
-                moveAcceptable = CheckNoConflict(tempPiece);
+                moveAcceptable = CheckNoConflict(tempTetrimino);
                 if (moveAcceptable)
                     maxDeltaX = trial;
                 else
@@ -220,48 +234,47 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             }
         }
 
-        public void CommitPiece(ITetrimino piece)
+        public void CommitTetrimino(ITetrimino tetrimino)
         {
-            if (piece.PosX < 1 || piece.PosX > Width)
+            if (tetrimino.PosX < 1 || tetrimino.PosX > Width)
                 return;
-            if (piece.PosY < 1 || piece.PosY > Height)
+            if (tetrimino.PosY < 1 || tetrimino.PosY > Height)
                 return;
-            for (int i = 1; i <= piece.TotalCells; i++)
+            for (int i = 1; i <= tetrimino.TotalCells; i++)
             {
                 // Get cell position in board
                 int x, y;
-                piece.GetCellAbsolutePosition(i, out x, out y);
+                tetrimino.GetCellAbsolutePosition(i, out x, out y);
                 // Add cell in board
-                this[x, y] = piece.Value;
+                this[x, y] = tetrimino.Value;
             }
         }
 
-        public void DropAndCommit(ITetrimino piece)
+        public void DropAndCommit(ITetrimino tetrimino)
         {
-            Drop(piece);
-            CommitPiece(piece);
+            Drop(tetrimino);
+            CommitTetrimino(tetrimino);
         }
 
-        public void Drop(ITetrimino piece)
+        public void Drop(ITetrimino tetrimino)
         {
-            // Special case: cannot place piece at starting location.
-            bool goalAcceptable = CheckNoConflict(piece);
+            // Special case: cannot place tetrimino at starting location.
+            bool goalAcceptable = CheckNoConflict(tetrimino);
 
-            if (!goalAcceptable) // cannot drop piece at all
+            if (!goalAcceptable) // cannot drop tetrimino at all
                 return;
 
             // Try successively larger drop distances, up to the point of failure.
             // The last successful drop distance becomes our drop distance.
             int lastSuccessfulDropDistance = 0;
-            ITetrimino tempPiece = piece.Clone();
+            ITetrimino tempTetrimino = tetrimino.Clone();
             for (int trial = 0; trial <= Height; trial++)
             {
-                tempPiece.CopyFrom(piece);
-                // Set temporary piece to new trial Y
-                //tempPiece.PosY -= trial;
-                tempPiece.Translate(0,-trial);
+                tempTetrimino.CopyFrom(tetrimino);
+                // Set temporary tetrimino to new trial Y
+                tempTetrimino.Translate(0, -trial);
 
-                goalAcceptable = CheckNoConflict(tempPiece);
+                goalAcceptable = CheckNoConflict(tempTetrimino);
                 if (!goalAcceptable)
                     // We failed to drop this far.  Stop drop search.
                     break;
@@ -269,89 +282,276 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
                     lastSuccessfulDropDistance = trial;
             }
 
-            // Simply update the piece Y value.
-            //piece.PosY -= lastSuccessfulDropDistance;
-            piece.Translate(0, -lastSuccessfulDropDistance);
+            // Simply update the tetrimino Y value.
+            tetrimino.Translate(0, -lastSuccessfulDropDistance);
         }
 
-        public bool MoveLeft(ITetrimino piece)
+        public bool MoveLeft(ITetrimino tetrimino)
         {
-            // Special case: cannot place piece at starting location.
-            if (!CheckNoConflict(piece))
+            // Special case: cannot place tetrimino at starting location.
+            if (!CheckNoConflict(tetrimino))
                 return false;
             // Try to move left
-            ITetrimino tempPiece = piece.Clone();
-            tempPiece.Translate(-1, 0);
-            if (!CheckNoConflict(tempPiece))
+            ITetrimino tempTetrimino = tetrimino.Clone();
+            tempTetrimino.Translate(-1, 0);
+            if (!CheckNoConflict(tempTetrimino))
                 return false;
-            // Simply update the piece X value
-            piece.Translate(-1,0);
+            // Simply update the tetrimino X value
+            tetrimino.Translate(-1, 0);
             return true;
         }
 
-        public bool MoveRight(ITetrimino piece)
+        public bool MoveRight(ITetrimino tetrimino)
         {
-            // Special case: cannot place piece at starting location.
-            if (!CheckNoConflict(piece))
+            // Special case: cannot place tetrimino at starting location.
+            if (!CheckNoConflict(tetrimino))
                 return false;
             // Try to move right
-            ITetrimino tempPiece = piece.Clone();
-            tempPiece.Translate(+1, 0);
-            if (!CheckNoConflict(tempPiece))
+            ITetrimino tempTetrimino = tetrimino.Clone();
+            tempTetrimino.Translate(+1, 0);
+            if (!CheckNoConflict(tempTetrimino))
                 return false;
-            // Simply update the piece X value
-            piece.Translate(+1, 0);
+            // Simply update the tetrimino X value
+            tetrimino.Translate(+1, 0);
             return true;
         }
 
-        public bool MoveDown(ITetrimino piece)
+        public bool MoveDown(ITetrimino tetrimino)
         {
-            // Special case: cannot place piece at starting location.
-            if (!CheckNoConflict(piece))
+            // Special case: cannot place tetrimino at starting location.
+            if (!CheckNoConflict(tetrimino))
                 return false;
             // Try to move down
-            ITetrimino tempPiece = piece.Clone();
-            tempPiece.Translate(0, -1);
-            if (!CheckNoConflict(tempPiece))
+            ITetrimino tempTetrimino = tetrimino.Clone();
+            tempTetrimino.Translate(0, -1);
+            if (!CheckNoConflict(tempTetrimino))
                 return false;
-            // Simply update the piece Y value
-            piece.Translate(0, -1);
+            // Simply update the tetrimino Y value
+            tetrimino.Translate(0, -1);
             return true;
         }
 
-        public bool RotateClockwise(ITetrimino piece)
+        public bool RotateClockwise(ITetrimino tetrimino)
         {
-            // Special case: cannot place piece at starting location.
-            if (!CheckNoConflict(piece))
+            // Special case: cannot place tetrimino at starting location.
+            if (!CheckNoConflict(tetrimino))
                 return false;
             // Try to rotate
-            ITetrimino tempPiece = piece.Clone();
-            tempPiece.RotateClockwise();
-            if (!CheckNoConflict(tempPiece))
+            ITetrimino tempTetrimino = tetrimino.Clone();
+            tempTetrimino.RotateClockwise();
+            if (!CheckNoConflict(tempTetrimino))
                 return false;
-            // Simply update the piece rotation
-            piece.RotateClockwise();
+            // Simply update the tetrimino rotation
+            tetrimino.RotateClockwise();
             return true;
         }
 
-        public bool RotateCounterClockwise(ITetrimino piece)
+        public bool RotateCounterClockwise(ITetrimino tetrimino)
         {
-            // Special case: cannot place piece at starting location.
-            if (!CheckNoConflict(piece))
+            // Special case: cannot place tetrimino at starting location.
+            if (!CheckNoConflict(tetrimino))
                 return false;
             // Try to rotate
-            ITetrimino tempPiece = piece.Clone();
-            tempPiece.RotateCounterClockwise();
-            if (!CheckNoConflict(tempPiece))
+            ITetrimino tempTetrimino = tetrimino.Clone();
+            tempTetrimino.RotateCounterClockwise();
+            if (!CheckNoConflict(tempTetrimino))
                 return false;
-            // Simply update the piece rotation
-            piece.RotateCounterClockwise();
+            // Simply update the tetrimino rotation
+            tetrimino.RotateCounterClockwise();
             return true;
         }
 
         #region Specials
 
-        public void SpawnSpecialBlocks(int count, List<int> specialProbabilities)
+        /// <summary>
+        /// Add <param name="count"/> junk lines
+        /// </summary>
+        /// <param name="count">Number of lines to add</param>
+        /// <param name="randomFunc">Cell random generator</param>
+        public void AddLines(int count, Func<Tetriminos> randomFunc)
+        {
+            for(int i = 0; i < count; i++)
+                AddJunkLine(randomFunc);
+        }
+
+        /// <summary>
+        /// Clear bottom line
+        /// </summary>
+        public void ClearLine()
+        {
+            // Copy rows y-1 <- y
+            for (int copySourceY = 1; copySourceY <= Height; copySourceY++)
+                for (int copySourceX = 1; copySourceX <= Width; copySourceX++)
+                {
+                    byte cellValue = this[copySourceX, copySourceY];
+                    this[copySourceX, copySourceY - 1] = cellValue;
+                }
+        }
+
+        /// <summary>
+        /// Remove all cells
+        /// </summary>
+        public void NukeField()
+        {
+            for (int i = 0; i < Width*Height; i++)
+                Cells[i] = 0;
+        }
+
+        /// <summary>
+        /// Remove <paramref name="count"/> random cells
+        /// </summary>
+        /// <param name="count"></param>
+        public void RandomBlocksClear(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                int index = _random.Next(Width*Height);
+                Cells[index] = 0;
+            }
+        }
+
+        /// <summary>
+        /// Switches board with another player's board. If either of the board is over 16 cell high, the board will be lowered.
+        /// </summary>
+        /// <param name="cells"></param>
+        public void SwitchFields(byte[] cells)
+        {
+            // NOTHING TO DO, this is handled by the server
+        }
+
+        /// <summary>
+        /// Removes all special cells from a players field
+        /// </summary>
+        public void ClearSpecialBlocks()
+        {
+            for (int i = 0; i < Width*Height; i++)
+                Cells[i] = CellHelper.ClearSpecial(Cells[i]); // remove special
+        }
+
+        /// <summary>
+        /// Takes all the cells on the field and "pulls" them all towards the bottom of the field eliminating any gaps in the blockstack
+        /// </summary>
+        public void BlockGravity()
+        {
+            // For each column
+            //  Get pile max
+            //  For each row from bottom to pile max, if cell is hole, find first non-empty cell above and move it
+            for (int x = 1; x <= Width; x++)
+            {
+                int pileHeight = 0;
+                for(int y = Height; y >= 1; y--)
+                    if (this[x, y] > 0)
+                    {
+                        pileHeight = y;
+                        break;
+                    }
+                for(int y = 1; y < pileHeight; y++)
+                    if (this[x, y] == 0) // hole
+                    {
+                        bool foundNonEmptyCell = false;
+                        for (int yi = 1; yi <= pileHeight; yi++) // get first non-empty cell above
+                        {
+                            byte cellValue = this[x, y + yi];
+                            if (cellValue > 0) // found one, move it
+                            {
+                                this[x, y] = cellValue;
+                                this[x, y + yi] = 0;
+                                foundNonEmptyCell = true;
+                                break;
+                            }
+                        }
+                        if (!foundNonEmptyCell) // no more cell above
+                            break;
+                    }
+            }
+        }
+
+        /// <summary>
+        /// Each of the lines of cells on a players field to randomly shift left or right or not at all
+        /// </summary>
+        public void BlockQuake()
+        {
+            for (int y = 1; y <= Height; y++) // top-down
+            {
+                int shift = _random.Next(3) - 1; // 0 -> 2 ==> -1 -> 1
+                if (shift < 0) {
+                    for (int x = 1; x <= Width - 1; x++) // x <- x+1
+                    {
+                        byte cellValue = this[x+1, y];
+                        this[x, y] = cellValue;
+                    }
+                    // Clear last cell in row
+                    this[Width, y] = 0;
+                }
+                else if (shift > 0)
+                {
+                    for (int x = Width; x >= 2; x--) // x <- x-1
+                    {
+                        byte cellValue = this[x - 1, y];
+                        this[x, y] = cellValue;
+                    }
+                    // Clear first cell in row
+                    this[1, y] = 0;
+                }
+                // if shift == 0, nothing to do
+            }
+        }
+
+        /// <summary>
+        /// When used on a player, it clears 3x3 portions on their field anywhere there are 'o' cells. Any cells that were in the 3x3 areas are scattered around the field.
+        /// </summary>
+        public void BlockBomb()
+        {
+            // Get bombs
+            List<int> bombIndexes = Cells.Select((cell, index) => new
+            {
+                cell,
+                index
+            })
+                .Where(x => CellHelper.Special(x.cell) == Specials.BlockBomb)
+                .Select(x => x.index).ToList();
+            // Compute scattered parts new locations
+            List<Tuple<int, int, byte>> scattered = new List<Tuple<int, int, byte>>(); // Keep scattered parts new location (old location, new location, cell value)
+            foreach (int index in bombIndexes)
+            {
+                int x, y;
+                GetCellXY(index, out x, out y);
+                if (x > 0 && y > 0)
+                {
+                    this[x, y] = 0; // clear bomb
+                    for (int yi = -1; yi <= 1; yi++)
+                        for (int xi = -1; xi <= 1; xi++)
+                            if (xi != 0 && yi != 0)
+                            {
+                                int oldX = x + xi;
+                                int oldY = y + yi;
+                                byte cellValue = this[oldX, oldY]; // no need to check out-of-range, this is done by indexer
+                                if (cellValue != 0) // no need to move empty cell
+                                {
+                                    // get scattered coordinates
+                                    int oldIndex = GetCellIndex(oldX, oldY);
+                                    // get scattered new coordinates
+                                    int newX = x + xi * 2 + (_random.Next(3) - 1 ); // some x deviation -3 -> +3
+                                    int newY = y + 5 + _random.Next(5); // some y deviation  +5 -> +10
+                                    if (newX <= 1) newX = 1;
+                                    if (newX >= Width) newX = Width;
+                                    if (newY <= 1) newY = 1;
+                                    if (newY >= Height-4) newY = Height-4; // we don't want to scatter to high
+                                    int newIndex = GetCellIndex(newX, newY);
+                                    scattered.Add(new Tuple<int, int, byte>(oldIndex, newIndex, cellValue));
+                                }
+                            }
+                }
+            }
+            // Copy scattered part back in board
+            foreach (Tuple<int, int, byte> tuple in scattered)
+            {
+                Cells[tuple.Item1] = 0; // remove old part
+                Cells[tuple.Item2] = tuple.Item3; // set new part
+            }
+        }
+
+        public void SpawnSpecialBlocks(int count, Func<Specials> randomFunc)
         {
             // Build list of cells without any specials
             List<int> cellsOccupiedWithoutSpecials = Cells.Select((cell, index) => new
@@ -359,23 +559,24 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
                 cell,
                 index
             })
-                .Where(x => x.cell > 0 && ((byte)(x.cell & 0x0F) == x.cell))
+                .Where(x => x.cell > 0 && CellHelper.Special(x.cell) == Specials.Invalid)
                 .Select(x => x.index)
                 .ToList();
+            // Transform 'count' cells into special
             for (int i = 0; i < count; i++)
             {
                 int n = cellsOccupiedWithoutSpecials.Count;
-                if (n > 0)
+                if (n > 0) // if there is at least one non-special cell
                 {
                     // get random cell without specials
                     int randomCell = _random.Next(n);
                     int cellIndex = cellsOccupiedWithoutSpecials[randomCell];
                     // get random special
-                    byte randomSpecial = (byte)((1 + RangeRandom.Random(specialProbabilities)) << 4);//(byte)((1 + _random.Next(SpecialsCount))<< 4);
+                    Specials special = randomFunc();
                     // add special
-                    Cells[cellIndex] |= randomSpecial;
+                    Cells[cellIndex] = CellHelper.SetSpecial(Cells[cellIndex], special);
 
-                    // remove cell from list
+                    // remove cell from available list
                     cellsOccupiedWithoutSpecials.RemoveAt(randomCell);
                 }
                 else
@@ -383,79 +584,45 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             }
         }
 
-        public void AddLines(int count, int tetriminosCount)
+        public void RemoveCellsHigherThan(int height)
         {
-            for(int i = 0; i < count; i++)
-                AddJunkLine(tetriminosCount);
+            // Used when boards are switched between players
+            for (int y = Height; y >= height; y--) // top-down
+                for (int x = 1; x <= Width; x++)
+                    this[x, y] = 0;
         }
-
-        public void ClearLine()
-        {
-            // TODO
-        }
-
-        public void NukeField()
-        {
-            for (int i = 0; i < Width*Height; i++)
-                Cells[i] = 0;
-        }
-
-        public void RandomBlocksClear(int count)
-        {
-            // TODO
-        }
-
-        public void SwitchFields(byte[] cells)
-        {
-            // TODO
-        }
-
-        public void ClearSpecialBlocks()
-        {
-            for (int i = 0; i < Width*Height; i++)
-                Cells[i] = (byte)(Cells[i] & 0x0F); // remove special
-        }
-
-        public void BlockGravity()
-        {
-            // TODO
-        }
-
-        public void BlockQuake()
-        {
-            // TODO
-        }
-
-        public void BlockBomb()
-        {
-            // TODO
-        }
-
         #endregion
 
-        protected void AddJunkLine(int tetriminosCount)
+        protected void AddJunkLine(Func<Tetriminos> randomFunc)
         {
             // First, do top-down row copying to raise all rows by 'count' row, with the top row being discarded.
             for (int y = Height; y > 1; y--) // top-down
-            {
                 // Copy row (y-1) to row y; i.e., copy upward.
                 for (int x = 1; x <= Width; x++)
                 {
                     byte cellValue = this[x, y - 1];
                     this[x, y] = cellValue;
                 }
-            }
             // Put random junk in bottom row (row 1).
             int hole = _random.Next(Width);
             for (int x = 1; x <= Width; x++)
             {
-                byte cellValue;
-                if (x == hole)
-                    cellValue = 0;
-                else
-                    cellValue = (byte)(1 + _random.Next(tetriminosCount));
+                // Fill row except hole
+                byte cellValue = CellHelper.SetTetrimino(x == hole ? Tetriminos.Invalid : randomFunc());
                 this[x, 1] = cellValue;
             }
+        }
+
+        protected void GetCellXY(int index, out int x, out int y)
+        {
+            x = y = 0;
+            if (index < 0)
+                return;
+            if (index >= Width*Height)
+                return;
+            x = 1 + (index%Width);
+            y = 1 + (index/Width);
+            Debug.Assert(GetCellIndex(x,y) == index);
         }
     }
 }

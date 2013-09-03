@@ -42,11 +42,13 @@
         void GetCellAbsolutePosition(int cellIndex, out int x, out int y); // cell: 1->#cells
 
         ITetrimino Clone();
-        void CopyFrom(ITetrimino piece);
+        void CopyFrom(ITetrimino tetrimino);
 
         void Translate(int dx, int dy);
         void RotateClockwise();
         void RotateCounterClockwise();
         void Rotate(int count);
+
+        void GetAbsoluteBoundingRectangle(out int minX, out int minY, out int maxX, out int maxY);
     }
 }

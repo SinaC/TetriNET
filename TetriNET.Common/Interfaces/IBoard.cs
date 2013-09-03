@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TetriNET.Common.Interfaces
 {
@@ -13,7 +14,7 @@ namespace TetriNET.Common.Interfaces
         IBoard Clone();
         bool CopyFrom(IBoard board);
         void Clear();
-        void FillWithRandomCells(int tetriminosCount);
+        void FillWithRandomCells(Func<Tetriminos> randomFunc);
 
         bool SetCells(byte[] cells);
         int TotalCells { get; }
@@ -23,24 +24,22 @@ namespace TetriNET.Common.Interfaces
         int TetriminoSpawnX { get; }
         int TetriminoSpawnY { get; }
 
-        bool CheckNoConflict(ITetrimino piece);
-        int CollapseCompletedRows();
-        void GetAccessibleTranslationsForOrientation(ITetrimino piece, out bool isMovePossible, out int minDeltaX, out int maxDeltaX);
-        void CommitPiece(ITetrimino piece);
-        void DropAndCommit(ITetrimino piece);
+        bool CheckNoConflict(ITetrimino tetrimino);
+        int CollapseCompletedRows(out List<Specials> specials);
+        void GetAccessibleTranslationsForOrientation(ITetrimino tetrimino, out bool isMovePossible, out int minDeltaX, out int maxDeltaX);
+        void CommitTetrimino(ITetrimino tetrimino);
+        void DropAndCommit(ITetrimino tetrimino);
 
-        void Drop(ITetrimino piece);
-        bool MoveLeft(ITetrimino piece);
-        bool MoveRight(ITetrimino piece);
-        bool MoveDown(ITetrimino piece);
-        bool RotateClockwise(ITetrimino piece);
-        bool RotateCounterClockwise(ITetrimino piece);
+        void Drop(ITetrimino tetrimino);
+        bool MoveLeft(ITetrimino tetrimino);
+        bool MoveRight(ITetrimino tetrimino);
+        bool MoveDown(ITetrimino tetrimino);
+        bool RotateClockwise(ITetrimino tetrimino);
+        bool RotateCounterClockwise(ITetrimino tetrimino);
 
         #region Specials
 
-        void SpawnSpecialBlocks(int count, List<int> specialProbabilities);
-
-        void AddLines(int count, int tetriminosCount);
+        void AddLines(int count, Func<Tetriminos> randomFunc);
         void ClearLine();
         void NukeField();
         void RandomBlocksClear(int count);
@@ -50,6 +49,8 @@ namespace TetriNET.Common.Interfaces
         void BlockQuake();
         void BlockBomb();
 
+        void SpawnSpecialBlocks(int count, Func<Specials> randomFunc);
+        void RemoveCellsHigherThan(int height);
         #endregion
     }
 }

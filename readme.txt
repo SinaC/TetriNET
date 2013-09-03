@@ -1,6 +1,5 @@
 TODO:
 replace assert and return null/false/-1 with error management
-replace Tetriminos enum with index
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
 Manage new connection and disconnection at one place -> ideally in Server because there can be many hosts and we can remove a player only ince
 when Server calls BanPlayer on hosts, only one host must add it to ban manager:
@@ -9,6 +8,8 @@ when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 	-> this object is stored in IPlayer and created by createPlayerFunc in host so server or host can ban a player using IPlayer info
 discovery doesn't work on cross/multiple machine
 client/server version
+bot specials management
+client big bad bug: if piece starts above top of screen -> game lost because it cannot moved down ==> move down should only test below and not above
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf
@@ -85,3 +86,4 @@ http://tetris.wikia.com/wiki/SRS
 http://tetris.wikia.com/wiki/DTET_Rotation_System
 http://tetris.wikia.com/wiki/TetriNet_Rotation_System
 http://tetrisconcept.net/wiki/TetriNet_Rotation_System
+http://harddrop.com/wiki/Tetrinet2

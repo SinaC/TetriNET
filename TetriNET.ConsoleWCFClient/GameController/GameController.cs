@@ -12,7 +12,14 @@ namespace TetriNET.ConsoleWCFClient.GameController
         Left,
         Right,
         RotateClockwise,
-        RotateCounterclockwise
+        RotateCounterclockwise,
+
+        UseSpecialOn1,
+        UseSpecialOn2,
+        UseSpecialOn3,
+        UseSpecialOn4,
+        UseSpecialOn5,
+        UseSpecialOn6,
     }
 
     public class GameController
@@ -60,6 +67,25 @@ namespace TetriNET.ConsoleWCFClient.GameController
                         break;
                     case Commands.RotateCounterclockwise:
                         _client.RotateCounterClockwise();
+                        break;
+
+                    case Commands.UseSpecialOn1:
+                        _client.UseSpecial(0);
+                        break;
+                    case Commands.UseSpecialOn2:
+                        _client.UseSpecial(1);
+                        break;
+                    case Commands.UseSpecialOn3:
+                        _client.UseSpecial(2);
+                        break;
+                    case Commands.UseSpecialOn4:
+                        _client.UseSpecial(3);
+                        break;
+                    case Commands.UseSpecialOn5:
+                        _client.UseSpecial(4);
+                        break;
+                    case Commands.UseSpecialOn6:
+                        _client.UseSpecial(5);
                         break;
                 }
                 if (_timers.ContainsKey(cmd))

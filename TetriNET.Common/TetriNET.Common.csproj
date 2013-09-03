@@ -45,7 +45,7 @@
     <Compile Include="Contracts\ITetriNETCallback.cs" />
     <Compile Include="Contracts\IWCFTetriNET.cs" />
     <Compile Include="GameData.cs" />
-    <Compile Include="Helpers\ByteHelper.cs" />
+    <Compile Include="Helpers\CellHelper.cs" />
     <Compile Include="Helpers\Check.cs" />
     <Compile Include="Helpers\Singleton.cs" />
     <Compile Include="Interfaces\IBanManager.cs" />

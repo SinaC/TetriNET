@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.ServiceModel.Security;
 using System.Threading.Tasks;
+using TetriNET.Common;
 using TetriNET.Common.Interfaces;
 using TetriNET.ConsoleWCFServer.Ban;
 using TetriNET.ConsoleWCFServer.Host;
@@ -14,6 +16,9 @@ namespace TetriNET.ConsoleWCFServer
     {
         static void Main(string[] args)
         {
+            Log.DisplayThreadId = true;
+            Log.DisplayInConsole = true;
+
             //
             BanManager banManager = new BanManager();
 
@@ -53,10 +58,13 @@ namespace TetriNET.ConsoleWCFServer
             Console.WriteLine("x: Stop server");
             Console.WriteLine("s: Start game");
             Console.WriteLine("t: Stop game");
+            Console.WriteLine("p: Pause game");
+            Console.WriteLine("r: Resume game");
             Console.WriteLine("a: add dummy player");
-            Console.WriteLine("r: remove dummy player");
-            Console.WriteLine("l: dummy player lose");
-            Console.WriteLine("d: dump player list");
+            Console.WriteLine("d: remove dummy player");
+            Console.WriteLine("o: dummy player lose");
+            Console.WriteLine("l: dump player list");
+            Console.WriteLine("w: dump win list");
 
             bool stopped = false;
             while (!stopped)
@@ -75,10 +83,16 @@ namespace TetriNET.ConsoleWCFServer
                         case ConsoleKey.T:
                             server.StopGame();
                             break;
+                        case ConsoleKey.P:
+                            server.PauseGame();
+                            break;
+                        case ConsoleKey.R:
+                            server.ResumeGame();
+                            break;
                         case ConsoleKey.A:
                             clients.Add(new DummyBuiltInClient("BuiltIn-" + Guid.NewGuid().ToString().Substring(0, 5), () => builtInHost));
                             break;
-                        case ConsoleKey.R:
+                        case ConsoleKey.D:
                         {
                             DummyBuiltInClient client = clients.LastOrDefault();
                             if (client != null)
@@ -88,16 +102,20 @@ namespace TetriNET.ConsoleWCFServer
                             }
                             break;
                         }
-                        case ConsoleKey.L:
+                        case ConsoleKey.O:
                         {
                             DummyBuiltInClient client = clients.LastOrDefault();
                             if (client != null)
                                 client.Lose();
                             break;
                         }
-                        case ConsoleKey.D:
+                        case ConsoleKey.L:
                             foreach (IPlayer p in playerManager.Players)
                                 Console.WriteLine("{0}) {1} {2} {3} {4:HH:mm:ss.fff} {5:HH:mm:ss.fff}", playerManager.GetId(p), p.Name, p.State, p.TetriminoIndex, p.LastActionFromClient, p.LastActionToClient);
+                            break;
+                        case ConsoleKey.W:
+                            foreach(WinEntry e in server.WinList)
+                                Console.WriteLine("{0}: {1} pts", e.PlayerName, e.Score);
                             break;
                     }
                 }
