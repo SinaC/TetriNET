@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common;
+using TetriNET.Common.GameDatas;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.Randomizer;
@@ -53,102 +54,7 @@ namespace TetriNET.Server
                 throw new ArgumentNullException("playerManager");
             if (hosts == null)
                 throw new ArgumentNullException("hosts");
-            _options = new GameOptions
-            {
-                TetriminoOccurancies = new List<TetriminoOccurancy>
-                {
-                    new TetriminoOccurancy
-                    {
-                        Value  = Tetriminos.TetriminoJ,
-                        Occurancy = 14
-                    },
-                    new TetriminoOccurancy
-                    {
-                        Value  = Tetriminos.TetriminoZ,
-                        Occurancy = 14
-                    },
-                    new TetriminoOccurancy
-                    {
-                        Value  = Tetriminos.TetriminoO,
-                        Occurancy = 15
-                    },
-                    new TetriminoOccurancy
-                    {
-                        Value  = Tetriminos.TetriminoL,
-                        Occurancy = 14
-                    },
-                    new TetriminoOccurancy
-                    {
-                        Value  = Tetriminos.TetriminoS,
-                        Occurancy = 14
-                    },
-                    new TetriminoOccurancy
-                    {
-                        Value  = Tetriminos.TetriminoT,
-                        Occurancy = 14
-                    },
-                    new TetriminoOccurancy
-                    {
-                        Value  = Tetriminos.TetriminoI,
-                        Occurancy = 15
-                    },
-                },
-                SpecialOccurancies = new List<SpecialOccurancy>
-                {
-                    new SpecialOccurancy
-                    {
-                        Value = Specials.AddLines,
-                        Occurancy = 19
-                    },
-                    new SpecialOccurancy
-                    {
-                        Value = Specials.ClearLines,
-                        Occurancy = 16
-                    },
-                    new SpecialOccurancy
-                    {
-                        Value = Specials.NukeField,
-                        Occurancy = 3
-                    },
-                    new SpecialOccurancy
-                    {
-                        Value = Specials.RandomBlocksClear,
-                        Occurancy = 14
-                    },
-                    new SpecialOccurancy
-                    {
-                        Value = Specials.SwitchFields,
-                        Occurancy = 3
-                    },
-                    new SpecialOccurancy
-                    {
-                        Value = Specials.ClearSpecialBlocks,
-                        Occurancy = 14
-                    },
-                    new SpecialOccurancy
-                    {
-                        Value = Specials.BlockGravity,
-                        Occurancy = 6
-                    },
-                    new SpecialOccurancy
-                    {
-                        Value = Specials.BlockQuake,
-                        Occurancy = 11
-                    },
-                    new SpecialOccurancy
-                    {
-                        Value = Specials.BlockBomb,
-                        Occurancy = 14
-                    },
-                },
-                ClassicStyleMultiplayerRules = true,
-                InventorySize = 10,
-                LinesToMakeForSpecials = 1,
-                SpecialsAddedEachTime = 1,
-                StartingLevel = 0,
-                DelayBeforeSuddenDeath = 0,
-                SuddenDeathTick = 1
-            }; // TODO: get options from save file
+            _options = new GameOptions(); // TODO: get options from save file
 
             _tetriminoQueue = new TetriminoQueue(() => RangeRandom.Random(_options.TetriminoOccurancies));
             _playerManager = playerManager;

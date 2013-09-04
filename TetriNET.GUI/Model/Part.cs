@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Windows.Media;
-using TetriNET.Common;
+using TetriNET.Common.GameDatas;
 
 namespace Tetris.Model
 {

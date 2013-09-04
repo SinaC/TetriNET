@@ -5,10 +5,11 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using TetriNET.Common;
 using TetriNET.Common.Contracts;
+using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.WCF;
 
-namespace TetriNET.ConsoleWCFClient.Proxy
+namespace TetriNET.WCFProxy
 {
     public sealed class WCFProxy : IProxy
     {

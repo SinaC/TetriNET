@@ -44,7 +44,13 @@
     <Compile Include="Contracts\ITetriNET.cs" />
     <Compile Include="Contracts\ITetriNETCallback.cs" />
     <Compile Include="Contracts\IWCFTetriNET.cs" />
-    <Compile Include="GameData.cs" />
+    <Compile Include="GameDatas\GameOptions.cs" />
+    <Compile Include="GameDatas\LeaveReasons.cs" />
+    <Compile Include="GameDatas\SpecialOccurancy.cs" />
+    <Compile Include="GameDatas\Specials.cs" />
+    <Compile Include="GameDatas\TetriminoOccurancy.cs" />
+    <Compile Include="GameDatas\Tetriminos.cs" />
+    <Compile Include="GameDatas\WinEntry.cs" />
     <Compile Include="Helpers\CellHelper.cs" />
     <Compile Include="Helpers\Check.cs" />
     <Compile Include="Helpers\Singleton.cs" />

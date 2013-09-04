@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.ServiceModel.Security;
 using System.Threading.Tasks;
 using TetriNET.Common;
+using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.ConsoleWCFServer.Ban;
 using TetriNET.ConsoleWCFServer.Host;
@@ -26,7 +26,7 @@ namespace TetriNET.ConsoleWCFServer
             PlayerManager playerManager = new PlayerManager(6);
 
             //
-            WCFHost wcfHost = new WCFHost(playerManager, banManager, (playerName, callback) => new Player.Player(playerName, callback))
+            WCFHost.WCFHost wcfHost = new WCFHost.WCFHost(playerManager, banManager, (playerName, callback) => new Player.Player(playerName, callback))
             {
                 Port = ConfigurationManager.AppSettings["port"]
             };

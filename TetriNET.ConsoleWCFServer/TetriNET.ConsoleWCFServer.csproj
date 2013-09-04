@@ -41,20 +41,17 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ban\BanManager.cs" />
     <Compile Include="Ban\HostTransportAddress.cs" />
     <Compile Include="Host\BuiltInHost.cs" />
     <Compile Include="DummyBuiltInClient.cs" />
-    <Compile Include="Host\IPFilterServiceBehavior.cs" />
     <Compile Include="Player\PlayerManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Player\Player.cs" />
     <Compile Include="Host\SocketHost.cs" />
-    <Compile Include="Host\WCFHost.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -64,9 +61,17 @@
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TetriNET.GenericHost\TetriNET.GenericHost.csproj">
+      <Project>{010b434d-86f0-4bff-b17b-702bcccf69f5}</Project>
+      <Name>TetriNET.GenericHost</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Server\TetriNET.Server.csproj">
       <Project>{161C5DDA-F2A8-400E-9702-3C4B45FFB772}</Project>
       <Name>TetriNET.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TetriNET.WCFHost\TetriNET.WCFHost.csproj">
+      <Project>{0d26f900-9e0d-4fbd-b7b0-5da679c71491}</Project>
+      <Name>TetriNET.WCFHost</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

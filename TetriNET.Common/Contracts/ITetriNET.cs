@@ -1,4 +1,6 @@
-﻿namespace TetriNET.Common.Contracts
+﻿using TetriNET.Common.GameDatas;
+
+namespace TetriNET.Common.Contracts
 {
     public interface ITetriNET
     {

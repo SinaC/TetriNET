@@ -14,6 +14,7 @@ namespace TetriNET.ConsoleWCFClient.GameController
         RotateClockwise,
         RotateCounterclockwise,
 
+        DiscardFirstSpecial,
         UseSpecialOn1,
         UseSpecialOn2,
         UseSpecialOn3,
@@ -69,6 +70,9 @@ namespace TetriNET.ConsoleWCFClient.GameController
                         _client.RotateCounterClockwise();
                         break;
 
+                    case Commands.DiscardFirstSpecial:
+                        _client.DiscardFirstSpecial();
+                        break;
                     case Commands.UseSpecialOn1:
                         _client.UseSpecial(0);
                         break;

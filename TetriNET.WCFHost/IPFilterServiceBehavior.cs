@@ -8,7 +8,7 @@ using System.ServiceModel.Dispatcher;
 using TetriNET.Common;
 using TetriNET.Common.Interfaces;
 
-namespace TetriNET.ConsoleWCFServer.Host
+namespace TetriNET.WCFHost
 {
     public class IPFilterServiceBehavior : IDispatchMessageInspector, IServiceBehavior
     {

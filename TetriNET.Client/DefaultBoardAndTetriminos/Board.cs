@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using TetriNET.Common;
 using TetriNET.Common.Contracts;
+using TetriNET.Common.GameDatas;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 
@@ -112,6 +113,65 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             get { return Height; }
         }
 
+        public bool CheckNoConflict(ITetrimino tetrimino)
+        {
+            if (tetrimino.PosX < 1)
+                return false;
+            if (tetrimino.PosX > Width)
+                return false;
+            if (tetrimino.PosY < 1)
+                return false;
+            if (tetrimino.PosY > Height)
+                return false;
+            for (int i = 1; i <= tetrimino.TotalCells; i++)
+            {
+                // Get cell position in board
+                int x, y;
+                tetrimino.GetCellAbsolutePosition(i, out x, out y);
+                // Check out of board
+                if (x < 1)
+                    return false;
+                if (x > Width)
+                    return false;
+                if (y < 1)
+                    return false;
+                if (y > Height)
+                    return false;
+                // Check if cell already occupied
+                if (this[x, y] > 0)
+                    return false;
+            }
+            return true;
+        }
+
+        public bool CheckNoConflictWithBoard(ITetrimino tetrimino)
+        {
+            if (tetrimino.PosX < 1)
+                return false;
+            if (tetrimino.PosX > Width)
+                return false;
+            if (tetrimino.PosY < 1)
+                return false;
+            if (tetrimino.PosY > Height)
+                return false;
+            for (int i = 1; i <= tetrimino.TotalCells; i++)
+            {
+                // Get cell position in board
+                int x, y;
+                tetrimino.GetCellAbsolutePosition(i, out x, out y);
+                // Check out of board
+                if (x < 1)
+                    return false;
+                if (x > Width)
+                    return false;
+                if (y < 1)
+                    return false;
+                if (y > Height)
+                    return false;
+            }
+            return true;
+        }
+
         public int CollapseCompletedRows(out List<Specials> specials)
         {
             specials = new List<Specials>();
@@ -164,29 +224,6 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             }
 
             return rows;
-        }
-
-        public bool CheckNoConflict(ITetrimino tetrimino)
-        {
-            if (tetrimino.PosX < 1 || tetrimino.PosX > Width)
-                return false;
-            if (tetrimino.PosY < 1 || tetrimino.PosY > Height)
-                return false;
-            for (int i = 1; i <= tetrimino.TotalCells; i++)
-            {
-                // Get cell position in board
-                int x, y;
-                tetrimino.GetCellAbsolutePosition(i, out x, out y);
-                // Check out of board
-                if (x < 1 || x > Width)
-                    return false;
-                if (y < 1 || y > Height)
-                    return false;
-                // Check if cell already occupied
-                if (this[x, y] > 0)
-                    return false;
-            }
-            return true;
         }
 
         public void GetAccessibleTranslationsForOrientation(ITetrimino tetrimino, out bool isMovePossible, out int minDeltaX, out int maxDeltaX)
@@ -464,6 +501,9 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
                             break;
                     }
             }
+            // Delete completed rows
+            List<Specials> specials;
+            CollapseCompletedRows(out specials);
         }
 
         /// <summary>
@@ -551,6 +591,17 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             }
         }
 
+        /// <summary>
+        /// Clear an random column
+        /// </summary>
+        public void ClearColumn()
+        {
+            int column = 1 + _random.Next(Width);
+            for (int y = 1; y <= Height; y++)
+                this[column, y] = 0;
+        }
+
+        // Associated with Specials
         public void SpawnSpecialBlocks(int count, Func<Specials> randomFunc)
         {
             // Build list of cells without any specials

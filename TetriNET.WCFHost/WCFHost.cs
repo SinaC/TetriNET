@@ -2,11 +2,12 @@
 using System.ServiceModel;
 using TetriNET.Common;
 using TetriNET.Common.Contracts;
+using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.WCF;
 using TetriNET.Server;
 
-namespace TetriNET.ConsoleWCFServer.Host
+namespace TetriNET.WCFHost
 {
     public sealed class WCFHost : GenericHost
     {

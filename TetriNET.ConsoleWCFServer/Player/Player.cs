@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TetriNET.Common;
 using TetriNET.Common.Contracts;
+using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 
 namespace TetriNET.ConsoleWCFServer.Player

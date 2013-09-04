@@ -1,4 +1,5 @@
 ﻿using System.ServiceModel;
+using TetriNET.Common.GameDatas;
 
 namespace TetriNET.Common.Contracts
 {

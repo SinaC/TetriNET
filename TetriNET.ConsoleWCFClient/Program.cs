@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Configuration;
-using TetriNET.Client;
 using TetriNET.Client.DefaultBoardAndTetriminos;
 using TetriNET.Common;
+using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
+using TetriNET.ConsoleWCFClient.AI;
 using TetriNET.ConsoleWCFClient.GameController;
-using TetriNET.ConsoleWCFClient.Proxy;
 using TetriNET.ConsoleWCFClient.UI;
 
 namespace TetriNET.ConsoleWCFClient
@@ -32,7 +32,7 @@ namespace TetriNET.ConsoleWCFClient
                     return new TetriminoZ(spawnX, spawnY, spawnOrientation);
             }
             return new TetriminoZ(spawnX, spawnY, spawnOrientation); // TODO: sometimes server takes time to send next tetrimino, it should send 2 or 3 next tetriminoes to ensure this never happens
-            //return new TetriminoL(spawnX, spawnY, spawnOrientation);
+            //return new TetriminoI(spawnX, spawnY, 2);
         }
 
         static void Main(string[] args)
@@ -43,7 +43,7 @@ namespace TetriNET.ConsoleWCFClient
             //
             //string baseAddress = @"net.tcp://localhost:8765/TetriNET";
             string baseAddress = ConfigurationManager.AppSettings["address"];
-            IClient client = new Client.Client(callback => new WCFProxy(callback, baseAddress), CreateTetrimino, () => new Board(12,22));
+            IClient client = new Client.Client(callback => new WCFProxy.WCFProxy(callback, baseAddress), CreateTetrimino, () => new Board(12,22));
             string name = "joel-wpf-client" + Guid.NewGuid().ToString().Substring(0, 5);
 
             //
@@ -73,7 +73,7 @@ namespace TetriNET.ConsoleWCFClient
                         case ConsoleKey.X:
                             stopped = true;
                             break;
-                        case ConsoleKey.D:
+                        case ConsoleKey.V:
                             client.Dump();
                             break;
                         case ConsoleKey.S:
@@ -114,6 +114,10 @@ namespace TetriNET.ConsoleWCFClient
                         case ConsoleKey.UpArrow:
                             controller.KeyDown(Commands.RotateClockwise);
                             controller.KeyUp(Commands.RotateClockwise);
+                            break;
+                        case ConsoleKey.D:
+                            controller.KeyDown(Commands.DiscardFirstSpecial);
+                            controller.KeyUp(Commands.DiscardFirstSpecial);
                             break;
                         case ConsoleKey.NumPad1:
                         case ConsoleKey.D1:

@@ -38,14 +38,12 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameController\GameController.cs" />
-    <Compile Include="GameController\PierreDellacherieOnePieceBot.cs" />
+    <Compile Include="AI\PierreDellacherieOnePieceBot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Proxy\WCFProxy.cs" />
     <Compile Include="UI\ConsoleUI.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -56,6 +54,10 @@
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TetriNET.WCFProxy\TetriNET.WCFProxy.csproj">
+      <Project>{b85b19f2-5c8d-4ab8-96e2-379b482089f9}</Project>
+      <Name>TetriNET.WCFProxy</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

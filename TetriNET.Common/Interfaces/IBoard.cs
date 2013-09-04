@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TetriNET.Common.GameDatas;
 
 namespace TetriNET.Common.Interfaces
 {
@@ -25,6 +26,7 @@ namespace TetriNET.Common.Interfaces
         int TetriminoSpawnY { get; }
 
         bool CheckNoConflict(ITetrimino tetrimino);
+        bool CheckNoConflictWithBoard(ITetrimino tetrimino);
         int CollapseCompletedRows(out List<Specials> specials);
         void GetAccessibleTranslationsForOrientation(ITetrimino tetrimino, out bool isMovePossible, out int minDeltaX, out int maxDeltaX);
         void CommitTetrimino(ITetrimino tetrimino);
@@ -48,6 +50,7 @@ namespace TetriNET.Common.Interfaces
         void BlockGravity();
         void BlockQuake();
         void BlockBomb();
+        void ClearColumn();
 
         void SpawnSpecialBlocks(int count, Func<Specials> randomFunc);
         void RemoveCellsHigherThan(int height);

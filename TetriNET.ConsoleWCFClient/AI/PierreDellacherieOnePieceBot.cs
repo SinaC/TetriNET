@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Timers;
 using TetriNET.Common;
+using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 
-namespace TetriNET.ConsoleWCFClient.GameController
+namespace TetriNET.ConsoleWCFClient.AI
 {
     public class PierreDellacherieOnePieceBot
     {
         private readonly IClient _client;
         private readonly Timer _timer;
+        private readonly Random _random;
         private bool _activated;
 
         public PierreDellacherieOnePieceBot(IClient client)
@@ -19,6 +22,8 @@ namespace TetriNET.ConsoleWCFClient.GameController
 
             _timer = new Timer(100);
             _timer.Elapsed += _timer_Elapsed;
+
+            _random = new Random();
 
             _activated = false;
             SleepTime = 100;
@@ -87,14 +92,17 @@ namespace TetriNET.ConsoleWCFClient.GameController
             if (_client.Board == null || _client.CurrentTetrimino == null)
                 return;
 
+            DateTime searchBestMoveStartTime = DateTime.Now;
+
+            // Use specials
+            UseFirstSpecial();
+
             // Get best move
             int bestRotationDelta;
             int bestTranslationDelta;
             GetBestMove(_client.Board, _client.CurrentTetrimino, out bestRotationDelta, out bestTranslationDelta);
 
             // Perform move
-
-            // TODO: animate move, fill a queue with movement to do and pop a movement every x ms
 
             // ROTATE
             for (int rotateCount = 0; rotateCount < bestRotationDelta; rotateCount++)
@@ -108,9 +116,85 @@ namespace TetriNET.ConsoleWCFClient.GameController
                 for (int translateCount = 0; translateCount < bestTranslationDelta; translateCount++)
                     _client.MoveRight();
 
-            // DROP
-            System.Threading.Thread.Sleep(SleepTime); // delay drop instead of animating
+            // DROP (delayed)
+            TimeSpan timeSpan = DateTime.Now - searchBestMoveStartTime;
+            double sleepTime = SleepTime - timeSpan.TotalMilliseconds;
+            if (sleepTime <= 0)
+                sleepTime = 10;
+            System.Threading.Thread.Sleep((int)sleepTime); // delay drop instead of animating
             _client.Drop();
+        }
+
+        private void UseFirstSpecial()
+        {
+            //  if negative special,
+            //      if no other player, drop it
+            //      else, use it on random opponent
+            //  else if switch, drop it
+            //  else, use it on ourself
+            // TODO: better strategy
+            List<Specials> inventory = _client.Inventory;
+            if (inventory != null && inventory.Any())
+            {
+                Specials firstSpecial = inventory[0];
+                int specialValue = 0;
+                switch (firstSpecial)
+                {
+                    case Specials.AddLines:
+                        specialValue = -1;
+                        break;
+                    case Specials.ClearLines:
+                        specialValue = +1;
+                        break;
+                    case Specials.NukeField:
+                        specialValue = +1;
+                        break;
+                    case Specials.RandomBlocksClear:
+                        specialValue = -1;
+                        break;
+                    case Specials.SwitchFields:
+                        specialValue = 0;
+                        break;
+                    case Specials.ClearSpecialBlocks:
+                        specialValue = -1;
+                        break;
+                    case Specials.BlockGravity:
+                        specialValue = +1;
+                        break;
+                    case Specials.BlockQuake:
+                        specialValue = -1;
+                        break;
+                    case Specials.BlockBomb:
+                        specialValue = -1;
+                        break;
+                    case Specials.ClearColumn:
+                        specialValue = -1;
+                        break;
+                }
+                if (specialValue == 0)
+                    _client.DiscardFirstSpecial();
+                else if (specialValue > 0)
+                    _client.UseSpecial(_client.PlayerId);
+                else
+                {
+                    List<int> opponents = new List<int>();
+                    for (int i = 0; i < _client.MaxPlayersCount; i++)
+                        if (i != _client.PlayerId)
+                        {
+                            IBoard board = _client.GetBoard(i);
+                            if (board != null)
+                                opponents.Add(i);
+                        }
+                    if (opponents.Any())
+                    {
+                        int index = _random.Next(opponents.Count);
+                        int specialTarget = opponents[index];
+                        _client.UseSpecial(specialTarget);
+                    }
+                    else
+                        _client.DiscardFirstSpecial();
+                }
+            }
         }
 
         private void GetBestMove(IBoard board, ITetrimino tetrimino, out int bestRotationDelta, out int bestTranslationDelta)

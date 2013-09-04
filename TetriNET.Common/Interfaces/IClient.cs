@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TetriNET.Common.GameDatas;
 
 namespace TetriNET.Common.Interfaces
 {
@@ -24,13 +25,15 @@ namespace TetriNET.Common.Interfaces
     public delegate void ClientPlayerLeftHandler(int playerId, string playerName);
     public delegate void ClientPlayerPublishMessageHandler(string playerName, string msg);
     public delegate void ClientServerPublishMessageHandler(string msg);
-    public delegate void ClientSpecialUsedHandler();
+    public delegate void ClientInventoryChangedHandler();
     public delegate void ClientLinesClearedChangedHandler();
     public delegate void ClientLevelChangedHandler();
 
     public interface IClient
     {
         string Name { get; }
+        int PlayerId { get; }
+        int MaxPlayersCount { get; }
         ITetrimino CurrentTetrimino { get; }
         ITetrimino NextTetrimino { get; }
         IBoard Board { get; }
@@ -39,6 +42,8 @@ namespace TetriNET.Common.Interfaces
         int Level { get; }
         bool IsGamePaused { get; }
         bool IsGameStarted { get; }
+
+        IBoard GetBoard(int playerId);
 
         event ClientRoundStartedHandler OnRoundStarted;
         event ClientRoundFinishedHandler OnRoundFinished;
@@ -62,13 +67,12 @@ namespace TetriNET.Common.Interfaces
         event ClientPlayerLeftHandler OnPlayerLeft;
         event ClientPlayerPublishMessageHandler OnPlayerPublishMessage;
         event ClientServerPublishMessageHandler OnServerPublishMessage;
-        event ClientSpecialUsedHandler OnSpecialUsed;
+        event ClientInventoryChangedHandler OnInventoryChanged;
         event ClientLinesClearedChangedHandler OnLinesClearedChanged;
         event ClientLevelChangedHandler OnLevelChanged;
 
         // Client->Server command
         void Register(string name);
-        void UseSpecial(int targetId);
         void StartGame();
         void StopGame();
         void PauseGame();
@@ -85,6 +89,8 @@ namespace TetriNET.Common.Interfaces
         void MoveRight();
         void RotateClockwise();
         void RotateCounterClockwise();
+        void DiscardFirstSpecial();
+        void UseSpecial(int targetId);
 
         //
         void Dump();

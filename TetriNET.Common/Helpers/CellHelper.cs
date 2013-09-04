@@ -1,4 +1,6 @@
-﻿namespace TetriNET.Common.Helpers
+﻿using TetriNET.Common.GameDatas;
+
+namespace TetriNET.Common.Helpers
 {
     public static class CellHelper
     {
