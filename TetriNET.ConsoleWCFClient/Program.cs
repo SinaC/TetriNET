@@ -44,7 +44,7 @@ namespace TetriNET.ConsoleWCFClient
             //string baseAddress = @"net.tcp://localhost:8765/TetriNET";
             string baseAddress = ConfigurationManager.AppSettings["address"];
             IClient client = new Client.Client(callback => new WCFProxy.WCFProxy(callback, baseAddress), CreateTetrimino, () => new Board(12,22));
-            string name = "joel-wpf-client" + Guid.NewGuid().ToString().Substring(0, 5);
+            string name = "client" + Guid.NewGuid().ToString().Substring(0, 5);
 
             //
             GameController.GameController controller = new GameController.GameController(client);

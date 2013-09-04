@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Timers;
+using TetriNET.Client.DefaultBoardAndTetriminos;
 using TetriNET.Common;
 using TetriNET.Common.GameDatas;
+using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 
 namespace TetriNET.ConsoleWCFClient.AI
@@ -46,7 +49,6 @@ namespace TetriNET.ConsoleWCFClient.AI
                     _timer.Start();
                 else
                     _timer.Stop();
-                Log.WriteLine("Bot activated: {0}", _activated);
             }
         }
 
@@ -95,7 +97,9 @@ namespace TetriNET.ConsoleWCFClient.AI
             DateTime searchBestMoveStartTime = DateTime.Now;
 
             // Use specials
-            UseFirstSpecial();
+            UseSpecial();
+
+            DateTime specialManaged = DateTime.Now;
 
             // Get best move
             int bestRotationDelta;
@@ -117,7 +121,11 @@ namespace TetriNET.ConsoleWCFClient.AI
                     _client.MoveRight();
 
             // DROP (delayed)
-            TimeSpan timeSpan = DateTime.Now - searchBestMoveStartTime;
+            DateTime searchBestModeEndTime = DateTime.Now;
+
+            Log.WriteLine("BEST MOVE found in {0} ms and special in {1} ms", (searchBestModeEndTime - specialManaged).TotalMilliseconds, (specialManaged - searchBestMoveStartTime).TotalMilliseconds );
+
+            TimeSpan timeSpan = searchBestModeEndTime - searchBestMoveStartTime;
             double sleepTime = SleepTime - timeSpan.TotalMilliseconds;
             if (sleepTime <= 0)
                 sleepTime = 10;
@@ -125,76 +133,481 @@ namespace TetriNET.ConsoleWCFClient.AI
             _client.Drop();
         }
 
-        private void UseFirstSpecial()
+        private void UseSpecial()
         {
-            //  if negative special,
-            //      if no other player, drop it
-            //      else, use it on random opponent
-            //  else if switch, drop it
-            //  else, use it on ourself
-            // TODO: better strategy
-            List<Specials> inventory = _client.Inventory;
-            if (inventory != null && inventory.Any())
+            #region Complex strategy (may send more than one special)
+            // if solo, 
+            //  drop everything except Nuke/Gravity/ClearLines
+            //  use clear line if no nuke/gravity on bottom line or when reaching top of board or when inventory is full
+            //  use nuke when reaching top of board
+            //  use gravity when reaching mid-board
+            // Survival first:
+            //  if we are to high (above 14), 
+            //      if we have Nuke or Gravity or Switch in inventory, send offensive specials to strongest opponent (lowest board) + send ClearLine to ourself until getting Nuke/Gravity/Switch
+            //          use Nuke or Gravity on ourself -> send to ourself ==> saved
+            //          use Switch
+            //              if strongest opponent board is below 10 -> send to opponent => saved
+            //              else drop it and continue to search for a Nuke or Gravity
+            //      else, 
+            //          empty inventory by sending offensive specials to weakest opponent (highest board) + sending ClearLine to ourself -> not saved
+            // If we are saved,
+            //  if there is only one player left, and we have enough AddLines to kill him, drop everything except AddLines and send them to last opponent
+            //  if first special is Switch, destroy own board and switch with strongest opponent
+            //  if first special is Nuke or Gravity, NOP
+            //  if first special is AddLines, send to strongest opponent
+            //  if first special is Bomb, 
+            //      send to strongest opponent with a bomb
+            //      if none, NOP
+            //  if first special is ClearLine,
+            //      send to opponent with Nuke/Gravity/Switch on bottom line
+            //      if none, send to opponent with Bomb on bottom line
+            //      if none, send to opponent with most specials on bottom line
+            //      if none,
+            //          if we have Nuke/Gravity/Switch/Bomb on bottom line, drop
+            //          else, send to ourself
+            //  if first special is ClearSpecialBlocks,
+            //      if we have a Bomb in our board and no Gravity/Nuke in inventory, send to ourself
+            //      send to opponent with Nuke/Gravity/Switch
+            //      if none,
+            //          if second special is Bomb
+            //              if an opponent has a bomb,
+            //                  send to opponent with most specials and no bomb
+            //                  if none, drop
+            //              else
+            //                  send to opponent with most specials
+            //                  if none, NOP
+            //          else
+            //              send to opponent with Bomb
+            //              if none, send to opponent with most specials
+            //              if none, NOP
+            //  if first special is RandomBlocksClear,
+            //      send to opponent with Nuke/Gravity/Switch
+            //      if none, send to strongest opponent
+            //  if first special is Quake,
+            //      send to opponent with most towers or strongest opponent [TO BE DEFINED]
+            // TODO: zebra and clear column
+            List<Specials> inventory = _client.Inventory.Select(x => x).ToList(); // use this local copy
+            if (!inventory.Any())
+                return;
+
+            bool isSolo = IsSolo();
+            if (isSolo)
             {
-                Specials firstSpecial = inventory[0];
-                int specialValue = 0;
-                switch (firstSpecial)
+                //  drop everything except Nuke/Gravity/ClearLines
+                //  use clear line if no nuke/gravity on bottom line or when reaching top of board or when inventory is full
+                //  use nuke when reaching top of board
+                //  use gravity when reaching mid-board
+
+                Specials special = inventory[0];
+                inventory.RemoveAt(0);
+
+                int maxPile = GetPileMaxHeight(_client.Board);
+                switch (special)
                 {
-                    case Specials.AddLines:
-                        specialValue = -1;
-                        break;
-                    case Specials.ClearLines:
-                        specialValue = +1;
-                        break;
                     case Specials.NukeField:
-                        specialValue = +1;
-                        break;
-                    case Specials.RandomBlocksClear:
-                        specialValue = -1;
-                        break;
-                    case Specials.SwitchFields:
-                        specialValue = 0;
-                        break;
-                    case Specials.ClearSpecialBlocks:
-                        specialValue = -1;
+                        if (maxPile >= 14)
+                            _client.UseSpecial(_client.PlayerId);
                         break;
                     case Specials.BlockGravity:
-                        specialValue = +1;
+                        if (maxPile >= 10)
+                            _client.UseSpecial(_client.PlayerId);
                         break;
-                    case Specials.BlockQuake:
-                        specialValue = -1;
-                        break;
-                    case Specials.BlockBomb:
-                        specialValue = -1;
-                        break;
-                    case Specials.ClearColumn:
-                        specialValue = -1;
-                        break;
-                }
-                if (specialValue == 0)
-                    _client.DiscardFirstSpecial();
-                else if (specialValue > 0)
-                    _client.UseSpecial(_client.PlayerId);
-                else
-                {
-                    List<int> opponents = new List<int>();
-                    for (int i = 0; i < _client.MaxPlayersCount; i++)
-                        if (i != _client.PlayerId)
-                        {
-                            IBoard board = _client.GetBoard(i);
-                            if (board != null)
-                                opponents.Add(i);
-                        }
-                    if (opponents.Any())
+                    case Specials.ClearLines:
                     {
-                        int index = _random.Next(opponents.Count);
-                        int specialTarget = opponents[index];
-                        _client.UseSpecial(specialTarget);
+                        if (maxPile >= 18 || inventory.Count + 2 >= _client.InventorySize)
+                            _client.UseSpecial(_client.PlayerId);
+                        else
+                        {
+                            bool hasValuableBottomLine = HasNukeGravityOnBottomLine();
+                            if (hasValuableBottomLine)
+                                _client.DiscardFirstSpecial();
+                        }
+                        break;
                     }
-                    else
+                    default:
                         _client.DiscardFirstSpecial();
+                        break;
                 }
             }
+            else
+            {
+                int maxPile = GetPileMaxHeight(_client.Board);
+                if (maxPile >= 14)
+                {
+                    // Survival
+                    // If Nuke/Gravity/Switch
+                    if (inventory.Any(x => x == Specials.NukeField || x == Specials.BlockGravity || x == Specials.SwitchFields))
+                    {
+                        bool saved = false;
+                        while (true)
+                        {
+                            bool succeeded;
+                            if (!inventory.Any())
+                                break; // Stops when inventory is empty
+                            // Get strongest opponent
+                            int strongest = GetStrongestOpponent();
+                            // Get current special
+                            Specials special = inventory[0];
+                            inventory.RemoveAt(0);
+                            switch (special)
+                            {
+                                case Specials.NukeField: // Nuke/Gravity -> use it immediately
+                                case Specials.BlockGravity:
+                                    succeeded = _client.UseSpecial(_client.PlayerId);
+                                    saved = true; // Saved, stop emptying inventory
+                                    break;
+                                case Specials.SwitchFields: // Switch -> use it only if strongest is really strong, else drop it
+                                {
+                                    IBoard strongestBoard = _client.GetBoard(strongest);
+                                    int pileHeight = GetPileMaxHeight(strongestBoard);
+                                    if (pileHeight <= 10)
+                                    {
+                                        succeeded = _client.UseSpecial(strongest);
+                                        saved = true; // Saved, stop emptying inventory
+                                    }
+                                    else
+                                    {
+                                        _client.DiscardFirstSpecial();
+                                        succeeded = true;
+                                    }
+                                    break;
+                                }
+                                case Specials.ClearLines: // ClearLine -> use it immediately  TODO ==> this could lead to unwanted behaviour if we are emptying for a switch
+                                    succeeded = _client.UseSpecial(_client.PlayerId);
+                                    break;
+                                default: // Other -> use it on strongest
+                                    succeeded = _client.UseSpecial(strongest);
+                                    break;
+                            }
+
+                            if (saved || !succeeded) // If saved or something wrong with UseSpecial, stop loop
+                                break;
+
+                            System.Threading.Thread.Sleep(10); // delay next special use
+                        }
+                    }
+                        // Nothing could save use, send everything to weakest and pray 
+                    else
+                    {
+                        while (true)
+                        {
+                            bool succeeded;
+                            if (!inventory.Any())
+                                break; // Stops when inventory is empty
+                            // Get strongest opponent
+                            int weakest = GetWeakestOpponent();
+                            // Get current special
+                            Specials special = inventory[0];
+                            inventory.RemoveAt(0);
+                            // ClearLine -> use it immediately
+                            if (special == Specials.ClearLines)
+                                succeeded = _client.UseSpecial(_client.PlayerId);
+                                // Other -> use it on weakest
+                            else
+                                succeeded = _client.UseSpecial(weakest);
+                            if (!succeeded) // If something wrong with UseSpecial, stop loop
+                                break;
+                            System.Threading.Thread.Sleep(10); // delay next special use
+                        }
+                    }
+                    return;
+                }
+                else
+                {
+                    // Normal use
+
+                    // Check if we can kill last player
+                    int lastOpponent = GetLastOpponent();
+                    if (lastOpponent != -1)
+                    {
+                        IBoard lastOpponentBoard = _client.GetBoard(lastOpponent);
+                        if (lastOpponentBoard != null)
+                        {
+                            int pileHeight = GetPileMaxHeight(lastOpponentBoard);
+                            int addLinesCount = inventory.Count(x => x == Specials.AddLines);
+                            if (pileHeight + addLinesCount >= lastOpponentBoard.Height)
+                            {
+                                while (true)
+                                {
+                                    if (!inventory.Any())
+                                        break; // Stops when inventory is empty
+                                    bool succeeded;
+                                    // Get current special
+                                    Specials currentSpecial = inventory[0];
+                                    inventory.RemoveAt(0);
+
+                                    // AddLines -> use it immediately on last opponent
+                                    if (currentSpecial == Specials.AddLines)
+                                        succeeded = _client.UseSpecial(lastOpponent);
+                                        // Else, discard
+                                    else
+                                    {
+                                        _client.DiscardFirstSpecial();
+                                        succeeded = true;
+                                    }
+
+                                    if (!succeeded)
+                                        break;
+
+                                    System.Threading.Thread.Sleep(10); // delay next special use
+                                }
+                                return; // stops here
+                            }
+                        }
+                    }
+
+                    // Get strongest opponent
+                    int strongest = GetStrongestOpponent();
+
+                    // Get current special
+                    Specials special = inventory[0];
+                    inventory.RemoveAt(0);
+
+                    //
+                    switch (special)
+                    {
+                            // Destroy own board and switch with strongest opponent
+                        case Specials.SwitchFields: // TODO:
+                            // NOP
+                            break;
+                            // Wait
+                        case Specials.BlockGravity:
+                        case Specials.NukeField:
+                            // NOP
+                            break;
+                            // Send to strongest opponent
+                        case Specials.AddLines:
+                            _client.UseSpecial(strongest);
+                            break;
+                            //  Send to strongest opponent with a bomb
+                            //  If none,
+                            //      if inventory almost full, drop
+                            //      else NOP
+                        case Specials.BlockBomb:
+                        {
+                            int bombTarget = GetStrongestOpponentWithBomb();
+                            if (bombTarget != -1)
+                                _client.UseSpecial(bombTarget);
+                            else
+                            {
+                                if (inventory.Count + 2 >= _client.InventorySize)
+                                    _client.DiscardFirstSpecial();
+                            }
+                            break;
+                        }
+                            //  Send to opponent with Nuke/Gravity/Switch on bottom line
+                            //  If none, send to opponent with Bomb on bottom line
+                            //  If none, send to opponent with most specials on bottom line
+                            //  If none,
+                            //      if we have Nuke/Gravity/Switch/Bomb on bottom line, drop
+                            //      else, send to ourself
+                        case Specials.ClearLines:
+                        {
+                            int targetId = GetStrongestOpponentWithNukeSwitchGravityOnBottomLine();
+                            if (targetId != -1)
+                                _client.UseSpecial(targetId);
+                            else
+                            {
+                                targetId = GetStrongestOpponentWithBombOnBottomLine();
+                                if (targetId != -1)
+                                    _client.UseSpecial(targetId);
+                                else
+                                {
+                                    targetId = GetOpponentWithMostSpecials();
+                                    if (targetId != -1)
+                                        _client.UseSpecial(targetId);
+                                    else
+                                    {
+                                        bool hasValuableSpecialOnBottomLine = HasNukeGravitySwitchOnBottomLine();
+                                        if (hasValuableSpecialOnBottomLine)
+                                            _client.DiscardFirstSpecial();
+                                        else
+                                            _client.UseSpecial(_client.PlayerId);
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                            //  if we have a Bomb in our board and no Gravity/Nuke in inventory, send to ourself
+                            //  send to opponent with Nuke/Gravity/Switch
+                            //  if none,
+                            //      if second special is Bomb
+                            //          if an opponent has a bomb,
+                            //              send to opponent with most specials and no bomb
+                            //              if none, drop
+                            //          else
+                            //              send to opponent with most specials
+                            //              if none,
+                            //                  if inventory almost full, drop
+                            //                  else NOP
+                            //      else
+                            //          send to opponent with Bomb
+                            //          if none, send to opponent with most specials
+                            //          if none,
+                            //              if inventory almost full, drop
+                            //              else NOP
+                        case Specials.ClearSpecialBlocks:
+                        {
+                            bool hasBomb = HasSpecial(Specials.BlockBomb);
+                            if (hasBomb && !inventory.Any(x => x == Specials.NukeField || x == Specials.BlockGravity))
+                                _client.UseSpecial(_client.PlayerId);
+                            else
+                            {
+                                int targetId = GetStrongestOpponentWithNukeSwitchGravity();
+                                if (targetId != -1)
+                                    _client.UseSpecial(targetId);
+                                else
+                                {
+                                    if (inventory.Any() && inventory[0] == Specials.BlockBomb)
+                                    {
+                                        bool hasOpponentWithBomb = HasOpponentWithBomb();
+                                        if (hasOpponentWithBomb)
+                                        {
+                                            targetId = GetOpponentWithMostSpecialsAndNoBomb();
+                                            if (targetId != -1)
+                                                _client.UseSpecial(targetId);
+                                            else
+                                                _client.DiscardFirstSpecial();
+                                        }
+                                        else
+                                        {
+                                            targetId = GetOpponentWithMostSpecials();
+                                            if (targetId != -1)
+                                                _client.UseSpecial(targetId);
+                                            else
+                                            {
+                                                if (inventory.Count + 2 >= _client.InventorySize)
+                                                    _client.DiscardFirstSpecial();
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        targetId = GetStrongestOpponentWithBomb();
+                                        if (targetId != -1)
+                                            _client.UseSpecial(targetId);
+                                        else
+                                        {
+                                            targetId = GetOpponentWithMostSpecials();
+                                            if (targetId != -1)
+                                                _client.UseSpecial(targetId);
+                                            else
+                                            {
+                                                if (inventory.Count + 2 >= _client.InventorySize)
+                                                    _client.DiscardFirstSpecial();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        // TODO
+                        //  if first special is RandomBlocksClear,
+                        //      send to opponent with Nuke/Gravity/Switch
+                        //      if none, send to strongest opponent
+                        //  if first special is Quake,
+                        //      send to opponent with most towers or strongest opponent [TO BE DEFINED]
+
+                            // Send to random opponent
+                        default:
+                        {
+                            List<int> opponents = new List<int>();
+                            for (int i = 0; i < _client.MaxPlayersCount; i++)
+                                if (i != _client.PlayerId)
+                                {
+                                    IBoard board = _client.GetBoard(i);
+                                    if (board != null)
+                                        opponents.Add(i);
+                                }
+                            if (opponents.Any())
+                            {
+                                int index = _random.Next(opponents.Count);
+                                int specialTarget = opponents[index];
+                                _client.UseSpecial(specialTarget);
+                            }
+                            else
+                                _client.DiscardFirstSpecial();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            #endregion
+
+            #region Simple strategy
+            ////  if negative special,
+            ////      if no other player, drop it
+            ////      else, use it on random opponent
+            ////  else if switch, drop it
+            ////  else, use it on ourself
+            //List<Specials> inventory = _client.Inventory;
+            //if (inventory != null && inventory.Any())
+            //{
+            //    Specials firstSpecial = inventory[0];
+            //    int specialValue = 0;
+            //    switch (firstSpecial)
+            //    {
+            //        case Specials.AddLines:
+            //            specialValue = -1;
+            //            break;
+            //        case Specials.ClearLines:
+            //            specialValue = +1;
+            //            break;
+            //        case Specials.NukeField:
+            //            specialValue = +1;
+            //            break;
+            //        case Specials.RandomBlocksClear:
+            //            specialValue = -1;
+            //            break;
+            //        case Specials.SwitchFields:
+            //            specialValue = 0;
+            //            break;
+            //        case Specials.ClearSpecialBlocks:
+            //            specialValue = -1;
+            //            break;
+            //        case Specials.BlockGravity:
+            //            specialValue = +1;
+            //            break;
+            //        case Specials.BlockQuake:
+            //            specialValue = -1;
+            //            break;
+            //        case Specials.BlockBomb:
+            //            specialValue = -1;
+            //            break;
+            //        case Specials.ClearColumn:
+            //            specialValue = -1;
+            //            break;
+            //        case Specials.ZebraField:
+            //            specialValue = -1;
+            //            break;
+            //    }
+            //    if (specialValue == 0)
+            //        _client.DiscardFirstSpecial();
+            //    else if (specialValue > 0)
+            //        _client.UseSpecial(_client.PlayerId);
+            //    else
+            //    {
+            //        List<int> opponents = new List<int>();
+            //        for (int i = 0; i < _client.MaxPlayersCount; i++)
+            //            if (i != _client.PlayerId)
+            //            {
+            //                IBoard board = _client.GetBoard(i);
+            //                if (board != null)
+            //                    opponents.Add(i);
+            //            }
+            //        if (opponents.Any())
+            //        {
+            //            int index = _random.Next(opponents.Count);
+            //            int specialTarget = opponents[index];
+            //            _client.UseSpecial(specialTarget);
+            //        }
+            //        else
+            //            _client.DiscardFirstSpecial();
+            //    }
+            //}
+            #endregion
         }
 
         private void GetBestMove(IBoard board, ITetrimino tetrimino, out int bestRotationDelta, out int bestTranslationDelta)
@@ -599,6 +1012,256 @@ namespace TetriNET.ConsoleWCFClient.AI
             }
 
             return totalBlanksBeforeBlocked;
+        }
+
+        private bool IsSolo()
+        {
+            for (int i = 0; i < _client.MaxPlayersCount; i++)
+                if (i != _client.PlayerId)
+                {
+                    IBoard board = _client.GetBoard(i);
+                    if (board != null && _client.IsPlaying(i))
+                        return false;
+                }
+            return true;
+        }
+
+        private int GetStrongestOpponent() // Get opponent with lowest pile height
+        {
+            int strongest = -1;
+            int strongestPileHeight = 1000;
+            for (int i = 0; i < _client.MaxPlayersCount; i++)
+                if (i != _client.PlayerId)
+                {
+                    IBoard board = _client.GetBoard(i);
+                    if (board != null && _client.IsPlaying(i))
+                    {
+                        int pileHeight = GetPileMaxHeight(board);
+                        if (pileHeight < strongestPileHeight)
+                        {
+                            strongestPileHeight = pileHeight;
+                            strongest = i;
+                        }
+                    }
+                }
+            return strongest;
+        }
+
+        private int GetWeakestOpponent() // Get opponent with highest pile height
+        {
+            int weakest = -1;
+            int weakestPileHeight = -1000;
+            for (int i = 0; i < _client.MaxPlayersCount; i++)
+                if (i != _client.PlayerId)
+                {
+                    IBoard board = _client.GetBoard(i);
+                    if (board != null && _client.IsPlaying(i))
+                    {
+                        int pileHeight = GetPileMaxHeight(board);
+                        if (pileHeight > weakestPileHeight)
+                        {
+                            weakestPileHeight = pileHeight;
+                            weakest = i;
+                        }
+                    }
+                }
+            return weakest;
+        }
+
+        private int GetLastOpponent() // Return opponent id if there is only one opponent left
+        {
+            int id = -1;
+            for (int i = 0; i < _client.MaxPlayersCount; i++)
+                if (i != _client.PlayerId && _client.IsPlaying(i))
+                {
+                    if (id == -1) // First opponent found
+                        id = i;
+                    else // More than one opponent -> failed
+                        return -1;
+                }
+            return id;
+        }
+
+        private int GetStrongestOpponentWithBomb() // Search among opponents which one has a bomb and the lowest board
+        {
+            int id = -1;
+            int lowestPileHeight = 1000;
+            for (int i = 0; i < _client.MaxPlayersCount; i++)
+                if (i != _client.PlayerId && _client.IsPlaying(i))
+                {
+                    IBoard board = _client.GetBoard(i);
+                    if (board != null && board.Cells.Any(x => CellHelper.IsSpecial(x) && CellHelper.GetSpecial(x) == Specials.BlockBomb))
+                    {
+                        int pileHeight = GetPileMaxHeight(board);
+                        if (pileHeight < lowestPileHeight)
+                        {
+                            id = i;
+                            lowestPileHeight = pileHeight;
+                        }
+                    }
+                }
+            return id;
+        }
+
+        private int GetStrongestOpponentWithNukeSwitchGravityOnBottomLine() // Search among opponents which one has a nuke/switch/gravity on bottom line and the lowest board
+        {
+            int id = -1;
+            int lowestPileHeight = 1000;
+            for (int i = 0; i < _client.MaxPlayersCount; i++)
+                if (i != _client.PlayerId && _client.IsPlaying(i))
+                {
+                    IBoard board = _client.GetBoard(i);
+                    if (board != null)
+                    {
+                        for(int x = 1; x <= board.Width; x++)
+                        {
+                            Specials cellSpecial = CellHelper.GetSpecial(board[x, 0]);
+                            if (cellSpecial == Specials.BlockGravity || cellSpecial == Specials.NukeField || cellSpecial == Specials.SwitchFields)
+                            {
+                                int pileHeight = GetPileMaxHeight(board);
+                                if (pileHeight < lowestPileHeight)
+                                {
+                                    id = i;
+                                    lowestPileHeight = pileHeight;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            return id;
+        }
+
+        private int GetStrongestOpponentWithBombOnBottomLine() // Search among opponents which one has a bomb on bottom line and the lowest board
+        {
+            int id = -1;
+            int lowestPileHeight = 1000;
+            for (int i = 0; i < _client.MaxPlayersCount; i++)
+                if (i != _client.PlayerId && _client.IsPlaying(i))
+                {
+                    IBoard board = _client.GetBoard(i);
+                    if (board != null)
+                    {
+                        for (int x = 1; x <= board.Width; x++)
+                        {
+                            Specials cellSpecial = CellHelper.GetSpecial(board[x, 0]);
+                            if (cellSpecial == Specials.BlockBomb)
+                            {
+                                int pileHeight = GetPileMaxHeight(board);
+                                if (pileHeight < lowestPileHeight)
+                                {
+                                    id = i;
+                                    lowestPileHeight = pileHeight;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            return id;
+        }
+
+        private int GetOpponentWithMostSpecials() // Search among opponents which one has most specials
+        {
+            int id = -1;
+            int mostSpecials = 0;
+            for (int i = 0; i < _client.MaxPlayersCount; i++)
+                if (i != _client.PlayerId && _client.IsPlaying(i))
+                {
+                    IBoard board = _client.GetBoard(i);
+                    int countSpecial = board == null ? 0 : board.Cells.Count(x => CellHelper.GetSpecial(x) != Specials.Invalid2);
+                    if (countSpecial > mostSpecials)
+                    {
+                        id = i;
+                        mostSpecials = countSpecial;
+                    }
+                }
+            return id;
+        }
+
+        private bool HasNukeGravitySwitchOnBottomLine()
+        {
+            for (int x = 1; x <= _client.Board.Width; x++)
+            {
+                Specials cellSpecial = CellHelper.GetSpecial(_client.Board[x, 0]);
+                if (cellSpecial == Specials.BlockGravity || cellSpecial == Specials.NukeField || cellSpecial == Specials.SwitchFields)
+                    return true;
+            }
+            return false;
+        }
+
+        private bool HasSpecial(Specials special)
+        {
+            return _client.Board.Cells.Any(x => CellHelper.GetSpecial(x) == special);
+        }
+
+        private int GetStrongestOpponentWithNukeSwitchGravity() // Search among opponents which one has a nuke/switch/gravity and the lowest board
+        {
+            int id = -1;
+            int lowestPileHeight = 1000;
+            for (int i = 0; i < _client.MaxPlayersCount; i++)
+                if (i != _client.PlayerId && _client.IsPlaying(i))
+                {
+                    IBoard board = _client.GetBoard(i);
+                    if (board != null && board.Cells.Any(x => CellHelper.GetSpecial(x) == Specials.SwitchFields || CellHelper.GetSpecial(x) == Specials.NukeField || CellHelper.GetSpecial(x) == Specials.BlockGravity))
+                    {
+                        int pileHeight = GetPileMaxHeight(board);
+                        if (pileHeight < lowestPileHeight)
+                        {
+                            id = i;
+                            lowestPileHeight = pileHeight;
+                        }
+                    }
+                }
+            return id;
+        }
+
+        private bool HasOpponentWithBomb() // Search among opponents, if there is one with a bomb
+        {
+            for (int i = 0; i < _client.MaxPlayersCount; i++)
+                if (i != _client.PlayerId && _client.IsPlaying(i))
+                {
+                    IBoard board = _client.GetBoard(i);
+                    if (board != null && board.Cells.Any(x => CellHelper.GetSpecial(x) == Specials.BlockBomb))
+                    return true;
+                }
+            return false;
+        }
+
+        private int GetOpponentWithMostSpecialsAndNoBomb() // Search among opponents which one has most specials and no bomb
+        {
+            int id = -1;
+            int mostSpecials = 0;
+            for (int i = 0; i < _client.MaxPlayersCount; i++)
+                if (i != _client.PlayerId && _client.IsPlaying(i))
+                {
+                    IBoard board = _client.GetBoard(i);
+                    if (board != null)
+                    {
+                        bool hasBomb = board.Cells.Any(x => CellHelper.GetSpecial(x) == Specials.BlockBomb);
+                        if (!hasBomb)
+                        {
+                            int countSpecial = board.Cells.Count(x => CellHelper.GetSpecial(x) != Specials.Invalid2);
+                            if (countSpecial > mostSpecials)
+                            {
+                                id = i;
+                                mostSpecials = countSpecial;
+                            }
+                        }
+                    }
+                }
+            return id;
+        }
+
+        private bool HasNukeGravityOnBottomLine()
+        {
+            for (int x = 1; x <= _client.Board.Width; x++)
+            {
+                Specials cellSpecial = CellHelper.GetSpecial(_client.Board[x, 0]);
+                if (cellSpecial == Specials.BlockGravity || cellSpecial == Specials.NukeField)
+                    return true;
+            }
+            return false;
         }
     }
 }

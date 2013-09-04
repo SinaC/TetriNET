@@ -213,8 +213,11 @@ namespace TetriNET.Client
             _createTetriminoFunc = createTetriminoFunc;
             _createBoardFunc = createBoardFunc;
 
+            // default options
+            _options = new GameOptions(); // TODO: get options from save file
+
             _tetriminos = new TetriminoArray(64);
-            _inventory = new Inventory(15);
+            _inventory = new Inventory(_options.InventorySize);
 
             _gameTimer = new System.Timers.Timer();
             _gameTimer.Interval = 200; // TODO: use a function to compute interval in function of level
@@ -225,9 +228,7 @@ namespace TetriNET.Client
 
             _clientPlayerId = -1;
 
-            // default options
-            _options = new GameOptions(); // TODO: get options from save file
-            
+           
             State = States.Created;
 
             Task.Factory.StartNew(TimeoutTask);
@@ -400,7 +401,6 @@ namespace TetriNET.Client
             ResetTimeout();
             State = States.Playing;
             _options = options;
-            // TODO: check if options are OK (have TetriminoProbabilities and SpecialProbabilities enough entries and sum is 100%)
             // reset tetriminos
             _tetriminos[0] = firstTetrimino;
             _tetriminos[1] = secondTetrimino;
@@ -442,6 +442,7 @@ namespace TetriNET.Client
             for (int i = 0; i < MaxPlayers; i++)
                 if (_players[i] != null)
                     _players[i].State = Player.States.Joined;
+
             if (ClientOnGameFinished != null)
                 ClientOnGameFinished();
         }
@@ -451,10 +452,13 @@ namespace TetriNET.Client
             Log.WriteLine("Game paused");
 
             ResetTimeout();
-            State = States.Paused;
-            // TODO
-            if (ClientOnGamePaused != null)
-                ClientOnGamePaused();
+            if (State == States.Playing)
+            {
+                State = States.Paused;
+
+                if (ClientOnGamePaused != null)
+                    ClientOnGamePaused();
+            }
         }
 
         public void OnGameResumed()
@@ -462,10 +466,13 @@ namespace TetriNET.Client
             Log.WriteLine("Game resumed");
 
             ResetTimeout();
-            State = States.Playing;
-            // TODO
-            if (ClientOnGameResumed != null)
-                ClientOnGameResumed();
+            if (State == States.Paused)
+            {
+                State = States.Playing;
+
+                if (ClientOnGameResumed != null)
+                    ClientOnGameResumed();
+            }
         }
 
         public void OnServerAddLines(int lineCount)
@@ -473,7 +480,11 @@ namespace TetriNET.Client
             Log.WriteLine("Server add {0} lines", lineCount);
 
             ResetTimeout();
-            AddLines(lineCount);
+
+            if (State == States.Playing)
+            {
+                AddLines(lineCount);
+            }
         }
 
         public void OnPlayerAddLines(int specialId, int playerId, int lineCount)
@@ -481,7 +492,20 @@ namespace TetriNET.Client
             Log.WriteLine("Player {0} add {1} lines (special [{2}])", playerId, lineCount, specialId);
 
             ResetTimeout();
-            AddLines(lineCount);
+
+            if (State == States.Playing)
+            {
+                if (playerId != _clientPlayerId) // Don't add line to ourself
+                    AddLines(lineCount);
+
+                if (ClientOnPlayerAddLines != null)
+                {
+                    Player player = GetPlayer(playerId);
+                    string playerName = player == null ? "???" : player.Name;
+
+                    ClientOnPlayerAddLines(playerName, specialId, lineCount);
+                }
+            }
         }
 
         public void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special)
@@ -489,41 +513,57 @@ namespace TetriNET.Client
             Log.WriteLine("Special {0}[{1}] from {2} to {3}", special, specialId, playerId, targetId);
 
             ResetTimeout();
-            // TODO: display in-game msg
-            if (targetId == _clientPlayerId)
+
+            if (State == States.Playing)
             {
-                switch (special)
+                if (targetId == _clientPlayerId)
                 {
-                    case Specials.AddLines: 
-                        AddLines(1);
-                        break;
-                    case Specials.ClearLines:
-                        ClearLine();
-                        break;
-                    case Specials.NukeField:
-                        NukeField();
-                        break;
-                    case Specials.RandomBlocksClear:
-                        RandomBlocksClear(10);
-                        break;
-                    case Specials.SwitchFields:
-                        // NOP: Managed by Server
-                        break;
-                    case Specials.ClearSpecialBlocks:
-                        ClearSpecialBlocks();
-                        break;
-                    case Specials.BlockGravity:
-                        BlockGravity();
-                        break;
-                    case Specials.BlockQuake:
-                        BlockQuake();
-                        break;
-                    case Specials.BlockBomb:
-                        BlockBomb();
-                        break;
-                    case Specials.ClearColumn:
-                        ClearColumn();
-                        break;
+                    switch (special)
+                    {
+                        case Specials.AddLines:
+                            AddLines(1);
+                            break;
+                        case Specials.ClearLines:
+                            ClearLine();
+                            break;
+                        case Specials.NukeField:
+                            NukeField();
+                            break;
+                        case Specials.RandomBlocksClear:
+                            RandomBlocksClear(10);
+                            break;
+                        case Specials.SwitchFields:
+                            // NOP: Managed by Server
+                            break;
+                        case Specials.ClearSpecialBlocks:
+                            ClearSpecialBlocks();
+                            break;
+                        case Specials.BlockGravity:
+                            BlockGravity();
+                            break;
+                        case Specials.BlockQuake:
+                            BlockQuake();
+                            break;
+                        case Specials.BlockBomb:
+                            BlockBomb();
+                            break;
+                        case Specials.ClearColumn:
+                            ClearColumn();
+                            break;
+                        case Specials.ZebraField:
+                            ZebraField();
+                            break;
+                    }
+                }
+                if (ClientOnSpecialUsed != null)
+                {
+                    Player player = GetPlayer(playerId);
+                    Player target = GetPlayer(targetId);
+
+                    string playerName = player == null ? "???" : player.Name;
+                    string targetName = target == null ? "???" : target.Name;
+
+                    ClientOnSpecialUsed(playerName, targetName, specialId, special);
                 }
             }
         }
@@ -531,16 +571,20 @@ namespace TetriNET.Client
         public void OnNextTetrimino(int index, Tetriminos tetrimino)
         {
             ResetTimeout();
-            _tetriminos[index] = tetrimino;
 
-            if (_startRoundDelayed)
+            if (State == States.Playing)
             {
-                if (index == _tetriminoIndex)
+                _tetriminos[index] = tetrimino;
+
+                if (_startRoundDelayed)
                 {
-                    _startRoundDelayed = false;
-                    Log.WriteLine("NextTetrimino received, starting delayed round");
-                    NextTetrimino = _createTetriminoFunc(_tetriminos[_tetriminoIndex], Board.TetriminoSpawnX, Board.TetriminoSpawnY, 1);
-                    StartRound();
+                    if (index == _tetriminoIndex)
+                    {
+                        _startRoundDelayed = false;
+                        Log.WriteLine("NextTetrimino received, starting delayed round");
+                        NextTetrimino = _createTetriminoFunc(_tetriminos[_tetriminoIndex], Board.TetriminoSpawnX, Board.TetriminoSpawnY, 1);
+                        StartRound();
+                    }
                 }
             }
         }
@@ -550,34 +594,41 @@ namespace TetriNET.Client
             Log.WriteLine("Player [{0}] {1} modified", playerId, _players[playerId].Name);
 
             ResetTimeout();
-            if (_players[playerId] != null)
+
+            if (State == States.Playing)
             {
-                _players[playerId].Board.SetCells(grid);
-                // if modifying own grid, special Switch occured -> remove lines above 16
-                if (playerId == _clientPlayerId)
+                if (_players[playerId] != null)
                 {
-                    Board.RemoveCellsHigherThan(16);
-                    if (ClientOnRedraw != null)
-                        ClientOnRedraw();
-                }
-                else
-                {
-                    if (ClientOnRedrawBoard != null)
-                        ClientOnRedrawBoard(playerId, _players[playerId].Board);
+                    _players[playerId].Board.SetCells(grid);
+                    // if modifying own grid, special Switch occured -> remove lines above 16
+                    if (playerId == _clientPlayerId)
+                    {
+                        Board.RemoveCellsHigherThan(16);
+                        if (ClientOnRedraw != null)
+                            ClientOnRedraw();
+                    }
+                    else
+                    {
+                        if (ClientOnRedrawBoard != null)
+                            ClientOnRedrawBoard(playerId, _players[playerId].Board);
+                    }
                 }
             }
         }
 
         public void OnServerMasterChanged(int playerId)
         {
+            Log.WriteLine("Server master changed: [{0}]", playerId);
+
             ResetTimeout();
+
             if (ClientOnServerMasterModified != null)
                 ClientOnServerMasterModified(playerId == _clientPlayerId);
         }
 
         public void OnWinListModified(List<WinEntry> winList)
         {
-            Log.WriteLine("Win list: {0}", winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i));
+            Log.WriteLine("Win list: {0}", winList.Any() ? winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i) : "");
 
             ResetTimeout();
 
@@ -587,13 +638,20 @@ namespace TetriNET.Client
 
         #endregion
 
-        public void ResetTimeout()
+        private Player GetPlayer(int playerId)
+        {
+            if (playerId >= 0 && playerId < MaxPlayers)
+                return _players[playerId];
+            return null;
+        }
+
+        private void ResetTimeout()
         {
             _timeoutCount = 0;
             _lastActionFromServer = DateTime.Now;
         }
 
-        public void SetTimeout()
+        private void SetTimeout()
         {
             _timeoutCount++;
             _lastActionFromServer = DateTime.Now;
@@ -608,6 +666,8 @@ namespace TetriNET.Client
         {
             Log.WriteLine("End game");
             _gameTimer.Stop();
+            //
+            State = States.Registered;
             // Send player lost
             _proxy.GameLost(this);
 
@@ -624,8 +684,11 @@ namespace TetriNET.Client
             _tetriminoIndex++;
             NextTetrimino = _createTetriminoFunc(_tetriminos[_tetriminoIndex + 1], Board.TetriminoSpawnX, Board.TetriminoSpawnY, 1);
 
-            if (ClientOnTetriminoMoved != null)
-                ClientOnTetriminoMoved();
+            //if (ClientOnTetriminoMoved != null)
+            //    ClientOnTetriminoMoved();
+            // Inform UI
+            if (ClientOnRedraw != null)
+                ClientOnRedraw();
 
             //Log.WriteLine("New tetrimino {0} {1}  next {2}", CurrentTetrimino.TetriminoValue, _tetriminoIndex, NextTetrimino.TetriminoValue);
             // Check game over (if current tetrimino has conflict with another tetrimino)
@@ -643,7 +706,6 @@ namespace TetriNET.Client
 
         private void FinishRound()
         {
-            //
             //Log.WriteLine("Round finished with tetrimino {0} {1}  next {2}", CurrentTetrimino.TetriminoValue, _tetriminoIndex, NextTetrimino.TetriminoValue);
             // Stop game
             _gameTimer.Stop();
@@ -658,6 +720,7 @@ namespace TetriNET.Client
                     ClientOnLinesClearedChanged();
                 Log.WriteLine("{0} lines deleted -> total {1}", deletedRows, LinesCleared);
             }
+
             // Check level increase
             if (Level < LinesCleared / 10)
             {
@@ -676,12 +739,8 @@ namespace TetriNET.Client
             if (deletedRows >= _options.LinesToMakeForSpecials && _options.SpecialsAddedEachTime > 0)
                 Board.SpawnSpecialBlocks(deletedRows*_options.SpecialsAddedEachTime, () => RangeRandom.Random(_options.SpecialOccurancies));
 
-            // Inform UI
-            if (ClientOnRedraw != null)
-                ClientOnRedraw();
-
             // Send tetrimino places to server
-            _proxy.PlaceTetrimino(this, _tetriminoIndex, CellHelper.Tetrimino(CurrentTetrimino.Value), CurrentTetrimino.Orientation, CurrentTetrimino.PosX, CurrentTetrimino.PosY, Board.Cells);
+            _proxy.PlaceTetrimino(this, _tetriminoIndex, CurrentTetrimino.Value, CurrentTetrimino.Orientation, CurrentTetrimino.PosX, CurrentTetrimino.PosY, Board.Cells);
 
             // Send lines if classic style
             if (_options.ClassicStyleMultiplayerRules && deletedRows > 1)
@@ -691,6 +750,8 @@ namespace TetriNET.Client
                     addLines = 4;
                 _proxy.SendLines(this, addLines);
             }
+
+            // UI is updated in StartRound
 
             //
             if (ClientOnRoundFinished != null)
@@ -758,7 +819,7 @@ namespace TetriNET.Client
 
         private void ClearSpecialBlocks()
         {
-            Board.ClearSpecialBlocks();
+            Board.ClearSpecialBlocks(() => RangeRandom.Random(_options.TetriminoOccurancies));
 
             if (ClientOnRedraw != null)
                 ClientOnRedraw();
@@ -791,6 +852,14 @@ namespace TetriNET.Client
         private void ClearColumn()
         {
             Board.ClearColumn();
+
+            if (ClientOnRedraw != null)
+                ClientOnRedraw();
+        }
+
+        private void ZebraField()
+        {
+            Board.ZebraField();
 
             if (ClientOnRedraw != null)
                 ClientOnRedraw();
@@ -848,10 +917,19 @@ namespace TetriNET.Client
         public int LinesCleared { get; private set; }
         public int Level { get; private set; }
 
+        public int InventorySize
+        {
+            get { return _options.InventorySize; }
+        }
 
         public IBoard GetBoard(int playerId)
         {
             return (playerId >= 0 && playerId < MaxPlayers && _players[playerId] != null) ? _players[playerId].Board : null;
+        }
+
+        public bool IsPlaying(int playerId)
+        {
+            return (playerId >= 0 && playerId < MaxPlayers && _players[playerId] != null) && _players[playerId].State == Player.States.Playing;
         }
 
         private event ClientRoundStartedHandler ClientOnRoundStarted;
@@ -1008,11 +1086,25 @@ namespace TetriNET.Client
             remove { ClientOnLinesClearedChanged -= value; }
         }
 
-        event ClientLevelChangedHandler ClientOnLevelChanged;
+        private event ClientLevelChangedHandler ClientOnLevelChanged;
         event ClientLevelChangedHandler IClient.OnLevelChanged
         {
             add { ClientOnLevelChanged += value; }
             remove { ClientOnLevelChanged -= value; }
+        }
+
+        private event ClientSpecialUsedHandler ClientOnSpecialUsed;
+        event ClientSpecialUsedHandler IClient.OnSpecialUsed
+        {
+            add { ClientOnSpecialUsed += value; }
+            remove { ClientOnSpecialUsed -= value; }
+        }
+
+        private event ClientPlayerAddLines ClientOnPlayerAddLines;
+        event ClientPlayerAddLines IClient.OnPlayerAddLines
+        {
+            add { ClientOnPlayerAddLines += value; }
+            remove { ClientOnPlayerAddLines -= value; }
         }
 
         public void Dump()
@@ -1038,12 +1130,17 @@ namespace TetriNET.Client
                     for (int x = 1; x <= Board.Width; x++)
                     {
                         byte cellValue = Board[x, y];
-                        Tetriminos cellTetrimino = CellHelper.Tetrimino(cellValue);
-                        Specials cellSpecial = CellHelper.Special(cellValue);
-                        if (cellSpecial == Specials.Invalid)
-                            sb.Append((int) cellTetrimino);
+                        if (cellValue == CellHelper.EmptyCell)
+                            sb.Append(" ");
                         else
-                            sb.Append(ConvertSpecial(cellSpecial));
+                        {
+                            Tetriminos cellTetrimino = CellHelper.GetColor(cellValue);
+                            Specials cellSpecial = CellHelper.GetSpecial(cellValue);
+                            if (cellSpecial == Specials.Invalid2)
+                                sb.Append((int) cellTetrimino);
+                            else
+                                sb.Append(ConvertSpecial(cellSpecial));
+                        }
                     }
                     sb.Append("|");
                     Log.WriteLine(sb.ToString());
@@ -1223,30 +1320,36 @@ namespace TetriNET.Client
             }
         }
 
-        public void UseSpecial(int targetId)
+        public bool UseSpecial(int targetId)
         {
             if (State != States.Playing)
-                return;
+                return false;
+            bool succeeded = false;
             // Only if client is playing, target exists and is playing
-            if (Player.State == Player.States.Playing && _players[targetId] != null && _players[targetId].State == Player.States.Playing)
+            Player target = GetPlayer(targetId);
+            if (Player.State == Player.States.Playing && target != null && target.State == Player.States.Playing)
             {
                 // Get first special and send it
                 Specials special;
                 if (_inventory.Dequeue(out special))
+                {
                     _proxy.UseSpecial(this, targetId, special);
+                    succeeded = true;
+                }
 
                 //
                 if (ClientOnInventoryChanged != null)
                     ClientOnInventoryChanged();
             }
+            return succeeded;
         }
 
         #endregion
 
         private void MoveDownUntilTotallyInBoard(ITetrimino tetrimino)
         {
-            while(!Board.CheckNoConflictWithBoard(tetrimino))
-                tetrimino.Translate(0,-1);
+            while (!Board.CheckNoConflictWithBoard(tetrimino))
+                tetrimino.Translate(0, -1);
         }
 
         private static char ConvertSpecial(Specials special)
@@ -1273,6 +1376,8 @@ namespace TetriNET.Client
                     return 'O';
                 case Specials.ClearColumn:
                     return 'V';
+                case Specials.ZebraField:
+                    return 'Z';
             }
             return '?';
         }

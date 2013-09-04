@@ -1,4 +1,5 @@
-﻿using TetriNET.Common.Interfaces;
+﻿using TetriNET.Common.GameDatas;
+using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Client.DefaultBoardAndTetriminos
 {
@@ -10,7 +11,7 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
 
         public TetriminoS(int spawnX, int spawnY, int spawnOrientation) : base(spawnX, spawnY, spawnOrientation)
         {
-            Value = 5;
+            Value = Tetriminos.TetriminoS;
         }
 
         public override int MaxOrientations

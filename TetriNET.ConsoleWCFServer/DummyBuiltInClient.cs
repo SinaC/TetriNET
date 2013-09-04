@@ -307,7 +307,7 @@ namespace TetriNET.ConsoleWCFServer
 
         public void OnWinListModified(List<WinEntry> winList)
         {
-            Log.WriteLine("OnWinListModified:{0}", winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i));
+            Log.WriteLine("OnWinListModified:{0}",  winList.Any() ? winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i) : "");
             ResetTimeout();
         }
 

@@ -9,6 +9,9 @@ namespace TetriNET.ConsoleWCFClient.UI
 {
     public class ConsoleUI
     {
+        private const int BoardStartX = 0;
+        private const int BoardStartY = 3;
+
         private readonly object _lock = new object();
         private readonly IClient _client;
 
@@ -35,12 +38,35 @@ namespace TetriNET.ConsoleWCFClient.UI
             _client.OnServerPublishMessage += OnServerPublishMessage;
             _client.OnInventoryChanged += OnInventoryChanged;
             _client.OnRoundStarted += OnRoundStarted;
+            _client.OnRoundFinished += OnRoundFinished;
             _client.OnLinesClearedChanged += OnLinesClearedChanged;
             _client.OnLevelChanged += OnLevelChanged;
+            _client.OnSpecialUsed += OnSpecialUsed;
+            _client.OnPlayerAddLines += OnPlayerAddLines;
 
-            //Console.SetWindowSize(30, 30);
-            //Console.BufferWidth = 30;
-            //Console.BufferHeight = 30;
+            Console.SetWindowSize(80, 30);
+            Console.BufferWidth = 80;
+            Console.BufferHeight = 30;
+        }
+
+        private void OnPlayerAddLines(string playerName, int specialId, int count)
+        {
+            lock (_lock)
+            {
+                Console.ResetColor();
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 8 + (specialId%10));
+                Console.Write("{0}. {1} line{2} added to All from {3}", specialId, count, (count > 1) ? "s" : "", playerName );
+            }
+        }
+
+        private void OnSpecialUsed(string playerName, string targetName, int specialId, Specials special)
+        {
+            lock (_lock)
+            {
+                Console.ResetColor();
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 8 + (specialId%10));
+                Console.Write("{0}. {1} on {2} from {3}", specialId, GetSpecialString(special), targetName, playerName);
+            }
         }
 
         private void OnLevelChanged()
@@ -48,7 +74,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             lock (_lock)
             {
                 Console.ResetColor();
-                Console.SetCursorPosition(_client.Board.Width + 2, 6);
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 6);
                 Console.Write("Level: {0}", _client.Level);
             }
         }
@@ -58,9 +84,14 @@ namespace TetriNET.ConsoleWCFClient.UI
             lock (_lock)
             {
                 Console.ResetColor();
-                Console.SetCursorPosition(_client.Board.Width + 2, 5);
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 5);
                 Console.Write("#Lines cleared: {0}", _client.LinesCleared);
             }
+        }
+
+        private void OnRoundFinished()
+        {
+            HideNextTetriminoColor();
         }
 
         private void OnRoundStarted()
@@ -78,7 +109,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             lock (_lock)
             {
                 Console.ResetColor();
-                Console.SetCursorPosition(_client.Board.Width + 2, 4);
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 4);
                 Console.Write("Game finished");
             }
         }
@@ -88,7 +119,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             lock (_lock)
             {
                 Console.ResetColor();
-                Console.SetCursorPosition(_client.Board.Width + 2, 4);
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 4);
                 Console.Write("Game started");
             }
 
@@ -103,7 +134,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             lock (_lock)
             {
                 Console.ResetColor();
-                Console.SetCursorPosition(_client.Board.Width + 2, 0);
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 0);
                 Console.Write("SERVER: {0}", msg);
             }
         }
@@ -113,7 +144,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             lock (_lock)
             {
                 Console.ResetColor();
-                Console.SetCursorPosition(_client.Board.Width + 2, 0);
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 0);
                 Console.Write("{0}: {1}", playerName, msg);
             }
         }
@@ -123,7 +154,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             lock (_lock)
             {
                 Console.ResetColor();
-                Console.SetCursorPosition(_client.Board.Width + 2, 2);
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 2);
                 Console.Write("{0} [{1}] left", playerName, playerId);
             }
         }
@@ -133,7 +164,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             lock (_lock)
             {
                 Console.ResetColor();
-                Console.SetCursorPosition(_client.Board.Width + 2, 2);
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 2);
                 Console.Write("{0} [{1}] joined", playerName, playerId);
             }
         }
@@ -145,7 +176,7 @@ namespace TetriNET.ConsoleWCFClient.UI
                 lock (_lock)
                 {
                     Console.ResetColor();
-                    Console.SetCursorPosition(_client.Board.Width + 2, 1);
+                    Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 1);
                     Console.Write("Registration succeeded -> {0}", playerId);
                 }
             }
@@ -165,7 +196,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             lock (_lock)
             {
                 Console.ResetColor();
-                Console.SetCursorPosition(_client.Board.Width + 2, 21);
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 21);
                 Console.Write("The winner is {0}", playerName);
             }
         }
@@ -175,7 +206,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             lock (_lock)
             {
                 Console.ResetColor();
-                Console.SetCursorPosition(_client.Board.Width + 2, 20);
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 20);
                 Console.Write("Player {0} has lost", playerName);
             }
         }
@@ -185,7 +216,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             lock (_lock)
             {
                 Console.ResetColor();
-                Console.SetCursorPosition(_client.Board.Width + 2, 10);
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 3);
                 if (isServerMaster)
                     Console.Write("Yeehaw ... power is ours");
                 else
@@ -198,9 +229,11 @@ namespace TetriNET.ConsoleWCFClient.UI
             lock (_lock)
             {
                 Console.ResetColor();
-                for (int i = 0; i < winList.Count; i++)
+                // Display only top 5
+                winList.Sort((entry1, entry2) => entry2.Score.CompareTo(entry1.Score)); // descending
+                for (int i = 0; i < (winList.Count > 5 ? 5 : winList.Count); i++)
                 {
-                    Console.SetCursorPosition(_client.Board.Width + 2, 11 + i);
+                    Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 22 + i);
                     Console.Write("{0}:{1}", winList[i].PlayerName, winList[i].Score);
                 }
             }
@@ -238,21 +271,21 @@ namespace TetriNET.ConsoleWCFClient.UI
                 Console.ResetColor();
                 for (int y = _client.Board.Height; y >= 1; y--)
                 {
-                    Console.SetCursorPosition(0, _client.Board.Height - y);
+                    Console.SetCursorPosition(0 + BoardStartX, _client.Board.Height - y + BoardStartY);
                     Console.Write("|");
 
                     for (int x = 1; x <= _client.Board.Width; x++)
                     {
-                        Console.SetCursorPosition(x, _client.Board.Height - y);
+                        Console.SetCursorPosition(x + BoardStartX, _client.Board.Height - y + BoardStartY);
                         byte cellValue = _client.Board[x, y];
-                        Tetriminos cellTetrimino = CellHelper.Tetrimino(cellValue);
-                        if (cellTetrimino == Tetriminos.Invalid)
+                        if (cellValue == CellHelper.EmptyCell)
                             Console.Write(".");
                         else
                         {
+                            Tetriminos cellTetrimino = CellHelper.GetColor(cellValue);
                             Console.BackgroundColor = GetTetriminoColor(cellTetrimino);
-                            Specials cellSpecial = CellHelper.Special(cellValue);
-                            if (cellSpecial == Specials.Invalid)
+                            Specials cellSpecial = CellHelper.GetSpecial(cellValue);
+                            if (cellSpecial == Specials.Invalid2)
                                 Console.Write(" ");
                             else
                             {
@@ -262,10 +295,10 @@ namespace TetriNET.ConsoleWCFClient.UI
                             Console.ResetColor();
                         }
                     }
-                    Console.SetCursorPosition(_client.Board.Width + 1, _client.Board.Height - y);
+                    Console.SetCursorPosition(_client.Board.Width + 1 + BoardStartX, _client.Board.Height - y + BoardStartY);
                     Console.Write("|");
                 }
-                Console.SetCursorPosition(0, _client.Board.Height);
+                Console.SetCursorPosition(0 + BoardStartX, _client.Board.Height + BoardStartY);
                 Console.Write("".PadLeft(_client.Board.Width + 2, '-'));
             }
         }
@@ -277,7 +310,7 @@ namespace TetriNET.ConsoleWCFClient.UI
                 // draw current tetrimino
                 if (_client.CurrentTetrimino != null)
                 {
-                    Tetriminos cellTetrimino = CellHelper.Tetrimino(_client.CurrentTetrimino.Value);
+                    Tetriminos cellTetrimino = _client.CurrentTetrimino.Value;
                     Console.BackgroundColor = GetTetriminoColor(cellTetrimino);
                     for (int i = 1; i <= _client.CurrentTetrimino.TotalCells; i++)
                     {
@@ -285,7 +318,7 @@ namespace TetriNET.ConsoleWCFClient.UI
                         _client.CurrentTetrimino.GetCellAbsolutePosition(i, out x, out y);
                         if (x >= 0 && x <= _client.Board.Width && y >= 0 && y <= _client.Board.Height)
                         {
-                            Console.SetCursorPosition(x, _client.Board.Height - y);
+                            Console.SetCursorPosition(x + BoardStartX, _client.Board.Height - y + BoardStartY);
                             Console.Write(" ");
                         }
                     }
@@ -297,7 +330,7 @@ namespace TetriNET.ConsoleWCFClient.UI
         {
             lock (_lock)
             {
-                // draw current tetrimino
+                // hide current tetrimino
                 if (_client.CurrentTetrimino != null)
                 {
                     Console.ResetColor();
@@ -307,7 +340,7 @@ namespace TetriNET.ConsoleWCFClient.UI
                         _client.CurrentTetrimino.GetCellAbsolutePosition(i, out x, out y);
                         if (x >= 0 && x <= _client.Board.Width && y >= 0 && y <= _client.Board.Height)
                         {
-                            Console.SetCursorPosition(x, _client.Board.Height - y);
+                            Console.SetCursorPosition(x + BoardStartX, _client.Board.Height - y + BoardStartY);
                             Console.Write(".");
                         }
                     }
@@ -330,8 +363,35 @@ namespace TetriNET.ConsoleWCFClient.UI
                     if (maxY > _client.Board.Height)
                         temp.Translate(0, _client.Board.Height - maxY);
                     // Display tetrimino
-                    Tetriminos cellTetrimino = CellHelper.Tetrimino(temp.Value);
+                    Tetriminos cellTetrimino = temp.Value;
                     Console.BackgroundColor = GetTetriminoColor(cellTetrimino);
+                    for (int i = 1; i <= temp.TotalCells; i++)
+                    {
+                        int x, y;
+                        temp.GetCellAbsolutePosition(i, out x, out y);
+                        Console.SetCursorPosition(x, _client.Board.Height - y);
+                        Console.Write(" ");
+                    }
+                }
+            }
+        }
+
+        private void HideNextTetriminoColor()
+        {
+            lock (_lock)
+            {
+                // hide next tetrimino
+                if (_client.NextTetrimino != null)
+                {
+                    Console.ResetColor();
+                    ITetrimino temp = _client.NextTetrimino.Clone();
+                    int minX, minY, maxX, maxY;
+                    temp.GetAbsoluteBoundingRectangle(out minX, out minY, out maxX, out maxY);
+                    // Move to top, left
+                    temp.Translate(-minX, 0);
+                    if (maxY > _client.Board.Height)
+                        temp.Translate(0, _client.Board.Height - maxY);
+                    // hide tetrimino
                     for (int i = 1; i <= temp.TotalCells; i++)
                     {
                         int x, y;
@@ -353,23 +413,22 @@ namespace TetriNET.ConsoleWCFClient.UI
                     for (int x = 1; x <= _client.Board.Width; x++)
                     {
                         byte cellValue = _client.Board[x, y];
-                        Tetriminos cellTetrimino = CellHelper.Tetrimino(cellValue);
-                        if (cellTetrimino == Tetriminos.Invalid)
+                        if (cellValue == CellHelper.EmptyCell)
                             sb.Append(".");
-                        else
-                        {
-                            Specials cellSpecial = CellHelper.Special(cellValue);
-                            if (cellSpecial == Specials.Invalid)
+                        else {
+                            Tetriminos cellTetrimino = CellHelper.GetColor(cellValue);
+                            Specials cellSpecial = CellHelper.GetSpecial(cellValue);
+                            if (cellSpecial == Specials.Invalid2)
                                 sb.Append((int) cellTetrimino);
                             else
                                 sb.Append(ConvertSpecial(cellSpecial));
                         }
                     }
                     sb.Append("|");
-                    Console.SetCursorPosition(0, _client.Board.Height - y);
+                    Console.SetCursorPosition(0 + BoardStartX, _client.Board.Height - y + BoardStartY);
                     Console.Write(sb.ToString());
                 }
-                Console.SetCursorPosition(0, _client.Board.Height);
+                Console.SetCursorPosition(0 + BoardStartX, _client.Board.Height + BoardStartY);
                 Console.Write("".PadLeft(_client.Board.Width + 2, '-'));
             }
         }
@@ -387,7 +446,7 @@ namespace TetriNET.ConsoleWCFClient.UI
                         _client.CurrentTetrimino.GetCellAbsolutePosition(i, out x, out y);
                         if (x >= 0 && x <= _client.Board.Width && y >= 0 && y <= _client.Board.Height)
                         {
-                            Console.SetCursorPosition(x, _client.Board.Height - y);
+                            Console.SetCursorPosition(x + BoardStartX, _client.Board.Height - y + BoardStartY);
                             Console.Write(_client.CurrentTetrimino.Value);
                         }
                     }
@@ -408,7 +467,7 @@ namespace TetriNET.ConsoleWCFClient.UI
                         _client.CurrentTetrimino.GetCellAbsolutePosition(i, out x, out y);
                         if (x >= 0 && x <= _client.Board.Width && y >= 0 && y <= _client.Board.Height)
                         {
-                            Console.SetCursorPosition(x, _client.Board.Height - y);
+                            Console.SetCursorPosition(x + BoardStartX, _client.Board.Height - y + BoardStartY);
                             Console.Write(".");
                         }
                     }
@@ -431,7 +490,7 @@ namespace TetriNET.ConsoleWCFClient.UI
                     else
                         sb2.Append(ConvertSpecial(special));
                 }
-                Console.SetCursorPosition(0, _client.Board.Height + 1);
+                Console.SetCursorPosition(0, _client.Board.Height + 1 + BoardStartY);
                 Console.Write(sb2.ToString().PadRight(20, ' '));
             }
         }
@@ -455,7 +514,7 @@ namespace TetriNET.ConsoleWCFClient.UI
                 case Tetriminos.TetriminoZ:
                     return ConsoleColor.Green;
             }
-            return ConsoleColor.Black;
+            return ConsoleColor.White;
         }
 
         private char ConvertSpecial(Specials special)
@@ -482,8 +541,40 @@ namespace TetriNET.ConsoleWCFClient.UI
                     return 'O';
                 case Specials.ClearColumn:
                     return 'V';
+                case Specials.ZebraField:
+                    return 'Z';
             }
             return '?';
+        }
+
+        private string GetSpecialString(Specials special)
+        {
+            switch (special)
+            {
+                case Specials.AddLines:
+                    return "Add Line";
+                case Specials.ClearLines:
+                    return "Clear Line";
+                case Specials.NukeField:
+                    return "Nuke Field";
+                case Specials.RandomBlocksClear:
+                    return "Random Blocks Clear";
+                case Specials.SwitchFields:
+                    return "Switch Fields";
+                case Specials.ClearSpecialBlocks:
+                    return "Clear Special Blocks";
+                case Specials.BlockGravity:
+                    return "Block Gravity";
+                case Specials.BlockQuake:
+                    return "Block Quake";
+                case Specials.BlockBomb:
+                    return "Block Bomb";
+                case Specials.ClearColumn:
+                    return "Clear Column";
+                case Specials.ZebraField:
+                    return "Zebra Field";
+            }
+            return special.ToString();
         }
     }
 }

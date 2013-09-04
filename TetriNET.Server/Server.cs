@@ -140,6 +140,9 @@ namespace TetriNET.Server
                 while (!_actionQueue.IsEmpty)
                     _actionQueue.TryDequeue(out outAction);
 
+                // Reset special id
+                SpecialId = 0;
+
                 // Reset Tetrimino Queue
                 _tetriminoQueue.Reset(); // TODO: random seed
                 Tetriminos firstTetrimino = _tetriminoQueue[0];
@@ -229,6 +232,43 @@ namespace TetriNET.Server
             }
             else
                 Log.WriteLine("Cannot resume game");
+        }
+
+        public void ResetWinList()
+        {
+            Log.WriteLine("Resetting win list");
+
+            if (State == States.WaitingStartGame)
+            {
+                // Reset
+                WinList.Clear();
+
+                // Inform player
+                foreach (IPlayer p in _playerManager.Players)
+                {
+                    p.OnPublishServerMessage("Win list has been resetted");
+                    p.OnWinListModified(WinList);
+                }
+                Log.WriteLine("Win list resetted");
+            }
+            else
+                Log.WriteLine("Cannot reset win list");
+        }
+
+        public void ToggleSuddenDeath()
+        {
+            if (_options.DelayBeforeSuddenDeath == 0)
+            {
+                _isSuddenDeathActive = true;
+                _options.DelayBeforeSuddenDeath = 1;
+                _options.SuddenDeathTick = 1;
+                _suddenDeathStartTime = DateTime.Now.AddMinutes(-_options.DelayBeforeSuddenDeath);
+            }
+            else
+            {
+                _options.DelayBeforeSuddenDeath = 0;
+                _options.SuddenDeathTick = 0;
+            }
         }
 
         private void UpdateWinList(string playerName, int score)
@@ -414,17 +454,9 @@ namespace TetriNET.Server
             Log.WriteLine("ResetWinLost:{0}", player.Name);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
-            if (masterPlayer == player && State == States.WaitingStartGame)
+            if (masterPlayer == player)
             {
-                // Reset
-                WinList.Clear();
-
-                // Inform player
-                foreach (IPlayer p in _playerManager.Players)
-                {
-                    p.OnPublishServerMessage("Win list has been resetted");
-                    p.OnWinListModified(WinList);
-                }
+                ResetWinList();
             }
             else
                 Log.WriteLine("Cannot reset win list");
@@ -683,8 +715,8 @@ namespace TetriNET.Server
             int specialId = SpecialId;
             // Increment special id
             SpecialId++;
-            // Send lines to everyone except sender
-            foreach (IPlayer p in _playerManager.Players.Where(x => x != player && x.State == PlayerStates.Playing))
+            // Send lines to everyone including sender (so attack msg can be displayed)
+            foreach (IPlayer p in _playerManager.Players.Where(x => x.State == PlayerStates.Playing))
                 p.OnPlayerAddLines(specialId, playerId, count);
         }
 

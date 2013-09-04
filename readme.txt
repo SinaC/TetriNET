@@ -1,15 +1,14 @@
 TODO:
-replace assert and return null/false/-1 with error management
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
-Manage new connection and disconnection at one place -> ideally in Server because there can be many hosts and we can remove a player only ince
+Manage new connection and disconnection at one place -> ideally in Server because there can be many hosts and we can remove a player only once
 when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 	use a common object for every transport address, ban list Add and isBanned take this common object instead of a real transport address
 	-> everyone can manage ban without knowing in which host it has been created
 	-> this object is stored in IPlayer and created by createPlayerFunc in host so server or host can ban a player using IPlayer info
 discovery doesn't work on cross/multiple machine
-client/server version
-tetriminos cell's value is tetrimino
-board cell's value is a color or a special, when clearing special blocks, it's replaced with a random color
+client/server version used when registering
+add room notion in server (server can handle multiple rooms and client register on a room)
+bot: use gravity when board has enough holes or when to high
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf

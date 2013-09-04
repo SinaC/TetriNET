@@ -4,29 +4,31 @@ namespace TetriNET.Common.Helpers
 {
     public static class CellHelper
     {
-        public static Tetriminos Tetrimino(byte cellValue)
+        public static byte EmptyCell = 0;
+
+        public static bool IsSpecial(byte cellValue)
         {
-            return (Tetriminos)(cellValue & 0x0F);
+            return cellValue > (byte)Tetriminos.TetriminoLast;
         }
 
-        public static Specials Special(byte cellValue)
+        public static byte SetSpecial(Specials special)
         {
-            return (Specials)((cellValue & 0xF0) >> 4); 
+            return (byte) special;
         }
 
-        public static byte SetTetrimino(Tetriminos tetrimino)
+        public static Specials GetSpecial(byte cellValue)
         {
-            return (byte)((int)tetrimino & 0x0F);
+            return IsSpecial(cellValue) ? (Specials) cellValue : Specials.Invalid2;
         }
 
-        public static byte SetSpecial(byte cellValue, Specials special)
+        public static byte SetColor(Tetriminos tetrimino)
         {
-            return (byte)((cellValue & 0x0F) | ((int) special << 4));
+            return (byte) tetrimino;
         }
 
-        public static byte ClearSpecial(byte cellValue)
+        public static Tetriminos GetColor(byte cellValue)
         {
-            return (byte)(cellValue & 0x0F);
+            return (cellValue <= (byte)Tetriminos.TetriminoLast) ? (Tetriminos)cellValue : Tetriminos.Invalid2;
         }
     }
 }

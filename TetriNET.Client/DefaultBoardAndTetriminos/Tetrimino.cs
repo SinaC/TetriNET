@@ -1,4 +1,5 @@
-﻿using TetriNET.Common.Interfaces;
+﻿using TetriNET.Common.GameDatas;
+using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Client.DefaultBoardAndTetriminos
 {
@@ -8,7 +9,7 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
         public int PosY { get; protected set; } // coordinates in board
         public int Orientation { get; protected set; } // 1 -> 4
 
-        public byte Value { get; protected set; } // bit 0->3: color     bit 4->7: special      use ByteHelper to get Tetrimino(color) and Special
+        public Tetriminos Value { get; protected set; }
         
         public abstract int MaxOrientations { get; }
         public abstract int TotalCells { get; }

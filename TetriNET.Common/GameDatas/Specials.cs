@@ -3,29 +3,48 @@
 namespace TetriNET.Common.GameDatas
 {
     [DataContract]
-    public enum Specials // Max 15 values
+    public enum Specials // Specials index start after last tetrimino
     {
         [EnumMember]
-        Invalid = 0,
+        Invalid2 = 0,
+
+        // TetriNET (http://en.wikipedia.org/wiki/TetriNET)
         [EnumMember]
-        AddLines = 1,
+        AddLines = Tetriminos.TetriminoLast+1,
         [EnumMember]
-        ClearLines = 2,
+        ClearLines,
         [EnumMember]
-        NukeField = 3,
+        NukeField,
         [EnumMember]
-        RandomBlocksClear = 4,
+        RandomBlocksClear,
         [EnumMember]
-        SwitchFields = 5,
+        SwitchFields,
         [EnumMember]
-        ClearSpecialBlocks = 6,
+        ClearSpecialBlocks,
         [EnumMember]
-        BlockGravity = 7,
+        BlockGravity,
         [EnumMember]
-        BlockQuake = 8,
+        BlockQuake,
         [EnumMember]
-        BlockBomb = 9,
+        BlockBomb,
+
+        // TetriNET 2 (http://harddrop.com/wiki/Tetrinet2 or http://en.wikipedia.org/wiki/TetriNET or http://web.archive.org/web/20070623140748/www.tetrinet2.com/?page=overview_specials)
         [EnumMember]
-        ClearColumn = 10,
+        ClearColumn,
+        // NOT IMPLEMENTED Immunity
+        // NOT IMPLEMENTED Mutate Pieces
+        // NOT IMPLEMENTED Darkness
+        // NOT IMPLEMENTED Confusion
+
+        // Blocktrix (http://en.wikipedia.org/wiki/TetriNET)
+        [EnumMember]
+        ZebraField,
+        // NOT IMPLEMENTED Piece Change
+        // NOT IMPLEMENTED Left Gravity
+
+        // BlockBattle (http://blockbattle.net/tutorial)
+        // NOT IMPLEMENTED Multiplier
+        // NOT IMPLEMENTED Pause
+        // NOT IMPLEMENTED Night (same as darkness)
     }
 }

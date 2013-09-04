@@ -14,6 +14,23 @@ namespace TetriNET.ConsoleWCFServer
 {
     class Program
     {
+        static void DisplayHelp()
+        {
+            Console.WriteLine("Commands:");
+            Console.WriteLine("x: Stop server");
+            Console.WriteLine("s: Start game");
+            Console.WriteLine("t: Stop game");
+            Console.WriteLine("p: Pause game");
+            Console.WriteLine("r: Resume game");
+            Console.WriteLine("+: add dummy player");
+            Console.WriteLine("-: remove dummy player");
+            Console.WriteLine("o: dummy player lose");
+            Console.WriteLine("l: dump player list");
+            Console.WriteLine("w: dump win list");
+            Console.WriteLine("q: reset win list");
+            Console.WriteLine("*: toggle sudden death");
+        }
+
         static void Main(string[] args)
         {
             Log.DisplayThreadId = true;
@@ -54,17 +71,7 @@ namespace TetriNET.ConsoleWCFServer
             //
             server.StartServer();
 
-            Console.WriteLine("Commands:");
-            Console.WriteLine("x: Stop server");
-            Console.WriteLine("s: Start game");
-            Console.WriteLine("t: Stop game");
-            Console.WriteLine("p: Pause game");
-            Console.WriteLine("r: Resume game");
-            Console.WriteLine("a: add dummy player");
-            Console.WriteLine("d: remove dummy player");
-            Console.WriteLine("o: dummy player lose");
-            Console.WriteLine("l: dump player list");
-            Console.WriteLine("w: dump win list");
+            DisplayHelp();
 
             bool stopped = false;
             while (!stopped)
@@ -74,6 +81,9 @@ namespace TetriNET.ConsoleWCFServer
                     ConsoleKeyInfo cki = Console.ReadKey(true);
                     switch (cki.Key)
                     {
+                        default:
+                            DisplayHelp();
+                            break;
                         case ConsoleKey.X:
                             stopped = true;
                             break;
@@ -89,10 +99,10 @@ namespace TetriNET.ConsoleWCFServer
                         case ConsoleKey.R:
                             server.ResumeGame();
                             break;
-                        case ConsoleKey.A:
+                        case ConsoleKey.Add:
                             clients.Add(new DummyBuiltInClient("BuiltIn-" + Guid.NewGuid().ToString().Substring(0, 5), () => builtInHost));
                             break;
-                        case ConsoleKey.D:
+                        case ConsoleKey.Subtract:
                         {
                             DummyBuiltInClient client = clients.LastOrDefault();
                             if (client != null)
@@ -116,6 +126,12 @@ namespace TetriNET.ConsoleWCFServer
                         case ConsoleKey.W:
                             foreach(WinEntry e in server.WinList)
                                 Console.WriteLine("{0}: {1} pts", e.PlayerName, e.Score);
+                            break;
+                        case ConsoleKey.Q:
+                            server.ResetWinList();
+                            break;
+                        case ConsoleKey.Multiply:
+                            server.ToggleSuddenDeath();
                             break;
                     }
                 }

@@ -21,6 +21,7 @@ namespace TetriNET.Common.Interfaces
         int TotalCells { get; }
         byte this[int x, int y] { get; }
         int GetCellIndex(int x, int y);
+        int NonEmptyCellsCount { get; }
 
         int TetriminoSpawnX { get; }
         int TetriminoSpawnY { get; }
@@ -41,17 +42,24 @@ namespace TetriNET.Common.Interfaces
 
         #region Specials
 
+        // TetriNET 1
         void AddLines(int count, Func<Tetriminos> randomFunc);
         void ClearLine();
         void NukeField();
         void RandomBlocksClear(int count);
         void SwitchFields(byte[] cells);
-        void ClearSpecialBlocks();
+        void ClearSpecialBlocks(Func<Tetriminos> randomFunc);
         void BlockGravity();
         void BlockQuake();
         void BlockBomb();
+
+        // TetriNET 2
         void ClearColumn();
 
+        // Blocktrix
+        void ZebraField();
+
+        //
         void SpawnSpecialBlocks(int count, Func<Specials> randomFunc);
         void RemoveCellsHigherThan(int height);
         #endregion

@@ -28,6 +28,8 @@ namespace TetriNET.Common.Interfaces
     public delegate void ClientInventoryChangedHandler();
     public delegate void ClientLinesClearedChangedHandler();
     public delegate void ClientLevelChangedHandler();
+    public delegate void ClientSpecialUsedHandler(string playerName, string targetName, int specialId, Specials special);
+    public delegate void ClientPlayerAddLines(string playerName, int specialId, int count);
 
     public interface IClient
     {
@@ -42,8 +44,10 @@ namespace TetriNET.Common.Interfaces
         int Level { get; }
         bool IsGamePaused { get; }
         bool IsGameStarted { get; }
+        int InventorySize { get; }
 
         IBoard GetBoard(int playerId);
+        bool IsPlaying(int playerId);
 
         event ClientRoundStartedHandler OnRoundStarted;
         event ClientRoundFinishedHandler OnRoundFinished;
@@ -70,6 +74,8 @@ namespace TetriNET.Common.Interfaces
         event ClientInventoryChangedHandler OnInventoryChanged;
         event ClientLinesClearedChangedHandler OnLinesClearedChanged;
         event ClientLevelChangedHandler OnLevelChanged;
+        event ClientSpecialUsedHandler OnSpecialUsed;
+        event ClientPlayerAddLines OnPlayerAddLines;
 
         // Client->Server command
         void Register(string name);
@@ -90,7 +96,7 @@ namespace TetriNET.Common.Interfaces
         void RotateClockwise();
         void RotateCounterClockwise();
         void DiscardFirstSpecial();
-        void UseSpecial(int targetId);
+        bool UseSpecial(int targetId);
 
         //
         void Dump();

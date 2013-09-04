@@ -79,12 +79,12 @@ namespace TetriNET.Common.GameDatas
                 new SpecialOccurancy
                 {
                     Value = Specials.AddLines,
-                    Occurancy = 18
+                    Occurancy = 19
                 },
                 new SpecialOccurancy
                 {
                     Value = Specials.ClearLines,
-                    Occurancy = 17
+                    Occurancy = 18
                 },
                 new SpecialOccurancy
                 {
@@ -94,7 +94,7 @@ namespace TetriNET.Common.GameDatas
                 new SpecialOccurancy
                 {
                     Value = Specials.RandomBlocksClear,
-                    Occurancy = 13
+                    Occurancy = 14
                 },
                 new SpecialOccurancy
                 {
@@ -104,7 +104,7 @@ namespace TetriNET.Common.GameDatas
                 new SpecialOccurancy
                 {
                     Value = Specials.ClearSpecialBlocks,
-                    Occurancy = 13
+                    Occurancy = 14
                 },
                 new SpecialOccurancy
                 {
@@ -119,13 +119,18 @@ namespace TetriNET.Common.GameDatas
                 new SpecialOccurancy
                 {
                     Value = Specials.BlockBomb,
-                    Occurancy = 13
+                    Occurancy = 14
                 },
                 new SpecialOccurancy
                 {
                     Value = Specials.ClearColumn,
-                    Occurancy = 5
-                }
+                    Occurancy = 0
+                },
+                new SpecialOccurancy
+                {
+                    Value = Specials.ZebraField,
+                    Occurancy = 0
+                },
             };
             ClassicStyleMultiplayerRules = true;
             InventorySize = 10;

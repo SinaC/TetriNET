@@ -3,30 +3,29 @@
 namespace TetriNET.Common.GameDatas
 {
     [DataContract]
-    public enum Tetriminos  // Max 15 values
+    public enum Tetriminos
     {
         [EnumMember]
-        Invalid = 0,
+        Invalid2 = 0,
+
+        //  * * * *
+        [EnumMember]
+        TetriminoI = 1,
 
         //  * * *
         //      *
         [EnumMember]
-        TetriminoJ = 1,
-
-        //  * *
-        //    * *
-        [EnumMember]
-        TetriminoZ = 2,
-
-        //  * *
-        //  * *
-        [EnumMember]
-        TetriminoO = 3,
+        TetriminoJ = 2,
 
         //  * * *
         //  *
         [EnumMember]
-        TetriminoL = 4,
+        TetriminoL = 3,
+
+        //  * *
+        //  * *
+        [EnumMember]
+        TetriminoO = 4,
 
         //   * *
         // * *
@@ -38,8 +37,36 @@ namespace TetriNET.Common.GameDatas
         [EnumMember]
         TetriminoT = 6,
 
-        //  * * * *
+        //  * *
+        //    * *
         [EnumMember]
-        TetriminoI = 7,
+        TetriminoZ = 7,
+        
+        [EnumMember]
+        TetriminoReserved1 = 8,
+
+        [EnumMember]
+        TetriminoReserved2 = 9,
+
+        [EnumMember]
+        TetriminoReserved3 = 10,
+
+        [EnumMember]
+        TetriminoReserved4 = 11,
+
+        [EnumMember]
+        TetriminoReserved5 = 12,
+
+        [EnumMember]
+        TetriminoReserved6 = 13,
+
+        [EnumMember]
+        TetriminoReserved7 = 14,
+
+        [EnumMember]
+        TetriminoReserved8 = 15,
+
+        [EnumMember]
+        TetriminoLast = 15,
     }
 }
