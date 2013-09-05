@@ -28,6 +28,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.WCFHost", "TetriNE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.GenericHost", "TetriNET.GenericHost\TetriNET.GenericHost.csproj", "{010B434D-86F0-4BFF-B17B-702BCCCF69F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.WPF-WCF-Client", "TetriNET.WPF-WCF-Client\TetriNET.WPF-WCF-Client.csproj", "{C412C1E3-BDEC-405C-905B-B24F6EF053FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Log", "TetriNET.Log\TetriNET.Log.csproj", "{1C6B89EB-A58A-4673-A70A-C00BBC325848}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -148,6 +152,26 @@ Global
 		{010B434D-86F0-4BFF-B17B-702BCCCF69F5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{010B434D-86F0-4BFF-B17B-702BCCCF69F5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{010B434D-86F0-4BFF-B17B-702BCCCF69F5}.Release|x86.ActiveCfg = Release|Any CPU
+		{C412C1E3-BDEC-405C-905B-B24F6EF053FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C412C1E3-BDEC-405C-905B-B24F6EF053FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C412C1E3-BDEC-405C-905B-B24F6EF053FF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C412C1E3-BDEC-405C-905B-B24F6EF053FF}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C412C1E3-BDEC-405C-905B-B24F6EF053FF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C412C1E3-BDEC-405C-905B-B24F6EF053FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C412C1E3-BDEC-405C-905B-B24F6EF053FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C412C1E3-BDEC-405C-905B-B24F6EF053FF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C412C1E3-BDEC-405C-905B-B24F6EF053FF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C412C1E3-BDEC-405C-905B-B24F6EF053FF}.Release|x86.ActiveCfg = Release|Any CPU
+		{1C6B89EB-A58A-4673-A70A-C00BBC325848}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C6B89EB-A58A-4673-A70A-C00BBC325848}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C6B89EB-A58A-4673-A70A-C00BBC325848}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1C6B89EB-A58A-4673-A70A-C00BBC325848}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1C6B89EB-A58A-4673-A70A-C00BBC325848}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1C6B89EB-A58A-4673-A70A-C00BBC325848}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C6B89EB-A58A-4673-A70A-C00BBC325848}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C6B89EB-A58A-4673-A70A-C00BBC325848}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1C6B89EB-A58A-4673-A70A-C00BBC325848}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1C6B89EB-A58A-4673-A70A-C00BBC325848}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,7 +6,7 @@ namespace TetriNET.Common.GameDatas
     public enum Specials // Specials index start after last tetrimino
     {
         [EnumMember]
-        Invalid2 = 0,
+        Invalid = 0,
 
         // TetriNET (http://en.wikipedia.org/wiki/TetriNET)
         [EnumMember]

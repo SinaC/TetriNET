@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using TetriNET.Common;
+using System.ServiceModel;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
@@ -27,15 +27,14 @@ namespace TetriNET.ConsoleWCFServer.Player
                 action();
                 LastActionToClient = DateTime.Now;
             }
-            //catch (CommunicationObjectAbortedException)
-            //{
-            //    Log.WriteLine("CommunicationObjectAbortedException:{0}", actionName);
-            //    if (OnConnectionLost != null)
-            //        OnConnectionLost(this);
-            //}
+            catch (CommunicationObjectAbortedException)
+            {
+                if (OnConnectionLost != null)
+                    OnConnectionLost(this);
+            }
             catch (Exception ex)
             {
-                Log.WriteLine("Exception:{0} {1}", actionName, ex);
+                Log.Log.WriteLine(Log.Log.LogLevels.Error, "Exception:{0} {1}", actionName, ex);
                 if (OnConnectionLost != null)
                     OnConnectionLost(this);
             }

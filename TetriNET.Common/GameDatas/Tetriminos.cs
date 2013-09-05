@@ -6,7 +6,7 @@ namespace TetriNET.Common.GameDatas
     public enum Tetriminos
     {
         [EnumMember]
-        Invalid2 = 0,
+        Invalid = 0,
 
         //  * * * *
         [EnumMember]

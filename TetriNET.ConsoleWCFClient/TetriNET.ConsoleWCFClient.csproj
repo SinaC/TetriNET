@@ -55,6 +55,10 @@
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Log\TetriNET.Log.csproj">
+      <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
+      <Name>TetriNET.Log</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.WCFProxy\TetriNET.WCFProxy.csproj">
       <Project>{b85b19f2-5c8d-4ab8-96e2-379b482089f9}</Project>
       <Name>TetriNET.WCFProxy</Name>

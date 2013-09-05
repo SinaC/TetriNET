@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
-using TetriNET.Common;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 
-namespace TetriNET.Server
+namespace TetriNET.GenericHost
 {
     public abstract class GenericHost : IHost
     {
@@ -65,7 +64,7 @@ namespace TetriNET.Server
 
         public virtual void RegisterPlayer(ITetriNETCallback callback, string playerName)
         {
-            Log.WriteLine("RegisterPlayer");
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "RegisterPlayer");
 
             // TODO: check ban list
 
@@ -92,7 +91,7 @@ namespace TetriNET.Server
             }
             else
             {
-                Log.WriteLine("Register failed for player {0}", playerName);
+                Log.Log.WriteLine(Log.Log.LogLevels.Info, "Register failed for player {0}", playerName);
                 //
                 callback.OnPlayerRegistered(false, -1, false);
             }
@@ -100,7 +99,7 @@ namespace TetriNET.Server
 
         public virtual void UnregisterPlayer(ITetriNETCallback callback)
         {
-            Log.WriteLine("UnregisterPlayer");
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "UnregisterPlayer");
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -113,29 +112,29 @@ namespace TetriNET.Server
             }
             else
             {
-                Log.WriteLine("UnregisterPlayer from unknown player");
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "UnregisterPlayer from unknown player");
             }
         }
 
         public virtual void Heartbeat(ITetriNETCallback callback)
         {
-            //Log.WriteLine("Heartbeat");
+            //Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Heartbeat");
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
-                //Log.WriteLine("Heartbeat from {0}", player.Name);
+                //Log.Log.WriteLine("Heartbeat from {0}", player.Name);
                 player.ResetTimeout(); // player alive
             }
             else
             {
-                Log.WriteLine("Heartbeat from unknown player");
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "Heartbeat from unknown player");
             }
         }
 
         public virtual void PublishMessage(ITetriNETCallback callback, string msg)
         {
-            Log.WriteLine("PublishMessage {0}", msg);
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "PublishMessage {0}", msg);
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -148,13 +147,13 @@ namespace TetriNET.Server
             }
             else
             {
-                Log.WriteLine("PublishMessage from unknown player");
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "PublishMessage from unknown player");
             }
         }
 
         public virtual void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid)
         {
-            Log.WriteLine("PlaceTetrimino {0} {1} {2} {3},{4} {5}", index, tetrimino, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "PlaceTetrimino {0} {1} {2} {3},{4} {5}", index, tetrimino, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -166,13 +165,13 @@ namespace TetriNET.Server
             }
             else
             {
-                Log.WriteLine("PlaceTetrimino from unknown player");
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "PlaceTetrimino from unknown player");
             }
         }
 
         public virtual void UseSpecial(ITetriNETCallback callback, int targetId, Specials special)
         {
-            Log.WriteLine("UseSpecial {0} {1}", targetId, special);
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "UseSpecial {0} {1}", targetId, special);
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -188,17 +187,17 @@ namespace TetriNET.Server
                         OnUseSpecial(player, target, special);
                 }
                 else
-                    Log.WriteLine("UseSpecial to unknown player {0} from {1}", targetId, player.Name);
+                    Log.Log.WriteLine(Log.Log.LogLevels.Warning, "UseSpecial to unknown player {0} from {1}", targetId, player.Name);
             }
             else
             {
-                Log.WriteLine("UseSpecial from unknown player {0}");
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "UseSpecial from unknown player");
             }
         }
 
         public virtual void SendLines(ITetriNETCallback callback, int count)
         {
-            Log.WriteLine("SendLines {0}", count);
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "SendLines {0}", count);
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -209,11 +208,15 @@ namespace TetriNET.Server
                 if (OnSendLines != null)
                     OnSendLines(player, count);
             }
+            else
+            {
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "SendLines from unknown player");
+            }
         }
 
         public virtual void ModifyGrid(ITetriNETCallback callback, byte[] grid)
         {
-            Log.WriteLine("ModifyGrid {0}", grid == null ? -1 : grid.Count(x => x > 0));
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "ModifyGrid {0}", grid == null ? -1 : grid.Count(x => x > 0));
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -224,11 +227,15 @@ namespace TetriNET.Server
                 if (OnGridModified != null)
                     OnGridModified(player, grid);
             }
+            else
+            {
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "ModifyGrid from unknown player");
+            }
         }
 
         public virtual void StartGame(ITetriNETCallback callback)
         {
-            Log.WriteLine("StartGame");
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "StartGame");
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -239,11 +246,15 @@ namespace TetriNET.Server
                 if (OnStartGame != null)
                     OnStartGame(player);
             }
+            else
+            {
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "StartGame from unknown player");
+            }
         }
 
         public virtual void StopGame(ITetriNETCallback callback)
         {
-            Log.WriteLine("StopGame");
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "StopGame");
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -254,11 +265,15 @@ namespace TetriNET.Server
                 if (OnStopGame != null)
                     OnStopGame(player);
             }
+            else
+            {
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "StopGame from unknown player");
+            }
         }
 
         public virtual void PauseGame(ITetriNETCallback callback)
         {
-            Log.WriteLine("PauseGame");
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "PauseGame");
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -269,11 +284,15 @@ namespace TetriNET.Server
                 if (OnPauseGame != null)
                     OnPauseGame(player);
             }
+            else
+            {
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "PauseGame from unknown player");
+            }
         }
 
         public virtual void ResumeGame(ITetriNETCallback callback)
         {
-            Log.WriteLine("ResumeGame");
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "ResumeGame");
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -284,11 +303,15 @@ namespace TetriNET.Server
                 if (OnResumeGame != null)
                     OnResumeGame(player);
             }
+            else
+            {
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "ResumeGame from unknown player");
+            }
         }
 
         public virtual void GameLost(ITetriNETCallback callback)
         {
-            Log.WriteLine("GameLost");
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "GameLost");
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -299,11 +322,15 @@ namespace TetriNET.Server
                 if (OnGameLost != null)
                     OnGameLost(player);
             }
+            else
+            {
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "GameLost from unknown player");
+            }
         }
 
         public virtual void ChangeOptions(ITetriNETCallback callback, GameOptions options)
         {
-            Log.WriteLine("ChangeOptions {0}", options);
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "ChangeOptions {0}", options);
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -314,11 +341,15 @@ namespace TetriNET.Server
                 if (OnChangeOptions != null)
                     OnChangeOptions(player, options);
             }
+            else
+            {
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "ChangeOptions from unknown player");
+            }
         }
 
         public virtual void KickPlayer(ITetriNETCallback callback, int playerId)
         {
-            Log.WriteLine("KickPlayer {0}", playerId);
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "KickPlayer {0}", playerId);
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -329,11 +360,15 @@ namespace TetriNET.Server
                 if (OnKickPlayer != null)
                     OnKickPlayer(player, playerId);
             }
+            else
+            {
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "KickPlayer from unknown player");
+            }
         }
 
         public virtual void BanPlayer(ITetriNETCallback callback, int playerId)
         {
-            Log.WriteLine("BanPlayer {0}", playerId);
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "BanPlayer {0}", playerId);
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -344,11 +379,15 @@ namespace TetriNET.Server
                 if (OnBanPlayer != null)
                     OnBanPlayer(player, playerId);
             }
+            else
+            {
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "BanPlayer from unknown player");
+            }
         }
 
         public virtual void ResetWinList(ITetriNETCallback callback)
         {
-            Log.WriteLine("ResetWinList");
+            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "ResetWinList");
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -358,6 +397,10 @@ namespace TetriNET.Server
                 //
                 if (OnResetWinList != null)
                     OnResetWinList(player);
+            }
+            else
+            {
+                Log.Log.WriteLine(Log.Log.LogLevels.Warning, "ResetWinList from unknown player");
             }
         }
 

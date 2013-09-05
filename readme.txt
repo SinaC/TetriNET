@@ -9,6 +9,9 @@ discovery doesn't work on cross/multiple machine
 client/server version used when registering
 add room notion in server (server can handle multiple rooms and client register on a room)
 bot: use gravity when board has enough holes or when to high
+AI -> interface GetBestMove return tetrimino rotation and translation  GetBestSpecialUse return a sequence of action to execute use/discard/nop
+GameController -> interface
+WCFProxy -> add Connect(callback, address)/Close method
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf
@@ -77,6 +80,7 @@ http://www.cs.cornell.edu/boom/1999sp/projects/tetris/
 http://tetrisconcept.net/wiki/Tetris_AI
 http://www.ryanheise.com/tetris/tetris_artificial_intelligence.html
 http://www.vidarholen.net/contents/junk/tetris/
+http://hal.archives-ouvertes.fr/docs/00/41/89/54/PDF/article.pdf
 
 tetris
 http://en.wikipedia.org/wiki/TetriNET

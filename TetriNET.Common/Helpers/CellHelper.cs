@@ -18,7 +18,7 @@ namespace TetriNET.Common.Helpers
 
         public static Specials GetSpecial(byte cellValue)
         {
-            return IsSpecial(cellValue) ? (Specials) cellValue : Specials.Invalid2;
+            return IsSpecial(cellValue) ? (Specials) cellValue : Specials.Invalid;
         }
 
         public static byte SetColor(Tetriminos tetrimino)
@@ -28,7 +28,7 @@ namespace TetriNET.Common.Helpers
 
         public static Tetriminos GetColor(byte cellValue)
         {
-            return (cellValue <= (byte)Tetriminos.TetriminoLast) ? (Tetriminos)cellValue : Tetriminos.Invalid2;
+            return (cellValue <= (byte)Tetriminos.TetriminoLast) ? (Tetriminos)cellValue : Tetriminos.Invalid;
         }
     }
 }

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.ServiceModel;
-using TetriNET.Common;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.WCF;
-using TetriNET.Server;
 
 namespace TetriNET.WCFHost
 {
-    public sealed class WCFHost : GenericHost
+    public sealed class WCFHost : GenericHost.GenericHost
     {
         [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
         public sealed class WCFServiceHost : IWCFTetriNET
@@ -42,9 +40,9 @@ namespace TetriNET.WCFHost
 
                 foreach (var endpt in _serviceHost.Description.Endpoints)
                 {
-                    Log.WriteLine("Enpoint address:\t{0}", endpt.Address);
-                    Log.WriteLine("Enpoint binding:\t{0}", endpt.Binding);
-                    Log.WriteLine("Enpoint contract:\t{0}\n", endpt.Contract.ContractType.Name);
+                    Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Enpoint address:\t{0}", endpt.Address);
+                    Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Enpoint binding:\t{0}", endpt.Binding);
+                    Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Enpoint contract:\t{0}\n", endpt.Contract.ContractType.Name);
                 }
             }
 

@@ -5,7 +5,7 @@ using TetriNET.Server;
 
 namespace TetriNET.ConsoleWCFServer.Host
 {
-    public sealed class BuiltInHost : GenericHost
+    public sealed class BuiltInHost : GenericHost.GenericHost
     {
         public BuiltInHost(IPlayerManager playerManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc)
             : base(playerManager, banManager, createPlayerFunc)

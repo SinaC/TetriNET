@@ -285,7 +285,7 @@ namespace TetriNET.ConsoleWCFClient.UI
                             Tetriminos cellTetrimino = CellHelper.GetColor(cellValue);
                             Console.BackgroundColor = GetTetriminoColor(cellTetrimino);
                             Specials cellSpecial = CellHelper.GetSpecial(cellValue);
-                            if (cellSpecial == Specials.Invalid2)
+                            if (cellSpecial == Specials.Invalid)
                                 Console.Write(" ");
                             else
                             {
@@ -418,7 +418,7 @@ namespace TetriNET.ConsoleWCFClient.UI
                         else {
                             Tetriminos cellTetrimino = CellHelper.GetColor(cellValue);
                             Specials cellSpecial = CellHelper.GetSpecial(cellValue);
-                            if (cellSpecial == Specials.Invalid2)
+                            if (cellSpecial == Specials.Invalid)
                                 sb.Append((int) cellTetrimino);
                             else
                                 sb.Append(ConvertSpecial(cellSpecial));
@@ -500,21 +500,21 @@ namespace TetriNET.ConsoleWCFClient.UI
             switch (tetrimino)
             {
                 case Tetriminos.TetriminoI:
-                    return ConsoleColor.Red;
+                    return ConsoleColor.Blue;
                 case Tetriminos.TetriminoJ:
-                    return ConsoleColor.Magenta;
+                    return ConsoleColor.Green;
                 case Tetriminos.TetriminoL:
-                    return ConsoleColor.Yellow;
+                    return ConsoleColor.Magenta;
                 case Tetriminos.TetriminoO:
-                    return ConsoleColor.Cyan;
+                    return ConsoleColor.Yellow;
                 case Tetriminos.TetriminoS:
                     return ConsoleColor.Blue;
                 case Tetriminos.TetriminoT:
-                    return ConsoleColor.Gray;
+                    return ConsoleColor.Yellow;
                 case Tetriminos.TetriminoZ:
-                    return ConsoleColor.Green;
+                    return ConsoleColor.Red;
             }
-            return ConsoleColor.White;
+            return ConsoleColor.Gray;
         }
 
         private char ConvertSpecial(Specials special)

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
-using TetriNET.Common;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.ConsoleWCFServer.Ban;
@@ -33,8 +32,7 @@ namespace TetriNET.ConsoleWCFServer
 
         static void Main(string[] args)
         {
-            Log.DisplayThreadId = true;
-            Log.DisplayInConsole = true;
+            Log.Log.Initialize(@"D:\TEMP\LOG\", "server.log");
 
             //
             BanManager banManager = new BanManager();

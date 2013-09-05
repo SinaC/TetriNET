@@ -210,7 +210,7 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
                     for (int x = 1; x <= Width; x++)
                     {
                         Specials cellSpecial = CellHelper.GetSpecial(this[x, y]);
-                        if (cellSpecial != Specials.Invalid2)
+                        if (cellSpecial != Specials.Invalid)
                             specials.Add(cellSpecial);
                     }
 
@@ -679,7 +679,7 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             for (int x = 1; x <= Width; x++)
             {
                 // Fill row except hole
-                byte cellValue = CellHelper.SetColor(x == hole ? Tetriminos.Invalid2 : randomFunc());
+                byte cellValue = CellHelper.SetColor(x == hole ? Tetriminos.Invalid : randomFunc());
                 this[x, 1] = cellValue;
             }
         }

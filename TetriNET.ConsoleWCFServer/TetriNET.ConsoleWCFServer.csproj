@@ -41,6 +41,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ban\BanManager.cs" />
@@ -64,6 +65,10 @@
     <ProjectReference Include="..\TetriNET.GenericHost\TetriNET.GenericHost.csproj">
       <Project>{010b434d-86f0-4bff-b17b-702bcccf69f5}</Project>
       <Name>TetriNET.GenericHost</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Log\TetriNET.Log.csproj">
+      <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
+      <Name>TetriNET.Log</Name>
     </ProjectReference>
     <ProjectReference Include="..\TetriNET.Server\TetriNET.Server.csproj">
       <Project>{161C5DDA-F2A8-400E-9702-3C4B45FFB772}</Project>
