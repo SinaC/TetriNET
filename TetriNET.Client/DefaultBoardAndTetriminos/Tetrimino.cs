@@ -93,5 +93,28 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
                 if (y > maxY) maxY = y;
             }
         }
+
+        public static ITetrimino CreateTetrimino(Tetriminos tetrimino, int spawnX, int spawnY, int spawnOrientation)
+        {
+            switch (tetrimino)
+            {
+                case Tetriminos.TetriminoI:
+                    return new TetriminoI(spawnX, spawnY, spawnOrientation);
+                case Tetriminos.TetriminoJ:
+                    return new TetriminoJ(spawnX, spawnY, spawnOrientation);
+                case Tetriminos.TetriminoL:
+                    return new TetriminoL(spawnX, spawnY, spawnOrientation);
+                case Tetriminos.TetriminoO:
+                    return new TetriminoO(spawnX, spawnY, spawnOrientation);
+                case Tetriminos.TetriminoS:
+                    return new TetriminoS(spawnX, spawnY, spawnOrientation);
+                case Tetriminos.TetriminoT:
+                    return new TetriminoT(spawnX, spawnY, spawnOrientation);
+                case Tetriminos.TetriminoZ:
+                    return new TetriminoZ(spawnX, spawnY, spawnOrientation);
+            }
+            Log.Log.WriteLine(Log.Log.LogLevels.Warning, "Create random Tetrimino because server didn't send next tetrimino");
+            return new TetriminoZ(spawnX, spawnY, spawnOrientation); // TODO: sometimes server takes time to send next tetrimino, it should send 2 or 3 next tetriminoes to ensure this never happens
+        }
     }
 }

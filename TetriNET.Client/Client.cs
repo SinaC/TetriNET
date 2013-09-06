@@ -173,7 +173,6 @@ namespace TetriNET.Client
             Paused // --> Playing | Registered
         }
 
-        private readonly IProxy _proxy;
         private readonly Func<Tetriminos, int, int, int, ITetrimino> _createTetriminoFunc;
         private readonly Func<IBoard> _createBoardFunc;
         private readonly Player[] _players = new Player[MaxPlayers];
@@ -184,12 +183,11 @@ namespace TetriNET.Client
 
         public States State { get; private set; }
 
+        private IProxy _proxy;
         private GameOptions _options; // TODO: check if an entry for each specials and for each tetriminos (set to dummy/default values otherwise)
         private int _clientPlayerId;
-
         private DateTime _lastActionFromServer;
         private int _timeoutCount;
-
         private int _tetriminoIndex;
 
         private Player Player
@@ -198,17 +196,12 @@ namespace TetriNET.Client
         }
 
         // TODO: don't create proxy immediately, use connect method
-        public Client(Func<ITetriNETCallback, IProxy> createProxyFunc, Func<Tetriminos, int, int, int, ITetrimino> createTetriminoFunc, Func<IBoard> createBoardFunc)
+        public Client(Func<Tetriminos, int, int, int, ITetrimino> createTetriminoFunc, Func<IBoard> createBoardFunc)
         {
-            if (createProxyFunc == null)
-                throw new ArgumentNullException("createProxyFunc");
             if (createTetriminoFunc == null)
                 throw new ArgumentNullException("createTetriminoFunc");
             if (createBoardFunc == null)
                 throw new ArgumentNullException("createBoardFunc");
-
-            _proxy = createProxyFunc(this);
-            _proxy.OnConnectionLost += ConnectionLostHandler;
 
             _createTetriminoFunc = createTetriminoFunc;
             _createBoardFunc = createBoardFunc;
@@ -220,7 +213,7 @@ namespace TetriNET.Client
             _inventory = new Inventory(_options.InventorySize);
 
             _gameTimer = new System.Timers.Timer();
-            _gameTimer.Interval = 200; // TODO: use a function to compute interval in function of level
+            _gameTimer.Interval = 1000; // TODO: use a function to compute interval in function of level
             _gameTimer.Elapsed += GameTimerOnElapsed;
 
             _lastActionFromServer = DateTime.Now;
@@ -238,7 +231,10 @@ namespace TetriNET.Client
 
         private void ConnectionLostHandler()
         {
-            throw new NotImplementedException();
+            if (ClientOnConnectionLost != null)
+                ClientOnConnectionLost();
+            else
+                throw new ApplicationException("Connection lost");
         }
 
         #endregion
@@ -940,6 +936,36 @@ namespace TetriNET.Client
             return (playerId >= 0 && playerId < MaxPlayers && _players[playerId] != null) && _players[playerId].State == Player.States.Playing;
         }
 
+        public bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc)
+        {
+            if (_proxy != null)
+                return false; // should disconnect first
+
+            _proxy = createProxyFunc(this);
+            _proxy.OnConnectionLost += ConnectionLostHandler;
+
+            return _proxy.Connect();
+        }
+
+        public bool Disconnect()
+        {
+            if (_proxy == null)
+                return false; // should connect first
+
+            _proxy.OnConnectionLost -= ConnectionLostHandler;
+            _proxy.Disconnect();
+            _proxy = null;
+
+            return true;
+        }
+
+        private event ClientConnectionLostHandler ClientOnConnectionLost;
+        event ClientConnectionLostHandler IClient.OnConnectionLost
+        {
+            add { ClientOnConnectionLost += value; }
+            remove { ClientOnConnectionLost -= value; }
+        }
+
         private event ClientRoundStartedHandler ClientOnRoundStarted;
         event ClientRoundStartedHandler IClient.OnRoundStarted
         {
@@ -1165,6 +1191,12 @@ namespace TetriNET.Client
             _proxy.RegisterPlayer(this, Name);
         }
 
+        public void Unregister()
+        {
+            State = States.Created;
+            _proxy.UnregisterPlayer(this);
+        }
+
         public void StartGame()
         {
             if (State == States.Registered)
@@ -1211,6 +1243,12 @@ namespace TetriNET.Client
         {
             if (State == States.Registered)
                 _proxy.BanPlayer(this, playerId);
+        }
+
+        public void PublishMessage(string msg)
+        {
+            if (State == States.Registered)
+                _proxy.PublishMessage(this, msg);
         }
 
         public void Drop()

@@ -12,19 +12,49 @@ namespace TetriNET.WCFProxy
 {
     public sealed class WCFProxy : IProxy
     {
-        private readonly DuplexChannelFactory<IWCFTetriNET> _factory;
-        private readonly IWCFTetriNET _proxy;
+        private readonly string _address;
+        private readonly ITetriNETCallback _callback;
+
+        private DuplexChannelFactory<IWCFTetriNET> _factory;
+        private IWCFTetriNET _proxy;
 
         public DateTime LastActionToServer { get; private set; }
 
-        // TODO: don't connect immediately, use connection method
         public WCFProxy(ITetriNETCallback callback, string address)
         {
             LastActionToServer = DateTime.Now;
+            _callback = callback;
+            _address = address;
+        }
 
+        private void ExceptionFreeAction(Action action, string actionName)
+        {
+            try
+            {
+                action();
+                LastActionToServer = DateTime.Now;
+            }
+            catch (Exception ex)
+            {
+                Log.Log.WriteLine(Log.Log.LogLevels.Error, "Exception:{0} {1}", actionName, ex);
+                if (OnConnectionLost != null)
+                    OnConnectionLost();
+                if (_factory != null)
+                    _factory.Abort();
+            }
+        }
+
+        #region IProxy
+
+        public event ProxyConnectionLostHandler OnConnectionLost;
+
+        public bool Connect()
+        {
+            if (_factory != null)
+                return false; // should disconnect first
             // Get WCF endpoint
             EndpointAddress endpointAddress = null;
-            if (String.IsNullOrEmpty(address) || address.ToLower() == "auto")
+            if (String.IsNullOrEmpty(_address) || _address.ToLower() == "auto")
             {
                 Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Searching IWCFTetriNET server");
                 List<EndpointAddress> endpointAddresses = DiscoveryHelper.DiscoverAddresses<IWCFTetriNET>();
@@ -41,39 +71,42 @@ namespace TetriNET.WCFProxy
                 }
             }
             else
-                endpointAddress = new EndpointAddress(address);
+                endpointAddress = new EndpointAddress(_address);
 
             // Create WCF proxy from endpoint
             if (endpointAddress != null)
             {
                 Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Connecting to server:{0}", endpointAddress.Uri);
                 Binding binding = new NetTcpBinding(SecurityMode.None);
-                InstanceContext instanceContext = new InstanceContext(callback);
+                InstanceContext instanceContext = new InstanceContext(_callback);
                 //_proxy = DuplexChannelFactory<IWCFTetriNET>.CreateChannel(instanceContext, binding, endpointAddress);
                 _factory = new DuplexChannelFactory<IWCFTetriNET>(instanceContext, binding, endpointAddress);
                 _proxy = _factory.CreateChannel(instanceContext);
-                //_factory.Close();
+                return true;
             }
+            return false;
         }
 
-        private void ExceptionFreeAction(Action action, string actionName)
+        public bool Disconnect()
         {
+            if (_factory == null)
+                return false; // should connect first
             try
             {
-                action();
-                LastActionToServer = DateTime.Now;
+                _factory.Close();
             }
             catch (Exception ex)
             {
-                Log.Log.WriteLine(Log.Log.LogLevels.Error, "Exception:{0} {1}", actionName, ex);
-                if (OnConnectionLost != null)
-                    OnConnectionLost();
+                Log.Log.WriteLine(Log.Log.LogLevels.Error, "Exception:{1}", ex);
+                _factory.Abort();
             }
+            _factory = null;
+            return true;
         }
 
-        #region IProxy
+        #endregion
 
-        public event ProxyConnectionLostHandler OnConnectionLost;
+        #region ITetriNET
 
         public void RegisterPlayer(ITetriNETCallback callback, string playerName)
         {
@@ -160,6 +193,5 @@ namespace TetriNET.WCFProxy
         }
 
         #endregion
-
     }
 }

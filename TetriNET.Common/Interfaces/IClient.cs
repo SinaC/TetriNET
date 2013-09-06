@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using TetriNET.Common.Contracts;
 using TetriNET.Common.GameDatas;
 
 namespace TetriNET.Common.Interfaces
 {
-    public delegate void ClientPlayerRegisteredHandler(bool succeeded, int playerId);
+    public delegate void ClientConnectionLostHandler();
 
     public delegate void ClientRoundStartedHandler();
     public delegate void ClientRoundFinishedHandler();
@@ -17,6 +19,7 @@ namespace TetriNET.Common.Interfaces
     public delegate void ClientRedrawBoardHandler(int playerId, IBoard board);
     public delegate void ClientTetriminoMovingHandler();
     public delegate void ClientTetriminoMovedHandler();
+    public delegate void ClientPlayerRegisteredHandler(bool succeeded, int playerId);
     public delegate void ClientWinListModifiedHandler(List<WinEntry> winList);
     public delegate void ClientServerMasterModifiedHandler(bool isServerMaster);
     public delegate void ClientPlayerLostHandler(int playerId, string playerName);
@@ -49,6 +52,8 @@ namespace TetriNET.Common.Interfaces
         IBoard GetBoard(int playerId);
         bool IsPlaying(int playerId);
 
+        event ClientConnectionLostHandler OnConnectionLost;
+
         event ClientRoundStartedHandler OnRoundStarted;
         event ClientRoundFinishedHandler OnRoundFinished;
         event ClientStartGameHandler OnGameStarted;
@@ -77,8 +82,12 @@ namespace TetriNET.Common.Interfaces
         event ClientSpecialUsedHandler OnSpecialUsed;
         event ClientPlayerAddLines OnPlayerAddLines;
 
+        bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc);
+        bool Disconnect();
+
         // Client->Server command
         void Register(string name);
+        void Unregister();
         void StartGame();
         void StopGame();
         void PauseGame();
@@ -87,6 +96,7 @@ namespace TetriNET.Common.Interfaces
         void ChangeOptions(GameOptions options);
         void KickPlayer(int playerId);
         void BanPlayer(int playerId);
+        void PublishMessage(string msg);
 
         // Game controller
         void Drop();

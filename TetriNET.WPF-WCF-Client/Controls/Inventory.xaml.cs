@@ -54,14 +54,28 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
             if (_this != null)
             {
-                IClient client = args.NewValue as IClient;
-                if (client != null)
+                // Remove old handlers
+                IClient oldClient = args.OldValue as IClient;
+                if (oldClient != null)
                 {
-                    _this.Client = client;
-                    // Register the Client UI events
-                    _this.Client.OnInventoryChanged += _this.OnInventoryChanged;
+                    oldClient.OnGameStarted -= _this.OnGameStarted;
+                    oldClient.OnInventoryChanged -= _this.OnInventoryChanged;
+                }
+                // Set new client
+                IClient newClient = args.NewValue as IClient;
+                _this.Client = newClient;
+                // Add new handlers
+                if (newClient != null)
+                {
+                    newClient.OnGameStarted += _this.OnGameStarted;
+                    newClient.OnInventoryChanged += _this.OnInventoryChanged;
                 }
             }
+        }
+
+        private void OnGameStarted()
+        {
+            ExecuteOnUIThread.Invoke(DrawInventory);
         }
 
         private void OnInventoryChanged()

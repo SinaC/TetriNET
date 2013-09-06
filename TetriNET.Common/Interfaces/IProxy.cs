@@ -9,6 +9,9 @@ namespace TetriNET.Common.Interfaces
     {
         event ProxyConnectionLostHandler OnConnectionLost;
 
+        bool Connect();
+        bool Disconnect();
+
         DateTime LastActionToServer { get; } // used to check if heartbeat is needed
     }
 }

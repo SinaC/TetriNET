@@ -12,9 +12,9 @@ using TetriNET.Common.Interfaces;
 namespace TetriNET.WPF_WCF_Client.Controls
 {
     /// <summary>
-    /// Interaction logic for OpponentGrid.xaml
+    /// Interaction logic for PlayerGrid.xaml
     /// </summary>
-    public partial class OpponentGrid : UserControl, INotifyPropertyChanged
+    public partial class PlayerGridLabel : UserControl, INotifyPropertyChanged
     {
         // TODO: dynamically get width/height
         private const int ColumnsCount = 12;
@@ -25,15 +25,16 @@ namespace TetriNET.WPF_WCF_Client.Controls
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
         private static readonly SolidColorBrush SpecialColor = new SolidColorBrush(Colors.LightGray);
 
-        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("OpponentGridClientProperty", typeof(IClient), typeof(OpponentGrid), new PropertyMetadata(Client_Changed));
+        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("PlayerGridLabelClientProperty", typeof(IClient), typeof(PlayerGridLabel), new PropertyMetadata(Client_Changed));
         public IClient Client
         {
-            get { return (IClient)GetValue(ClientProperty); }
+            get { return (IClient) GetValue(ClientProperty); }
             set { SetValue(ClientProperty, value); }
         }
 
         private int _playerId;
-        public int PlayerId {
+        public int PlayerId
+        {
             get { return _playerId; }
             set
             {
@@ -46,7 +47,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
         }
 
         private string _playerName;
-        public string PlayerName {
+        public string PlayerName
+        {
             get { return _playerName; }
             set
             {
@@ -58,38 +60,37 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
-        public OpponentGrid()
+        public PlayerGridLabel()
         {
             InitializeComponent();
 
             PlayerId = -1;
-            PlayerName = "Not playing"; // default value
-
+            PlayerName = "not playing";
+            
             // Add Grid row definitions
-            for (int i = 0; i < RowsCount; i++)
+            for(int i = 0; i < RowsCount; i++)
                 Grid.RowDefinitions.Add(new RowDefinition
                 {
-                    Height = new GridLength(12)
+                    Height = new GridLength(24)
                 });
             // Add Grid column definitions
             for (int i = 0; i < ColumnsCount; i++)
                 Grid.ColumnDefinitions.Add(new ColumnDefinition
                 {
-                    Width = new GridLength(12)
+                    Width = new GridLength(24)
                 });
 
             // Populate the grid with cells
             for (int i = 0; i < Grid.RowDefinitions.Count(); i++)
                 for (int j = 0; j < Grid.ColumnDefinitions.Count(); j++)
                 {
-                    //  Create a new textblock as "cell" and add it to the grid
-                    TextBlock txt = new TextBlock
+                    //  Create a new Label as "cell" and add it to the grid
+                    Label txt = new Label
                     {
                         Foreground = new SolidColorBrush(Colors.Black),
                         Background = new SolidColorBrush(Colors.Transparent),
-                        TextAlignment = TextAlignment.Center,
-                        FontSize = 9,
-                        Margin = new Thickness(0.5, 0.5, 0.5, 0.5)
+                        FontSize = 11,
+                        Margin = new Thickness(1,1,1,1)
                     };
                     Grid.Children.Add(txt);
                     Grid.SetRow(txt, i);
@@ -97,8 +98,56 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 }
         }
 
-        private void DrawGrid(IBoard board)
+        private void DrawCurrentTetrimino()
         {
+            if (Client == null)
+                return;
+            IBoard board = Client.Board;
+            if (board == null)
+                return;
+            ITetrimino currentTetrimino = Client.CurrentTetrimino;
+            if (currentTetrimino == null)
+                return;
+            Tetriminos cellTetrimino = Client.CurrentTetrimino.Value;
+            for (int i = 1; i <= Client.CurrentTetrimino.TotalCells; i++)
+            {
+                int x, y;
+                Client.CurrentTetrimino.GetCellAbsolutePosition(i, out x, out y); // 1->Width x 1->Height
+                int cellY = board.Height - y;
+                int cellX = x - 1;
+
+                Label uiPart = GetControl<Label>(cellX, cellY);
+                uiPart.Background = Mapper.MapTetriminoToColor(cellTetrimino);
+            }
+        }
+
+        private void HideCurrentTetrimino()
+        {
+            if (Client == null)
+                return;
+            IBoard board = Client.Board;
+            if (board == null)
+                return;
+            ITetrimino currentTetrimino = Client.CurrentTetrimino;
+            if (currentTetrimino == null)
+                return;
+            for (int i = 1; i <= Client.CurrentTetrimino.TotalCells; i++)
+            {
+                int x, y;
+                Client.CurrentTetrimino.GetCellAbsolutePosition(i, out x, out y); // 1->Width x 1->Height
+                int cellY = board.Height - y;
+                int cellX = x - 1;
+
+                Label uiPart = GetControl<Label>(cellX, cellY);
+                uiPart.Background = TransparentColor;
+            }
+        }
+
+        private void DrawGrid()
+        {
+            if (Client == null)
+                return;
+            IBoard board = Client.Board;
             if (board == null)
                 return;
             lock (_lock)
@@ -110,10 +159,10 @@ namespace TetriNET.WPF_WCF_Client.Controls
                         int cellX = x - 1;
                         byte cellValue = board[x, y];
 
-                        TextBlock uiPart = GetControl<TextBlock>(cellX, cellY);
+                        Label uiPart = GetControl<Label>(cellX, cellY);
                         if (cellValue == CellHelper.EmptyCell)
                         {
-                            uiPart.Text = "";
+                            uiPart.Content = "";
                             uiPart.Background = TransparentColor;
                         }
                         else
@@ -123,12 +172,12 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
                             if (special == Specials.Invalid)
                             {
-                                uiPart.Text = "";
+                                uiPart.Content = "";
                                 uiPart.Background = Mapper.MapTetriminoToColor(color);
                             }
                             else
                             {
-                                uiPart.Text = Mapper.MapSpecialToChar(special).ToString(CultureInfo.InvariantCulture);
+                                uiPart.Content = Mapper.MapSpecialToChar(special).ToString(CultureInfo.InvariantCulture);
                                 uiPart.Background = SpecialColor;
                             }
                         }
@@ -138,10 +187,10 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private void ClearGrid()
         {
-            foreach (TextBlock uiPart in Grid.Children.Cast<TextBlock>())
+            foreach (Label uiPart in Grid.Children.Cast<Label>())
             {
                 uiPart.Background = TransparentColor;
-                uiPart.Text = "";
+                uiPart.Content = "";
             }
         }
 
@@ -152,7 +201,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
-            OpponentGrid _this = sender as OpponentGrid;
+            PlayerGridLabel _this = sender as PlayerGridLabel;
 
             if (_this != null)
             {
@@ -161,7 +210,11 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 if (oldClient != null)
                 {
                     oldClient.OnGameStarted -= _this.OnGameStarted;
-                    oldClient.OnRedrawBoard -= _this.OnRedrawBoard;
+                    oldClient.OnRoundStarted -= _this.OnRoundStarted;
+                    oldClient.OnRoundFinished -= _this.OnRoundFinished;
+                    oldClient.OnTetriminoMoving -= _this.OnTetriminoMoving;
+                    oldClient.OnTetriminoMoved -= _this.OnTetriminoMoved;
+                    oldClient.OnRedraw -= _this.OnRedraw;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
@@ -170,9 +223,42 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 if (newClient != null)
                 {
                     newClient.OnGameStarted += _this.OnGameStarted;
-                    newClient.OnRedrawBoard += _this.OnRedrawBoard;
+                    newClient.OnRoundStarted += _this.OnRoundStarted;
+                    newClient.OnRoundFinished += _this.OnRoundFinished;
+                    newClient.OnTetriminoMoving += _this.OnTetriminoMoving;
+                    newClient.OnTetriminoMoved += _this.OnTetriminoMoved;
+                    newClient.OnRedraw += _this.OnRedraw;
                 }
             }
+        }
+
+        private void OnRedraw()
+        {
+            ExecuteOnUIThread.Invoke(() =>
+            {
+                DrawGrid();
+                DrawCurrentTetrimino();
+            });
+        }
+
+        private void OnTetriminoMoved()
+        {
+            ExecuteOnUIThread.Invoke(DrawCurrentTetrimino);
+        }
+
+        private void OnTetriminoMoving()
+        {
+            ExecuteOnUIThread.Invoke(HideCurrentTetrimino);
+        }
+
+        private void OnRoundFinished()
+        {
+            ExecuteOnUIThread.Invoke(HideCurrentTetrimino);
+        }
+
+        private void OnRoundStarted()
+        {
+            ExecuteOnUIThread.Invoke(DrawCurrentTetrimino);
         }
 
         private void OnGameStarted()
@@ -181,13 +267,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
             {
                 Visibility = Visibility.Visible;
                 ClearGrid();
+                DrawCurrentTetrimino();
             });
-        }
-
-        private void OnRedrawBoard(int playerId, IBoard board)
-        {
-            if (playerId == PlayerId)
-                ExecuteOnUIThread.Invoke(() => DrawGrid(board));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

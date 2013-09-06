@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
@@ -14,7 +15,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
     /// <summary>
     /// Interaction logic for PlayerGrid.xaml
     /// </summary>
-    public partial class PlayerGrid : UserControl, INotifyPropertyChanged
+    public partial class PlayerGridRectangle : UserControl, INotifyPropertyChanged
     {
         // TODO: dynamically get width/height
         private const int ColumnsCount = 12;
@@ -25,7 +26,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
         private static readonly SolidColorBrush SpecialColor = new SolidColorBrush(Colors.LightGray);
 
-        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("PlayerGridClientProperty", typeof(IClient), typeof(PlayerGrid), new PropertyMetadata(Client_Changed));
+        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("PlayerGridRectangleClientProperty", typeof(IClient), typeof(PlayerGridRectangle), new PropertyMetadata(Client_Changed));
         public IClient Client
         {
             get { return (IClient) GetValue(ClientProperty); }
@@ -59,8 +60,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 }
             }
         }
-        
-        public PlayerGrid()
+
+        public PlayerGridRectangle()
         {
             InitializeComponent();
 
@@ -84,18 +85,14 @@ namespace TetriNET.WPF_WCF_Client.Controls
             for (int i = 0; i < Grid.RowDefinitions.Count(); i++)
                 for (int j = 0; j < Grid.ColumnDefinitions.Count(); j++)
                 {
-                    //  Create a new textblock as "cell" and add it to the grid
-                    TextBlock txt = new TextBlock
+                    Rectangle rect = new Rectangle
                     {
-                        Foreground = new SolidColorBrush(Colors.Black),
-                        Background = new SolidColorBrush(Colors.Transparent),
-                        TextAlignment = TextAlignment.Center,
-                        FontSize = 11,
-                        Margin = new Thickness(1,1,1,1)
+                        Fill = TransparentColor,
+                        Margin = new Thickness(1, 1, 1, 1)
                     };
-                    Grid.Children.Add(txt);
-                    Grid.SetRow(txt, i);
-                    Grid.SetColumn(txt, j);
+                    Grid.Children.Add(rect);
+                    Grid.SetRow(rect, i);
+                    Grid.SetColumn(rect, j);
                 }
         }
 
@@ -117,8 +114,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 int cellY = board.Height - y;
                 int cellX = x - 1;
 
-                TextBlock uiPart = GetControl<TextBlock>(cellX, cellY);
-                uiPart.Background = Mapper.MapTetriminoToColor(cellTetrimino);
+                Rectangle uiPart = GetControl<Rectangle>(cellX, cellY);
+                uiPart.Fill = Mapper.MapTetriminoToColor(cellTetrimino);
             }
         }
 
@@ -139,8 +136,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 int cellY = board.Height - y;
                 int cellX = x - 1;
 
-                TextBlock uiPart = GetControl<TextBlock>(cellX, cellY);
-                uiPart.Background = TransparentColor;
+                Rectangle uiPart = GetControl<Rectangle>(cellX, cellY);
+                uiPart.Fill = TransparentColor;
             }
         }
 
@@ -160,11 +157,11 @@ namespace TetriNET.WPF_WCF_Client.Controls
                         int cellX = x - 1;
                         byte cellValue = board[x, y];
 
-                        TextBlock uiPart = GetControl<TextBlock>(cellX, cellY);
+                        Rectangle uiPart = GetControl<Rectangle>(cellX, cellY);
                         if (cellValue == CellHelper.EmptyCell)
                         {
-                            uiPart.Text = "";
-                            uiPart.Background = TransparentColor;
+                            //uiPart.Text = "";
+                            uiPart.Fill = TransparentColor;
                         }
                         else
                         {
@@ -173,13 +170,13 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
                             if (special == Specials.Invalid)
                             {
-                                uiPart.Text = "";
-                                uiPart.Background = Mapper.MapTetriminoToColor(color);
+                                //uiPart.Text = "";
+                                uiPart.Fill = Mapper.MapTetriminoToColor(color);
                             }
                             else
                             {
-                                uiPart.Text = Mapper.MapSpecialToChar(special).ToString(CultureInfo.InvariantCulture);
-                                uiPart.Background = SpecialColor;
+                                //uiPart.Text = Mapper.MapSpecialToChar(special).ToString(CultureInfo.InvariantCulture);
+                                uiPart.Fill = SpecialColor;
                             }
                         }
                     }
@@ -188,10 +185,10 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private void ClearGrid()
         {
-            foreach (TextBlock uiPart in Grid.Children.Cast<TextBlock>())
+            foreach (Rectangle uiPart in Grid.Children.Cast<Rectangle>())
             {
-                uiPart.Background = TransparentColor;
-                uiPart.Text = "";
+                uiPart.Fill = TransparentColor;
+                //uiPart.Text = "";
             }
         }
 
@@ -202,7 +199,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
-            PlayerGrid _this = sender as PlayerGrid;
+            PlayerGridRectangle _this = sender as PlayerGridRectangle;
 
             if (_this != null)
             {

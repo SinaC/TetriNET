@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 
@@ -41,24 +30,24 @@ namespace TetriNET.WPF_WCF_Client.Controls
             set { SetValue(ClientProperty, value); }
         }
 
-        public ObservableCollection<InGameChatEntry> Entries;
+        private readonly ObservableCollection<InGameChatEntry> _entries = new ObservableCollection<InGameChatEntry>();
+        public ObservableCollection<InGameChatEntry> Entries { get { return _entries; } }
 
         public InGameMessages()
         {
             InitializeComponent();
-
         }
 
         private void AddEntry(InGameChatEntry entry)
         {
-            if (Entries == null)
-            {
-                Entries = new ObservableCollection<InGameChatEntry>();
-                ListboxEntries.ItemsSource = Entries;
-            }
             Entries.Add(entry);
             if (Entries.Count > MaxEntries)
                 Entries.RemoveAt(0);
+        }
+
+        private void ClearEntries()
+        {
+            Entries.Clear();
         }
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -67,22 +56,37 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
             if (_this != null)
             {
-                IClient client = args.NewValue as IClient;
-                if (client != null)
+                // Remove old handlers
+                IClient oldClient = args.OldValue as IClient;
+                if (oldClient != null)
                 {
-                    _this.Client = client;
-                    // Register the Client UI events
-                    _this.Client.OnPlayerAddLines += _this.OnPlayerAddLines;
-                    _this.Client.OnSpecialUsed += _this.OnSpecialUsed;
+                    oldClient.OnGameStarted -= _this.OnGameStarted;
+                    oldClient.OnPlayerAddLines -= _this.OnPlayerAddLines;
+                    oldClient.OnSpecialUsed -= _this.OnSpecialUsed;
+                }
+                // Set new client
+                IClient newClient = args.NewValue as IClient;
+                _this.Client = newClient;
+                // Add new handlers
+                if (newClient != null)
+                {
+                    newClient.OnGameStarted += _this.OnGameStarted;
+                    newClient.OnPlayerAddLines += _this.OnPlayerAddLines;
+                    newClient.OnSpecialUsed += _this.OnSpecialUsed;
                 }
             }
+        }
+
+        private void OnGameStarted()
+        {
+            ExecuteOnUIThread.Invoke(ClearEntries);
         }
 
         private void OnPlayerAddLines(string playerName, int specialId, int count)
         {
             ExecuteOnUIThread.Invoke(() => AddEntry(new InGameChatEntry
             {
-                Id = specialId,
+                Id = specialId+1,
                 Special = String.Format("{0} line{1} added to All", count, (count > 1) ? "s" : ""),
                 Source = playerName,
                 TargetVisibility = Visibility.Collapsed,
@@ -91,7 +95,6 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private void OnSpecialUsed(string playerName, string targetName, int specialId, Specials special)
         {
-            //Console.Write("{0}. {1} on {2} from {3}", specialId, GetSpecialString(special), targetName, playerName);
             ExecuteOnUIThread.Invoke(() => AddEntry(new InGameChatEntry
             {
                 Id = specialId+1,

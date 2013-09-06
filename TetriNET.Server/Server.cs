@@ -328,7 +328,8 @@ namespace TetriNET.Server
             Log.Log.WriteLine(Log.Log.LogLevels.Info, "PublishMessage:{0}:{1}", player.Name, msg);
 
             // Send message to players
-            foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+            //foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+            foreach (IPlayer p in _playerManager.Players)
                 p.OnPublishPlayerMessage(player.Name, msg);
         }
 

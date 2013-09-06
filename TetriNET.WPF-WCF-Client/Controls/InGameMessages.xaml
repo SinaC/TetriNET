@@ -4,20 +4,35 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             x:Name="InGameMessagesControl"
+             DataContext="{Binding ElementName=InGameMessagesControl}">
     <Grid>
-        <ListBox x:Name="ListboxEntries" Background="White" Width="150" Height="260">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="Attacks/Defenses" />
+        <ListBox 
+            Grid.Row="1" 
+            Background="White" Width="150" MaxWidth="150" Height="260" HorizontalAlignment="Left" VerticalAlignment="Top"
+            ItemsSource="{Binding Entries, Mode=OneWay}">
+            <ListBox.Template>
+                <ControlTemplate>
+                    <ItemsPresenter />
+                </ControlTemplate>
+            </ListBox.Template>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Id}" Foreground="Black"/>
-                        <TextBlock Text="." Foreground="Black"/>
-                        <TextBlock Text="{Binding Special}" Foreground="DarkMagenta"/>
-                        <TextBlock Text="on" Foreground="black" Visibility="{Binding TargetVisibility}"/>
-                        <TextBlock Text="{Binding Target}" Foreground="Blue" Visibility="{Binding TargetVisibility}"/>
-                        <TextBlock Text="from" Foreground="black"/>
-                        <TextBlock Text="{Binding Source}" Foreground="Blue" />
-                    </StackPanel>
+                    <WrapPanel>
+                        <TextBlock Text="{Binding Id}" Foreground="Black" FontSize="8" Margin="0,0,2,0"/>
+                        <TextBlock Text="." Foreground="Black" FontSize="8" Margin="0,0,2,0"/>
+                        <TextBlock Text="{Binding Special}" Foreground="DarkMagenta" FontSize="8" Margin="0,0,2,0"/>
+                        <TextBlock Text="on" Foreground="black" Visibility="{Binding TargetVisibility}" FontSize="8" Margin="0,0,2,0"/>
+                        <TextBlock Text="{Binding Target}" Foreground="Blue" Visibility="{Binding TargetVisibility}" FontSize="8" Margin="0,0,2,0"/>
+                        <TextBlock Text="from" Foreground="black" FontSize="8" Margin="0,0,2,0"/>
+                        <TextBlock Text="{Binding Source}" Foreground="Blue" FontSize="8"/>
+                    </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
