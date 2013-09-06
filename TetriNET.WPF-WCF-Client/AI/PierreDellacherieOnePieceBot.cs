@@ -6,6 +6,7 @@ using System.Timers;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
+using TetriNET.Strategy;
 
 namespace TetriNET.WPF_WCF_Client.AI
 {
@@ -728,7 +729,7 @@ namespace TetriNET.WPF_WCF_Client.AI
                 bool isMovePossible;
                 int minDeltaX;
                 int maxDeltaX;
-                board.GetAccessibleTranslationsForOrientation(tempTetrimino, out isMovePossible, out minDeltaX, out maxDeltaX);
+                BoardHelper.GetAccessibleTranslationsForOrientation(board, tempTetrimino, out isMovePossible, out minDeltaX, out maxDeltaX);
 
                 StringBuilder sb = new StringBuilder();
                 for (int i = 1; i <= tempTetrimino.TotalCells; i++)

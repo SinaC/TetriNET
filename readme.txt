@@ -11,7 +11,8 @@ add room notion in server (server can handle multiple rooms and client register 
 bot: use gravity when board has enough holes or when to high
 AI -> interface GetBestMove return tetrimino rotation and translation  GetBestSpecialUse return a sequence of action to execute use/discard/nop
 GameController -> interface
-WCFProxy -> add Connect(callback, address)/Close method
+Remove PierreDellacherieOnePieceBot from every project and create a new bot using 2 strategies, complete special strategy, add a method in IClient to get playing opponents,
+	transform MoveStrategyBase and SpecialStrategyBase in interface, add every static method from Dellacherie in BoardHelper
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf

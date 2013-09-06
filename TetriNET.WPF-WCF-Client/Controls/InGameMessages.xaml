@@ -13,16 +13,16 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Text="Attacks/Defenses" />
-        <ListBox 
+        <ItemsControl 
             Grid.Row="1" 
             Background="White" Width="150" MaxWidth="150" Height="260" HorizontalAlignment="Left" VerticalAlignment="Top"
             ItemsSource="{Binding Entries, Mode=OneWay}">
-            <ListBox.Template>
+            <ItemsControl.Template>
                 <ControlTemplate>
                     <ItemsPresenter />
                 </ControlTemplate>
-            </ListBox.Template>
-            <ListBox.ItemTemplate>
+            </ItemsControl.Template>
+            <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
                         <TextBlock Text="{Binding Id}" Foreground="Black" FontSize="8" Margin="0,0,2,0"/>
@@ -34,7 +34,7 @@
                         <TextBlock Text="{Binding Source}" Foreground="Blue" FontSize="8"/>
                     </WrapPanel>
                 </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </UserControl>

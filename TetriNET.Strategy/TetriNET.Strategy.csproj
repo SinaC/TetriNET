@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DF0E62BB-86B0-4FAC-B731-0CD62C90CEB7}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{B77D651E-658C-45D4-972A-3C0D569D689E}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TetriNET.ConsoleWCFClient</RootNamespace>
-    <AssemblyName>TetriNET.ConsoleWCFClient</AssemblyName>
+    <RootNamespace>TetriNET.Strategy</RootNamespace>
+    <AssemblyName>TetriNET.Strategy</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -31,26 +29,24 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>TetriNET.ConsoleWCFClient.Program</StartupObject>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameController\GameController.cs" />
-    <Compile Include="AI\PierreDellacherieOnePieceBot.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="BoardHelper.cs" />
+    <Compile Include="Special strategies\JoelHeymbeeckSpecials.cs" />
+    <Compile Include="Move strategies\PierreDellacherieOnePiece.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\ConsoleUI.cs" />
+    <Compile Include="Move strategies\MoveStrategyBase.cs" />
+    <Compile Include="Special strategies\SpecialStrategyBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TetriNET.Client\TetriNET.Client.csproj">
-      <Project>{fd867b2e-a1c2-4052-af79-ef69aed92597}</Project>
-      <Name>TetriNET.Client</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
@@ -59,19 +55,6 @@
       <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
       <Name>TetriNET.Log</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Strategy\TetriNET.Strategy.csproj">
-      <Project>{b77d651e-658c-45d4-972a-3c0d569d689e}</Project>
-      <Name>TetriNET.Strategy</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TetriNET.WCFProxy\TetriNET.WCFProxy.csproj">
-      <Project>{b85b19f2-5c8d-4ab8-96e2-379b482089f9}</Project>
-      <Name>TetriNET.WCFProxy</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

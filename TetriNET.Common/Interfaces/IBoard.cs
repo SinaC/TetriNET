@@ -29,7 +29,6 @@ namespace TetriNET.Common.Interfaces
         bool CheckNoConflict(ITetrimino tetrimino);
         bool CheckNoConflictWithBoard(ITetrimino tetrimino);
         int CollapseCompletedRows(out List<Specials> specials);
-        void GetAccessibleTranslationsForOrientation(ITetrimino tetrimino, out bool isMovePossible, out int minDeltaX, out int maxDeltaX);
         void CommitTetrimino(ITetrimino tetrimino);
         void DropAndCommit(ITetrimino tetrimino);
 

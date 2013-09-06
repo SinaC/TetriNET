@@ -233,51 +233,6 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             return rows;
         }
 
-        public void GetAccessibleTranslationsForOrientation(ITetrimino tetrimino, out bool isMovePossible, out int minDeltaX, out int maxDeltaX)
-        {
-            isMovePossible = false;
-            minDeltaX = 0;
-            maxDeltaX = 0;
-
-            ITetrimino tempTetrimino = tetrimino.Clone();
-            
-            // Check if we can move
-            bool moveAcceptable = CheckNoConflict(tempTetrimino);
-            if (!moveAcceptable)
-                return;
-            isMovePossible = true;
-
-            // Scan from center to left to find left limit.
-            for (int trial = 0; trial >= -Width; trial--)
-            {
-                // Copy tetrimino
-                tempTetrimino.CopyFrom(tetrimino);
-                // Translate
-                tempTetrimino.Translate(trial, 0);
-                // Check if move is valid
-                moveAcceptable = CheckNoConflict(tempTetrimino);
-                if (moveAcceptable)
-                    minDeltaX = trial;
-                else
-                    break;
-            }
-
-            // Scan from center to right to find right limit.
-            for (int trial = 0; trial <= Width; trial++)
-            {
-                // Copy tetrimino
-                tempTetrimino.CopyFrom(tetrimino);
-                // Translate
-                tempTetrimino.Translate(trial, 0);
-                // Check if move is valid
-                moveAcceptable = CheckNoConflict(tempTetrimino);
-                if (moveAcceptable)
-                    maxDeltaX = trial;
-                else
-                    break;
-            }
-        }
-
         public void CommitTetrimino(ITetrimino tetrimino)
         {
             if (tetrimino.PosX < 1 || tetrimino.PosX > Width)
