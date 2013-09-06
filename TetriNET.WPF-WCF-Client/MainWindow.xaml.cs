@@ -19,7 +19,7 @@ namespace TetriNET.WPF_WCF_Client
     {
         public MainWindow()
         {
-            Log.Log.Initialize(@"D:\TEMP\LOG\", "WPF-client.log");
+            Logger.Log.Initialize(@"D:\TEMP\LOG\", "WPF-client.log");
             ExecuteOnUIThread.Initialize();
 
             InitializeComponent();

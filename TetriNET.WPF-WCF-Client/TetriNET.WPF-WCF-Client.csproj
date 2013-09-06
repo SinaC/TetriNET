@@ -190,9 +190,9 @@
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Log\TetriNET.Log.csproj">
+    <ProjectReference Include="..\TetriNET.Logger\TetriNET.Logger.csproj">
       <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
-      <Name>TetriNET.Log</Name>
+      <Name>TetriNET.Logger</Name>
     </ProjectReference>
     <ProjectReference Include="..\TetriNET.Strategy\TetriNET.Strategy.csproj">
       <Project>{b77d651e-658c-45d4-972a-3c0d569d689e}</Project>

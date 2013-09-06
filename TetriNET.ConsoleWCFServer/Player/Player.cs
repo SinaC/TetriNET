@@ -34,7 +34,7 @@ namespace TetriNET.ConsoleWCFServer.Player
             }
             catch (Exception ex)
             {
-                Log.Log.WriteLine(Log.Log.LogLevels.Error, "Exception:{0} {1}", actionName, ex);
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Error, "Exception:{0} {1}", actionName, ex);
                 if (OnConnectionLost != null)
                     OnConnectionLost(this);
             }

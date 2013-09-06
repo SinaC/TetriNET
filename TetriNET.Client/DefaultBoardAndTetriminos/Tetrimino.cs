@@ -113,7 +113,7 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
                 case Tetriminos.TetriminoZ:
                     return new TetriminoZ(spawnX, spawnY, spawnOrientation);
             }
-            Log.Log.WriteLine(Log.Log.LogLevels.Warning, "Create random Tetrimino because server didn't send next tetrimino");
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Warning, "Create random Tetrimino because server didn't send next tetrimino");
             return new TetriminoZ(spawnX, spawnY, spawnOrientation); // TODO: sometimes server takes time to send next tetrimino, it should send 2 or 3 next tetriminoes to ensure this never happens
         }
     }

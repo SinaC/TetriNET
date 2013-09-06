@@ -40,9 +40,9 @@ namespace TetriNET.WCFHost
 
                 foreach (var endpt in _serviceHost.Description.Endpoints)
                 {
-                    Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Enpoint address:\t{0}", endpt.Address);
-                    Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Enpoint binding:\t{0}", endpt.Binding);
-                    Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Enpoint contract:\t{0}\n", endpt.Contract.ContractType.Name);
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Enpoint address:\t{0}", endpt.Address);
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Enpoint binding:\t{0}", endpt.Binding);
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Enpoint contract:\t{0}\n", endpt.Contract.ContractType.Name);
                 }
             }
 

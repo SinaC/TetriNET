@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.GenericHost", "Tet
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.WPF-WCF-Client", "TetriNET.WPF-WCF-Client\TetriNET.WPF-WCF-Client.csproj", "{C412C1E3-BDEC-405C-905B-B24F6EF053FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Log", "TetriNET.Log\TetriNET.Log.csproj", "{1C6B89EB-A58A-4673-A70A-C00BBC325848}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Logger", "TetriNET.Logger\TetriNET.Logger.csproj", "{1C6B89EB-A58A-4673-A70A-C00BBC325848}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Strategy", "TetriNET.Strategy\TetriNET.Strategy.csproj", "{B77D651E-658C-45D4-972A-3C0D569D689E}"
 EndProject

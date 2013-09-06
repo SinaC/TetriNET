@@ -121,7 +121,7 @@ namespace TetriNET.ConsoleWCFClient.AI
             // DROP (delayed)
             DateTime searchBestModeEndTime = DateTime.Now;
 
-            Log.Log.WriteLine(Log.Log.LogLevels.Info, "BEST MOVE found in {0} ms and special in {1} ms", (searchBestModeEndTime - specialManaged).TotalMilliseconds, (specialManaged - searchBestMoveStartTime).TotalMilliseconds);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "BEST MOVE found in {0} ms and special in {1} ms", (searchBestModeEndTime - specialManaged).TotalMilliseconds, (specialManaged - searchBestMoveStartTime).TotalMilliseconds);
 
             TimeSpan timeSpan = searchBestModeEndTime - searchBestMoveStartTime;
             double sleepTime = SleepTime - timeSpan.TotalMilliseconds;
@@ -236,7 +236,7 @@ namespace TetriNET.ConsoleWCFClient.AI
                     // If Nuke/Gravity/Switch
                     if (inventory.Any(x => x == Specials.NukeField || x == Specials.BlockGravity || x == Specials.SwitchFields))
                     {
-                        Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[SURVIVAL] Found N/G/S in inventory");
+                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[SURVIVAL] Found N/G/S in inventory");
                         bool saved = false;
                         while (true)
                         {
@@ -252,7 +252,7 @@ namespace TetriNET.ConsoleWCFClient.AI
                             {
                                 case Specials.NukeField: // Nuke/Gravity -> use it immediately
                                 case Specials.BlockGravity:
-                                    Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[SURVIVAL]Use {0}", special.ToString());
+                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[SURVIVAL]Use {0}", special.ToString());
                                     succeeded = _client.UseSpecial(_client.PlayerId);
                                     saved = true; // Saved, stop emptying inventory
                                     break;
@@ -262,24 +262,24 @@ namespace TetriNET.ConsoleWCFClient.AI
                                     int pileHeight = GetPileMaxHeight(strongestBoard);
                                     if (pileHeight <= 10)
                                     {
-                                        Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[SURVIVAL]Use S, found a valid opponent {0} with a pile {1}", strongest, pileHeight);
+                                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[SURVIVAL]Use S, found a valid opponent {0} with a pile {1}", strongest, pileHeight);
                                         succeeded = _client.UseSpecial(strongest);
                                         saved = true; // Saved, stop emptying inventory
                                     }
                                     else
                                     {
-                                        Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[SURVIVAL]Discard S, no valid opponent");
+                                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[SURVIVAL]Discard S, no valid opponent");
                                         _client.DiscardFirstSpecial();
                                         succeeded = true;
                                     }
                                     break;
                                 }
                                 case Specials.ClearLines: // ClearLine -> use it immediately  TODO ==> this could lead to unwanted behaviour if we are emptying for a switch
-                                Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[SURVIVAL]Use C on ourself");
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[SURVIVAL]Use C on ourself");
                                     succeeded = _client.UseSpecial(_client.PlayerId);
                                     break;
                                 default: // Other -> use it on strongest
-                                    Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[SURVIVAL]Use {0} on strongest opponent {1}", special, strongest);
+                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[SURVIVAL]Use {0} on strongest opponent {1}", special, strongest);
                                     succeeded = _client.UseSpecial(strongest);
                                     break;
                             }
@@ -289,12 +289,12 @@ namespace TetriNET.ConsoleWCFClient.AI
 
                             System.Threading.Thread.Sleep(10); // delay next special use
                         }
-                        Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[SURVIVAL] Survival mode N/G/S finished. saved:{0}", saved);
+                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[SURVIVAL] Survival mode N/G/S finished. saved:{0}", saved);
                     }
                         // Nothing could save use, send everything to weakest and pray 
                     else
                     {
-                        Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[SURVIVAL] No N/G/S found -> use everything on weakest and try to kill him");
+                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[SURVIVAL] No N/G/S found -> use everything on weakest and try to kill him");
                         while (true)
                         {
                             bool succeeded;
@@ -308,13 +308,13 @@ namespace TetriNET.ConsoleWCFClient.AI
                             // ClearLine -> use it immediately
                             if (special == Specials.ClearLines)
                             {
-                                Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[SURVIVAL]Use C on ourself");
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[SURVIVAL]Use C on ourself");
                                 succeeded = _client.UseSpecial(_client.PlayerId);
                             }
                                 // Other -> use it on weakest
                             else
                             {
-                                Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[SURVIVAL]Use {0} on weakest opponent {1}", special.ToString(), weakest);
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[SURVIVAL]Use {0} on weakest opponent {1}", special.ToString(), weakest);
                                 succeeded = _client.UseSpecial(weakest);
                             }
                             if (!succeeded) // If something wrong with UseSpecial, stop loop
@@ -339,7 +339,7 @@ namespace TetriNET.ConsoleWCFClient.AI
                             int addLinesCount = inventory.Count(x => x == Specials.AddLines);
                             if (addLinesCount > 0 && pileHeight + addLinesCount >= lastOpponentBoard.Height)
                             {
-                                Log.Log.WriteLine(Log.Log.LogLevels.Debug, "[KILLING LAST]Trying to kill last opponent with A");
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[KILLING LAST]Trying to kill last opponent with A");
                                 while (true)
                                 {
                                     if (!inventory.Any())
@@ -352,13 +352,13 @@ namespace TetriNET.ConsoleWCFClient.AI
                                     // AddLines -> use it immediately on last opponent
                                     if (currentSpecial == Specials.AddLines)
                                     {
-                                        Log.Log.WriteLine(Log.Log.LogLevels.Debug, "[KILLING LAST]Use A on last opponent {0}", lastOpponent);
+                                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[KILLING LAST]Use A on last opponent {0}", lastOpponent);
                                         succeeded = _client.UseSpecial(lastOpponent);
                                     }
                                         // Else, discard
                                     else
                                     {
-                                        Log.Log.WriteLine(Log.Log.LogLevels.Debug, "[KILLING LAST]Discard {0}", currentSpecial.ToString());
+                                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[KILLING LAST]Discard {0}", currentSpecial.ToString());
                                         _client.DiscardFirstSpecial();
                                         succeeded = true;
                                     }
@@ -385,18 +385,18 @@ namespace TetriNET.ConsoleWCFClient.AI
                     {
                             // Destroy own board and switch with strongest opponent
                         case Specials.SwitchFields: // TODO:
-                            Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Keep S for survival");
+                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Keep S for survival");
                             // NOP
                             break;
                             // Wait
                         case Specials.BlockGravity:
                         case Specials.NukeField:
-                            Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Keep {0} for survival", special.ToString());
+                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Keep {0} for survival", special.ToString());
                             // NOP
                             break;
                             // Send to strongest opponent
                         case Specials.AddLines:
-                            Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Use A on strongest {0}", strongest);
+                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Use A on strongest {0}", strongest);
                             _client.UseSpecial(strongest);
                             break;
                             //  Send to strongest opponent with a bomb
@@ -408,19 +408,19 @@ namespace TetriNET.ConsoleWCFClient.AI
                             int bombTarget = GetStrongestOpponentWithBomb();
                             if (bombTarget != -1)
                             {
-                                Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]use O to {0}", bombTarget);
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]use O to {0}", bombTarget);
                                 _client.UseSpecial(bombTarget);
                             }
                             else
                             {
                                 if (inventory.Count + 2 >= _client.InventorySize)
                                 {
-                                    Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Discard O, inventory almost full");
+                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Discard O, inventory almost full");
                                     _client.DiscardFirstSpecial();
                                 }
                                 else
                                 {
-                                    Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Keep O for later");
+                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Keep O for later");
                                 }
                             }
                             break;
@@ -436,7 +436,7 @@ namespace TetriNET.ConsoleWCFClient.AI
                             int targetId = GetStrongestOpponentWithNukeSwitchGravityOnBottomLine();
                             if (targetId != -1)
                             {
-                                Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Use C on opponent with N/G/S on bottom line {0}", targetId);
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Use C on opponent with N/G/S on bottom line {0}", targetId);
                                 _client.UseSpecial(targetId);
                             }
                             else
@@ -444,7 +444,7 @@ namespace TetriNET.ConsoleWCFClient.AI
                                 targetId = GetStrongestOpponentWithBombOnBottomLine();
                                 if (targetId != -1)
                                 {
-                                    Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Use C on opponent with O on bottom line {0}", targetId);
+                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Use C on opponent with O on bottom line {0}", targetId);
                                     _client.UseSpecial(targetId);
                                 }
                                 else
@@ -452,7 +452,7 @@ namespace TetriNET.ConsoleWCFClient.AI
                                     targetId = GetOpponentWithMostSpecialsOnBottomLine();
                                     if (targetId != -1)
                                     {
-                                        Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Use C on opponent with most specials on bottom line {0}", targetId);
+                                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Use C on opponent with most specials on bottom line {0}", targetId);
                                         _client.UseSpecial(targetId);
                                     }
                                     else
@@ -460,12 +460,12 @@ namespace TetriNET.ConsoleWCFClient.AI
                                         bool hasValuableSpecialOnBottomLine = HasNukeGravitySwitchOnBottomLine();
                                         if (hasValuableSpecialOnBottomLine)
                                         {
-                                            Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Discard C, we have N/G/S on bottom line");
+                                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Discard C, we have N/G/S on bottom line");
                                             _client.DiscardFirstSpecial();
                                         }
                                         else
                                         {
-                                            Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Use C on ourself");
+                                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Use C on ourself");
                                             _client.UseSpecial(_client.PlayerId);
                                         }
                                     }
@@ -496,7 +496,7 @@ namespace TetriNET.ConsoleWCFClient.AI
                             bool hasBomb = HasSpecial(Specials.BlockBomb);
                             if (hasBomb && !inventory.Any(x => x == Specials.NukeField || x == Specials.BlockGravity))
                             {
-                                Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Use B on ourself, we have O in board and no N/G in inventory");
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Use B on ourself, we have O in board and no N/G in inventory");
                                 _client.UseSpecial(_client.PlayerId);
                             }
                             else
@@ -504,7 +504,7 @@ namespace TetriNET.ConsoleWCFClient.AI
                                 int targetId = GetStrongestOpponentWithNukeSwitchGravity();
                                 if (targetId != -1)
                                 {
-                                    Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Use B on strongest opponent with N/S/G {0}", targetId);
+                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Use B on strongest opponent with N/S/G {0}", targetId);
                                     _client.UseSpecial(targetId);
                                 }
                                 else
@@ -517,12 +517,12 @@ namespace TetriNET.ConsoleWCFClient.AI
                                             targetId = GetOpponentWithMostSpecialsAndNoBomb();
                                             if (targetId != -1)
                                             {
-                                                Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Use B on opponent with most specials and no O {0}, we have O in inventory", targetId);
+                                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Use B on opponent with most specials and no O {0}, we have O in inventory", targetId);
                                                 _client.UseSpecial(targetId);
                                             }
                                             else
                                             {
-                                                Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Discard B, no opponents without O and we have O in inventory", targetId);
+                                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Discard B, no opponents without O and we have O in inventory", targetId);
                                                 _client.DiscardFirstSpecial();
                                             }
                                         }
@@ -531,19 +531,19 @@ namespace TetriNET.ConsoleWCFClient.AI
                                             targetId = GetOpponentWithMostSpecials();
                                             if (targetId != -1)
                                             {
-                                                Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Use B on opponent with most specials {0}", targetId);
+                                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Use B on opponent with most specials {0}", targetId);
                                                 _client.UseSpecial(targetId);
                                             }
                                             else
                                             {
                                                 if (inventory.Count + 2 >= _client.InventorySize)
                                                 {
-                                                    Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Discard B, inventory is almost full");
+                                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Discard B, inventory is almost full");
                                                     _client.DiscardFirstSpecial();
                                                 }
                                                 else
                                                 {
-                                                    Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Keep B for later");
+                                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Keep B for later");
                                                 }
                                             }
                                         }
@@ -553,7 +553,7 @@ namespace TetriNET.ConsoleWCFClient.AI
                                         targetId = GetStrongestOpponentWithBomb();
                                         if (targetId != -1)
                                         {
-                                            Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Use B on opponent with O {0}, we don't have any O", targetId);
+                                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Use B on opponent with O {0}, we don't have any O", targetId);
                                             _client.UseSpecial(targetId);
                                         }
                                         else
@@ -561,19 +561,19 @@ namespace TetriNET.ConsoleWCFClient.AI
                                             targetId = GetOpponentWithMostSpecials();
                                             if (targetId != -1)
                                             {
-                                                Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Use B on opponent with most specials {0}", targetId);
+                                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Use B on opponent with most specials {0}", targetId);
                                                 _client.UseSpecial(targetId);
                                             }
                                             else
                                             {
                                                 if (inventory.Count + 2 >= _client.InventorySize)
                                                 {
-                                                    Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Discard B, inventory is almost full");
+                                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Discard B, inventory is almost full");
                                                     _client.DiscardFirstSpecial();
                                                 }
                                                 else
                                                 {
-                                                    Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Keep B for later");
+                                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Keep B for later");
                                                 }
                                             }
                                         }
@@ -589,7 +589,7 @@ namespace TetriNET.ConsoleWCFClient.AI
                             int targetId = GetStrongestOpponentWithNukeSwitchGravity();
                             if (targetId != -1)
                             {
-                                Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Use R on strongest opponent with N/S/G {0}", targetId);
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Use R on strongest opponent with N/S/G {0}", targetId);
                                 _client.UseSpecial(targetId);
                             }
                             else
@@ -597,12 +597,12 @@ namespace TetriNET.ConsoleWCFClient.AI
                                 targetId = GetStrongestOpponent();
                                 if (targetId != -1)
                                 {
-                                    Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Use R on strongest opponent {0}", targetId);
+                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Use R on strongest opponent {0}", targetId);
                                     _client.UseSpecial(targetId);
                                 }
                                 else
                                 {
-                                    Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Keep R for later **** SHOULD NEVER HAPPEN");
+                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Keep R for later **** SHOULD NEVER HAPPEN");
                                 }
                             }
                             break;
@@ -619,12 +619,12 @@ namespace TetriNET.ConsoleWCFClient.AI
                             int targetId = GetStrongestOpponent();
                             if (targetId != -1)
                             {
-                                Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Use {0} on strongest opponent {1}", special.ToString(), targetId);
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Use {0} on strongest opponent {1}", special.ToString(), targetId);
                                 _client.UseSpecial(targetId);
                             }
                             else
                             {
-                                Log.Log.WriteLine(Log.Log.LogLevels.Debug,"[NORMAL]Keep {0} for later **** SHOULD NEVER HAPPEN", special.ToString());
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug,"[NORMAL]Keep {0} for later **** SHOULD NEVER HAPPEN", special.ToString());
                             }
                             break;
                         }
@@ -741,7 +741,7 @@ namespace TetriNET.ConsoleWCFClient.AI
                     tempTetrimino.GetCellAbsolutePosition(i, out x, out y);
                     sb.Append(String.Format("[{0}->{1},{2}]", i, x-tempTetrimino.PosX, y-tempTetrimino.PosY));
                 }
-                //Log.Log.WriteLine("{0} {1} -> {2}  {3}", trialRotationDelta, minDeltaX, maxDeltaX, sb.ToString());
+                //Logger.Log.WriteLine("{0} {1} -> {2}  {3}", trialRotationDelta, minDeltaX, maxDeltaX, sb.ToString());
                 if (isMovePossible)
                 {
                     // Consider all allowed translations
@@ -769,7 +769,7 @@ namespace TetriNET.ConsoleWCFClient.AI
                             int trialPriority;
                             EvaluteMove(tempBoard, tempTetrimino, out trialRating, out trialPriority);
 
-                            //Log.Log.WriteLine("R:{0:0.0000} P:{1} R:{2} T:{3}", trialRating, trialPriority, trialRotationDelta, trialTranslationDelta);
+                            //Logger.Log.WriteLine("R:{0:0.0000} P:{1} R:{2} T:{3}", trialRating, trialPriority, trialRotationDelta, trialTranslationDelta);
 
                             // Check if better than previous best
                             if (trialRating > currentBestRating || (Math.Abs(trialRating - currentBestRating) < 0.0001 && trialPriority > currentBestPriority))

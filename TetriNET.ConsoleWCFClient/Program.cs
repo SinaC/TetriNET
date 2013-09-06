@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using TetriNET.Client.DefaultBoardAndTetriminos;
-using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.ConsoleWCFClient.AI;
 using TetriNET.ConsoleWCFClient.GameController;
@@ -15,7 +14,7 @@ namespace TetriNET.ConsoleWCFClient
         {
             string name = "client" + Guid.NewGuid().ToString().Substring(0, 5);
 
-            Log.Log.Initialize(@"D:\TEMP\LOG\", name+".log");
+            Logger.Log.Initialize(@"D:\TEMP\LOG\", name+".log");
 
             //
             //string baseAddress = @"net.tcp://localhost:8765/TetriNET";

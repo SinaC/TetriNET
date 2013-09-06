@@ -257,7 +257,7 @@ namespace TetriNET.Client
             ResetTimeout();
             if (succeeded && State == States.Registering)
             {
-                Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Registered as player {0} game started {1}", playerId, isGameStarted);
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Registered as player {0} game started {1}", playerId, isGameStarted);
 
                 if (playerId >= 0)
                 {
@@ -284,7 +284,7 @@ namespace TetriNET.Client
                 else
                 {
                     State = States.Created;
-                    Log.Log.WriteLine(Log.Log.LogLevels.Warning, "Wrong id {0}", playerId);
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Warning, "Wrong id {0}", playerId);
                 }
             }
             else
@@ -294,13 +294,13 @@ namespace TetriNET.Client
                 if (ClientOnPlayerRegistered != null)
                     ClientOnPlayerRegistered(false, -1);
 
-                Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Registration failed");
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Registration failed");
             }
         }
 
         public void OnPlayerJoined(int playerId, string name)
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Player {0}[{1}] joined", name, playerId);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player {0}[{1}] joined", name, playerId);
 
             ResetTimeout();
             if (playerId != _clientPlayerId && playerId >= 0)
@@ -328,7 +328,7 @@ namespace TetriNET.Client
 
         public void OnPlayerLeft(int playerId, string name, LeaveReasons reason)
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Player {0}[{1}] left ({2})", name, playerId, reason);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player {0}[{1}] left ({2})", name, playerId, reason);
 
             ResetTimeout();
             if (playerId != _clientPlayerId && playerId >= 0)
@@ -342,7 +342,7 @@ namespace TetriNET.Client
 
         public void OnPublishPlayerMessage(string playerName, string msg)
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "{0}:{1}", playerName, msg);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "{0}:{1}", playerName, msg);
 
             ResetTimeout();
 
@@ -352,7 +352,7 @@ namespace TetriNET.Client
 
         public void OnPublishServerMessage(string msg)
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "{0}", msg);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "{0}", msg);
 
             ResetTimeout();
 
@@ -362,7 +362,7 @@ namespace TetriNET.Client
 
         public void OnPlayerLost(int playerId)
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Player [{0}] {1} has lost", playerId, _players[playerId].Name);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player [{0}] {1} has lost", playerId, _players[playerId].Name);
 
             ResetTimeout();
             if (playerId != _clientPlayerId && _players[playerId] != null && _players[playerId].State == Player.States.Playing)
@@ -380,7 +380,7 @@ namespace TetriNET.Client
 
         public void OnPlayerWon(int playerId)
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Player [{0}] {1} has won", playerId, _players[playerId].Name);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player [{0}] {1} has won", playerId, _players[playerId].Name);
 
             ResetTimeout();
             if (_players[playerId] != null)
@@ -393,7 +393,7 @@ namespace TetriNET.Client
 
         public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, Tetriminos thirdTetrimino, GameOptions options)
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Game started with {0} {1} {2}", firstTetrimino, secondTetrimino, thirdTetrimino);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Game started with {0} {1} {2}", firstTetrimino, secondTetrimino, thirdTetrimino);
 
             ResetTimeout();
             State = States.Playing;
@@ -425,12 +425,12 @@ namespace TetriNET.Client
             if (ClientOnGameStarted != null)
                 ClientOnGameStarted();
 
-            //Log.Log.WriteLine("TETRIMINOS:{0}", _tetriminos.Dump(8));
+            //Logger.Log.WriteLine("TETRIMINOS:{0}", _tetriminos.Dump(8));
         }
 
         public void OnGameFinished()
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Game finished");
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Game finished");
 
             _gameTimer.Stop();
 
@@ -446,7 +446,7 @@ namespace TetriNET.Client
 
         public void OnGamePaused()
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Game paused");
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Game paused");
 
             ResetTimeout();
             if (State == States.Playing)
@@ -460,7 +460,7 @@ namespace TetriNET.Client
 
         public void OnGameResumed()
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Game resumed");
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Game resumed");
 
             ResetTimeout();
             if (State == States.Paused)
@@ -474,7 +474,7 @@ namespace TetriNET.Client
 
         public void OnServerAddLines(int lineCount)
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Server add {0} lines", lineCount);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Server add {0} lines", lineCount);
 
             ResetTimeout();
 
@@ -487,7 +487,7 @@ namespace TetriNET.Client
 
         public void OnPlayerAddLines(int specialId, int playerId, int lineCount)
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Player {0} add {1} lines (special [{2}])", playerId, lineCount, specialId);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player {0} add {1} lines (special [{2}])", playerId, lineCount, specialId);
 
             ResetTimeout();
 
@@ -512,7 +512,7 @@ namespace TetriNET.Client
 
         public void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special)
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Special {0}[{1}] from {2} to {3}", special, specialId, playerId, targetId);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Special {0}[{1}] from {2} to {3}", special, specialId, playerId, targetId);
 
             ResetTimeout();
 
@@ -582,7 +582,7 @@ namespace TetriNET.Client
 
         public void OnGridModified(int playerId, byte[] grid)
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Player [{0}] {1} modified", playerId, _players[playerId].Name);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player [{0}] {1} modified", playerId, _players[playerId].Name);
 
             ResetTimeout();
 
@@ -614,7 +614,7 @@ namespace TetriNET.Client
 
         public void OnServerMasterChanged(int playerId)
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Server master changed: [{0}]", playerId);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Server master changed: [{0}]", playerId);
 
             ResetTimeout();
 
@@ -624,7 +624,7 @@ namespace TetriNET.Client
 
         public void OnWinListModified(List<WinEntry> winList)
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Win list: {0}", winList.Any() ? winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i) : "");
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Win list: {0}", winList.Any() ? winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i) : "");
 
             ResetTimeout();
 
@@ -660,7 +660,7 @@ namespace TetriNET.Client
 
         private void EndGame()
         {
-            Log.Log.WriteLine(Log.Log.LogLevels.Debug, "End game");
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "End game");
             _gameTimer.Stop();
             //
             State = States.Registered;
@@ -685,7 +685,7 @@ namespace TetriNET.Client
             if (ClientOnRedraw != null)
                 ClientOnRedraw();
 
-            //Log.Log.WriteLine("New tetrimino {0} {1}  next {2}", CurrentTetrimino.TetriminoValue, _tetriminoIndex, NextTetrimino.TetriminoValue);
+            //Logger.Log.WriteLine("New tetrimino {0} {1}  next {2}", CurrentTetrimino.TetriminoValue, _tetriminoIndex, NextTetrimino.TetriminoValue);
             // Check game over (if current tetrimino has conflict with another tetrimino)
             if (!Board.CheckNoConflict(CurrentTetrimino))
                 EndGame();
@@ -701,10 +701,10 @@ namespace TetriNET.Client
 
         private void FinishRound()
         {
-            //Log.Log.WriteLine("Round finished with tetrimino {0} {1}  next {2}", CurrentTetrimino.TetriminoValue, _tetriminoIndex, NextTetrimino.TetriminoValue);
+            //Logger.Log.WriteLine("Round finished with tetrimino {0} {1}  next {2}", CurrentTetrimino.TetriminoValue, _tetriminoIndex, NextTetrimino.TetriminoValue);
             // Stop game
             _gameTimer.Stop();
-            //Log.Log.WriteLine("TETRIMINOS:{0}", _tetriminos.Dump(8));
+            //Logger.Log.WriteLine("TETRIMINOS:{0}", _tetriminos.Dump(8));
             // Delete rows and get specials
             List<Specials> specials;
             int deletedRows = DeleteRows(out specials);
@@ -713,7 +713,7 @@ namespace TetriNET.Client
             {
                 if (ClientOnLinesClearedChanged != null)
                     ClientOnLinesClearedChanged();
-                Log.Log.WriteLine(Log.Log.LogLevels.Debug, "{0} lines deleted -> total {1}", deletedRows, LinesCleared);
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "{0} lines deleted -> total {1}", deletedRows, LinesCleared);
             }
 
             // Check level increase
@@ -722,7 +722,7 @@ namespace TetriNET.Client
                 Level = LinesCleared / 10;
                 if (ClientOnLevelChanged != null)
                     ClientOnLevelChanged();
-                Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Level increased: {0}", Level);
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Level increased: {0}", Level);
                 // TODO: change game timer interval
             }
 
@@ -1147,14 +1147,14 @@ namespace TetriNET.Client
             for (int i = 0; i < MaxPlayers; i++)
             {
                 Player p = _players[i];
-                Log.Log.WriteLine(Log.Log.LogLevels.Info, "{0}{1}: {2}", i, i == _clientPlayerId ? "*" : String.Empty, p == null ? String.Empty : p.Name);
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "{0}{1}: {2}", i, i == _clientPlayerId ? "*" : String.Empty, p == null ? String.Empty : p.Name);
             }
             // Inventory
             List<Specials> specials = Inventory;
             StringBuilder sb2 = new StringBuilder();
             foreach (Specials special in specials)
                 sb2.Append(ConvertSpecial(special));
-            Log.Log.WriteLine(Log.Log.LogLevels.Info, sb2.ToString());
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, sb2.ToString());
             // Board
             if (_clientPlayerId >= 0 && State == States.Playing)
             {
@@ -1177,9 +1177,9 @@ namespace TetriNET.Client
                         }
                     }
                     sb.Append("|");
-                    Log.Log.WriteLine(Log.Log.LogLevels.Info, sb.ToString());
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Info, sb.ToString());
                 }
-                Log.Log.WriteLine(Log.Log.LogLevels.Info, "".PadLeft(Board.Width + 2, '-'));
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "".PadLeft(Board.Width + 2, '-'));
             }
             // TODO: current & next tetrimino
         }
@@ -1438,7 +1438,7 @@ namespace TetriNET.Client
                     TimeSpan timespan = DateTime.Now - _lastActionFromServer;
                     if (timespan.TotalMilliseconds > TimeoutDelay && IsTimeoutDetectionActive)
                     {
-                        Log.Log.WriteLine(Log.Log.LogLevels.Debug, "Timeout++");
+                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Timeout++");
                         // Update timeout count
                         SetTimeout();
                         if (_timeoutCount >= MaxTimeoutCountBeforeDisconnection)

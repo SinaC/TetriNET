@@ -109,7 +109,7 @@ namespace TetriNET.WPF_WCF_Client.Views
                 }
                 else
                 {
-                    Log.Log.WriteLine(Log.Log.LogLevels.Error, "Trying to reassign an opponent {0} {1} to grid {2}", playerId, playerName, grid.PlayerId);
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Error, "Trying to reassign an opponent {0} {1} to grid {2}", playerId, playerName, grid.PlayerId);
                 }
             }
         }
