@@ -15,7 +15,7 @@ using TetriNET.Common.Randomizer;
 
 namespace TetriNET.Client
 {
-    internal sealed class Player
+    internal sealed class Player : IOpponent
     {
         public enum States
         {
@@ -24,7 +24,7 @@ namespace TetriNET.Client
             Lost,
         }
 
-        public int Id { get; set; }
+        public int PlayerId { get; set; }
         public string Name { get; set; }
         public IBoard Board { get; set; }
         public States State { get; set; }
@@ -926,14 +926,12 @@ namespace TetriNET.Client
             get { return _options.InventorySize; }
         }
 
-        public IBoard GetBoard(int playerId)
+        public IEnumerable<IOpponent> Opponents
         {
-            return (playerId >= 0 && playerId < MaxPlayers && _players[playerId] != null) ? _players[playerId].Board : null;
-        }
-
-        public bool IsPlaying(int playerId)
-        {
-            return (playerId >= 0 && playerId < MaxPlayers && _players[playerId] != null) && _players[playerId].State == Player.States.Playing;
+            get
+            {
+                return _players.Where(x => x != null && x.PlayerId != _clientPlayerId && x.Board != null && x.State == Player.States.Playing);
+            }
         }
 
         public bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc)

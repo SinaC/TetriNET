@@ -8,11 +8,14 @@ when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 discovery doesn't work on cross/multiple machine
 client/server version used when registering
 add room notion in server (server can handle multiple rooms and client register on a room)
-bot: use gravity when board has enough holes or when to high
-AI -> interface GetBestMove return tetrimino rotation and translation  GetBestSpecialUse return a sequence of action to execute use/discard/nop
+SinaCSpecials: use gravity when board has enough holes or when to high
 GameController -> interface
 Remove PierreDellacherieOnePieceBot from every project and create a new bot using 2 strategies, complete special strategy, add a method in IClient to get playing opponents,
 	transform MoveStrategyBase and SpecialStrategyBase in interface, add every static method from Dellacherie in BoardHelper
+log path/filename should be read from App.config
+
+AI: finish SinaCSpecials, use special advices in Bot
+WPF client: options, inventory, main window size, connect, player list
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf

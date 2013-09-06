@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ServiceModel.Dispatcher;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.GameDatas;
 
@@ -49,8 +50,9 @@ namespace TetriNET.Common.Interfaces
         bool IsGameStarted { get; }
         int InventorySize { get; }
 
-        IBoard GetBoard(int playerId);
-        bool IsPlaying(int playerId);
+        //IBoard GetBoard(int playerId);
+        //bool IsPlaying(int playerId);
+        IEnumerable<IOpponent> Opponents { get; }
 
         event ClientConnectionLostHandler OnConnectionLost;
 

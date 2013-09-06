@@ -40,11 +40,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoardHelper.cs" />
-    <Compile Include="Special strategies\JoelHeymbeeckSpecials.cs" />
+    <Compile Include="Special strategies\SinaCSpecials.cs" />
     <Compile Include="Move strategies\PierreDellacherieOnePiece.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Move strategies\MoveStrategyBase.cs" />
-    <Compile Include="Special strategies\SpecialStrategyBase.cs" />
+    <Compile Include="Move strategies\IMoveStrategy.cs" />
+    <Compile Include="Special strategies\ISpecialStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">

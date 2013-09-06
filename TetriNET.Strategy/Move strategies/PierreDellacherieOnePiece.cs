@@ -6,14 +6,9 @@ using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Strategy
 {
-    public class PierreDellacherieOnePiece : MoveStrategyBase
+    public class PierreDellacherieOnePiece : IMoveStrategy
     {
-        public override string StrategyName
-        {
-            get { return "Pierre Dellacherie One Piece"; }
-        }
-
-        public override bool GetBestMove(IBoard board, ITetrimino current, ITetrimino next, out int bestRotationDelta, out int bestTranslationDelta)
+        public bool GetBestMove(IBoard board, ITetrimino current, ITetrimino next, out int bestRotationDelta, out int bestTranslationDelta)
         {
             int currentBestTranslationDelta = 0;
             int currentBestRotationDelta = 0;

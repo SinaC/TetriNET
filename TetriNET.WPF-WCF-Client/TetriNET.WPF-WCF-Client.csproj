@@ -59,12 +59,6 @@
     <Compile Include="Controls\PlayerGridCanvas.xaml.cs">
       <DependentUpon>PlayerGridCanvas.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\PlayerGridRectangle.xaml.cs">
-      <DependentUpon>PlayerGridRectangle.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\PlayerGridLabel.xaml.cs">
-      <DependentUpon>PlayerGridLabel.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MainWindow2.xaml.cs">
       <DependentUpon>MainWindow2.xaml</DependentUpon>
     </Compile>
@@ -86,27 +80,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Controls\PlayerGridRectangle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\PlayerGridLabel.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\InGameMessages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Inventory.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\OpponentGrid.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\PlayerGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -129,12 +107,6 @@
       <DependentUpon>Inventory.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Mapper.cs" />
-    <Compile Include="Controls\OpponentGrid.xaml.cs">
-      <DependentUpon>OpponentGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\PlayerGrid.xaml.cs">
-      <DependentUpon>PlayerGrid.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ExecuteOnUIThread.cs" />
     <Compile Include="GameController.cs" />
     <Compile Include="MainWindow.xaml.cs">
