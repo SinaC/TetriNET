@@ -11,10 +11,10 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="Attacks/Defenses" />
+        <TextBlock Grid.Row="0" Text="Attacks/Defenses" HorizontalAlignment="Left" />
         <ItemsControl 
             Grid.Row="1" 
-            Background="White" Width="150" MaxWidth="150" Height="260" HorizontalAlignment="Left" VerticalAlignment="Top"
+            Background="White" Width="192" Height="Auto" MaxWidth="192" HorizontalAlignment="Left" VerticalAlignment="Top"
             ItemsSource="{Binding Entries, Mode=OneWay}">
             <ItemsControl.Template>
                 <ControlTemplate>

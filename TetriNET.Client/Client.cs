@@ -259,12 +259,13 @@ namespace TetriNET.Client
             {
                 Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Registered as player {0} game started {1}", playerId, isGameStarted);
 
-                if (playerId >= 0)
+                if (playerId >= 0 && playerId < MaxPlayersCount)
                 {
                     _clientPlayerId = playerId;
                     _players[_clientPlayerId] = new Player
                     {
                         Name = Name,
+                        PlayerId = playerId,
                         Board = _createBoardFunc(),
                         State = Player.States.Joined
                     };
@@ -303,12 +304,13 @@ namespace TetriNET.Client
             Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player {0}[{1}] joined", name, playerId);
 
             ResetTimeout();
-            if (playerId != _clientPlayerId && playerId >= 0)
+            if (playerId != _clientPlayerId && playerId >= 0 && playerId < MaxPlayersCount)
             {
                 // don't update ourself
                 _players[playerId] = new Player
                 {
                     Name = name,
+                    PlayerId = playerId,
                     Board = _createBoardFunc(),
                     State = Player.States.Joined
                 };

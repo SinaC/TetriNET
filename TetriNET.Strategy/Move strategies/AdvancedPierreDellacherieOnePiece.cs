@@ -4,10 +4,10 @@ using System.Text;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 
-namespace TetriNET.Strategy
+namespace TetriNET.Strategy.Move_strategies
 {
-    // http://www.colinfahey.com/tetris/tetris.html
-    public class PierreDellacherieOnePiece : IMoveStrategy
+    // http://hal.archives-ouvertes.fr/docs/00/41/89/54/PDF/article.pdf
+    public class AdvancedPierreDellacherieOnePiece : IMoveStrategy
     {
         public bool GetBestMove(IBoard board, ITetrimino current, ITetrimino next, out int bestRotationDelta, out int bestTranslationDelta)
         {
@@ -122,7 +122,7 @@ namespace TetriNET.Strategy
             tetrimino.GetAbsoluteBoundingRectangle(out tetriminoMinX, out tetriminoMinY, out tetriminoMaxX, out tetriminoMaxY);
 
             // Landing Height (vertical midpoint)
-            double landingHeight = 0.5 * (tetriminoMinY + tetriminoMaxY);
+            double landingHeight = 0.5*(tetriminoMinY + tetriminoMaxY);
 
             //
             int completedRows = BoardHelper.GetTotalCompletedRows(board);
@@ -137,7 +137,7 @@ namespace TetriNET.Strategy
                 board.CollapseCompletedRows(out specials);
 
                 // Weight eroded cells by completed rows
-                erodedPieceCellsMetric = (completedRows * tetriminoCellsEliminated);
+                erodedPieceCellsMetric = (completedRows*tetriminoCellsEliminated);
             }
 
             //
@@ -146,7 +146,7 @@ namespace TetriNET.Strategy
             // Each empty row (above pile height) has two (2) "transitions"
             // (We could call ref_Board.GetTransitionCountForRow( y ) for
             // these unoccupied rows, but this is an optimization.)
-            int boardRowTransitions = 2 * (board.Height - pileHeight);
+            int boardRowTransitions = 2*(board.Height - pileHeight);
 
             // Only go up to the pile height, and later we'll account for the
             // remaining rows transitions (2 per empty row).
@@ -157,11 +157,17 @@ namespace TetriNET.Strategy
             int boardColumnTransitions = 0;
             int boardBuriedHoles = 0;
             int boardWells = 0;
+            int boardColumnWithHoles = 0;
+            int boardHoleDepth = 0;
             for (int x = 1; x <= board.Width; x++)
             {
                 boardColumnTransitions += BoardHelper.GetTransitionCountForColumn(board, x);
-                boardBuriedHoles += BoardHelper.GetBuriedHolesForColumn(board, x);
+                int buriedHoles = BoardHelper.GetBuriedHolesForColumn(board, x);
+                boardBuriedHoles += buriedHoles;
                 boardWells += BoardHelper.GetAllWellsForColumn(board, x);
+                if (buriedHoles > 0)
+                    boardColumnWithHoles++;
+                boardHoleDepth += BoardHelper.GetHoleDepthForColumn(board, x);
             }
 
             // Final rating
@@ -171,14 +177,18 @@ namespace TetriNET.Strategy
             //   [4] Punish column transitions
             //   [5] Punish buried holes (cellars)
             //   [6] Punish wells
+            //   [7] Punish hole depth
+            //   [8] Punish column with holes
 
             rating = 0.0;
-            rating += -1.0 * landingHeight;
-            rating += 1.0 * erodedPieceCellsMetric;
-            rating += -1.0 * boardRowTransitions;
-            rating += -1.0 * boardColumnTransitions;
-            rating += -4.0 * boardBuriedHoles;
-            rating += -1.0 * boardWells;
+            rating += -12.63*landingHeight;
+            rating += 6.60*erodedPieceCellsMetric;
+            rating += -9.22*boardRowTransitions;
+            rating += -19.77*boardColumnTransitions;
+            rating += -13.08*boardBuriedHoles;
+            rating += -10.49*boardWells;
+            rating += -1.61*boardHoleDepth;
+            rating += -24.04*boardColumnWithHoles;
 
             // PRIORITY:  
             //   Priority is further differentiation between possible moves.
@@ -198,7 +208,7 @@ namespace TetriNET.Strategy
             int absoluteDistanceX = Math.Abs(tetrimino.PosX - board.TetriminoSpawnX);
 
             priority = 0;
-            priority += (100 * absoluteDistanceX);
+            priority += (100*absoluteDistanceX);
             if (tetrimino.PosX < board.TetriminoSpawnX)
                 priority += 10;
             priority -= tetrimino.Orientation - 1;

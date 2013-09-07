@@ -9,12 +9,10 @@ namespace TetriNET.Strategy
 {
     public class SinaCSpecials : ISpecialStrategy
     {
-        // TODO: finish complex strategy
-        //   helpers should return IOpponent instead of int
+        // TODO: helpers should return IOpponent instead of int
 
         public bool GetSpecialAdvice(IBoard board, ITetrimino current, ITetrimino next, List<Specials> inventory, int inventoryMaxSize, List<IOpponent> opponents, out List<SpecialAdvices> advices)
         {
-            advices = new List<SpecialAdvices>();
             // if solo, 
             //  drop everything except Nuke/Gravity/ClearLines
             //  use clear line if no nuke/gravity on bottom line or when reaching top of board or when inventory is full
@@ -65,40 +63,154 @@ namespace TetriNET.Strategy
             //  if first special is Quake,
             //      send to opponent with most towers or strongest opponent [TO BE DEFINED]
             // TODO: zebra and clear column
-            
+
+            //
+            advices = new List<SpecialAdvices>();
+
             // No inventory
             if (!inventory.Any())
                 return false;
 
-            /*
-            // Solo mode
             if (!opponents.Any())
             {
-                //  drop everything except Nuke/Gravity/ClearLines
-                //  use clear line if no nuke/gravity on bottom line or when reaching top of board or when inventory is full
-                //  use nuke when reaching top of board
-                //  use gravity when reaching mid-board
-
-                Specials special = inventory[0];
-
+                // Solo
+                return SoloMode(board, inventory, inventoryMaxSize, advices);
+            }
                 int maxPile = BoardHelper.GetPileMaxHeight(board);
-                switch (special)
+                if (maxPile >= 14)
                 {
-                    case Specials.NukeField:
-                        if (maxPile >= 14)
-                            advices.Add(new SpecialAdvices
+                    // Survival
+                    return PanicMode(inventory, opponents, advices);
+                }
+                else
+                {
+                    // Normal use
+
+                    // Check if we can kill last player
+                    int lastOpponent = GetLastOpponent(opponents);
+                    if (lastOpponent != -1)
+                    {
+                        IBoard lastOpponentBoard = opponents.First(x => x.PlayerId == lastOpponent).Board;
+                        if (lastOpponentBoard != null)
+                        {
+                            int pileHeight = BoardHelper.GetPileMaxHeight(lastOpponentBoard);
+                            int addLinesCount = inventory.Count(x => x == Specials.AddLines);
+                            if (addLinesCount > 0 && pileHeight + addLinesCount >= lastOpponentBoard.Height)
                             {
-                                SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
-                            });
-                        break;
-                    case Specials.BlockGravity:
-                        if (maxPile >= 10)
-                            advices.Add(new SpecialAdvices
-                            {
-                                SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
-                            });
-                        break;
-                    case Specials.ClearLines:
+                                // Finish him
+                                return OneOpponentMode(lastOpponent, inventory, advices);
+                            }
+                        }
+                    }
+
+                    return MultiplayerMode(board, inventory, inventoryMaxSize, opponents, advices);
+                }
+           
+
+            #region Simple strategy
+
+            ////  if negative special,
+            ////      if no other player, drop it
+            ////      else, use it on random opponent
+            ////  else if switch, drop it
+            ////  else, use it on ourself
+            //Specials firstSpecial = inventory[0];
+            //int specialValue = 0;
+            //switch (firstSpecial)
+            //{
+            //    case Specials.AddLines:
+            //        specialValue = -1;
+            //        break;
+            //    case Specials.ClearLines:
+            //        specialValue = +1;
+            //        break;
+            //    case Specials.NukeField:
+            //        specialValue = +1;
+            //        break;
+            //    case Specials.RandomBlocksClear:
+            //        specialValue = -1;
+            //        break;
+            //    case Specials.SwitchFields:
+            //        specialValue = 0;
+            //        break;
+            //    case Specials.ClearSpecialBlocks:
+            //        specialValue = -1;
+            //        break;
+            //    case Specials.BlockGravity:
+            //        specialValue = +1;
+            //        break;
+            //    case Specials.BlockQuake:
+            //        specialValue = -1;
+            //        break;
+            //    case Specials.BlockBomb:
+            //        specialValue = -1;
+            //        break;
+            //    case Specials.ClearColumn:
+            //        specialValue = -1;
+            //        break;
+            //    case Specials.ZebraField:
+            //        specialValue = -1;
+            //        break;
+            //}
+            //if (specialValue == 0)
+            //    advices.Add(new SpecialAdvices
+            //                            {
+            //                                SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
+            //                            });
+            //else if (specialValue > 0)
+            //    advices.Add(new SpecialAdvices
+            //    {
+            //        SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
+            //    });
+            //else
+            //{
+            //    if (opponents.Any())
+            //    {
+            //        // Get strongest opponent
+            //        int strongest = GetStrongestOpponent(opponents);
+            //        advices.Add(new SpecialAdvices
+            //        {
+            //            SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+            //            OpponentId = strongest,
+            //        });
+            //    }
+            //    else
+            //        advices.Add(new SpecialAdvices
+            //        {
+            //            SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
+            //        });
+            //}
+
+            #endregion
+        }
+
+        public bool SoloMode(IBoard board, List<Specials> inventory, int inventoryMaxSize, List<SpecialAdvices> advices)
+        {
+            //  drop everything except Nuke/Gravity/ClearLines
+            //  use clear line if no nuke/gravity on bottom line or when reaching top of board or when inventory is full
+            //  use nuke when reaching top of board
+            //  use gravity when reaching mid-board
+
+            Specials special = inventory[0];
+
+            int maxPile = BoardHelper.GetPileMaxHeight(board);
+            switch (special)
+            {
+                case Specials.NukeField:
+                    if (maxPile >= 14)
+                        advices.Add(new SpecialAdvices
+                        {
+                            SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
+                        });
+                    break;
+                case Specials.BlockGravity:
+                    if (maxPile >= 10)
+                        advices.Add(new SpecialAdvices
+                        {
+                            SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
+                        });
+                    break;
+                case Specials.ClearLines:
                     {
                         bool hasValuableBottomLine = HasNukeGravityOnBottomLine(board);
                         if (!hasValuableBottomLine || maxPile >= 14)
@@ -115,515 +227,503 @@ namespace TetriNET.Strategy
 
                         break;
                     }
-                    default:
-                        advices.Add(new SpecialAdvices
-                        {
-                            SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
-                        });
-                        break;
-                }
-
-                return true; // stops here
+                default:
+                    advices.Add(new SpecialAdvices
+                    {
+                        SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
+                    });
+                    break;
             }
-            else
+            return true;
+        }
+
+        public bool PanicMode(List<Specials> inventory, List<IOpponent> opponents, List<SpecialAdvices> advices)
+        {
+            // Survival
+            // If Nuke/Gravity/Switch
+            if (inventory.Any(x => x == Specials.NukeField || x == Specials.BlockGravity || x == Specials.SwitchFields))
             {
-                int maxPile = BoardHelper.GetPileMaxHeight(board);
-                if (maxPile >= 14)
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL] Found N/G/S in inventory");
+                bool saved = false;
+                while (true)
                 {
-                    // Survival
-                    // If Nuke/Gravity/Switch
-                    if (inventory.Any(x => x == Specials.NukeField || x == Specials.BlockGravity || x == Specials.SwitchFields))
-                    {
-                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL] Found N/G/S in inventory");
-                        bool saved = false;
-                        while (true)
-                        {
-                            if (!inventory.Any())
-                                break; // Stops when inventory is empty
-                            // Get strongest opponent
-                            int strongest = GetStrongestOpponent(opponents);
-                            // Get current special
-                            Specials special = inventory[0];
-                            inventory.RemoveAt(0);
-                            switch (special)
-                            {
-                                case Specials.NukeField: // Nuke/Gravity -> use it immediately
-                                case Specials.BlockGravity:
-                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL]Use {0}", special.ToString());
-                                    advices.Add(new SpecialAdvices
-                                    {
-                                        SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
-                                    });
-                                    saved = true; // Saved, stop emptying inventory
-                                    break;
-                                case Specials.SwitchFields: // Switch -> use it only if strongest is really strong, else drop it
-                                {
-                                    IBoard strongestBoard = opponents.First(x => x.PlayerId == strongest).Board;
-                                    int pileHeight = BoardHelper.GetPileMaxHeight(strongestBoard);
-                                    if (pileHeight <= 10)
-                                    {
-                                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL]Use S, found a valid opponent {0} with a pile {1}", strongest, pileHeight);
-                                        _client.UseSpecial(strongest);
-                                        saved = true; // Saved, stop emptying inventory
-                                    }
-                                    else
-                                    {
-                                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL]Discard S, no valid opponent");
-                                        advices.Add(new SpecialAdvices
-                                        {
-                                            SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
-                                        });
-                                    }
-                                    break;
-                                }
-                                case Specials.ClearLines: // ClearLine -> use it immediately  TODO ==> this could lead to unwanted behaviour if we are emptying for a switch
-                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL]Use C on ourself");
-                                    advices.Add(new SpecialAdvices
-                                    {
-                                        SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
-                                    });
-                                    break;
-                                default: // Other -> use it on strongest
-                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL]Use {0} on strongest opponent {1}", special, strongest);
-                                    _client.UseSpecial(strongest);
-                                    break;
-                            }
-
-                            if (saved) // If saved or something wrong with UseSpecial, stop loop
-                                break;
-
-                            System.Threading.Thread.Sleep(10); // delay next special use
-                        }
-                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL] Survival mode N/G/S finished. saved:{0}", saved);
-                    }
-                        // Nothing could save use, send everything to weakest and pray 
-                    else
-                    {
-                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL] No N/G/S found -> use everything on weakest and try to kill him");
-                        while (true)
-                        {
-                            if (!inventory.Any())
-                                break; // Stops when inventory is empty
-                            // Get strongest opponent
-                            int weakest = GetWeakestOpponent();
-                            // Get current special
-                            Specials special = inventory[0];
-                            inventory.RemoveAt(0);
-                            // ClearLine -> use it immediately
-                            if (special == Specials.ClearLines)
-                            {
-                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL]Use C on ourself");
-                                _client.UseSpecial(_client.PlayerId);
-                            }
-                                // Other -> use it on weakest
-                            else
-                            {
-                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL]Use {0} on weakest opponent {1}", special.ToString(), weakest);
-                                _client.UseSpecial(weakest);
-                            }
-                            System.Threading.Thread.Sleep(10); // delay next special use
-                        }
-                    }
-                    return true;
-                }
-                else
-                {
-                    // Normal use
-
-                    // Check if we can kill last player
-                    int lastOpponent = GetLastOpponent(opponents);
-                    if (lastOpponent != -1)
-                    {
-                        IBoard lastOpponentBoard = _client.GetBoard(lastOpponent);
-                        if (lastOpponentBoard != null)
-                        {
-                            int pileHeight = BoardHelper.GetPileMaxHeight(lastOpponentBoard);
-                            int addLinesCount = inventory.Count(x => x == Specials.AddLines);
-                            if (addLinesCount > 0 && pileHeight + addLinesCount >= lastOpponentBoard.Height)
-                            {
-                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[KILLING LAST]Trying to kill last opponent with A");
-                                while (true)
-                                {
-                                    if (!inventory.Any())
-                                        break; // Stops when inventory is empty
-                                    // Get current special
-                                    Specials currentSpecial = inventory[0];
-                                    inventory.RemoveAt(0);
-
-                                    // AddLines -> use it immediately on last opponent
-                                    if (currentSpecial == Specials.AddLines)
-                                    {
-                                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[KILLING LAST]Use A on last opponent {0}", lastOpponent);
-                                        _client.UseSpecial(lastOpponent);
-                                    }
-                                        // Else, discard
-                                    else
-                                    {
-                                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[KILLING LAST]Discard {0}", currentSpecial.ToString());
-                                        advices.Add(new SpecialAdvices
-                                        {
-                                            SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
-                                        });
-                                    }
-
-                                    System.Threading.Thread.Sleep(10); // delay next special use
-                                }
-                                return true; // stops here
-                            }
-                        }
-                    }
-
+                    if (!inventory.Any())
+                        break; // Stops when inventory is empty
                     // Get strongest opponent
                     int strongest = GetStrongestOpponent(opponents);
-
                     // Get current special
                     Specials special = inventory[0];
                     inventory.RemoveAt(0);
-
-                    //
                     switch (special)
                     {
-                            // Destroy own board and switch with strongest opponent
-                        case Specials.SwitchFields: // TODO:
-                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Keep S for survival");
-                            // NOP
-                            break;
-                            // Wait
+                        case Specials.NukeField: // Nuke/Gravity -> use it immediately
                         case Specials.BlockGravity:
-                        case Specials.NukeField:
-                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Keep {0} for survival", special.ToString());
-                            // NOP
-                            break;
-                            // Send to strongest opponent
-                        case Specials.AddLines:
-                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use A on strongest {0}", strongest);
-                            _client.UseSpecial(strongest);
-                            break;
-                            //  Send to strongest opponent with a bomb
-                            //  If none,
-                            //      if inventory almost full, drop
-                            //      else NOP
-                        case Specials.BlockBomb:
-                        {
-                            int bombTarget = GetStrongestOpponentWithBomb(opponents);
-                            if (bombTarget != -1)
+                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL]Use {0}", special.ToString());
+                            advices.Add(new SpecialAdvices
                             {
-                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]use O to {0}", bombTarget);
-                                _client.UseSpecial(bombTarget);
-                            }
-                            else
+                                SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
+                            });
+                            saved = true; // Saved, stop emptying inventory
+                            break;
+                        case Specials.SwitchFields: // Switch -> use it only if strongest is really strong, else drop it
                             {
-                                if (inventory.Count + 2 >= inventoryMaxSize)
+                                IBoard strongestBoard = opponents.First(x => x.PlayerId == strongest).Board;
+                                int pileHeight = BoardHelper.GetPileMaxHeight(strongestBoard);
+                                if (pileHeight <= 10)
                                 {
-                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Discard O, inventory almost full");
+                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL]Use S, found a valid opponent {0} with a pile {1}", strongest, pileHeight);
+                                    advices.Add(new SpecialAdvices
+                                    {
+                                        SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                                        OpponentId = strongest
+                                    });
+                                    saved = true; // Saved, stop emptying inventory
+                                }
+                                else
+                                {
+                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL]Discard S, no valid opponent");
                                     advices.Add(new SpecialAdvices
                                     {
                                         SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
                                     });
                                 }
-                                else
-                                {
-                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Keep O for later");
-                                }
+                                break;
                             }
-                            break;
-                        }
-                            //  Send to opponent with Nuke/Gravity/Switch on bottom line
-                            //  If none, send to opponent with Bomb on bottom line
-                            //  If none, send to opponent with most specials on bottom line
-                            //  If none,
-                            //      if we have Nuke/Gravity/Switch/Bomb on bottom line, drop
-                            //      else, send to ourself
-                        case Specials.ClearLines:
-                        {
-                            int targetId = GetStrongestOpponentWithNukeSwitchGravityOnBottomLine(opponents);
-                            if (targetId != -1)
+                        case Specials.ClearLines: // ClearLine -> use it immediately  TODO ==> this could lead to unwanted behaviour if we are emptying for a switch
+                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL]Use C on ourself");
+                            advices.Add(new SpecialAdvices
                             {
-                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use C on opponent with N/G/S on bottom line {0}", targetId);
-                                _client.UseSpecial(targetId);
+                                SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
+                            });
+                            break;
+                        default: // Other -> use it on strongest
+                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL]Use {0} on strongest opponent {1}", special, strongest);
+                            advices.Add(new SpecialAdvices
+                            {
+                                SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                                OpponentId = strongest
+                            });
+
+                            break;
+                    }
+
+                    if (saved) // If saved or something wrong with UseSpecial, stop loop
+                        break;
+
+                    System.Threading.Thread.Sleep(10); // delay next special use
+                }
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL] Survival mode N/G/S finished. saved:{0}", saved);
+            }
+            // Nothing could save use, send everything to weakest and pray 
+            else
+            {
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL] No N/G/S found -> use everything on weakest and try to kill him");
+                while (true)
+                {
+                    if (!inventory.Any())
+                        break; // Stops when inventory is empty
+                    // Get strongest opponent
+                    int weakest = GetWeakestOpponent(opponents);
+                    // Get current special
+                    Specials special = inventory[0];
+                    inventory.RemoveAt(0);
+                    // ClearLine -> use it immediately
+                    if (special == Specials.ClearLines)
+                    {
+                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL]Use C on ourself");
+                        advices.Add(new SpecialAdvices
+                        {
+                            SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
+                        });
+
+                    }
+                    // Other -> use it on weakest
+                    else
+                    {
+                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[SURVIVAL]Use {0} on weakest opponent {1}", special.ToString(), weakest);
+                        advices.Add(new SpecialAdvices
+                        {
+                            SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                            OpponentId = weakest
+                        });
+
+                    }
+                }
+            }
+            return true;
+        }
+
+        public bool OneOpponentMode(int lastOpponentId, List<Specials> inventory, List<SpecialAdvices> advices)
+        {
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[KILLING LAST]Trying to kill last opponent with A");
+            while (true)
+            {
+                if (!inventory.Any())
+                    break; // Stops when inventory is empty
+                // Get current special
+                Specials currentSpecial = inventory[0];
+                inventory.RemoveAt(0);
+
+                // AddLines -> use it immediately on last opponent
+                if (currentSpecial == Specials.AddLines)
+                {
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[KILLING LAST]Use A on last opponent {0}", lastOpponentId);
+                    advices.Add(new SpecialAdvices
+                    {
+                        SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                        OpponentId = lastOpponentId
+                    });
+
+                }
+                // Else, discard
+                else
+                {
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[KILLING LAST]Discard {0}", currentSpecial.ToString());
+                    advices.Add(new SpecialAdvices
+                    {
+                        SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
+                    });
+                }
+
+                System.Threading.Thread.Sleep(10); // delay next special use
+            }
+            return true; // stops here
+        }
+
+        public bool MultiplayerMode(IBoard board, List<Specials> inventory, int inventoryMaxSize, List<IOpponent> opponents, List<SpecialAdvices> advices)
+        {
+            // Get strongest opponent
+            int strongest = GetStrongestOpponent(opponents);
+
+            // Get current special
+            Specials special = inventory[0];
+            inventory.RemoveAt(0);
+
+            //
+            switch (special)
+            {
+                // Destroy own board and switch with strongest opponent
+                case Specials.SwitchFields: // TODO:
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Keep S for survival");
+                    // NOP
+                    break;
+                // Wait
+                case Specials.BlockGravity:
+                case Specials.NukeField:
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Keep {0} for survival", special.ToString());
+                    // NOP
+                    break;
+                // Send to strongest opponent
+                case Specials.AddLines:
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use A on strongest {0}", strongest);
+                    advices.Add(new SpecialAdvices
+                    {
+                        SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                        OpponentId = strongest
+                    });
+
+                    break;
+                //  Send to strongest opponent with a bomb
+                //  If none,
+                //      if inventory almost full, drop
+                //      else NOP
+                case Specials.BlockBomb:
+                    {
+                        int bombTarget = GetStrongestOpponentWithBomb(opponents);
+                        if (bombTarget != -1)
+                        {
+                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]use O to {0}", bombTarget);
+                            advices.Add(new SpecialAdvices
+                            {
+                                SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                                OpponentId = bombTarget
+                            });
+
+                        }
+                        else
+                        {
+                            if (inventory.Count + 2 >= inventoryMaxSize)
+                            {
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Discard O, inventory almost full");
+                                advices.Add(new SpecialAdvices
+                                {
+                                    SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
+                                });
                             }
                             else
                             {
-                                targetId = GetStrongestOpponentWithBombOnBottomLine(opponents);
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Keep O for later");
+                            }
+                        }
+                        break;
+                    }
+                //  Send to opponent with Nuke/Gravity/Switch on bottom line
+                //  If none, send to opponent with Bomb on bottom line
+                //  If none, send to opponent with most specials on bottom line
+                //  If none,
+                //      if we have Nuke/Gravity/Switch/Bomb on bottom line, drop
+                //      else, send to ourself
+                case Specials.ClearLines:
+                    {
+                        int targetId = GetStrongestOpponentWithNukeSwitchGravityOnBottomLine(opponents);
+                        if (targetId != -1)
+                        {
+                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use C on opponent with N/G/S on bottom line {0}", targetId);
+                            advices.Add(new SpecialAdvices
+                            {
+                                SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                                OpponentId = targetId
+                            });
+
+                        }
+                        else
+                        {
+                            targetId = GetStrongestOpponentWithBombOnBottomLine(opponents);
+                            if (targetId != -1)
+                            {
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use C on opponent with O on bottom line {0}", targetId);
+                                advices.Add(new SpecialAdvices
+                                {
+                                    SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                                    OpponentId = targetId
+                                });
+                            }
+                            else
+                            {
+                                targetId = GetOpponentWithMostSpecialsOnBottomLine(opponents);
                                 if (targetId != -1)
                                 {
-                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use C on opponent with O on bottom line {0}", targetId);
-                                    _client.UseSpecial(targetId);
+                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use C on opponent with most specials on bottom line {0}", targetId);
+                                    advices.Add(new SpecialAdvices
+                                    {
+                                        SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                                        OpponentId = targetId
+                                    });
                                 }
                                 else
                                 {
-                                    targetId = GetOpponentWithMostSpecialsOnBottomLine(opponents);
-                                    if (targetId != -1)
+                                    bool hasValuableSpecialOnBottomLine = HasNukeGravitySwitchOnBottomLine(board);
+                                    if (hasValuableSpecialOnBottomLine)
                                     {
-                                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use C on opponent with most specials on bottom line {0}", targetId);
-                                        _client.UseSpecial(targetId);
+                                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Discard C, we have N/G/S on bottom line");
+                                        advices.Add(new SpecialAdvices
+                                        {
+                                            SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
+                                        });
                                     }
                                     else
                                     {
-                                        bool hasValuableSpecialOnBottomLine = HasNukeGravitySwitchOnBottomLine(board);
-                                        if (hasValuableSpecialOnBottomLine)
+                                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use C on ourself");
+                                        advices.Add(new SpecialAdvices
                                         {
-                                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Discard C, we have N/G/S on bottom line");
+                                            SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                //  if we have a Bomb in our board and no Gravity/Nuke in inventory, send to ourself
+                //  send to opponent with Nuke/Gravity/Switch
+                //  if none,
+                //      if second special is Bomb
+                //          if an opponent has a bomb,
+                //              send to opponent with most specials and no bomb
+                //              if none, drop
+                //          else
+                //              send to opponent with most specials
+                //              if none,
+                //                  if inventory almost full, drop
+                //                  else NOP
+                //      else
+                //          send to opponent with Bomb
+                //          if none, send to opponent with most specials
+                //          if none,
+                //              if inventory almost full, drop
+                //              else NOP
+                case Specials.ClearSpecialBlocks:
+                    {
+                        bool hasBomb = HasSpecial(board, Specials.BlockBomb);
+                        if (hasBomb && !inventory.Any(x => x == Specials.NukeField || x == Specials.BlockGravity))
+                        {
+                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use B on ourself, we have O in board and no N/G in inventory");
+                            advices.Add(new SpecialAdvices
+                            {
+                                SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
+                            });
+                        }
+                        else
+                        {
+                            int targetId = GetStrongestOpponentWithNukeSwitchGravity(opponents);
+                            if (targetId != -1)
+                            {
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use B on strongest opponent with N/S/G {0}", targetId);
+                                advices.Add(new SpecialAdvices
+                                {
+                                    SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                                    OpponentId = targetId
+                                });
+                            }
+                            else
+                            {
+                                if (inventory.Any() && inventory[0] == Specials.BlockBomb)
+                                {
+                                    bool hasOpponentWithBomb = HasOpponentWithBomb(opponents);
+                                    if (hasOpponentWithBomb)
+                                    {
+                                        targetId = GetOpponentWithMostSpecialsAndNoBomb(opponents);
+                                        if (targetId != -1)
+                                        {
+                                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use B on opponent with most specials and no O {0}, we have O in inventory", targetId);
+                                            advices.Add(new SpecialAdvices
+                                            {
+                                                SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                                                OpponentId = targetId
+                                            });
+                                        }
+                                        else
+                                        {
+                                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Discard B, no opponents without O and we have O in inventory", targetId);
                                             advices.Add(new SpecialAdvices
                                             {
                                                 SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
                                             });
                                         }
+                                    }
+                                    else
+                                    {
+                                        targetId = GetOpponentWithMostSpecials(opponents);
+                                        if (targetId != -1)
+                                        {
+                                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use B on opponent with most specials {0}", targetId);
+                                            advices.Add(new SpecialAdvices
+                                            {
+                                                SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                                                OpponentId = targetId
+                                            });
+                                        }
                                         else
                                         {
-                                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use C on ourself");
-                                            _client.UseSpecial(_client.PlayerId);
-                                        }
-                                    }
-                                }
-                            }
-                            break;
-                        }
-                            //  if we have a Bomb in our board and no Gravity/Nuke in inventory, send to ourself
-                            //  send to opponent with Nuke/Gravity/Switch
-                            //  if none,
-                            //      if second special is Bomb
-                            //          if an opponent has a bomb,
-                            //              send to opponent with most specials and no bomb
-                            //              if none, drop
-                            //          else
-                            //              send to opponent with most specials
-                            //              if none,
-                            //                  if inventory almost full, drop
-                            //                  else NOP
-                            //      else
-                            //          send to opponent with Bomb
-                            //          if none, send to opponent with most specials
-                            //          if none,
-                            //              if inventory almost full, drop
-                            //              else NOP
-                        case Specials.ClearSpecialBlocks:
-                        {
-                            bool hasBomb = HasSpecial(board, Specials.BlockBomb);
-                            if (hasBomb && !inventory.Any(x => x == Specials.NukeField || x == Specials.BlockGravity))
-                            {
-                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use B on ourself, we have O in board and no N/G in inventory");
-                                _client.UseSpecial(_client.PlayerId);
-                            }
-                            else
-                            {
-                                int targetId = GetStrongestOpponentWithNukeSwitchGravity(opponents);
-                                if (targetId != -1)
-                                {
-                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use B on strongest opponent with N/S/G {0}", targetId);
-                                    _client.UseSpecial(targetId);
-                                }
-                                else
-                                {
-                                    if (inventory.Any() && inventory[0] == Specials.BlockBomb)
-                                    {
-                                        bool hasOpponentWithBomb = HasOpponentWithBomb(opponents);
-                                        if (hasOpponentWithBomb)
-                                        {
-                                            targetId = GetOpponentWithMostSpecialsAndNoBomb(opponents);
-                                            if (targetId != -1)
+                                            if (inventory.Count + 2 >= inventoryMaxSize)
                                             {
-                                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use B on opponent with most specials and no O {0}, we have O in inventory", targetId);
-                                                _client.UseSpecial(targetId);
-                                            }
-                                            else
-                                            {
-                                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Discard B, no opponents without O and we have O in inventory", targetId);
+                                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Discard B, inventory is almost full");
                                                 advices.Add(new SpecialAdvices
                                                 {
                                                     SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
                                                 });
                                             }
-                                        }
-                                        else
-                                        {
-                                            targetId = GetOpponentWithMostSpecials(opponents);
-                                            if (targetId != -1)
-                                            {
-                                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use B on opponent with most specials {0}", targetId);
-                                                _client.UseSpecial(targetId);
-                                            }
                                             else
                                             {
-                                                if (inventory.Count + 2 >= inventoryMaxSize)
-                                                {
-                                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Discard B, inventory is almost full");
-                                                    advices.Add(new SpecialAdvices
-                                                    {
-                                                        SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
-                                                    });
-                                                }
-                                                else
-                                                {
-                                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Keep B for later");
-                                                }
+                                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Keep B for later");
                                             }
                                         }
                                     }
-                                    else
-                                    {
-                                        targetId = GetStrongestOpponentWithBomb(opponents);
-                                        if (targetId != -1)
-                                        {
-                                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use B on opponent with O {0}, we don't have any O", targetId);
-                                            _client.UseSpecial(targetId);
-                                        }
-                                        else
-                                        {
-                                            targetId = GetOpponentWithMostSpecials(opponents);
-                                            if (targetId != -1)
-                                            {
-                                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use B on opponent with most specials {0}", targetId);
-                                                _client.UseSpecial(targetId);
-                                            }
-                                            else
-                                            {
-                                                if (inventory.Count + 2 >= inventoryMaxSize)
-                                                {
-                                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Discard B, inventory is almost full");
-                                                    advices.Add(new SpecialAdvices
-                                                    {
-                                                        SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
-                                                    });
-                                                }
-                                                else
-                                                {
-                                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Keep B for later");
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            break;
-                        }
-                            //  send to opponent with Nuke/Gravity/Switch
-                            //  if none, send to strongest opponent
-                        case Specials.RandomBlocksClear:
-                        {
-                            int targetId = GetStrongestOpponentWithNukeSwitchGravity(opponents);
-                            if (targetId != -1)
-                            {
-                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use R on strongest opponent with N/S/G {0}", targetId);
-                                _client.UseSpecial(targetId);
-                            }
-                            else
-                            {
-                                targetId = GetStrongestOpponent();
-                                if (targetId != -1)
-                                {
-                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use R on strongest opponent {0}", targetId);
-                                    _client.UseSpecial(targetId);
                                 }
                                 else
                                 {
-                                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Keep R for later **** SHOULD NEVER HAPPEN");
+                                    targetId = GetStrongestOpponentWithBomb(opponents);
+                                    if (targetId != -1)
+                                    {
+                                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use B on opponent with O {0}, we don't have any O", targetId);
+                                        advices.Add(new SpecialAdvices
+                                        {
+                                            SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                                            OpponentId = targetId
+                                        });
+                                    }
+                                    else
+                                    {
+                                        targetId = GetOpponentWithMostSpecials(opponents);
+                                        if (targetId != -1)
+                                        {
+                                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use B on opponent with most specials {0}", targetId);
+                                            advices.Add(new SpecialAdvices
+                                            {
+                                                SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                                                OpponentId = targetId
+                                            });
+                                        }
+                                        else
+                                        {
+                                            if (inventory.Count + 2 >= inventoryMaxSize)
+                                            {
+                                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Discard B, inventory is almost full");
+                                                advices.Add(new SpecialAdvices
+                                                {
+                                                    SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
+                                                });
+                                            }
+                                            else
+                                            {
+                                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Keep B for later");
+                                            }
+                                        }
+                                    }
                                 }
                             }
-                            break;
                         }
-                            // TODO
-                            //  if first special is Quake,
-                            //      send to opponent with most towers or strongest opponent [TO BE DEFINED]
-                            // ClearColumn
-                            // ZebraField
-
-                            // Send to strongest opponent
-                        default:
+                        break;
+                    }
+                //  send to opponent with Nuke/Gravity/Switch
+                //  if none, send to strongest opponent
+                case Specials.RandomBlocksClear:
+                    {
+                        int targetId = GetStrongestOpponentWithNukeSwitchGravity(opponents);
+                        if (targetId != -1)
                         {
-                            int targetId = GetStrongestOpponent(opponents);
+                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use R on strongest opponent with N/S/G {0}", targetId);
+                            advices.Add(new SpecialAdvices
+                            {
+                                SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                                OpponentId = targetId
+                            });
+                        }
+                        else
+                        {
+                            targetId = GetStrongestOpponent(opponents);
                             if (targetId != -1)
                             {
-                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use {0} on strongest opponent {1}", special.ToString(), targetId);
-                                _client.UseSpecial(targetId);
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use R on strongest opponent {0}", targetId);
+                                advices.Add(new SpecialAdvices
+                                {
+                                    SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                                    OpponentId = targetId
+                                });
                             }
                             else
                             {
-                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Keep {0} for later **** SHOULD NEVER HAPPEN", special.ToString());
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Keep R for later **** SHOULD NEVER HAPPEN");
                             }
-                            break;
                         }
+                        break;
                     }
-                }
-            }
-            */
+                // TODO
+                //  if first special is Quake,
+                //      send to opponent with most towers or strongest opponent [TO BE DEFINED]
+                // ClearColumn
+                // ZebraField
 
-            #region Simple strategy
-
-            //  if negative special,
-            //      if no other player, drop it
-            //      else, use it on random opponent
-            //  else if switch, drop it
-            //  else, use it on ourself
-            Specials firstSpecial = inventory[0];
-            int specialValue = 0;
-            switch (firstSpecial)
-            {
-                case Specials.AddLines:
-                    specialValue = -1;
-                    break;
-                case Specials.ClearLines:
-                    specialValue = +1;
-                    break;
-                case Specials.NukeField:
-                    specialValue = +1;
-                    break;
-                case Specials.RandomBlocksClear:
-                    specialValue = -1;
-                    break;
-                case Specials.SwitchFields:
-                    specialValue = 0;
-                    break;
-                case Specials.ClearSpecialBlocks:
-                    specialValue = -1;
-                    break;
-                case Specials.BlockGravity:
-                    specialValue = +1;
-                    break;
-                case Specials.BlockQuake:
-                    specialValue = -1;
-                    break;
-                case Specials.BlockBomb:
-                    specialValue = -1;
-                    break;
-                case Specials.ClearColumn:
-                    specialValue = -1;
-                    break;
-                case Specials.ZebraField:
-                    specialValue = -1;
-                    break;
-            }
-            if (specialValue == 0)
-                advices.Add(new SpecialAdvices
-                                        {
-                                            SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
-                                        });
-            else if (specialValue > 0)
-                advices.Add(new SpecialAdvices
-                {
-                    SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
-                });
-            else
-            {
-                if (opponents.Any())
-                {
-                    // Get strongest opponent
-                    int strongest = GetStrongestOpponent(opponents);
-                    advices.Add(new SpecialAdvices
+                // Send to strongest opponent
+                default:
                     {
-                        SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
-                        OpponentId = strongest,
-                    });
-                }
-                else
-                    advices.Add(new SpecialAdvices
-                    {
-                        SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.Discard,
-                    });
+                        int targetId = GetStrongestOpponent(opponents);
+                        if (targetId != -1)
+                        {
+                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Use {0} on strongest opponent {1}", special.ToString(), targetId);
+                            advices.Add(new SpecialAdvices
+                            {
+                                SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                                OpponentId = targetId
+                            });
+                        }
+                        else
+                        {
+                            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[NORMAL]Keep {0} for later **** SHOULD NEVER HAPPEN", special.ToString());
+                        }
+                        break;
+                    }
             }
-
-            #endregion
-
             return true;
         }
 
@@ -659,7 +759,7 @@ namespace TetriNET.Strategy
             return weakest;
         }
 
-        private int GetLastOpponent(List<IOpponent> opponents) // Return opponent id if there is only one opponent left
+        private static int GetLastOpponent(List<IOpponent> opponents) // Return opponent id if there is only one opponent left
         {
             if (opponents.Count() == 1)
                 return opponents.First().PlayerId;
@@ -784,7 +884,7 @@ namespace TetriNET.Strategy
             return board.Cells.Any(x => CellHelper.GetSpecial(x) == special);
         }
 
-        private int GetStrongestOpponentWithNukeSwitchGravity(IEnumerable<IOpponent> opponents) // Search among opponents which one has a nuke/switch/gravity and the lowest board
+        private static int GetStrongestOpponentWithNukeSwitchGravity(IEnumerable<IOpponent> opponents) // Search among opponents which one has a nuke/switch/gravity and the lowest board
         {
             int id = -1;
             int lowestPileHeight = 1000;

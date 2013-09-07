@@ -12,7 +12,7 @@ namespace TetriNET.ConsoleWCFClient
     {
         static void Main(string[] args)
         {
-            string name = "client" + Guid.NewGuid().ToString().Substring(0, 5);
+            string name = "CONSOLE_" + Guid.NewGuid().ToString().Substring(0, 5);
 
             Logger.Log.Initialize(@"D:\TEMP\LOG\", name+".log");
 

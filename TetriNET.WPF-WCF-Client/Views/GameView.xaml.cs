@@ -5,6 +5,7 @@ using System.Windows.Input;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.Controls;
+using TetriNET.WPF_WCF_Client.GameController;
 
 namespace TetriNET.WPF_WCF_Client.Views
 {
@@ -21,7 +22,7 @@ namespace TetriNET.WPF_WCF_Client.Views
         }
 
         private PierreDellacherieOnePieceBot _bot;
-        private GameController _controller;
+        private GameController.GameController _controller;
         private int _playerId;
 
         public GameView()
@@ -59,7 +60,7 @@ namespace TetriNET.WPF_WCF_Client.Views
                     newClient.OnPlayerJoined += _this.OnPlayerJoined;
                     newClient.OnPlayerLeft += _this.OnPlayerLeft;
 
-                    _this._controller = new GameController(newClient);
+                    _this._controller = new GameController.GameController(newClient);
                     _this._bot = new PierreDellacherieOnePieceBot(newClient);
                 }
             }
@@ -75,6 +76,8 @@ namespace TetriNET.WPF_WCF_Client.Views
                 PlayerGrid.PlayerId = playerId;
                 Inventory.Client = Client;
                 InGameMessages.Client = Client;
+                NextTetrimino.Client = Client;
+                Info.Client = Client;
             }
             else
             {

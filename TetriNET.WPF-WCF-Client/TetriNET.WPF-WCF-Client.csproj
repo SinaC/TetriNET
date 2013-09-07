@@ -53,6 +53,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\Info.xaml.cs">
+      <DependentUpon>Info.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NextTetrimino.xaml.cs">
+      <DependentUpon>NextTetrimino.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\OpponentGridCanvas.xaml.cs">
       <DependentUpon>OpponentGridCanvas.xaml</DependentUpon>
     </Compile>
@@ -69,6 +75,14 @@
       <DependentUpon>PartyLine.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\Chat.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Info.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\NextTetrimino.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -107,8 +121,8 @@
       <DependentUpon>Inventory.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Mapper.cs" />
-    <Compile Include="ExecuteOnUIThread.cs" />
-    <Compile Include="GameController.cs" />
+    <Compile Include="Helpers\ExecuteOnUIThread.cs" />
+    <Compile Include="GameController\GameController.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

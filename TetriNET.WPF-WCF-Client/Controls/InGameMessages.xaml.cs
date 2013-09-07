@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
+using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.Controls
 {
@@ -21,7 +22,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
     /// </summary>
     public partial class InGameMessages : UserControl
     {
-        private const int MaxEntries = 10;
+        private const int MaxEntries = 13;
 
         public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("InGameMessagesClientProperty", typeof(IClient), typeof(InGameMessages), new PropertyMetadata(Client_Changed));
         public IClient Client

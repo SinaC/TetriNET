@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
+using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.Controls
 {

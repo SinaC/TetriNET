@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Timers;
+using System.Windows.Threading;
 using TetriNET.Common.Interfaces;
 
-namespace TetriNET.WPF_WCF_Client
+namespace TetriNET.WPF_WCF_Client.GameController
 {
     public enum Commands
     {
@@ -28,7 +28,7 @@ namespace TetriNET.WPF_WCF_Client
     public class GameController
     {
         private readonly IClient _client;
-        private readonly Dictionary<Commands, Timer> _timers = new Dictionary<Commands, Timer>();
+        private readonly Dictionary<Commands, DispatcherTimer> _timers = new Dictionary<Commands, DispatcherTimer>();
 
         public GameController(IClient client)
         {
@@ -49,7 +49,7 @@ namespace TetriNET.WPF_WCF_Client
         {
             if (_client.IsGameStarted)
             {
-                if (_timers.ContainsKey(cmd) && _timers[cmd].Enabled)
+                if (_timers.ContainsKey(cmd) && _timers[cmd].IsEnabled)
                     return;
                 switch (cmd)
                 {
@@ -105,41 +105,40 @@ namespace TetriNET.WPF_WCF_Client
                 _timers[cmd].Stop();
         }
 
-        private void DropTickHandler(object sender, ElapsedEventArgs elapsedEventArgs)
-        {
-            _client.Drop();
-        }
-
-        private void DownTickHandler(object sender, ElapsedEventArgs e)
-        {
-            _client.MoveDown();
-        }
-
-        private void LeftTickHandler(object sender, ElapsedEventArgs e)
-        {
-            _client.MoveLeft();
-        }
-
-        private void RightTickHandler(object sender, ElapsedEventArgs e)
-        {
-            _client.MoveRight();
-        }
-
         #region IClient event handlers
         
         private void ClientOnOnGamePaused()
         {
-            foreach (Timer timer in _timers.Values)
+            foreach (DispatcherTimer timer in _timers.Values)
                 timer.Stop();
         }
 
         #endregion
 
-        private static Timer CreateTimer(double interval, ElapsedEventHandler handler)
+        private void DropTickHandler(object sender, EventArgs elapsedEventArgs)
         {
-            Timer timer = new Timer(interval);
-            timer.Elapsed += handler;
+            _client.Drop();
+        }
 
+        private void DownTickHandler(object sender, EventArgs e)
+        {
+            _client.MoveDown();
+        }
+
+        private void LeftTickHandler(object sender, EventArgs e)
+        {
+            _client.MoveLeft();
+        }
+
+        private void RightTickHandler(object sender, EventArgs e)
+        {
+            _client.MoveRight();
+        }
+
+        private static DispatcherTimer CreateTimer(double interval, EventHandler handler)
+        {
+            DispatcherTimer timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval), DispatcherPriority.Normal, handler, Dispatcher.CurrentDispatcher);
+            timer.Stop(); // Dunno why but these timer are started by default
             return timer;
         }
     }

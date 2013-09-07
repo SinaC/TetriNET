@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using TetriNET.Common.Interfaces;
+using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.Controls
 {

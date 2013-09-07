@@ -1,21 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using TetriNET.Client.DefaultBoardAndTetriminos;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.AI;
+using TetriNET.WPF_WCF_Client.GameController;
+using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client
 {
@@ -25,7 +16,7 @@ namespace TetriNET.WPF_WCF_Client
     public partial class MainWindow2 : Window
     {
         private IClient _client;
-        private GameController _controller;
+        private GameController.GameController _controller;
         private PierreDellacherieOnePieceBot _bot;
         private int _playerId;
 
@@ -47,7 +38,7 @@ namespace TetriNET.WPF_WCF_Client
 
             _client.Register("JOEL");
 
-            _controller = new GameController(_client);
+            _controller = new GameController.GameController(_client);
             _bot = new PierreDellacherieOnePieceBot(_client)
             {
                 Activated = false,

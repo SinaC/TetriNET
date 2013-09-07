@@ -8,6 +8,7 @@ using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.Controls;
+using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.Views;
 
 namespace TetriNET.WPF_WCF_Client
@@ -19,7 +20,9 @@ namespace TetriNET.WPF_WCF_Client
     {
         public MainWindow()
         {
-            Logger.Log.Initialize(@"D:\TEMP\LOG\", "WPF-client.log");
+            string name = "WPF_" + Guid.NewGuid().ToString().Substring(0, 5);
+
+            Logger.Log.Initialize(@"D:\TEMP\LOG\", name+".log");
             ExecuteOnUIThread.Initialize();
 
             InitializeComponent();
@@ -34,7 +37,7 @@ namespace TetriNET.WPF_WCF_Client
             GameView.Client = client;
             PartyLine.Client = client;
 
-            client.Register("JOEL");
+            client.Register(name);
         }
 
         private void OnGameStarted()

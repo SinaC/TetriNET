@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Threading;
 
-namespace TetriNET.WPF_WCF_Client
+namespace TetriNET.WPF_WCF_Client.Helpers
 {
     public static class ExecuteOnUIThread
     {

@@ -4,11 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="300">
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             >
     <Grid>
-        <StackPanel Orientation="Vertical">
+        <!--<StackPanel Orientation="Vertical">
             <TextBlock x:Name="TxtInventory" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Height="16" />
             <TextBlock x:Name="TxtFirstSpecial" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="Auto" Height="16"/>
-        </StackPanel>
+        </StackPanel>-->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="240"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" Text="{Binding FirstSpecial}"/>
+        <Canvas x:Name="Canvas" Grid.Column="1" Background="Black" Width="240" Height="16">
+        </Canvas>
+        <Rectangle Grid.Column="1" Width="18" Height="18" Stroke="Red" StrokeThickness="2" HorizontalAlignment="Left" Margin="-1,0,0,0"/>
     </Grid>
 </UserControl>

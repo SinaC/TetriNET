@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.Interfaces;
+using TetriNET.Logger;
 
 namespace TetriNET.ConsoleWCFServer.Player
 {
@@ -33,6 +34,8 @@ namespace TetriNET.ConsoleWCFServer.Player
                         return i;
                     }
             }
+            else
+                Log.WriteLine(Log.LogLevels.Warning, "{0} already registered", player.Name);
             return -1;
         }
 
