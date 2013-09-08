@@ -156,7 +156,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
         private void OnPlayerRegistered(bool succeeded, int playerId)
         {
             if (succeeded)
-                Success(String.Format("Registered as player {0}", playerId));
+                Success(String.Format("Registered as player {0}", playerId+1));
             else
                 Fail("Registration failed");
             _isRegistered = Client.IsRegistered;
@@ -165,23 +165,34 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private void ConnectDisconnect_OnClick(object sender, RoutedEventArgs e)
         {
-            if (String.IsNullOrEmpty(ServerAddress))
+            if (!Client.IsRegistered)
             {
-                Fail("Missing server address");
-                return;
-            }
-            if (String.IsNullOrEmpty(Username))
-            {
-                Fail("Missing username");
-                return;
-            }
-            bool connected = Client.Connect(callback => new WCFProxy.WCFProxy(callback, ServerAddress));
-            if (!connected)
-            {
-                Fail("Connection failed");
+                if (String.IsNullOrEmpty(ServerAddress))
+                {
+                    Fail("Missing server address");
+                    return;
+                }
+                if (String.IsNullOrEmpty(Username))
+                {
+                    Fail("Missing username");
+                    return;
+                }
+                bool connected = Client.Connect(callback => new WCFProxy.WCFProxy(callback, ServerAddress));
+                if (!connected)
+                {
+                    Fail("Connection failed");
+                }
+                else
+                    Client.Register(Username);
             }
             else
-                Client.Register(Username);
+            {
+                bool disconnected = Client.Disconnect();
+                if (disconnected)
+                    Success("Disconnected");
+                else
+                    Fail("Disconnection failed");
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -55,7 +54,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
         private int _playerId;
         public int PlayerId
         {
-            get { return _playerId; }
+            get { return _playerId+1; }
             set
             {
                 if (_playerId != value)

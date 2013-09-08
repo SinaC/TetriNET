@@ -15,6 +15,8 @@ namespace TetriNET.WPF_WCF_Client.Models
         private Options()
         {
             // Singleton
+
+            AutomaticallySwitchToPlayField = true; // Default value
         }
         #endregion
     }

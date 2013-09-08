@@ -12,7 +12,7 @@ namespace TetriNET.WPF_WCF_Client.Views
     /// </summary>
     public partial class OptionsView : UserControl, INotifyPropertyChanged
     {
-        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("ConnectionClientProperty", typeof(IClient), typeof(OptionsView), new PropertyMetadata(Client_Changed));
+        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("OptionsClientProperty", typeof(IClient), typeof(OptionsView), new PropertyMetadata(Client_Changed));
         public IClient Client
         {
             get { return (IClient)GetValue(ClientProperty); }

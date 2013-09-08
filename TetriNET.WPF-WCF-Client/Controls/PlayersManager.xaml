@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="TetriNET.WPF_WCF_Client.Controls.PlayersManager"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ListBox Grid.Row="0"
+            Width="200" MaxWidth="200"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ItemsSource="{Binding PlayerList}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="*" Visibility="{Binding IsServerMaster}"/>
+                        <TextBlock Text="{Binding PlayerId}" />
+                        <TextBlock Text="." Margin="0,0,2,0"/>
+                        <TextBlock Text="{Binding PlayerName}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>    
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" Margin="0,2,0,2" Click="KickPlayer_OnClick">
+                <TextBlock Text="Kick"/>
+            </Button>
+            <Button Grid.Row="1" Margin="0,2,0,2" Click="BanPlayer_OnClick">
+                <TextBlock Text="Ban"/>
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>

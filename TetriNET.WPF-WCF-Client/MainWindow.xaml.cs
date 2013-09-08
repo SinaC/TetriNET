@@ -28,6 +28,7 @@ namespace TetriNET.WPF_WCF_Client
 
             ConnectionView.Client = client;
             OptionsView.Client = client;
+            WinListView.Client = client;
             PartyLineView.Client = client;
             GameView.Client = client;
         }

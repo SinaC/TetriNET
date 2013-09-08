@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using TetriNET.Common;
 
 namespace TetriNET.WPF_WCF_Client
 {

@@ -65,14 +65,14 @@
     <Compile Include="Controls\OpponentGridCanvas.xaml.cs">
       <DependentUpon>OpponentGridCanvas.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PlayersManager.xaml.cs">
+      <DependentUpon>PlayersManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\PlayerGridCanvas.xaml.cs">
       <DependentUpon>PlayerGridCanvas.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MainWindow2.xaml.cs">
-      <DependentUpon>MainWindow2.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Options.cs" />
     <Compile Include="Properties\Annotations.cs" />
@@ -84,6 +84,9 @@
     </Compile>
     <Compile Include="Views\PartyLineView.xaml.cs">
       <DependentUpon>PartyLineView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WinListView.xaml.cs">
+      <DependentUpon>WinListView.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\Chat.xaml">
       <SubType>Designer</SubType>
@@ -104,6 +107,10 @@
     <Page Include="Controls\OpponentGridCanvas.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\PlayersManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\OptionsView.xaml">
       <SubType>Designer</SubType>
@@ -146,10 +153,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="MainWindow2.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ConnectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -159,6 +162,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PartyLineView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WinListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

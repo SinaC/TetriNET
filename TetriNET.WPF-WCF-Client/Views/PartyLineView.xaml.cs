@@ -84,6 +84,7 @@ namespace TetriNET.WPF_WCF_Client.Views
                 IClient newClient = args.NewValue as IClient;
                 _this.Client = newClient;
                 _this.Chat.Client = newClient;
+                _this.PlayersManager.Client = newClient;
                 // Add new handlers
                 if (newClient != null)
                 {

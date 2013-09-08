@@ -6,6 +6,7 @@ using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.Controls;
 using TetriNET.WPF_WCF_Client.GameController;
+using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.Views
 {
@@ -75,11 +76,12 @@ namespace TetriNET.WPF_WCF_Client.Views
             if (succeeded)
             {
                 _playerId = playerId;
-                PlayerGrid.Client = Client;
+                ExecuteOnUIThread.Invoke(() => {
+                                                   PlayerGrid.Client = Client;
+                });
             }
             else
             {
-
                 _playerId = -1;
                 PlayerGrid.Client = null;
             }
@@ -90,7 +92,9 @@ namespace TetriNET.WPF_WCF_Client.Views
             if (playerId != _playerId)
             {
                 OpponentGridCanvas grid = GetOpponentGrid(playerId);
-                grid.Client = null;
+                ExecuteOnUIThread.Invoke(() => {
+                                                   grid.Client = null;
+                });
                 grid.PlayerId = -1;
                 grid.PlayerName = "Not playing";
             }
@@ -103,9 +107,11 @@ namespace TetriNET.WPF_WCF_Client.Views
                 OpponentGridCanvas grid = GetOpponentGrid(playerId);
                 if (grid.PlayerId == -1)
                 {
+                    ExecuteOnUIThread.Invoke(() => {
+                                                       grid.Client = Client;
+                    });
                     grid.PlayerId = playerId;
                     grid.PlayerName = playerName;
-                    grid.Client = Client;
                 }
                 else
                 {

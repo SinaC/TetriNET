@@ -120,6 +120,9 @@
                 </StackPanel>
                 -->
             </TabItem>
+            <TabItem x:Name="TabWinList" Header="Win list">
+                <views:WinListView x:Name="WinListView" />
+            </TabItem>
             <TabItem x:Name="TabPartyLine" Header="Party line">
                 <views:PartyLineView x:Name="PartyLineView"/>
             </TabItem>

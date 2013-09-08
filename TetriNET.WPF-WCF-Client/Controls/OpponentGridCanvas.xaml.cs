@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
-using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,7 +29,6 @@ namespace TetriNET.WPF_WCF_Client.Controls
         private const int MarginHeight = 0;
 
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
-        private static readonly SolidColorBrush SpecialColor = new SolidColorBrush(Colors.LightGray);
 
         public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("OpponentGridCanvasClientProperty", typeof(IClient), typeof(OpponentGridCanvas), new PropertyMetadata(Client_Changed));
         public IClient Client
@@ -56,7 +53,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private int _playerId;
         public int PlayerId {
-            get { return _playerId; }
+            get { return _playerId+1; }
             set
             {
                 if (_playerId != value)
@@ -176,8 +173,6 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 // Add new handlers
                 if (newClient != null)
                 {
-                    _this.PlayerName = newClient.Name;
-                    _this.PlayerId = newClient.PlayerId;
                     _this.PlayerIdVisibility = Visibility.Visible;
 
                     newClient.OnConnectionLost += _this.OnConnectionLost;
