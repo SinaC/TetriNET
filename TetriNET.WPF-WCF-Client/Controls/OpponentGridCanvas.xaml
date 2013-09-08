@@ -12,8 +12,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
-            <TextBlock Text="{Binding PlayerId}" />
-            <TextBlock Text=":"/>
+            <TextBlock Text="{Binding PlayerId}" Visibility="{Binding PlayerIdVisibility}"/>
+            <TextBlock Text=":" Visibility="{Binding PlayerIdVisibility}" Margin="4,0,4,0"/>
             <TextBlock Text="{Binding PlayerName}" />
         </StackPanel>
         <Border Grid.Row="1" Background="Green">

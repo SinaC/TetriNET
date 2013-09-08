@@ -89,6 +89,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
                     oldClient.OnPlayerRegistered -= _this.OnPlayerRegistered;
                     oldClient.OnPlayerJoined -= _this.OnPlayerJoined;
                     oldClient.OnPlayerLeft -= _this.OnPlayerLeft;
+                    oldClient.OnConnectionLost -= _this.OnConnectionLost;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
@@ -108,8 +109,19 @@ namespace TetriNET.WPF_WCF_Client.Controls
                     newClient.OnPlayerRegistered += _this.OnPlayerRegistered;
                     newClient.OnPlayerJoined += _this.OnPlayerJoined;
                     newClient.OnPlayerLeft += _this.OnPlayerLeft;
+                    newClient.OnConnectionLost += _this.OnConnectionLost;
                 }
             }
+        }
+
+        private void OnConnectionLost()
+        {
+            AddEntry(new ChatEntry
+            {
+                PlayerVisibility = Visibility.Collapsed,
+                Color = new SolidColorBrush(Colors.Red),
+                Msg = String.Format("*** Connection LOST")
+            });
         }
 
         private void OnPlayerLeft(int playerid, string playerName)
@@ -196,7 +208,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             {
                 PlayerVisibility = Visibility.Collapsed,
                 Color = new SolidColorBrush(Colors.Orange),
-                Msg = "*** You have lost"
+                Msg = "*** You have LOST"
             });
         }
 

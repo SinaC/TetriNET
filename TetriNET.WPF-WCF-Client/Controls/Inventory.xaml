@@ -7,10 +7,6 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              >
     <Grid>
-        <!--<StackPanel Orientation="Vertical">
-            <TextBlock x:Name="TxtInventory" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Height="16" />
-            <TextBlock x:Name="TxtFirstSpecial" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="Auto" Height="16"/>
-        </StackPanel>-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="120"/>
             <ColumnDefinition Width="240"/>

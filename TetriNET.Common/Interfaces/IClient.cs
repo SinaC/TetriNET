@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ServiceModel.Dispatcher;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.GameDatas;
 
@@ -46,9 +45,11 @@ namespace TetriNET.Common.Interfaces
         List<Specials> Inventory { get; }
         int LinesCleared { get; }
         int Level { get; }
+        bool IsRegistered { get; }
         bool IsGamePaused { get; }
         bool IsGameStarted { get; }
         int InventorySize { get; }
+        GameOptions Options { get; }
 
         //IBoard GetBoard(int playerId);
         //bool IsPlaying(int playerId);

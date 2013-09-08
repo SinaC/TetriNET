@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Configuration;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using TetriNET.Client.DefaultBoardAndTetriminos;
-using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
-using TetriNET.WPF_WCF_Client.AI;
-using TetriNET.WPF_WCF_Client.Controls;
 using TetriNET.WPF_WCF_Client.Helpers;
-using TetriNET.WPF_WCF_Client.Views;
 
 namespace TetriNET.WPF_WCF_Client
 {
@@ -20,29 +13,56 @@ namespace TetriNET.WPF_WCF_Client
     {
         public MainWindow()
         {
-            string name = "WPF_" + Guid.NewGuid().ToString().Substring(0, 5);
+            string logFile = "WPF_" + Guid.NewGuid().ToString().Substring(0, 5)+".log";
 
-            Logger.Log.Initialize(@"D:\TEMP\LOG\", name+".log");
+            Logger.Log.Initialize(@"D:\TEMP\LOG\", logFile);
             ExecuteOnUIThread.Initialize();
 
             InitializeComponent();
 
             IClient client = new Client.Client(Tetrimino.CreateTetrimino, () => new Board(12, 22));
 
-            string baseAddress = ConfigurationManager.AppSettings["address"];
-            client.Connect(callback => new WCFProxy.WCFProxy(callback, baseAddress));
-
             client.OnGameStarted += OnGameStarted;
+            client.OnGameFinished += OnGameFinished;
+            client.OnGameOver += OnGameOver;
 
+            ConnectionView.Client = client;
+            OptionsView.Client = client;
+            PartyLineView.Client = client;
             GameView.Client = client;
-            PartyLine.Client = client;
-
-            client.Register(name);
         }
 
         private void OnGameStarted()
         {
-            TabGameView.IsSelected = true; // TODO: only if option 'swap to play fields on game started' is checked (local options)
+            if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayField)
+                ExecuteOnUIThread.Invoke(() =>
+                {
+                    TabGameView.IsSelected = true;
+                });
+        }
+
+        private void OnGameFinished()
+        {
+            if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayField)
+            {
+                ExecuteOnUIThread.Invoke(() =>
+                {
+                    if (TabGameView.IsSelected)
+                        TabPartyLine.IsSelected = true;
+                });
+            }
+        }
+
+        private void OnGameOver()
+        {
+            if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayField)
+            {
+                ExecuteOnUIThread.Invoke(() =>
+                {
+                    if (TabGameView.IsSelected)
+                        TabPartyLine.IsSelected = true;
+                });
+            }
         }
     }
 }

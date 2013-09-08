@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -21,9 +22,6 @@ namespace TetriNET.WPF_WCF_Client.Controls
     public partial class Inventory : UserControl, INotifyPropertyChanged
     {
         private const int MaxInventorySize = 15;
-
-        // BEWARE OF DPI ... WPF only accept 96 DPI image !!!!!!!  almost 4 hours lost to figure this out
-        private readonly Uri _graphicsUri = new Uri(@"D:\Oldies\TetriNET\DATA\TNETBLKS.BMP", UriKind.Absolute); // TODO: dynamic or relative
 
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
 
@@ -55,7 +53,10 @@ namespace TetriNET.WPF_WCF_Client.Controls
         {
             InitializeComponent();
 
-            BuildTextures(_graphicsUri, _specialsBrushes);
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                BuildTextures(new Uri(ConfigurationManager.AppSettings["texture"]), _specialsBrushes);
+            }
 
             for (int i = 0; i < MaxInventorySize; i++)
             {

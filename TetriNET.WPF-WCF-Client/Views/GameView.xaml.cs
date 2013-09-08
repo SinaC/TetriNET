@@ -53,6 +53,10 @@ namespace TetriNET.WPF_WCF_Client.Views
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
                 _this.Client = newClient;
+                _this.Inventory.Client = newClient;
+                _this.InGameMessages.Client = newClient;
+                _this.NextTetrimino.Client = newClient;
+                _this.Info.Client = newClient;
                 // Add new handlers
                 if (newClient != null)
                 {
@@ -72,19 +76,12 @@ namespace TetriNET.WPF_WCF_Client.Views
             {
                 _playerId = playerId;
                 PlayerGrid.Client = Client;
-                PlayerGrid.PlayerName = "JOEL";
-                PlayerGrid.PlayerId = playerId;
-                Inventory.Client = Client;
-                InGameMessages.Client = Client;
-                NextTetrimino.Client = Client;
-                Info.Client = Client;
             }
             else
             {
 
                 _playerId = -1;
                 PlayerGrid.Client = null;
-                PlayerGrid.PlayerId = -1;
             }
         }
 

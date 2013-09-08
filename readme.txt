@@ -15,7 +15,7 @@ log path/filename should be read from App.config
 AdvancedPierreDellacherieOnePiece: finish GetHoleDepthForColumn
 Move strategy: rotation followed by translation AND translation followed by rotation (useful with I and board almost full)
 
-WPF client: options, inventory, main window size, connect, player list, next tetrimino
+WPF client: options, player list    !!!!! bug same control are not created on UI thread !!!!!
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf

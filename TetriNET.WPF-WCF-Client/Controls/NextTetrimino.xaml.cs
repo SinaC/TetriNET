@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Configuration;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -21,9 +23,6 @@ namespace TetriNET.WPF_WCF_Client.Controls
         private const int MarginWidth = 0;
         private const int MarginHeight = 0;
 
-        // BEWARE OF DPI ... WPF only accept 96 DPI image !!!!!!!  almost 4 hours lost to figure this out
-        private readonly Uri _graphicsUri = new Uri(@"D:\Oldies\TetriNET\DATA\TNETBLKS.BMP", UriKind.Absolute); // TODO: dynamic or relative
-
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
 
         public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("NextTetriminoClientProperty", typeof(IClient), typeof(NextTetrimino), new PropertyMetadata(Client_Changed));
@@ -40,7 +39,10 @@ namespace TetriNET.WPF_WCF_Client.Controls
         {
             InitializeComponent();
 
-            BuildTextures(_graphicsUri, _tetriminosBrushes);
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                BuildTextures(new Uri(ConfigurationManager.AppSettings["texture"]), _tetriminosBrushes);
+            }
 
             for(int y = 0; y < 4; y++)
                 for (int x = 0; x < 4; x++)

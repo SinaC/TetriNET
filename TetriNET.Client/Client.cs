@@ -270,6 +270,8 @@ namespace TetriNET.Client
                         State = Player.States.Joined
                     };
 
+                    State = States.Registered;
+
                     if (ClientOnPlayerRegistered != null)
                         ClientOnPlayerRegistered(true, playerId);
 
@@ -280,7 +282,6 @@ namespace TetriNET.Client
                         if (ClientOnRedraw != null)
                             ClientOnRedraw();
                     }
-                    State = States.Registered;
                 }
                 else
                 {
@@ -912,6 +913,8 @@ namespace TetriNET.Client
             }
         }
 
+        public bool IsRegistered { get { return State != States.Created && State != States.Registering; }}
+
         public List<Specials> Inventory
         {
             get
@@ -926,6 +929,11 @@ namespace TetriNET.Client
         public int InventorySize
         {
             get { return _options.InventorySize; }
+        }
+
+        public GameOptions Options
+        {
+            get { return _options; }
         }
 
         public IEnumerable<IOpponent> Opponents

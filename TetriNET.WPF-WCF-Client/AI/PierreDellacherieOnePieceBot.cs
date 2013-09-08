@@ -88,7 +88,7 @@ namespace TetriNET.WPF_WCF_Client.AI
         {
             _timer.Stop();
 
-            if (_client.Board == null || _client.CurrentTetrimino == null || _client.NextTetrimino == null)
+            if (!_client.IsGameStarted || _client.Board == null || _client.CurrentTetrimino == null || _client.NextTetrimino == null)
                 return;
 
             DateTime searchBestMoveStartTime = DateTime.Now;

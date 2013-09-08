@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -28,10 +29,6 @@ namespace TetriNET.WPF_WCF_Client.Controls
         private const int MarginWidth = 0;
         private const int MarginHeight = 0;
 
-        // BEWARE OF DPI ... WPF only accept 96 DPI image !!!!!!!  almost 4 hours lost to figure this out
-        private readonly Uri _graphicsUri = new Uri(@"D:\Oldies\TetriNET\DATA\TNETBLKS.BMP", UriKind.Absolute); // TODO: dynamic or relative
-        //private readonly Uri _graphicsUri = new Uri(@"D:\Oldies\TetriNET\x2mod\x2mod.bmp", UriKind.Absolute); // TODO: dynamic or relative
-
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
 
         public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("PlayerGridCanvasClientProperty", typeof(IClient), typeof(PlayerGridCanvas), new PropertyMetadata(Client_Changed));
@@ -39,6 +36,20 @@ namespace TetriNET.WPF_WCF_Client.Controls
         {
             get { return (IClient) GetValue(ClientProperty); }
             set { SetValue(ClientProperty, value); }
+        }
+
+        private Visibility _playerIdVisibility;
+        public Visibility PlayerIdVisibility
+        {
+            get { return _playerIdVisibility; }
+            set
+            {
+                if (_playerIdVisibility != value)
+                {
+                    _playerIdVisibility = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private int _playerId;
@@ -75,14 +86,18 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         public PlayerGridCanvas()
         {
-            ImageBrush backgroundBrush;
-
             InitializeComponent();
 
             PlayerId = -1;
-            PlayerName = "not playing";
+            PlayerName = "Not registered";
+            PlayerIdVisibility = Visibility.Hidden;
 
-            BuildTextures(_graphicsUri, out backgroundBrush, _tetriminosBrushes, _specialsBrushes);
+            if (!DesignerProperties.GetIsInDesignMode(this))
+            {
+                ImageBrush backgroundBrush;
+                BuildTextures(new Uri(ConfigurationManager.AppSettings["texture"]), out backgroundBrush, _tetriminosBrushes, _specialsBrushes);
+                Canvas.Background = backgroundBrush;
+            }
 
             for(int y = 0; y < RowsCount; y++)
                 for (int x = 0; x < ColumnsCount; x++)
@@ -101,9 +116,6 @@ namespace TetriNET.WPF_WCF_Client.Controls
                     Canvas.SetLeft(rect, canvasLeft);
                     Canvas.SetTop(rect, canvasTop);
                 }
-            //Canvas.Width = ColumnsCount * (CellWidth + MarginWidth);
-            //Canvas.Height = RowsCount * (CellHeight + MarginHeight);
-            Canvas.Background = backgroundBrush;
         }
 
         private void DrawCurrentTetrimino()
@@ -180,6 +192,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 IClient oldClient = args.OldValue as IClient;
                 if (oldClient != null)
                 {
+                    oldClient.OnConnectionLost -= _this.OnConnectionLost;
                     oldClient.OnGameStarted -= _this.OnGameStarted;
                     oldClient.OnRoundStarted -= _this.OnRoundStarted;
                     oldClient.OnTetriminoMoved -= _this.OnTetriminoMoved;
@@ -191,10 +204,21 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 // Add new handlers
                 if (newClient != null)
                 {
+                    _this.PlayerName = newClient.Name;
+                    _this.PlayerId = newClient.PlayerId;
+                    _this.PlayerIdVisibility = Visibility.Visible;
+
+                    newClient.OnConnectionLost += _this.OnConnectionLost;
                     newClient.OnGameStarted += _this.OnGameStarted;
                     newClient.OnRoundStarted += _this.OnRoundStarted;
                     newClient.OnTetriminoMoved += _this.OnTetriminoMoved;
                     newClient.OnRedraw += _this.OnRedraw;
+                }
+                else
+                {
+                    _this.PlayerName = "Not registered";
+                    _this.PlayerId = -1;
+                    _this.PlayerIdVisibility = Visibility.Hidden;
                 }
             }
         }
@@ -222,10 +246,16 @@ namespace TetriNET.WPF_WCF_Client.Controls
         {
             ExecuteOnUIThread.Invoke(() =>
             {
-                Visibility = Visibility.Visible;
                 ClearGrid();
                 DrawCurrentTetrimino();
             });
+        }
+
+        private void OnConnectionLost()
+        {
+            PlayerId = -1;
+            PlayerName = "Not registered";
+            PlayerIdVisibility = Visibility.Hidden;
         }
 
         private void BuildTextures(Uri graphicsUri, out ImageBrush background, IDictionary<Tetriminos, ImageBrush> tetriminosBrushes, IDictionary<Specials, ImageBrush> specialsBrushes)
