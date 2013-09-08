@@ -8,14 +8,13 @@ when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 discovery doesn't work on cross/multiple machine
 client/server version used when registering
 add room notion in server (server can handle multiple rooms and client register on a room)
-SinaCSpecials: use gravity when board has enough holes or when to high
+SinaCSpecials: use gravity when board has enough holes or when to high + zebra + clear column
 GameController -> interface
-log path/filename should be read from App.config
 
 AdvancedPierreDellacherieOnePiece: finish GetHoleDepthForColumn
 Move strategy: rotation followed by translation AND translation followed by rotation (useful with I and board almost full)
 
-WPF client: options, player list    !!!!! bug same control are not created on UI thread !!!!!
+WPF client: options, advice    !!!!! bug chat control is not created on UI thread !!!!!
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf
@@ -87,6 +86,7 @@ http://www.vidarholen.net/contents/junk/tetris/
 http://hal.archives-ouvertes.fr/docs/00/41/89/54/PDF/article.pdf
 
 tetris
+http://jetrix.sourceforge.net/dev-guide.php
 http://en.wikipedia.org/wiki/TetriNET
 http://tetris.wikia.com/wiki/ARS
 http://tetris.wikia.com/wiki/Nintendo_Rotation_System

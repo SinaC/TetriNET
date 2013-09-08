@@ -86,9 +86,9 @@ namespace TetriNET.WPF_WCF_Client.Views
             ExecuteOnUIThread.Invoke(() => UpdateWinList(winList));
         }
 
-        private void OnServerMasterModified(bool isServerMaster)
+        private void OnServerMasterModified(int serverMasterId)
         {
-            IsResetEnabled = isServerMaster;
+            IsResetEnabled = Client.IsServerMaster;
         }
 
         private void ResetWinList_OnClick(object sender, RoutedEventArgs e)

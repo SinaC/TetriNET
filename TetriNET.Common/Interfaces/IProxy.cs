@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using TetriNET.Common.Contracts;
 
 namespace TetriNET.Common.Interfaces
@@ -7,11 +8,10 @@ namespace TetriNET.Common.Interfaces
 
     public interface IProxy : ITetriNET
     {
+        DateTime LastActionToServer { get; } // used to check if heartbeat is needed
+
         event ProxyConnectionLostHandler OnConnectionLost;
 
-        bool Connect();
         bool Disconnect();
-
-        DateTime LastActionToServer { get; } // used to check if heartbeat is needed
     }
 }

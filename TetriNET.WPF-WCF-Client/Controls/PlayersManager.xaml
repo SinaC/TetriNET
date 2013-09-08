@@ -13,12 +13,12 @@
         <ListBox Grid.Row="0"
             Width="200" MaxWidth="200"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            ItemsSource="{Binding PlayerList}">
+            ItemsSource="{Binding PlayerList}" SelectedItem="{Binding SelectedPlayer}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="*" Visibility="{Binding IsServerMaster}"/>
-                        <TextBlock Text="{Binding PlayerId}" />
+                        <TextBlock Text="{Binding DisplayPlayerId}" />
                         <TextBlock Text="." Margin="0,0,2,0"/>
                         <TextBlock Text="{Binding PlayerName}"/>
                     </StackPanel>
@@ -30,10 +30,10 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button Grid.Row="0" Margin="0,2,0,2" Click="KickPlayer_OnClick">
+            <Button Grid.Row="0" Margin="0,2,0,2" IsEnabled="{Binding IsKickEnabled}" Click="KickPlayer_OnClick">
                 <TextBlock Text="Kick"/>
             </Button>
-            <Button Grid.Row="1" Margin="0,2,0,2" Click="BanPlayer_OnClick">
+            <Button Grid.Row="1" Margin="0,2,0,2" IsEnabled="{Binding IsBanEnabled}" Click="BanPlayer_OnClick">
                 <TextBlock Text="Ban"/>
             </Button>
         </Grid>

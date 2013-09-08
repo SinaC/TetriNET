@@ -211,13 +211,13 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void OnServerMasterModified(bool isServerMaster)
+        private void OnServerMasterModified(int serverMasterId)
         {
             lock (_lock)
             {
                 Console.ResetColor();
                 Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 3);
-                if (isServerMaster)
+                if (_client.IsServerMaster)
                     Console.Write("Yeehaw ... power is ours");
                 else
                     Console.Write("The power is for another one");

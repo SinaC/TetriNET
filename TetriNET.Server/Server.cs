@@ -306,13 +306,17 @@ namespace TetriNET.Server
             foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
                 p.OnPlayerJoined(playerId, player.Name);
 
-            // Send new server master id
+            // Server master
             IPlayer serverMaster = _playerManager.ServerMaster;
-            if (serverMaster != null && player == serverMaster)
+            if (serverMaster != null)
             {
                 int serverMasterId = _playerManager.GetId(serverMaster);
-                foreach (IPlayer p in _playerManager.Players)
-                    p.OnServerMasterChanged(serverMasterId);
+                // Send new server master id
+                if (serverMaster == player)
+                    foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+                        p.OnServerMasterChanged(serverMasterId);
+                // Send server master id to player even if not modified
+                player.OnServerMasterChanged(serverMasterId);
             }
         }
 
@@ -425,12 +429,13 @@ namespace TetriNET.Server
             Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "KickPlayer:{0} [{1}]", player.Name, playerId);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
-            if (masterPlayer == player && State == States.WaitingStartGame)
+            IPlayer kickedPlayer = _playerManager[playerId];
+            if (masterPlayer == player && State == States.WaitingStartGame && kickedPlayer != null)
             {
                 // Send server stopped
-                player.OnServerStopped();
+                kickedPlayer.OnServerStopped();
                 // Remove player from player manager and hosts + warn other players
-                PlayerLeftHandler(player, LeaveReasons.Kick);
+                PlayerLeftHandler(kickedPlayer, LeaveReasons.Kick);
             }
             else
                 Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Cannot kick player");
@@ -441,12 +446,13 @@ namespace TetriNET.Server
             Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "BanPlayer:{0} [{1}]", player.Name, playerId);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
-            if (masterPlayer == player && State == States.WaitingStartGame)
+            IPlayer bannedPlayer = _playerManager[playerId];
+            if (masterPlayer == player && State == States.WaitingStartGame && bannedPlayer != null)
             {
                 // Send server stopped
-                player.OnServerStopped();
+                bannedPlayer.OnServerStopped();
                 // Remove player from player manager and hosts + warn other players
-                PlayerLeftHandler(player, LeaveReasons.Ban);
+                PlayerLeftHandler(bannedPlayer, LeaveReasons.Ban);
                 // TODO: add to ban list
             }
             else

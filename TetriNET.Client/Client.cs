@@ -621,8 +621,10 @@ namespace TetriNET.Client
 
             ResetTimeout();
 
+            IsServerMaster = playerId == _clientPlayerId;
+
             if (ClientOnServerMasterModified != null)
-                ClientOnServerMasterModified(playerId == _clientPlayerId);
+                ClientOnServerMasterModified(playerId);
         }
 
         public void OnWinListModified(List<WinEntry> winList)
@@ -936,6 +938,8 @@ namespace TetriNET.Client
             get { return _options; }
         }
 
+        public bool IsServerMaster { get; private set; }
+
         public IEnumerable<IOpponent> Opponents
         {
             get
@@ -946,13 +950,16 @@ namespace TetriNET.Client
 
         public bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc)
         {
+            if (createProxyFunc == null)
+                throw new ArgumentNullException("createProxyFunc");
+
             if (_proxy != null)
                 return false; // should disconnect first
 
             _proxy = createProxyFunc(this);
             _proxy.OnConnectionLost += ConnectionLostHandler;
 
-            return _proxy.Connect();
+            return true;
         }
 
         public bool Disconnect()

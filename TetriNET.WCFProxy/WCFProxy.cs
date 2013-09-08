@@ -5,6 +5,7 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.GameDatas;
+using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.WCF;
 
@@ -12,19 +13,71 @@ namespace TetriNET.WCFProxy
 {
     public sealed class WCFProxy : IProxy
     {
-        private readonly string _address;
-        private readonly ITetriNETCallback _callback;
-
         private DuplexChannelFactory<IWCFTetriNET> _factory;
-        private IWCFTetriNET _proxy;
-
-        public DateTime LastActionToServer { get; private set; }
+        private readonly IWCFTetriNET _proxy;
 
         public WCFProxy(ITetriNETCallback callback, string address)
         {
+            if (callback == null)
+                throw new ArgumentNullException("callback");
+            if (address == null)
+                throw new ArgumentNullException("address");
+
             LastActionToServer = DateTime.Now;
-            _callback = callback;
-            _address = address;
+            string address1 = address;
+
+            // Get WCF endpoint
+            EndpointAddress endpointAddress = null;
+            if (String.IsNullOrEmpty(address1) || address1.ToLower() == "auto")
+            {
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Searching IWCFTetriNET server");
+                List<EndpointAddress> endpointAddresses = DiscoveryHelper.DiscoverAddresses<IWCFTetriNET>();
+                if (endpointAddresses != null && endpointAddresses.Any())
+                {
+                    foreach (EndpointAddress endpoint in endpointAddresses)
+                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "{0}:\t{1}", endpointAddresses.IndexOf(endpoint), endpoint.Uri);
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Selecting first server");
+                    endpointAddress = endpointAddresses[0];
+                }
+                else
+                {
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "No server found");
+                }
+            }
+            else
+                endpointAddress = new EndpointAddress(address1);
+
+            // Create WCF proxy from endpoint
+            if (endpointAddress != null)
+            {
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Connecting to server:{0}", endpointAddress.Uri);
+                Binding binding = new NetTcpBinding(SecurityMode.None);
+                InstanceContext instanceContext = new InstanceContext(callback);
+                //_proxy = DuplexChannelFactory<IWCFTetriNET>.CreateChannel(instanceContext, binding, endpointAddress);
+                _factory = new DuplexChannelFactory<IWCFTetriNET>(instanceContext, binding, endpointAddress);
+                _proxy = _factory.CreateChannel(instanceContext);
+            }
+            else
+                throw new Exception(String.Format("Server {0} not found", address));
+        }
+
+        public static List<string> DiscoverHosts()
+        {
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Searching IWCFTetriNET server");
+            List<EndpointAddress> endpointAddresses = DiscoveryHelper.DiscoverAddresses<IWCFTetriNET>();
+            if (endpointAddresses != null && endpointAddresses.Any())
+            {
+                foreach (EndpointAddress endpoint in endpointAddresses)
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "{0}:\t{1}", endpointAddresses.IndexOf(endpoint), endpoint.Uri);
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Selecting first server");
+
+                return endpointAddresses.Select(x => x.Uri.ToString()).ToList();
+            }
+            else
+            {
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "No server found");
+                return null;
+            }
         }
 
         private void ExceptionFreeAction(Action action, string actionName)
@@ -46,46 +99,9 @@ namespace TetriNET.WCFProxy
 
         #region IProxy
 
+        public DateTime LastActionToServer { get; private set; }
+
         public event ProxyConnectionLostHandler OnConnectionLost;
-
-        public bool Connect()
-        {
-            if (_factory != null)
-                return false; // should disconnect first
-            // Get WCF endpoint
-            EndpointAddress endpointAddress = null;
-            if (String.IsNullOrEmpty(_address) || _address.ToLower() == "auto")
-            {
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Searching IWCFTetriNET server");
-                List<EndpointAddress> endpointAddresses = DiscoveryHelper.DiscoverAddresses<IWCFTetriNET>();
-                if (endpointAddresses != null && endpointAddresses.Any())
-                {
-                    foreach (EndpointAddress endpoint in endpointAddresses)
-                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "{0}:\t{1}", endpointAddresses.IndexOf(endpoint), endpoint.Uri);
-                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Selecting first server");
-                    endpointAddress = endpointAddresses[0];
-                }
-                else
-                {
-                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "No server found");
-                }
-            }
-            else
-                endpointAddress = new EndpointAddress(_address);
-
-            // Create WCF proxy from endpoint
-            if (endpointAddress != null)
-            {
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Connecting to server:{0}", endpointAddress.Uri);
-                Binding binding = new NetTcpBinding(SecurityMode.None);
-                InstanceContext instanceContext = new InstanceContext(_callback);
-                //_proxy = DuplexChannelFactory<IWCFTetriNET>.CreateChannel(instanceContext, binding, endpointAddress);
-                _factory = new DuplexChannelFactory<IWCFTetriNET>(instanceContext, binding, endpointAddress);
-                _proxy = _factory.CreateChannel(instanceContext);
-                return true;
-            }
-            return false;
-        }
 
         public bool Disconnect()
         {
@@ -182,6 +198,7 @@ namespace TetriNET.WCFProxy
         {
             ExceptionFreeAction(() => _proxy.KickPlayer(playerId), "KickPlayer");
         }
+
         public void BanPlayer(ITetriNETCallback callback, int playerId)
         {
             ExceptionFreeAction(() => _proxy.BanPlayer(playerId), "BanPlayer");

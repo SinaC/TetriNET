@@ -1,20 +1,23 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using TetriNET.Common.Interfaces;
 using TetriNET.Logger;
+using TetriNET.WPF_WCF_Client.Annotations;
 using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.Controls
 {
     public class PlayerData
     {
-        private int _playerId;
-        public int PlayerId
+        public int RealPlayerId { get; set; }
+
+        public int DisplayPlayerId
         {
-            get { return _playerId + 1; }
-            set { _playerId = value; }
+            get { return RealPlayerId + 1; }
         }
 
         public string PlayerName { get; set; }
@@ -24,7 +27,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
     /// <summary>
     /// Interaction logic for Players.xaml
     /// </summary>
-    public partial class PlayersManager : UserControl
+    public partial class PlayersManager : UserControl, INotifyPropertyChanged
     {
         public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("WinListViewClientProperty", typeof(IClient), typeof(PlayersManager), new PropertyMetadata(Client_Changed));
         public IClient Client
@@ -36,21 +39,32 @@ namespace TetriNET.WPF_WCF_Client.Controls
         private readonly ObservableCollection<PlayerData> _playerList = new ObservableCollection<PlayerData>();
         public ObservableCollection<PlayerData> PlayerList { get { return _playerList; } }
 
+        public PlayerData SelectedPlayer { get; set; }
+
+        private bool _isServerMaster;
+
+        public bool IsKickEnabled { get { return _isServerMaster; }}
+        public bool IsBanEnabled { get { return _isServerMaster; } }
+
         public PlayersManager()
         {
             InitializeComponent();
         }
 
-        private void SetServerMaster(bool isServerMaster)
+        private void SetServerMaster(int serverMasterId)
         {
-            // TODO
+            // TODO: how could we update visibility in UI ??? OnPropertyChanged doesn't work
+            foreach(PlayerData p in _playerList)
+                p.IsServerMaster = p.RealPlayerId == serverMasterId ? Visibility.Visible : Visibility.Hidden;
+            //OnPropertyChanged("PlayerList");
         }
 
         private void AddEntry(int playerId, string playerName)
         {
+            // TODO: sort: http://msdn.microsoft.com/en-us/library/ms742542.aspx
             _playerList.Add(new PlayerData
             {
-                PlayerId = playerId,
+                RealPlayerId = playerId,
                 PlayerName = playerName,
                 IsServerMaster = Visibility.Hidden,
             });
@@ -58,7 +72,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private void DeleteEntry(int playerId, string playerName)
         {
-            PlayerData p = _playerList.FirstOrDefault(x => x.PlayerId == playerId);
+            PlayerData p = _playerList.FirstOrDefault(x => x.RealPlayerId == playerId);
             if (p != null)
                 _playerList.Remove(p);
             else
@@ -94,9 +108,15 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
-        private void OnServerMasterModified(bool isServerMaster)
+        private void OnServerMasterModified(int serverMasterId)
         {
-            ExecuteOnUIThread.Invoke(() => SetServerMaster(isServerMaster)); // TODO: impossible to do
+            ExecuteOnUIThread.Invoke(() =>
+            {
+                SetServerMaster(serverMasterId);
+                _isServerMaster = Client.IsServerMaster;
+                OnPropertyChanged("IsKickEnabled");
+                OnPropertyChanged("IsBanEnabled");
+            });
         }
 
         private void OnPlayerJoined(int playerId, string playerName)
@@ -116,12 +136,23 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private void KickPlayer_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new System.NotImplementedException();
+            if (SelectedPlayer != null && SelectedPlayer.RealPlayerId != Client.PlayerId)
+                Client.KickPlayer(SelectedPlayer.RealPlayerId);
         }
 
         private void BanPlayer_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new System.NotImplementedException();
+            if (SelectedPlayer != null && SelectedPlayer.RealPlayerId != Client.PlayerId)
+                Client.BanPlayer(SelectedPlayer.RealPlayerId);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

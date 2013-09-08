@@ -21,7 +21,7 @@ namespace TetriNET.Common.Interfaces
     public delegate void ClientTetriminoMovedHandler();
     public delegate void ClientPlayerRegisteredHandler(bool succeeded, int playerId);
     public delegate void ClientWinListModifiedHandler(List<WinEntry> winList);
-    public delegate void ClientServerMasterModifiedHandler(bool isServerMaster);
+    public delegate void ClientServerMasterModifiedHandler(int serverMasterId);
     public delegate void ClientPlayerLostHandler(int playerId, string playerName);
     public delegate void ClientPlayerWonHandler(int playerId, string playerName);
     public delegate void ClientPlayerJoinedHandler(int playerId, string playerName);
@@ -50,6 +50,7 @@ namespace TetriNET.Common.Interfaces
         bool IsGameStarted { get; }
         int InventorySize { get; }
         GameOptions Options { get; }
+        bool IsServerMaster { get; }
 
         //IBoard GetBoard(int playerId);
         //bool IsPlaying(int playerId);

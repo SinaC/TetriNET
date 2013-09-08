@@ -14,7 +14,7 @@ namespace TetriNET.ConsoleWCFClient
         {
             string name = "CONSOLE_" + Guid.NewGuid().ToString().Substring(0, 5);
 
-            Logger.Log.Initialize(@"D:\TEMP\LOG\", name+".log");
+            Logger.Log.Initialize(ConfigurationManager.AppSettings["logpath"], name+".log");
 
             //
             //string baseAddress = @"net.tcp://localhost:8765/TetriNET";

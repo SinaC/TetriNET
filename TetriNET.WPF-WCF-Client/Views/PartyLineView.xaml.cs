@@ -123,9 +123,9 @@ namespace TetriNET.WPF_WCF_Client.Views
             UpdateEnability();
         }
 
-        private void OnServerMasterModified(bool isServerMaster)
+        private void OnServerMasterModified(int serverMasterId)
         {
-            _isServerMaster = isServerMaster;
+            _isServerMaster = Client.IsServerMaster;
             UpdateEnability();
         }
 

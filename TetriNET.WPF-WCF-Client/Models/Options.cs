@@ -7,7 +7,8 @@ namespace TetriNET.WPF_WCF_Client.Models
     {
         public GameOptions ServerOptions { get; set; } // Modified by UI or by Server on each game started
         
-        public bool AutomaticallySwitchToPlayField { get; set; } // Automatically switch to play field when game is started and to party line when game is over
+        public bool AutomaticallySwitchToPlayFieldOnGameStarted { get; set; } // Automatically switch to play field when game is started and to party line when game is over
+        public bool AutomaticallySwitchToPartyLineOnRegistered { get; set; } // Automatically switch to party line when registering successfully
 
         #region Singleton
         public static readonly ThreadSafeSingleton<Options> OptionsSingleton = new ThreadSafeSingleton<Options>(() => new Options());
@@ -16,7 +17,8 @@ namespace TetriNET.WPF_WCF_Client.Models
         {
             // Singleton
 
-            AutomaticallySwitchToPlayField = true; // Default value
+            AutomaticallySwitchToPlayFieldOnGameStarted = true; // Default value
+            AutomaticallySwitchToPartyLineOnRegistered = true; // Default value
         }
         #endregion
     }

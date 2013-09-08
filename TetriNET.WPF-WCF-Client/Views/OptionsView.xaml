@@ -11,7 +11,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <CheckBox Grid.Row="0" IsChecked="{Binding Options.AutomaticallySwitchToPlayField}">Automatich switch on start/stop game</CheckBox>
+        <CheckBox Grid.Row="0" IsChecked="{Binding Options.AutomaticallySwitchToPartyLineOnRegistered}">Automatic switch on connect</CheckBox>
+        <CheckBox Grid.Row="0" IsChecked="{Binding Options.AutomaticallySwitchToPlayFieldOnGameStarted}">Automatic switch on start/stop game</CheckBox>
         <TextBlock Grid.Row="1" Text="TODO: server options"/>
     </Grid>
 </UserControl>

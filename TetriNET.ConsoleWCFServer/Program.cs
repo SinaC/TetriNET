@@ -32,7 +32,7 @@ namespace TetriNET.ConsoleWCFServer
 
         static void Main(string[] args)
         {
-            Logger.Log.Initialize(@"D:\TEMP\LOG\", "server.log");
+            Logger.Log.Initialize(ConfigurationManager.AppSettings["logpath"], "server.log");
 
             //
             BanManager banManager = new BanManager();

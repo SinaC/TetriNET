@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Windows;
 using TetriNET.Client.DefaultBoardAndTetriminos;
 using TetriNET.Common.Interfaces;
@@ -13,15 +14,16 @@ namespace TetriNET.WPF_WCF_Client
     {
         public MainWindow()
         {
-            string logFile = "WPF_" + Guid.NewGuid().ToString().Substring(0, 5)+".log";
+            string logFilename = "WPF_" + Guid.NewGuid().ToString().Substring(0, 5)+".log";
 
-            Logger.Log.Initialize(@"D:\TEMP\LOG\", logFile);
+            Logger.Log.Initialize(ConfigurationManager.AppSettings["logpath"], logFilename);
             ExecuteOnUIThread.Initialize();
 
             InitializeComponent();
 
             IClient client = new Client.Client(Tetrimino.CreateTetrimino, () => new Board(12, 22));
 
+            client.OnPlayerRegistered += OnPlayerRegistered;
             client.OnGameStarted += OnGameStarted;
             client.OnGameFinished += OnGameFinished;
             client.OnGameOver += OnGameOver;
@@ -33,9 +35,18 @@ namespace TetriNET.WPF_WCF_Client
             GameView.Client = client;
         }
 
+        private void OnPlayerRegistered(bool succeeded, int playerId)
+        {
+            if (succeeded && Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPartyLineOnRegistered)
+                ExecuteOnUIThread.Invoke(() =>
+                {
+                    TabPartyLine.IsSelected = true;
+                });
+        }
+
         private void OnGameStarted()
         {
-            if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayField)
+            if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
                 ExecuteOnUIThread.Invoke(() =>
                 {
                     TabGameView.IsSelected = true;
@@ -44,7 +55,7 @@ namespace TetriNET.WPF_WCF_Client
 
         private void OnGameFinished()
         {
-            if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayField)
+            if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
             {
                 ExecuteOnUIThread.Invoke(() =>
                 {
@@ -56,7 +67,7 @@ namespace TetriNET.WPF_WCF_Client
 
         private void OnGameOver()
         {
-            if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayField)
+            if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
             {
                 ExecuteOnUIThread.Invoke(() =>
                 {
