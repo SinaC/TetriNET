@@ -149,13 +149,13 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void OnPlayerLeft(int playerId, string playerName)
+        private void OnPlayerLeft(int playerId, string playerName, LeaveReasons reason)
         {
             lock (_lock)
             {
                 Console.ResetColor();
                 Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 2);
-                Console.Write("{0} [{1}] left", playerName, playerId);
+                Console.Write("{0} [{1}] left {2}", playerName, playerId, reason);
             }
         }
 

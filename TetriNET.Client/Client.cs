@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using TetriNET.Common;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Helpers;
@@ -259,16 +258,17 @@ namespace TetriNET.Client
             {
                 Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Registered as player {0} game started {1}", playerId, isGameStarted);
 
-                if (playerId >= 0 && playerId < MaxPlayersCount)
+                if (playerId >= 0 && playerId < MaxPlayers)
                 {
                     _clientPlayerId = playerId;
-                    _players[_clientPlayerId] = new Player
+                    Player player = new Player
                     {
                         Name = Name,
                         PlayerId = playerId,
                         Board = _createBoardFunc(),
                         State = Player.States.Joined
                     };
+                    _players[_clientPlayerId] = player;
 
                     State = States.Registered;
 
@@ -277,7 +277,7 @@ namespace TetriNET.Client
 
                     if (isGameStarted)
                     {
-                        Player.Board.FillWithRandomCells(() => RangeRandom.Random(_options.TetriminoOccurancies));
+                        player.Board.FillWithRandomCells(() => RangeRandom.Random(_options.TetriminoOccurancies));
 
                         if (ClientOnRedraw != null)
                             ClientOnRedraw();
@@ -305,26 +305,27 @@ namespace TetriNET.Client
             Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player {0}[{1}] joined", name, playerId);
 
             ResetTimeout();
-            if (playerId != _clientPlayerId && playerId >= 0 && playerId < MaxPlayersCount)
+            // Don't update ourself
+            if (playerId != _clientPlayerId && playerId >= 0 && playerId < MaxPlayers)
             {
-                // don't update ourself
-                _players[playerId] = new Player
+                Player player = new Player
                 {
                     Name = name,
                     PlayerId = playerId,
                     Board = _createBoardFunc(),
                     State = Player.States.Joined
                 };
+                _players[playerId] = player;
 
                 if (ClientOnPlayerJoined != null)
                     ClientOnPlayerJoined(playerId, name);
 
                 if (IsGameStarted)
                 {
-                    _players[playerId].Board.FillWithRandomCells(() => RangeRandom.Random(_options.TetriminoOccurancies));
+                    player.Board.FillWithRandomCells(() => RangeRandom.Random(_options.TetriminoOccurancies));
 
                     if (ClientOnRedrawBoard != null)
-                        ClientOnRedrawBoard(playerId, _players[playerId].Board);
+                        ClientOnRedrawBoard(playerId, player.Board);
                 }
             }
         }
@@ -334,12 +335,12 @@ namespace TetriNET.Client
             Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player {0}[{1}] left ({2})", name, playerId, reason);
 
             ResetTimeout();
-            if (playerId != _clientPlayerId && playerId >= 0)
+            if (playerId != _clientPlayerId && playerId >= 0 && playerId < MaxPlayers)
             {
                 _players[playerId] = null;
 
                 if (ClientOnPlayerLeft != null)
-                    ClientOnPlayerLeft(playerId, name);
+                    ClientOnPlayerLeft(playerId, name, reason);
             }
         }
 
@@ -365,32 +366,38 @@ namespace TetriNET.Client
 
         public void OnPlayerLost(int playerId)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player [{0}] {1} has lost", playerId, _players[playerId].Name);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player [{0}] has lost", playerId);
 
             ResetTimeout();
-            if (playerId != _clientPlayerId && _players[playerId] != null && _players[playerId].State == Player.States.Playing)
+            if (playerId != _clientPlayerId)
             {
-                _players[playerId].State = Player.States.Lost;
-                _players[playerId].Board.FillWithRandomCells(() => RangeRandom.Random(_options.TetriminoOccurancies));
+                Player player = GetPlayer(playerId);
+                if (player != null && player.State == Player.States.Playing)
+                {
+                    player.State = Player.States.Lost;
+                    player.Board.FillWithRandomCells(() => RangeRandom.Random(_options.TetriminoOccurancies));
 
-                if (ClientOnRedrawBoard != null)
-                    ClientOnRedrawBoard(playerId, _players[playerId].Board);
+                    if (ClientOnRedrawBoard != null)
+                        ClientOnRedrawBoard(playerId, player.Board);
 
-                if (ClientOnPlayerLost != null)
-                    ClientOnPlayerLost(playerId, _players[playerId].Name);
+                    if (ClientOnPlayerLost != null)
+                        ClientOnPlayerLost(playerId, player.Name);
+                }
             }
         }
 
         public void OnPlayerWon(int playerId)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player [{0}] {1} has won", playerId, _players[playerId].Name);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player [{0}] has won", playerId);
 
             ResetTimeout();
-            if (_players[playerId] != null)
+
+            Player player = _players[playerId];
+            if (player != null)
             {
-                _players[playerId].State = Player.States.Joined;
+                player.State = Player.States.Joined;
                 if (ClientOnPlayerWon != null)
-                    ClientOnPlayerWon(playerId, _players[playerId].Name);
+                    ClientOnPlayerWon(playerId, player.Name);
             }
         }
 
@@ -416,12 +423,15 @@ namespace TetriNET.Client
             Level = _options.StartingLevel;
             // Reset boards
             for (int i = 0; i < MaxPlayers; i++)
-                if (_players[i] != null)
+            {
+                Player player = _players[i];
+                if (player != null)
                 {
-                    if (_players[i].Board != null)
-                        _players[i].Board.Clear();
-                    _players[i].State = Player.States.Playing;
+                    if (player.Board != null)
+                        player.Board.Clear();
+                    player.State = Player.States.Playing;
                 }
+            }
             // Restart timer
             _gameTimer.Start();
 
@@ -440,8 +450,11 @@ namespace TetriNET.Client
             ResetTimeout();
             State = States.Registered;
             for (int i = 0; i < MaxPlayers; i++)
-                if (_players[i] != null)
-                    _players[i].State = Player.States.Joined;
+            {
+                Player player = _players[i];
+                if (player != null)
+                    player.State = Player.States.Joined;
+            }
 
             if (ClientOnGameFinished != null)
                 ClientOnGameFinished();
@@ -585,17 +598,13 @@ namespace TetriNET.Client
 
         public void OnGridModified(int playerId, byte[] grid)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player [{0}] {1} modified", playerId, _players[playerId].Name);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Player [{0}] modified", playerId);
 
             ResetTimeout();
 
             if (State == States.Playing)
             {
                 Player player = GetPlayer(playerId);
-                if (playerId == _clientPlayerId)
-                {
-                    int a = 5;
-                }
                 if (player != null)
                 {
                     player.Board.SetCells(grid);
@@ -609,7 +618,7 @@ namespace TetriNET.Client
                     else
                     {
                         if (ClientOnRedrawBoard != null)
-                            ClientOnRedrawBoard(playerId, _players[playerId].Board);
+                            ClientOnRedrawBoard(playerId, player.Board);
                     }
                 }
             }

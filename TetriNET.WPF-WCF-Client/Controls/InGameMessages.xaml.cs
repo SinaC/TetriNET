@@ -22,26 +22,36 @@ namespace TetriNET.WPF_WCF_Client.Controls
     /// </summary>
     public partial class InGameMessages : UserControl
     {
-        private const int MaxEntries = 13;
+        private const int MaxEntries = 10;
 
-        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("InGameMessagesClientProperty", typeof(IClient), typeof(InGameMessages), new PropertyMetadata(Client_Changed));
+        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("InGameMessagesClientProperty", typeof (IClient), typeof (InGameMessages), new PropertyMetadata(Client_Changed));
         public IClient Client
         {
-            get { return (IClient)GetValue(ClientProperty); }
+            get { return (IClient) GetValue(ClientProperty); }
             set { SetValue(ClientProperty, value); }
         }
 
         private readonly ObservableCollection<InGameChatEntry> _entries = new ObservableCollection<InGameChatEntry>();
-        public ObservableCollection<InGameChatEntry> Entries { get { return _entries; } }
+        public ObservableCollection<InGameChatEntry> Entries
+        {
+            get { return _entries; }
+        }
 
         public InGameMessages()
         {
             InitializeComponent();
         }
 
-        private void AddEntry(InGameChatEntry entry)
+        private void AddEntry(int id, string special, string source, string target = null)
         {
-            Entries.Add(entry);
+            Entries.Add(new InGameChatEntry
+                {
+                    Id = id,
+                    Special = special,
+                    Source = source,
+                    Target = target,
+                    TargetVisibility = String.IsNullOrEmpty(target) ? Visibility.Collapsed : Visibility.Visible
+                });
             if (Entries.Count > MaxEntries)
                 Entries.RemoveAt(0);
         }
@@ -85,25 +95,12 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private void OnPlayerAddLines(string playerName, int specialId, int count)
         {
-            ExecuteOnUIThread.Invoke(() => AddEntry(new InGameChatEntry
-            {
-                Id = specialId+1,
-                Special = String.Format("{0} line{1} added to All", count, (count > 1) ? "s" : ""),
-                Source = playerName,
-                TargetVisibility = Visibility.Collapsed,
-            }));
+            ExecuteOnUIThread.Invoke(() => AddEntry(specialId + 1, String.Format("{0} line{1} added to All", count, (count > 1) ? "s" : ""), playerName));
         }
 
         private void OnSpecialUsed(string playerName, string targetName, int specialId, Specials special)
         {
-            ExecuteOnUIThread.Invoke(() => AddEntry(new InGameChatEntry
-            {
-                Id = specialId+1,
-                Special = Mapper.MapSpecialToString(special),
-                Source = playerName,
-                Target = targetName,
-                TargetVisibility = Visibility.Visible,
-            }));
+            ExecuteOnUIThread.Invoke(() => AddEntry(specialId + 1, Mapper.MapSpecialToString(special), playerName, targetName));
         }
     }
 }

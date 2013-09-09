@@ -2,12 +2,12 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Runtime.Remoting;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
 
@@ -62,9 +62,15 @@ namespace TetriNET.WPF_WCF_Client.Controls
             InitializeComponent();
         }
 
-        private void AddEntry(ChatEntry entry)
+        private void AddEntry(string msg, Color color, string playerName = null)
         {
-            ExecuteOnUIThread.Invoke(() => ChatEntries.Add(entry));
+            ChatEntries.Add(new ChatEntry
+                {
+                    PlayerName = playerName,
+                    Msg = msg,
+                    PlayerVisibility = String.IsNullOrEmpty(playerName) ? Visibility.Collapsed : Visibility.Visible,
+                    Color = new SolidColorBrush(color),
+                });
         }
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -116,141 +122,95 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private void OnConnectionLost()
         {
-            AddEntry(new ChatEntry
-            {
-                PlayerVisibility = Visibility.Collapsed,
-                Color = new SolidColorBrush(Colors.Red),
-                Msg = String.Format("*** Connection LOST")
-            });
+            ExecuteOnUIThread.Invoke(() => AddEntry(String.Format("*** Connection LOST"), Colors.Red));
         }
 
-        private void OnPlayerLeft(int playerid, string playerName)
+        private void OnPlayerLeft(int playerid, string playerName, LeaveReasons reason)
         {
-            AddEntry(new ChatEntry
+            string msg;
+            switch(reason)
             {
-                PlayerVisibility = Visibility.Collapsed,
-                Color = new SolidColorBrush(Colors.Green),
-                Msg = String.Format("*** {0} has LEFT", playerName)
-            });
+                case LeaveReasons.Spam:
+                    msg = String.Format("*** {0} has been BANNED [SPAM]", playerName);
+                    break;
+                case LeaveReasons.Disconnected:
+                    msg = String.Format("*** {0} has disconnected", playerName);
+                    break;
+                case LeaveReasons.ConnectionLost:
+                    msg = String.Format("*** {0} has left [connection lost]", playerName);
+                    break;
+                case LeaveReasons.Timeout:
+                    msg = String.Format("*** {0} has left [timeout]", playerName);
+                    break;
+                case LeaveReasons.Ban:
+                    msg = String.Format("*** {0} has been BANNED", playerName);
+                    break;
+                case LeaveReasons.Kick:
+                    msg = String.Format("*** {0} has been kicked", playerName);
+                    break;
+                default:
+                    msg = String.Format("*** {0} has left {1}", playerName, reason);
+                    break;
+            }
+            ExecuteOnUIThread.Invoke(() => AddEntry(msg, Colors.Green));
         }
 
         private void OnPlayerJoined(int playerid, string playerName)
         {
-            AddEntry(new ChatEntry
-            {
-                PlayerVisibility = Visibility.Collapsed,
-                Color = new SolidColorBrush(Colors.Green),
-                Msg = String.Format("*** {0} has JOINED", playerName)
-            });
+            ExecuteOnUIThread.Invoke(() => AddEntry(String.Format("*** {0} has joined", playerName), Colors.Green));
         }
 
         private void OnPlayerRegistered(bool succeeded, int playerId)
         {
             if (succeeded)
-                AddEntry(new ChatEntry
-                {
-                    PlayerVisibility = Visibility.Collapsed,
-                    Color = new SolidColorBrush(Colors.Green),
-                    Msg = "*** You've registered successfully"
-                });
+                ExecuteOnUIThread.Invoke(() => AddEntry("*** You've registered successfully", Colors.Green));
             else
-                AddEntry(new ChatEntry
-                {
-                    PlayerVisibility = Visibility.Collapsed,
-                    Color = new SolidColorBrush(Colors.Red),
-                    Msg = "*** You've FAILED registering !!!"
-                });
+                ExecuteOnUIThread.Invoke(() => AddEntry("*** You've FAILED registering !!!", Colors.Red));
         }
 
         private void OnPlayerWon(int playerId, string playerName)
         {
-            AddEntry(new ChatEntry
-            {
-                PlayerVisibility = Visibility.Collapsed,
-                Color = new SolidColorBrush(Colors.Orange),
-                Msg = String.Format("*** {0} has WON", playerName)
-            });
+            ExecuteOnUIThread.Invoke(() => AddEntry(String.Format("*** {0} has WON", playerName), Colors.Orange));
         }
 
         private void OnPlayerLost(int playerId, string playerName)
         {
-            AddEntry(new ChatEntry
-            {
-                PlayerVisibility = Visibility.Collapsed,
-                Color = new SolidColorBrush(Colors.Orange),
-                Msg = String.Format("*** {0} has LOST", playerName)
-            });
+            ExecuteOnUIThread.Invoke(() => AddEntry(String.Format("*** {0} has LOST", playerName), Colors.Orange));
         }
 
         private void OnGameResumed()
         {
-            AddEntry(new ChatEntry
-            {
-                PlayerVisibility = Visibility.Collapsed,
-                Color = new SolidColorBrush(Colors.Yellow),
-                Msg = "*** The game has been Resumed"
-            });
+            ExecuteOnUIThread.Invoke(() => AddEntry("*** The game has been Resumed", Colors.Yellow));
         }
 
         private void OnGamePaused()
         {
-            AddEntry(new ChatEntry
-            {
-                PlayerVisibility = Visibility.Collapsed,
-                Color = new SolidColorBrush(Colors.Yellow),
-                Msg = "*** The game has been Paused"
-            });
+            ExecuteOnUIThread.Invoke(() => AddEntry("*** The game has been Paused", Colors.Yellow));
         }
 
         private void OnGameOver()
         {
-            AddEntry(new ChatEntry
-            {
-                PlayerVisibility = Visibility.Collapsed,
-                Color = new SolidColorBrush(Colors.Orange),
-                Msg = "*** You have LOST"
-            });
+            ExecuteOnUIThread.Invoke(() => AddEntry("*** You have LOST", Colors.Orange));
         }
 
         private void OnGameFinished()
         {
-            AddEntry(new ChatEntry
-            {
-                PlayerVisibility = Visibility.Collapsed,
-                Color = new SolidColorBrush(Colors.Red),
-                Msg = "*** The Game has Ended"
-            });
+            ExecuteOnUIThread.Invoke(() => AddEntry("*** The Game has Ended", Colors.Red));
         }
 
         private void OnGameStarted()
         {
-            AddEntry(new ChatEntry
-            {
-                PlayerVisibility = Visibility.Collapsed,
-                Color = new SolidColorBrush(Colors.Red),
-                Msg = "*** The Game has Started" 
-            });
+            ExecuteOnUIThread.Invoke(() => AddEntry("*** The Game has Started", Colors.Red));
         }
 
         private void OnPlayerPublishMessage(string playerName, string msg)
         {
-            AddEntry(new ChatEntry
-            {
-                PlayerName = playerName,
-                PlayerVisibility = Visibility.Visible,
-                Color = new SolidColorBrush(Colors.Black),
-                Msg = msg
-            });
+            ExecuteOnUIThread.Invoke(() => AddEntry(msg, Colors.Black, playerName));
         }
 
         private void OnServerPublishMessage(string msg)
         {
-            AddEntry(new ChatEntry
-            {
-                PlayerVisibility = Visibility.Collapsed,
-                Color = new SolidColorBrush(Colors.Blue),
-                Msg = msg
-            });
+            ExecuteOnUIThread.Invoke(() => AddEntry(msg, Colors.Blue));
         }
 
         private void InputChat_OnKeyUp(object sender, KeyEventArgs e)

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.Controls;
@@ -76,9 +76,10 @@ namespace TetriNET.WPF_WCF_Client.Views
             if (succeeded)
             {
                 _playerId = playerId;
-                ExecuteOnUIThread.Invoke(() => {
-                                                   PlayerGrid.Client = Client;
-                });
+                ExecuteOnUIThread.Invoke(() =>
+                    {
+                        PlayerGrid.Client = Client;
+                    });
             }
             else
             {
@@ -87,14 +88,15 @@ namespace TetriNET.WPF_WCF_Client.Views
             }
         }
 
-        private void OnPlayerLeft(int playerId, string playerName)
+        private void OnPlayerLeft(int playerId, string playerName, LeaveReasons reason)
         {
             if (playerId != _playerId)
             {
                 OpponentGridCanvas grid = GetOpponentGrid(playerId);
-                ExecuteOnUIThread.Invoke(() => {
-                                                   grid.Client = null;
-                });
+                ExecuteOnUIThread.Invoke(() =>
+                    {
+                        grid.Client = null;
+                    });
                 grid.PlayerId = -1;
                 grid.PlayerName = "Not playing";
             }
@@ -107,9 +109,10 @@ namespace TetriNET.WPF_WCF_Client.Views
                 OpponentGridCanvas grid = GetOpponentGrid(playerId);
                 if (grid.PlayerId == -1)
                 {
-                    ExecuteOnUIThread.Invoke(() => {
-                                                       grid.Client = Client;
-                    });
+                    ExecuteOnUIThread.Invoke(() =>
+                        {
+                            grid.Client = Client;
+                        });
                     grid.PlayerId = playerId;
                     grid.PlayerName = playerName;
                 }
@@ -133,6 +136,10 @@ namespace TetriNET.WPF_WCF_Client.Views
             else if (e.Key == Key.A)
             {
                 _bot.Activated = !_bot.Activated;
+            }
+            else if (e.Key == Key.H)
+            {
+                PlayerGrid.ToggleHint();
             }
             else
             {
@@ -162,9 +169,9 @@ namespace TetriNET.WPF_WCF_Client.Views
                 case Key.Right:
                     return Commands.Right;
                 case Key.Up:
-                    return Commands.RotateClockwise;
-                case Key.PageDown:
                     return Commands.RotateCounterclockwise;
+                case Key.PageDown:
+                    return Commands.RotateClockwise;
                 case Key.D:
                     return Commands.DiscardFirstSpecial;
                 case Key.NumPad1:

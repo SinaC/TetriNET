@@ -4,11 +4,9 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
@@ -32,7 +30,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             set { SetValue(ClientProperty, value); }
         }
 
-        private readonly Dictionary<Specials, ImageBrush> _specialsBrushes = new Dictionary<Specials, ImageBrush>();
+        private readonly Textures _textures;
         private readonly List<Rectangle> _inventory = new List<Rectangle>();
 
         private string _firstSpecial;
@@ -55,7 +53,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                BuildTextures(new Uri(ConfigurationManager.AppSettings["texture"]), _specialsBrushes);
+                _textures = new Textures(new Uri(ConfigurationManager.AppSettings["texture"]));
             }
 
             for (int i = 0; i < MaxInventorySize; i++)
@@ -85,7 +83,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 for (int i = 0; i < MaxInventorySize; i++)
                     _inventory[i].Fill = TransparentColor;
                 for (int i = 0; i < specials.Count; i++)
-                    _inventory[i].Fill = _specialsBrushes[specials[i]];
+                    _inventory[i].Fill = _textures.BigSpecialsBrushes[specials[i]];
                 FirstSpecial = Mapper.MapSpecialToString(specials[0]);
             }
             else
@@ -129,69 +127,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             ExecuteOnUIThread.Invoke(DrawInventory);
         }
 
-        private void BuildTextures(Uri graphicsUri, IDictionary<Specials, ImageBrush> specialsBrushes)
-        {
-            BitmapImage image = new BitmapImage(graphicsUri);
-            // Specials
-            //ACNRSBGQO
-            specialsBrushes.Add(Specials.AddLines, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(80, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.ClearLines, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(96, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.NukeField, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(112, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.RandomBlocksClear, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(128, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.SwitchFields, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(144, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.ClearSpecialBlocks, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(160, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.BlockGravity, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(176, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.BlockQuake, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(192, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.BlockBomb, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(208, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;

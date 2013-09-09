@@ -5,7 +5,6 @@ using System.Configuration;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
@@ -32,7 +31,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             set { SetValue(ClientProperty, value); }
         }
 
-        private readonly Dictionary<Tetriminos, ImageBrush> _tetriminosBrushes = new Dictionary<Tetriminos, ImageBrush>();
+        private readonly Textures _textures;
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
         public NextTetrimino()
@@ -41,7 +40,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                BuildTextures(new Uri(ConfigurationManager.AppSettings["texture"]), _tetriminosBrushes);
+                _textures = new Textures(new Uri(ConfigurationManager.AppSettings["texture"]));
             }
 
             for(int y = 0; y < 4; y++)
@@ -92,7 +91,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 int cellX = x;
 
                 Rectangle uiPart = GetControl(cellX, cellY);
-                uiPart.Fill = _tetriminosBrushes[cellTetrimino];
+                uiPart.Fill = _textures.BigTetriminosBrushes[cellTetrimino];
             }
         }
 
@@ -134,54 +133,6 @@ namespace TetriNET.WPF_WCF_Client.Controls
         private void OnRoundStarted()
         {
             ExecuteOnUIThread.Invoke(DrawNextTetrimino);
-        }
-
-        private void BuildTextures(Uri graphicsUri, IDictionary<Tetriminos, ImageBrush> tetriminosBrushes)
-        {
-            BitmapImage image = new BitmapImage(graphicsUri);
-            // Tetriminos
-            tetriminosBrushes.Add(Tetriminos.TetriminoI, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(0, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoJ, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(32, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoL, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(48, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoO, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(16, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoS, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(0, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoT, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(16, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoZ, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(64, 0, 16, 16),
-                Stretch = Stretch.None
-            });
         }
     }
 }

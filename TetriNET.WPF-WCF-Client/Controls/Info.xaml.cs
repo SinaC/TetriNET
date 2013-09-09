@@ -47,7 +47,6 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
-
         public Info()
         {
             InitializeComponent();
@@ -109,7 +108,6 @@ namespace TetriNET.WPF_WCF_Client.Controls
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;

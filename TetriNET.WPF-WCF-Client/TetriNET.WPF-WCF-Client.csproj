@@ -68,6 +68,7 @@
     <Compile Include="Controls\PlayersManager.xaml.cs">
       <DependentUpon>PlayersManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Textures.cs" />
     <Compile Include="Views\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
     </Compile>

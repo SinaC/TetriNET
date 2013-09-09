@@ -6,11 +6,11 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
+using TetriNET.Strategy;
 using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.Controls
@@ -29,6 +29,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
         private const int MarginHeight = 0;
 
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
+        private static readonly SolidColorBrush HintColor = new SolidColorBrush(Color.FromArgb( 128, 77, 115, 141)); // Some kind of gray/blue
 
         public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("PlayerGridCanvasClientProperty", typeof(IClient), typeof(PlayerGridCanvas), new PropertyMetadata(Client_Changed));
         public IClient Client
@@ -51,16 +52,19 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
+        public int DisplayPlayerId { get { return _playerId + 1; } }
+
         private int _playerId;
         public int PlayerId
         {
-            get { return _playerId+1; }
+            get { return _playerId; }
             set
             {
                 if (_playerId != value)
                 {
                     _playerId = value;
                     OnPropertyChanged();
+                    OnPropertyChanged("DisplayPlayerId");
                 }
             }
         }
@@ -79,13 +83,16 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
-        private readonly Dictionary<Tetriminos, ImageBrush> _tetriminosBrushes = new Dictionary<Tetriminos, ImageBrush>();
-        private readonly Dictionary<Specials, ImageBrush> _specialsBrushes = new Dictionary<Specials, ImageBrush>();
+        private bool _isHintActivated;
+        private IMoveStrategy _moveHint;
+        private readonly Textures _textures;
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
         public PlayerGridCanvas()
         {
             InitializeComponent();
+
+            _isHintActivated = false;
 
             PlayerId = -1;
             PlayerName = "Not registered";
@@ -93,9 +100,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                ImageBrush backgroundBrush;
-                BuildTextures(new Uri(ConfigurationManager.AppSettings["texture"]), out backgroundBrush, _tetriminosBrushes, _specialsBrushes);
-                Canvas.Background = backgroundBrush;
+                _textures = new Textures(new Uri(ConfigurationManager.AppSettings["texture"]));
+                Canvas.Background = _textures.BigBackground;
             }
 
             for(int y = 0; y < RowsCount; y++)
@@ -117,6 +123,51 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 }
         }
 
+        public void ToggleHint()
+        {
+            _isHintActivated = !_isHintActivated;
+            if (_isHintActivated)
+                _moveHint = _moveHint ?? new PierreDellacherieOnePiece();
+        }
+
+        private void DrawTetrimino(IBoard board, ITetrimino tetrimono, Brush brush)
+        {
+            for (int i = 1; i <= tetrimono.TotalCells; i++)
+            {
+                int x, y;
+                tetrimono.GetCellAbsolutePosition(i, out x, out y); // 1->Width x 1->Height
+                int cellY = board.Height - y;
+                int cellX = x - 1;
+
+                Rectangle uiPart = GetControl(cellX, cellY);
+                uiPart.Fill = brush;
+            }
+        }
+
+        private void DrawHint()
+        {
+            if(_isHintActivated)
+            {
+                // Clone board, current and next
+                IBoard board = Client.Board.Clone();
+                ITetrimino current = Client.CurrentTetrimino.Clone();
+                ITetrimino next = Client.NextTetrimino.Clone();
+
+                // Get hint
+                int bestRotationDelta;
+                int bestTranslationDelta;
+                _moveHint.GetBestMove(board, current, next, out bestRotationDelta, out bestTranslationDelta);
+
+                // Perform move
+                current.Rotate(bestRotationDelta);
+                current.Translate(bestTranslationDelta, 0);
+                board.Drop(current);
+
+                // Draw tetrimino
+                DrawTetrimino(board, current, HintColor); // FF, C0, CB
+            }
+        }
+
         private void DrawCurrentTetrimino()
         {
             if (Client == null)
@@ -128,16 +179,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
             if (currentTetrimino == null)
                 return;
             Tetriminos cellTetrimino = Client.CurrentTetrimino.Value;
-            for (int i = 1; i <= Client.CurrentTetrimino.TotalCells; i++)
-            {
-                int x, y;
-                Client.CurrentTetrimino.GetCellAbsolutePosition(i, out x, out y); // 1->Width x 1->Height
-                int cellY = board.Height - y;
-                int cellX = x - 1;
-
-                Rectangle uiPart = GetControl(cellX, cellY);
-                uiPart.Fill = _tetriminosBrushes[cellTetrimino];
-            }
+            Brush brush = _textures.BigTetriminosBrushes[cellTetrimino];
+            DrawTetrimino(board, currentTetrimino, brush);
         }
 
         private void DrawGrid()
@@ -163,9 +206,9 @@ namespace TetriNET.WPF_WCF_Client.Controls
                             Tetriminos color = CellHelper.GetColor(cellValue);
 
                             if (special == Specials.Invalid)
-                                uiPart.Fill = _tetriminosBrushes[color];
+                                uiPart.Fill = _textures.BigTetriminosBrushes[color];
                             else
-                                uiPart.Fill = _specialsBrushes[special];
+                                uiPart.Fill = _textures.BigSpecialsBrushes[special];
                         }
             }
         }
@@ -228,6 +271,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             {
                 DrawGrid();
                 DrawCurrentTetrimino();
+                DrawHint();
             });
         }
 
@@ -257,119 +301,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             PlayerIdVisibility = Visibility.Hidden;
         }
 
-        private void BuildTextures(Uri graphicsUri, out ImageBrush background, IDictionary<Tetriminos, ImageBrush> tetriminosBrushes, IDictionary<Specials, ImageBrush> specialsBrushes)
-        {
-            BitmapImage image = new BitmapImage(graphicsUri);
-            // Background
-            background = new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(0, 24, 192, 352),
-                Stretch = Stretch.None,
-            };
-            // Tetriminos
-            tetriminosBrushes.Add(Tetriminos.TetriminoI, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(0, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoJ, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(32, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoL, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(48, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoO, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(16, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoS, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(0, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoT, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(16, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoZ, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(64, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            // Specials
-            //ACNRSBGQO
-            specialsBrushes.Add(Specials.AddLines, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(80, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.ClearLines, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(96, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.NukeField, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(112, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.RandomBlocksClear, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(128, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.SwitchFields, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(144, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.ClearSpecialBlocks, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(160, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.BlockGravity, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(176, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.BlockQuake, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(192, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.BlockBomb, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(208, 0, 16, 16),
-                Stretch = Stretch.None
-            });
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;

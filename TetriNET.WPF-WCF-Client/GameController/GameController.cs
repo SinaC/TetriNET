@@ -37,14 +37,15 @@ namespace TetriNET.WPF_WCF_Client.GameController
 
             _client = client;
 
-            client.OnGamePaused += ClientOnOnGamePaused;
+            client.OnGamePaused += OnGamePaused;
+            client.OnGameFinished += OnGameFinished;
 
             _timers.Add(Commands.Drop, CreateTimer(100, DropTickHandler));
             _timers.Add(Commands.Down, CreateTimer(50, DownTickHandler));
             _timers.Add(Commands.Left, CreateTimer(100, LeftTickHandler));
             _timers.Add(Commands.Right, CreateTimer(100, RightTickHandler));
         }
-
+ 
         public void KeyDown(Commands cmd)
         {
             if (_client.IsGameStarted)
@@ -106,8 +107,14 @@ namespace TetriNET.WPF_WCF_Client.GameController
         }
 
         #region IClient event handlers
-        
-        private void ClientOnOnGamePaused()
+
+        private void OnGameFinished()
+        {
+            foreach (DispatcherTimer timer in _timers.Values)
+                timer.Stop();
+        }
+
+        private void OnGamePaused()
         {
             foreach (DispatcherTimer timer in _timers.Values)
                 timer.Stop();

@@ -25,7 +25,7 @@ namespace TetriNET.Common.Interfaces
     public delegate void ClientPlayerLostHandler(int playerId, string playerName);
     public delegate void ClientPlayerWonHandler(int playerId, string playerName);
     public delegate void ClientPlayerJoinedHandler(int playerId, string playerName);
-    public delegate void ClientPlayerLeftHandler(int playerId, string playerName);
+    public delegate void ClientPlayerLeftHandler(int playerId, string playerName, LeaveReasons reason);
     public delegate void ClientPlayerPublishMessageHandler(string playerName, string msg);
     public delegate void ClientServerPublishMessageHandler(string msg);
     public delegate void ClientInventoryChangedHandler();

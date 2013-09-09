@@ -14,7 +14,7 @@ GameController -> interface
 AdvancedPierreDellacherieOnePiece: finish GetHoleDepthForColumn
 Move strategy: rotation followed by translation AND translation followed by rotation (useful with I and board almost full)
 
-WPF client: options, advice    !!!!! bug chat control is not created on UI thread !!!!!
+WPF client: options, hint
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf

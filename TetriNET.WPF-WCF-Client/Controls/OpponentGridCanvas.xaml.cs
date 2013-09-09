@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Helpers;
@@ -51,15 +50,18 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
+        public int DisplayPlayerId { get { return _playerId + 1; } }
+
         private int _playerId;
         public int PlayerId {
-            get { return _playerId+1; }
+            get { return _playerId; }
             set
             {
                 if (_playerId != value)
                 {
                     _playerId = value;
                     OnPropertyChanged();
+                    OnPropertyChanged("DisplayPlayerId");
                 }
             }
         }
@@ -77,8 +79,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
-        private readonly Dictionary<Tetriminos, ImageBrush> _tetriminosBrushes = new Dictionary<Tetriminos, ImageBrush>();
-        private readonly Dictionary<Specials, ImageBrush> _specialsBrushes = new Dictionary<Specials, ImageBrush>();
+        private readonly Textures _textures;
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
         public OpponentGridCanvas()
@@ -91,9 +92,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                ImageBrush backgroundBrush;
-                BuildTextures(new Uri(ConfigurationManager.AppSettings["texture"]), out backgroundBrush, _tetriminosBrushes, _specialsBrushes);
-                Canvas.Background = backgroundBrush;
+                _textures = new Textures(new Uri(ConfigurationManager.AppSettings["texture"]));
+                Canvas.Background = _textures.SmallBackground;
             }
 
             for (int y = 0; y < RowsCount; y++)
@@ -135,9 +135,9 @@ namespace TetriNET.WPF_WCF_Client.Controls
                         Tetriminos color = CellHelper.GetColor(cellValue);
 
                         if (special == Specials.Invalid)
-                            uiPart.Fill = _tetriminosBrushes[color];
+                            uiPart.Fill = _textures.SmallTetriminosBrushes[color];
                         else
-                            uiPart.Fill = _specialsBrushes[special];
+                            uiPart.Fill = _textures.SmallSpecialsBrushes[special];
                     }
                 }
         }
@@ -190,11 +190,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private void OnGameStarted()
         {
-            ExecuteOnUIThread.Invoke(() =>
-            {
-                Visibility = Visibility.Visible;
-                ClearGrid();
-            });
+            ExecuteOnUIThread.Invoke(ClearGrid);
         }
 
         private void OnRedrawBoard(int playerId, IBoard board)
@@ -210,119 +206,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             PlayerIdVisibility = Visibility.Hidden;
         }
 
-        private void BuildTextures(Uri graphicsUri, out ImageBrush background, IDictionary<Tetriminos, ImageBrush> tetriminosBrushes, IDictionary<Specials, ImageBrush> specialsBrushes)
-        {
-            BitmapImage image = new BitmapImage(graphicsUri);
-            // Background
-            background = new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(192, 24, 96, 176),
-                Stretch = Stretch.None,
-            };
-            // Tetriminos
-            tetriminosBrushes.Add(Tetriminos.TetriminoI, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(0, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoJ, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(16, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoL, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(24, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoO, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(8, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoS, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(0, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoT, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(8, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            tetriminosBrushes.Add(Tetriminos.TetriminoZ, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(32, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            // Specials
-            //ACNRSBGQO
-            _specialsBrushes.Add(Specials.AddLines, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(40, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.ClearLines, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(48, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.NukeField, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(56, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.RandomBlocksClear, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(64, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.SwitchFields, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(72, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.ClearSpecialBlocks, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(80, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.BlockGravity, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(88, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.BlockQuake, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(96, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-            specialsBrushes.Add(Specials.BlockBomb, new ImageBrush(image)
-            {
-                ViewboxUnits = BrushMappingMode.Absolute,
-                Viewbox = new Rect(104, 16, 8, 8),
-                Stretch = Stretch.None
-            });
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;

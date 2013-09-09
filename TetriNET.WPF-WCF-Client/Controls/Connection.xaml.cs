@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using TetriNET.Common.Interfaces;
-using TetriNET.WPF_WCF_Client.Annotations;
 using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.Controls
@@ -105,20 +104,14 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private void Success(string msg)
         {
-            ExecuteOnUIThread.Invoke(() =>
-            {
-                ConnectionResult = msg;
-                ConnectionResultColor = new SolidColorBrush(Colors.Green);
-            });
+            ConnectionResult = msg;
+            ConnectionResultColor = new SolidColorBrush(Colors.Green);
         }
 
         private void Fail(string msg)
         {
-            ExecuteOnUIThread.Invoke(() =>
-            {
-                ConnectionResult = msg;
-                ConnectionResultColor = new SolidColorBrush(Colors.Red);
-            });
+            ConnectionResult = msg;
+            ConnectionResultColor = new SolidColorBrush(Colors.Red);
         }
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -148,7 +141,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private void OnConnectionLost()
         {
-            Fail("Connection lost or Registration failed");
+            ExecuteOnUIThread.Invoke(() => Fail("Connection lost or Registration failed"));
             _isRegistered = false;
             OnPropertyChanged("ConnectDisconnectLabel");
         }
@@ -156,9 +149,9 @@ namespace TetriNET.WPF_WCF_Client.Controls
         private void OnPlayerRegistered(bool succeeded, int playerId)
         {
             if (succeeded)
-                Success(String.Format("Registered as player {0}", playerId+1));
+                ExecuteOnUIThread.Invoke(() => Success(String.Format("Registered as player {0}", playerId+1)));
             else
-                Fail("Registration failed");
+                ExecuteOnUIThread.Invoke(() => Fail("Registration failed"));
             _isRegistered = Client.IsRegistered;
             OnPropertyChanged("ConnectDisconnectLabel");
         }
@@ -169,18 +162,18 @@ namespace TetriNET.WPF_WCF_Client.Controls
             {
                 if (String.IsNullOrEmpty(ServerAddress))
                 {
-                    Fail("Missing server address");
+                    ExecuteOnUIThread.Invoke(() => Fail("Missing server address"));
                     return;
                 }
                 if (String.IsNullOrEmpty(Username))
                 {
-                    Fail("Missing username");
+                    ExecuteOnUIThread.Invoke(() => Fail("Missing username"));
                     return;
                 }
                 bool connected = Client.Connect(callback => new WCFProxy.WCFProxy(callback, ServerAddress));
                 if (!connected)
                 {
-                    Fail("Connection failed");
+                    ExecuteOnUIThread.Invoke(() => Fail("Connection failed"));
                 }
                 else
                     Client.Register(Username);
@@ -189,15 +182,13 @@ namespace TetriNET.WPF_WCF_Client.Controls
             {
                 bool disconnected = Client.Disconnect();
                 if (disconnected)
-                    Success("Disconnected");
+                    ExecuteOnUIThread.Invoke(() => Success("Disconnected"));
                 else
-                    Fail("Disconnection failed");
+                    ExecuteOnUIThread.Invoke(() => Fail("Disconnection failed"));
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;

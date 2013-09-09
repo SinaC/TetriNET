@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.Logger;
 using TetriNET.WPF_WCF_Client.Annotations;
@@ -124,7 +125,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             ExecuteOnUIThread.Invoke(() => AddEntry(playerId, playerName));
         }
 
-        private void OnPlayerLeft(int playerId, string playerName)
+        private void OnPlayerLeft(int playerId, string playerName, LeaveReasons reason)
         {
             ExecuteOnUIThread.Invoke(() => DeleteEntry(playerId, playerName));
         }
@@ -147,8 +148,6 @@ namespace TetriNET.WPF_WCF_Client.Controls
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
