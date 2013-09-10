@@ -180,6 +180,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
             else
             {
+                Client.Unregister();
                 bool disconnected = Client.Disconnect();
                 if (disconnected)
                     ExecuteOnUIThread.Invoke(() => Success("Disconnected"));

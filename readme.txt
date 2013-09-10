@@ -14,7 +14,9 @@ GameController -> interface
 AdvancedPierreDellacherieOnePiece: finish GetHoleDepthForColumn
 Move strategy: rotation followed by translation AND translation followed by rotation (useful with I and board almost full)
 
-WPF client: options, hint
+WPF client: options
+
+Client: disconnect -> clear player list, clear player grid, opponent grid, ...   easiest way is to add an event sur Unregister
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf

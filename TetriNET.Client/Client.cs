@@ -976,6 +976,8 @@ namespace TetriNET.Client
             if (_proxy == null)
                 return false; // should connect first
 
+            State = States.Created;
+
             _proxy.OnConnectionLost -= ConnectionLostHandler;
             _proxy.Disconnect();
             _proxy = null;

@@ -84,7 +84,11 @@ namespace TetriNET.WPF_WCF_Client.Views
             else
             {
                 _playerId = -1;
-                PlayerGrid.Client = null;
+                ExecuteOnUIThread.Invoke(() => {
+                                                   PlayerGrid.Client = null;
+                });
+                PlayerGrid.PlayerId = -1;
+                PlayerGrid.PlayerName = "Not registered";
             }
         }
 
