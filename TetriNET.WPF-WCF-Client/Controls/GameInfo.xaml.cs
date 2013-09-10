@@ -10,9 +10,9 @@ namespace TetriNET.WPF_WCF_Client.Controls
     /// <summary>
     /// Interaction logic for Info.xaml
     /// </summary>
-    public partial class Info : UserControl, INotifyPropertyChanged
+    public partial class GameInfo : UserControl, INotifyPropertyChanged
     {
-        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("InfoClientProperty", typeof(IClient), typeof(Info), new PropertyMetadata(Client_Changed));
+        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("InfoClientProperty", typeof(IClient), typeof(GameInfo), new PropertyMetadata(Client_Changed));
         public IClient Client
         {
             get { return (IClient)GetValue(ClientProperty); }
@@ -47,7 +47,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
-        public Info()
+        public GameInfo()
         {
             InitializeComponent();
         }
@@ -64,7 +64,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
-            Info _this = sender as Info;
+            GameInfo _this = sender as GameInfo;
 
             if (_this != null)
             {

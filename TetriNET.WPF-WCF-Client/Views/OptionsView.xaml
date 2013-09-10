@@ -22,17 +22,64 @@
                 <CheckBox Grid.Row="1" IsChecked="{Binding Options.AutomaticallySwitchToPlayFieldOnGameStarted}">Automatic switch on start/stop game</CheckBox>
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Row="1" Header="Server settings">
+        <GroupBox Grid.Row="1" Header="Server settings" IsEnabled="{Binding IsServerMaster}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <CheckBox Grid.Row="0" IsChecked="{Binding Options.ServerOptions.ClassicStyleMultiplayerRules}" FlowDirection="RightToLeft" HorizontalAlignment="Left">Classic Style Multiplayer Rules</CheckBox>
-                <StackPanel Grid.Row="1" Orientation="Horizontal">
-                    <TextBlock Text="Lines to Make For Special Block:"/>
-                    <xctk:IntegerUpDown Value="{Binding Options.ServerOptions.LinesToMakeForSpecials}" Minimum="1" Maximum="4" />
-                </StackPanel>
+                <GroupBox Grid.Row="0" Header="Gameplay">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="20"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Classic Style Multiplayer Rules"/>
+                        <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding Options.ServerOptions.ClassicStyleMultiplayerRules}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Lines to Make For Special Block:"/>
+                        <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Options.ServerOptions.LinesToMakeForSpecials}" Minimum="1" Maximum="4" />
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="Number of Special Blocks Added Each Time:"/>
+                        <xctk:IntegerUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Options.ServerOptions.LinesToMakeForSpecials}" Minimum="1" Maximum="4" />
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Capacity of Special Block Inventory:"/>
+                        <xctk:IntegerUpDown Grid.Row="0" Grid.Column="3" Value="{Binding Options.ServerOptions.InventorySize}" Minimum="1" Maximum="15" />
+                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Minutes Before Lines Start Being Added:"/>
+                        <xctk:IntegerUpDown Grid.Row="1" Grid.Column="3" Value="{Binding Options.ServerOptions.DelayBeforeSuddenDeath}" Minimum="0" Maximum="15" />
+                        <TextBlock Grid.Row="2" Grid.Column="2" Text="Seconds Between Lines Being Added:"/>
+                        <xctk:IntegerUpDown Grid.Row="2" Grid.Column="3" Value="{Binding Options.ServerOptions.SuddenDeathTick}" Minimum="1" Maximum="30" />
+                    </Grid>
+                </GroupBox>
+                <GroupBox Grid.Row="1" Header="Block and Specials Occurancy">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="TODO"/>
+                    </Grid>
+                </GroupBox>
+                <Button Grid.Row="2" Width="150" HorizontalAlignment="Left" Click="SendOptionsToServer_OnClick">
+                    <TextBlock Text="Send options to server"/>
+                    <!--TODO: should be enabled only when an option has been modified-->
+                </Button>
             </Grid>
         </GroupBox>
     </Grid>

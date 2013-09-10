@@ -43,9 +43,18 @@ namespace TetriNET.WPF_WCF_Client.Controls
         public PlayerData SelectedPlayer { get; set; }
 
         private bool _isServerMaster;
-
-        public bool IsKickEnabled { get { return _isServerMaster; }}
-        public bool IsBanEnabled { get { return _isServerMaster; } }
+        public bool IsServerMaster
+        {
+            get { return _isServerMaster; }
+            set
+            {
+                if (_isServerMaster != value)
+                {
+                    _isServerMaster = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public PlayersManager()
         {
@@ -111,13 +120,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
         private void OnServerMasterModified(int serverMasterId)
         {
-            ExecuteOnUIThread.Invoke(() =>
-            {
-                SetServerMaster(serverMasterId);
-                _isServerMaster = Client.IsServerMaster;
-                OnPropertyChanged("IsKickEnabled");
-                OnPropertyChanged("IsBanEnabled");
-            });
+            ExecuteOnUIThread.Invoke(() => SetServerMaster(serverMasterId));
+            IsServerMaster = Client.IsServerMaster;
         }
 
         private void OnPlayerJoined(int playerId, string playerName)

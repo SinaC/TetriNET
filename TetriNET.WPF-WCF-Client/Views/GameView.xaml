@@ -30,6 +30,6 @@
         <controls:Inventory x:Name="Inventory" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <controls:InGameMessages x:Name="InGameMessages" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,4,0,0"/>
         <controls:NextTetrimino x:Name="NextTetrimino" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="16,0,16,0"/>
-        <controls:Info x:Name="Info" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16,0,0,16"/>
+        <controls:GameInfo x:Name="GameInfo" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16,0,0,16"/>
     </Grid>
 </UserControl>

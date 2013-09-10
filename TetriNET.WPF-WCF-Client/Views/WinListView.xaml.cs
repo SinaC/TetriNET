@@ -24,15 +24,15 @@ namespace TetriNET.WPF_WCF_Client.Views
             set { SetValue(ClientProperty, value); }
         }
 
-        private bool _isResetEnabled;
-        public bool IsResetEnabled
+        private bool _isServerMaster;
+        public bool IsServerMaster
         {
-            get { return _isResetEnabled; }
+            get { return _isServerMaster; }
             set
             {
-                if (_isResetEnabled != value)
+                if (_isServerMaster != value)
                 {
-                    _isResetEnabled = value;
+                    _isServerMaster = value;
                     OnPropertyChanged();
                 }
             }
@@ -88,7 +88,7 @@ namespace TetriNET.WPF_WCF_Client.Views
 
         private void OnServerMasterModified(int serverMasterId)
         {
-            IsResetEnabled = Client.IsServerMaster;
+            IsServerMaster = Client.IsServerMaster;
         }
 
         private void ResetWinList_OnClick(object sender, RoutedEventArgs e)

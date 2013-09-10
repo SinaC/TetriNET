@@ -15,10 +15,11 @@ namespace TetriNET.WPF_WCF_Client.Views
     /// </summary>
     public partial class GameView : UserControl
     {
-        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("GameViewClientProperty", typeof(IClient), typeof(GameView), new PropertyMetadata(Client_Changed));
+        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("GameViewClientProperty", typeof (IClient), typeof (GameView), new PropertyMetadata(Client_Changed));
+
         public IClient Client
         {
-            get { return (IClient)GetValue(ClientProperty); }
+            get { return (IClient) GetValue(ClientProperty); }
             set { SetValue(ClientProperty, value); }
         }
 
@@ -57,7 +58,7 @@ namespace TetriNET.WPF_WCF_Client.Views
                 _this.Inventory.Client = newClient;
                 _this.InGameMessages.Client = newClient;
                 _this.NextTetrimino.Client = newClient;
-                _this.Info.Client = newClient;
+                _this.GameInfo.Client = newClient;
                 // Add new handlers
                 if (newClient != null)
                 {
@@ -77,15 +78,16 @@ namespace TetriNET.WPF_WCF_Client.Views
             {
                 _playerId = playerId;
                 ExecuteOnUIThread.Invoke(() =>
-                    {
-                        PlayerGrid.Client = Client;
-                    });
+                {
+                    PlayerGrid.Client = Client;
+                });
             }
             else
             {
                 _playerId = -1;
-                ExecuteOnUIThread.Invoke(() => {
-                                                   PlayerGrid.Client = null;
+                ExecuteOnUIThread.Invoke(() =>
+                {
+                    PlayerGrid.Client = null;
                 });
                 PlayerGrid.PlayerId = -1;
                 PlayerGrid.PlayerName = "Not registered";
@@ -98,9 +100,9 @@ namespace TetriNET.WPF_WCF_Client.Views
             {
                 OpponentGridCanvas grid = GetOpponentGrid(playerId);
                 ExecuteOnUIThread.Invoke(() =>
-                    {
-                        grid.Client = null;
-                    });
+                {
+                    grid.Client = null;
+                });
                 grid.PlayerId = -1;
                 grid.PlayerName = "Not playing";
             }
@@ -114,9 +116,9 @@ namespace TetriNET.WPF_WCF_Client.Views
                 if (grid.PlayerId == -1)
                 {
                     ExecuteOnUIThread.Invoke(() =>
-                        {
-                            grid.Client = Client;
-                        });
+                    {
+                        grid.Client = Client;
+                    });
                     grid.PlayerId = playerId;
                     grid.PlayerName = playerName;
                 }

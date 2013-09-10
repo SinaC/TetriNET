@@ -19,6 +19,20 @@ namespace TetriNET.WPF_WCF_Client.Views
             set { SetValue(ClientProperty, value); }
         }
 
+        private bool _isServerMaster;
+        public bool IsServerMaster
+        {
+            get { return _isServerMaster; }
+            set
+            {
+                if (_isServerMaster != value)
+                {
+                    _isServerMaster = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public Models.Options Options
         {
             get { return Models.Options.OptionsSingleton.Instance; }
@@ -40,6 +54,7 @@ namespace TetriNET.WPF_WCF_Client.Views
                 if (oldClient != null)
                 {
                     oldClient.OnGameStarted -= _this.OnGameStarted;
+                    oldClient.OnServerMasterModified -= _this.OnServerMasterModified;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
@@ -48,8 +63,14 @@ namespace TetriNET.WPF_WCF_Client.Views
                 if (newClient != null)
                 {
                     newClient.OnGameStarted += _this.OnGameStarted;
+                    newClient.OnServerMasterModified += _this.OnServerMasterModified;
                 }
             }
+        }
+
+        private void OnServerMasterModified(int serverMaster)
+        {
+            IsServerMaster = Client.IsServerMaster;
         }
 
         private void OnGameStarted()
@@ -58,8 +79,13 @@ namespace TetriNET.WPF_WCF_Client.Views
             OnPropertyChanged("Options");
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        private void SendOptionsToServer_OnClick(object sender, RoutedEventArgs e)
+        {
+            // TODO: should be enabled only when an option has been modified
+            Client.ChangeOptions(Models.Options.OptionsSingleton.Instance.ServerOptions);
+        }
 
+        public event PropertyChangedEventHandler PropertyChanged;
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

@@ -74,8 +74,8 @@
     <Compile Include="Controls\Connection.xaml.cs">
       <DependentUpon>Connection.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Info.xaml.cs">
-      <DependentUpon>Info.xaml</DependentUpon>
+    <Compile Include="Controls\GameInfo.xaml.cs">
+      <DependentUpon>GameInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\NextTetrimino.xaml.cs">
       <DependentUpon>NextTetrimino.xaml</DependentUpon>
@@ -115,7 +115,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Info.xaml">
+    <Page Include="Controls\GameInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
