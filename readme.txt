@@ -14,7 +14,10 @@ GameController -> interface
 AdvancedPierreDellacherieOnePiece: finish GetHoleDepthForColumn
 Move strategy: rotation followed by translation AND translation followed by rotation (useful with tetrimino I and board almost full)
 
-Client: disconnect -> clear player list, clear player grid, opponent grid, ...   easiest way is to add an event sur Unregister
+Client: disconnect -> clear player list, clear player grid, opponent grid, ...   use ConnectionLost event
+end game: empty board action queue
+
+Server: split TaskResolveGameActions -> TimeoutTask and GameActionTask
 
 Bug in client: 
 *sometimes a piece is not dropped correctly even when not using game controller, even when using bot, even in solo mode

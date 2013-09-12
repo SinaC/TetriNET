@@ -313,7 +313,7 @@ namespace TetriNET.Client
                 if (ClientOnPlayerRegistered != null)
                     ClientOnPlayerRegistered(false, -1);
 
-                Log.WriteLine(Log.LogLevels.Debug, "Registration failed");
+                Log.WriteLine(Log.LogLevels.Info, "Registration failed");
             }
         }
 
@@ -423,6 +423,12 @@ namespace TetriNET.Client
             Log.WriteLine(Log.LogLevels.Debug, "Game started with {0} {1} {2}", firstTetrimino, secondTetrimino, thirdTetrimino);
 
             ResetTimeout();
+
+            // Reset board action list
+            Action outAction;
+            while (!_boardActionQueue.IsEmpty)
+                _boardActionQueue.TryDequeue(out outAction);
+
             State = States.Playing;
             _options = options;
             // Reset tetriminos
@@ -475,6 +481,12 @@ namespace TetriNET.Client
                     playerData.State = PlayerData.States.Joined;
             }
 
+            // Reset board action list
+            Action outAction;
+            while (!_boardActionQueue.IsEmpty)
+                _boardActionQueue.TryDequeue(out outAction);
+
+
             if (ClientOnGameFinished != null)
                 ClientOnGameFinished();
         }
@@ -515,7 +527,7 @@ namespace TetriNET.Client
 
             if (State == States.Playing)
             {
-                AddLines(lineCount);
+                EnqueueBoardAction(() => AddLines(lineCount));
             }
         }
 
@@ -530,7 +542,7 @@ namespace TetriNET.Client
                 // Don't add line to ourself
                 if (playerId != _clientPlayerId)
                 {
-                    AddLines(lineCount);
+                    EnqueueBoardAction(() => AddLines(lineCount));
                 }
 
                 if (ClientOnPlayerAddLines != null)
@@ -553,43 +565,9 @@ namespace TetriNET.Client
             {
                 if (targetId == _clientPlayerId)
                 {
-                    switch (special)
-                    {
-                        case Specials.AddLines:
-                            AddLines(1);
-                            break;
-                        case Specials.ClearLines:
-                            ClearLine();
-                            break;
-                        case Specials.NukeField:
-                            NukeField();
-                            break;
-                        case Specials.RandomBlocksClear:
-                            RandomBlocksClear(10);
-                            break;
-                        case Specials.SwitchFields:
-                            // NOP: Managed by Server
-                            break;
-                        case Specials.ClearSpecialBlocks:
-                            ClearSpecialBlocks();
-                            break;
-                        case Specials.BlockGravity:
-                            BlockGravity();
-                            break;
-                        case Specials.BlockQuake:
-                            BlockQuake();
-                            break;
-                        case Specials.BlockBomb:
-                            BlockBomb();
-                            break;
-                        case Specials.ClearColumn:
-                            ClearColumn();
-                            break;
-                        case Specials.ZebraField:
-                            ZebraField();
-                            break;
-                    }
+                    EnqueueBoardAction(() => SpecialUsed(special));
                 }
+                // Messages are displayed immediately, only board action is enqueued
                 if (ClientOnSpecialUsed != null)
                 {
                     PlayerData playerData = GetPlayer(playerId);
@@ -693,6 +671,12 @@ namespace TetriNET.Client
         {
             Log.WriteLine(Log.LogLevels.Debug, "End game");
             _gameTimer.Stop();
+
+            // Reset board action list
+            Action outAction;
+            while (!_boardActionQueue.IsEmpty)
+                _boardActionQueue.TryDequeue(out outAction);
+
             //
             State = States.Registered;
             // Send player lost
@@ -1204,184 +1188,57 @@ namespace TetriNET.Client
                 _proxy.PublishMessage(this, msg);
         }
 
-        // TODO: remove following code + reference to TetriNET.Strategy
-        private static IBoard _beforeLastBoard = null;
-        private static IBoard _lastBoard = null;
-        private static ITetrimino _beforeLastTetrimino = null;
-        private static ITetrimino _lastTetrimino = null;
         public void Drop()
         {
-            Log.WriteLine(Log.LogLevels.Debug, "DROP {0}", CurrentTetrimino.Value);
+            //Log.WriteLine(Log.LogLevels.Debug, "DROP {0}", CurrentTetrimino.Value);
 
             if (State != States.Playing)
                 return;
-
-            /*
-// TODO: remove following code + reference to TetriNET.Strategy
- */
-            _beforeLastBoard = _lastBoard == null ? null : _lastBoard.Clone();
-            _lastBoard = Board.Clone();
-            _beforeLastTetrimino = _lastTetrimino == null ? null : _lastTetrimino.Clone();
-            _lastTetrimino = CurrentTetrimino.Clone();
-
-
-            _gameTimer.Stop();
-
-            /*
-            // TODO: remove following code + reference to TetriNET.Strategy
-             */
-            ITetrimino tempTetrimino2 = CurrentTetrimino.Clone();
-            IBoard tempBoard2 = Board.Clone();
-            tempBoard2.Drop(tempTetrimino2);
-            tempBoard2.CommitTetrimino(tempTetrimino2);
-
-            for (int x = 1; x <= tempBoard2.Width; x++)
-            {
-                int holes = BoardHelper.GetBuriedHolesForColumn(tempBoard2, x);
-                if (holes >= tempBoard2.Height / 3)
-                {
-                    //Debug.Assert(false);
-                    int a = 5;
-                }
-            }
-
-            // Inform UI
-            if (ClientOnTetriminoMoving != null)
-                ClientOnTetriminoMoving();
-            // Perform move
-            Board.Drop(CurrentTetrimino);
-            // Inform UI
-            if (ClientOnTetriminoMoved != null)
-                ClientOnTetriminoMoved();
-
-            if (CurrentTetrimino.PosY == Board.Height)
-            {
-                int a = 55;
-            }
-
-            //
-            PlaceCurrentTetrimino();
-            //
-            FinishRound();
+            EnqueueBoardAction(DropAction);
         }
 
         public void MoveDown()
         {
-            Log.WriteLine(Log.LogLevels.Debug, "MoveDown");
+            //Log.WriteLine(Log.LogLevels.Debug, "MoveDown");
 
             if (State != States.Playing)
                 return;
-
-            /*
-// TODO: remove following code + reference to TetriNET.Strategy
- */
-            ITetrimino tempTetrimino2 = CurrentTetrimino.Clone();
-            IBoard tempBoard2 = Board.Clone();
-            bool movedDown2 = tempBoard2.MoveDown(tempTetrimino2);
-            if (!movedDown2)
-            {
-                _beforeLastBoard = _lastBoard == null ? null : _lastBoard.Clone();
-                _lastBoard = Board.Clone();
-                _beforeLastTetrimino = _lastTetrimino == null ? null : _lastTetrimino.Clone();
-                _lastTetrimino = CurrentTetrimino.Clone();
-            }
-
-            for (int x = 1; x <= tempBoard2.Width; x++)
-            {
-                int holes = BoardHelper.GetBuriedHolesForColumn(tempBoard2, x);
-                if (holes >= tempBoard2.Height / 3)
-                {
-                    //Debug.Assert(false);
-                    int a = 5;
-                }
-            }
-
-
-            // Inform UI
-            if (ClientOnTetriminoMoving != null)
-                ClientOnTetriminoMoving();
-            // Perform move
-            bool movedDown = Board.MoveDown(CurrentTetrimino);
-            // Inform UI
-            if (ClientOnTetriminoMoved != null)
-                ClientOnTetriminoMoved();
-
-            // If cannot move down anymore, round is finished
-            if (!movedDown)
-            {
-                if (CurrentTetrimino.PosY == Board.Height)
-                {
-                    int a = 55;
-                }
-
-                //
-                PlaceCurrentTetrimino();
-                //
-                FinishRound();
-            }
+            EnqueueBoardAction(MoveDownAction);
         }
 
         public void MoveLeft()
         {
             if (State != States.Playing)
                 return;
-            // Inform UI
-            if (ClientOnTetriminoMoving != null)
-                ClientOnTetriminoMoving();
-            // Perform move
-            Board.MoveLeft(CurrentTetrimino);
-            // Inform UI
-            if (ClientOnTetriminoMoved != null)
-                ClientOnTetriminoMoved();
+            EnqueueBoardAction(MoveLeftAction);
         }
 
         public void MoveRight()
         {
             if (State != States.Playing)
                 return;
-            // Inform UI
-            if (ClientOnTetriminoMoving != null)
-                ClientOnTetriminoMoving();
-            // Perform move
-            Board.MoveRight(CurrentTetrimino);
-            // Inform UI
-            if (ClientOnTetriminoMoved != null)
-                ClientOnTetriminoMoved();
+            EnqueueBoardAction(MoveRightAction);
         }
 
         public void RotateClockwise()
         {
             if (State != States.Playing)
                 return;
-            // Inform UI
-            if (ClientOnTetriminoMoving != null)
-                ClientOnTetriminoMoving();
-            // Perform move
-            Board.RotateClockwise(CurrentTetrimino);
-            // Inform UI
-            if (ClientOnTetriminoMoved != null)
-                ClientOnTetriminoMoved();
+            EnqueueBoardAction(RotateClockwiseAction);
         }
 
         public void RotateCounterClockwise()
         {
             if (State != States.Playing)
                 return;
-            // Inform UI
-            if (ClientOnTetriminoMoving != null)
-                ClientOnTetriminoMoving();
-            // Perform move
-            Board.RotateCounterClockwise(CurrentTetrimino);
-            // Inform UI
-            if (ClientOnTetriminoMoved != null)
-                ClientOnTetriminoMoved();
+            EnqueueBoardAction(RotateCounterClockwiseAction);
         }
 
         public void DiscardFirstSpecial()
         {
             if (State != States.Playing)
                 return;
-            // Only if client is playing, target exists and is playing
+            // Only if client is playing
             if (Player.State == PlayerData.States.Playing)
             {
                 // Get first special and discard it
@@ -1488,37 +1345,94 @@ namespace TetriNET.Client
         }
 
         #region Board Actions
+        private readonly ManualResetEvent _actionEnqueuedEvent = new ManualResetEvent(false);
         private readonly ConcurrentQueue<Action> _boardActionQueue = new ConcurrentQueue<Action>();
+
+        private void EnqueueBoardAction(Action action)
+        {
+            _boardActionQueue.Enqueue(action);
+            _actionEnqueuedEvent.Set();
+        }
 
         private void BoardActionTask()
         {
+            WaitHandle[] waitHandles = new WaitHandle[]
+            {
+                _actionEnqueuedEvent,
+                _stopBackgroundTaskEvent
+            };
+            
             while (true)
             {
-                // Perform game actions
-                if (State == States.Playing && !_boardActionQueue.IsEmpty)
+                int handle = WaitHandle.WaitAny(waitHandles, 100);
+                if (handle != WaitHandle.WaitTimeout)
                 {
-                    Action action;
-                    bool dequeue = _boardActionQueue.TryDequeue(out action);
-                    if (dequeue)
+                    if (handle == 1) // _stopBackgroundTaskEvent
+                        break; // Stop here
+                    _actionEnqueuedEvent.Reset();
+                    // Perform board actions
+                    if (State == States.Playing && !_boardActionQueue.IsEmpty)
                     {
-                        try
+                        while (!_boardActionQueue.IsEmpty)
                         {
-                            action();
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.WriteLine(Log.LogLevels.Error, "Exception raised in BoardActionTask. Exception:{0}", ex);
+                            Action action;
+                            bool dequeue = _boardActionQueue.TryDequeue(out action);
+                            if (dequeue)
+                            {
+                                try
+                                {
+                                    action();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Log.WriteLine(Log.LogLevels.Error, "Exception raised in BoardActionTask. Exception:{0}", ex);
+                                }
+                            }
                         }
                     }
                 }
-
-                // Stop task if stop event is raised
-                if (_stopBackgroundTaskEvent.WaitOne(10))
-                    break;
             }
         }
 
-        // TODO: board actions: MoveLeft, MoveRight, MoveDown, Drop, Rotate and every specials
+        private void SpecialUsed(Specials special)
+        {
+            switch (special)
+            {
+                case Specials.AddLines:
+                    AddLines(1);
+                    break;
+                case Specials.ClearLines:
+                    ClearLine();
+                    break;
+                case Specials.NukeField:
+                    NukeField();
+                    break;
+                case Specials.RandomBlocksClear:
+                    RandomBlocksClear(10);
+                    break;
+                case Specials.SwitchFields:
+                    // NOP: Managed by Server
+                    break;
+                case Specials.ClearSpecialBlocks:
+                    ClearSpecialBlocks();
+                    break;
+                case Specials.BlockGravity:
+                    BlockGravity();
+                    break;
+                case Specials.BlockQuake:
+                    BlockQuake();
+                    break;
+                case Specials.BlockBomb:
+                    BlockBomb();
+                    break;
+                case Specials.ClearColumn:
+                    ClearColumn();
+                    break;
+                case Specials.ZebraField:
+                    ZebraField();
+                    break;
+            }
+        }
 
         // Add junk lines
         private void AddLines(int count)
@@ -1612,6 +1526,162 @@ namespace TetriNET.Client
             if (ClientOnRedraw != null)
                 ClientOnRedraw();
         }
+
+        // TODO: remove following code + reference to TetriNET.Strategy
+        private static IBoard _beforeLastBoard = null;
+        private static IBoard _lastBoard = null;
+        private static ITetrimino _beforeLastTetrimino = null;
+        private static ITetrimino _lastTetrimino = null;
+        private void DropAction()
+        {
+            /*
+// TODO: remove following code + reference to TetriNET.Strategy
+ */
+            _beforeLastBoard = _lastBoard == null ? null : _lastBoard.Clone();
+            _lastBoard = Board.Clone();
+            _beforeLastTetrimino = _lastTetrimino == null ? null : _lastTetrimino.Clone();
+            _lastTetrimino = CurrentTetrimino.Clone();
+
+
+            _gameTimer.Stop();
+
+            /*
+            // TODO: remove following code + reference to TetriNET.Strategy
+             */
+            ITetrimino tempTetrimino2 = CurrentTetrimino.Clone();
+            IBoard tempBoard2 = Board.Clone();
+            tempBoard2.Drop(tempTetrimino2);
+            tempBoard2.CommitTetrimino(tempTetrimino2);
+
+            for (int x = 1; x <= tempBoard2.Width; x++)
+            {
+                int holes = BoardHelper.GetBuriedHolesForColumn(tempBoard2, x);
+                if (holes >= tempBoard2.Height / 3)
+                {
+                    //Debug.Assert(false);
+                    int a = 5;
+                }
+            }
+
+            // Inform UI
+            if (ClientOnTetriminoMoving != null)
+                ClientOnTetriminoMoving();
+            // Perform move
+            Board.Drop(CurrentTetrimino);
+            // Inform UI
+            if (ClientOnTetriminoMoved != null)
+                ClientOnTetriminoMoved();
+
+            if (CurrentTetrimino.PosY == Board.Height)
+            {
+                int a = 55;
+            }
+
+            //
+            PlaceCurrentTetrimino();
+            //
+            FinishRound();
+        }
+
+        private void MoveDownAction()
+        {
+            /*
+// TODO: remove following code + reference to TetriNET.Strategy
+ */
+            ITetrimino tempTetrimino2 = CurrentTetrimino.Clone();
+            IBoard tempBoard2 = Board.Clone();
+            bool movedDown2 = tempBoard2.MoveDown(tempTetrimino2);
+            if (!movedDown2)
+            {
+                _beforeLastBoard = _lastBoard == null ? null : _lastBoard.Clone();
+                _lastBoard = Board.Clone();
+                _beforeLastTetrimino = _lastTetrimino == null ? null : _lastTetrimino.Clone();
+                _lastTetrimino = CurrentTetrimino.Clone();
+            }
+
+            for (int x = 1; x <= tempBoard2.Width; x++)
+            {
+                int holes = BoardHelper.GetBuriedHolesForColumn(tempBoard2, x);
+                if (holes >= tempBoard2.Height / 3)
+                {
+                    //Debug.Assert(false);
+                    int a = 5;
+                }
+            }
+
+
+            // Inform UI
+            if (ClientOnTetriminoMoving != null)
+                ClientOnTetriminoMoving();
+            // Perform move
+            bool movedDown = Board.MoveDown(CurrentTetrimino);
+            // Inform UI
+            if (ClientOnTetriminoMoved != null)
+                ClientOnTetriminoMoved();
+
+            // If cannot move down anymore, round is finished
+            if (!movedDown)
+            {
+                if (CurrentTetrimino.PosY == Board.Height)
+                {
+                    int a = 55;
+                }
+
+                //
+                PlaceCurrentTetrimino();
+                //
+                FinishRound();
+            }
+        }
+
+        private void MoveLeftAction()
+        {
+            // Inform UI
+            if (ClientOnTetriminoMoving != null)
+                ClientOnTetriminoMoving();
+            // Perform move
+            Board.MoveLeft(CurrentTetrimino);
+            // Inform UI
+            if (ClientOnTetriminoMoved != null)
+                ClientOnTetriminoMoved();
+        }
+
+        private void MoveRightAction()
+        {
+            // Inform UI
+            if (ClientOnTetriminoMoving != null)
+                ClientOnTetriminoMoving();
+            // Perform move
+            Board.MoveRight(CurrentTetrimino);
+            // Inform UI
+            if (ClientOnTetriminoMoved != null)
+                ClientOnTetriminoMoved();
+        }
+
+        private void RotateClockwiseAction()
+        {
+            // Inform UI
+            if (ClientOnTetriminoMoving != null)
+                ClientOnTetriminoMoving();
+            // Perform move
+            Board.RotateClockwise(CurrentTetrimino);
+            // Inform UI
+            if (ClientOnTetriminoMoved != null)
+                ClientOnTetriminoMoved();
+        }
+
+        private void RotateCounterClockwiseAction()
+        {
+            // Inform UI
+            if (ClientOnTetriminoMoving != null)
+                ClientOnTetriminoMoving();
+            // Perform move
+            Board.RotateCounterClockwise(CurrentTetrimino);
+            // Inform UI
+            if (ClientOnTetriminoMoved != null)
+                ClientOnTetriminoMoved();
+        }
+
         #endregion
     }
 }
