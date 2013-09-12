@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using TetriNET.Common.Interfaces;
 
@@ -19,6 +20,13 @@ namespace TetriNET.WPF_WCF_Client.Views
         public ConnectionView()
         {
             InitializeComponent();
+
+            ServerList.OnServerSelected += OnServerSelected;
+        }
+
+        private void OnServerSelected(object sender, string serverAddress)
+        {
+            Connection.ServerAddress = serverAddress;
         }
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)

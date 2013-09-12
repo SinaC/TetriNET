@@ -12,11 +12,17 @@ SinaCSpecials: use gravity when board has enough holes or when to high + zebra +
 GameController -> interface
 
 AdvancedPierreDellacherieOnePiece: finish GetHoleDepthForColumn
-Move strategy: rotation followed by translation AND translation followed by rotation (useful with I and board almost full)
-
-WPF client: options
+Move strategy: rotation followed by translation AND translation followed by rotation (useful with tetrimino I and board almost full)
 
 Client: disconnect -> clear player list, clear player grid, opponent grid, ...   easiest way is to add an event sur Unregister
+
+Bug in client: 
+*sometimes a piece is not dropped correctly even when not using game controller, even when using bot, even in solo mode
+*end game is called 2 times
+*if GameTimerOnElapsed trigger at the same time BOT drop the piece, 2 identical PlaceTetrimino are sent to server
+==> solution to all these problems is to serialize action on board like game action are serialized in server
+MoveLeft, MoveRight, MoveDown, Drop, Specials will be pushed in a queue and handled by a task   !!! client State must be handle correctly and must be check before any action
+ -> no more lock needed in Board
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf

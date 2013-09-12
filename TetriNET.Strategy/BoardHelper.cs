@@ -1,4 +1,5 @@
-﻿using TetriNET.Common.Interfaces;
+﻿using System.Diagnostics;
+using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Strategy
 {
@@ -93,14 +94,15 @@ namespace TetriNET.Strategy
 
         // The following counts the number of cells (0..4) of a tetrimino that would
         // be eliminated by dropping the tetrimino.
-        public static int CountPieceCellsEliminated(IBoard board, ITetrimino tetrimino)
+        public static int CountPieceCellsEliminated(IBoard board, ITetrimino tetrimino, bool alreadyDropped)
         {
             // Copy tetrimino and board so that this measurement is not destructive.
-            IBoard copyOfBoard = board.Clone();
-            ITetrimino copyOfPiece = tetrimino.Clone();
+            IBoard copyOfBoard = alreadyDropped ? board : board.Clone();
+            ITetrimino copyOfPiece = alreadyDropped ? tetrimino : tetrimino.Clone();
 
-            // Drop copy of tetrimino on to the copy of the board
-            copyOfBoard.DropAndCommit(copyOfPiece);
+            if (!alreadyDropped)
+                // Drop copy of tetrimino on to the copy of the board
+                copyOfBoard.DropAndCommit(copyOfPiece);
 
             // Scan rows.  For each full row, check all board Y values for the
             // tetrimino.  If any board Y of the tetrimino matches the full row Y,

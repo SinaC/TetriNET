@@ -35,7 +35,7 @@ namespace TetriNET.WCFHost
                 _serviceHost = new ServiceHost(this, baseAddress);
                 _serviceHost.AddServiceEndpoint(typeof(IWCFTetriNET), new NetTcpBinding(SecurityMode.None), "");
                 //ServiceHost.AddDefaultEndpoints();
-                _serviceHost.Description.Behaviors.Add(new IPFilterServiceBehavior(_host.BanManager));
+                _serviceHost.Description.Behaviors.Add(new IPFilterServiceBehavior(_host.BanManager, _host.PlayerManager));
                 _serviceHost.Open();
 
                 foreach (var endpt in _serviceHost.Description.Endpoints)
@@ -183,10 +183,6 @@ namespace TetriNET.WCFHost
         {
             if (!_started)
                 return;
-
-            // Inform players
-            foreach (IPlayer p in PlayerManager.Players)
-                p.OnServerStopped();
             
             _serviceHost.Stop();
 

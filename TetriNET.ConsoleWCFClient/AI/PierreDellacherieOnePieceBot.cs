@@ -19,7 +19,7 @@ namespace TetriNET.ConsoleWCFClient.AI
         {
             _client = client;
 
-            _timer = new Timer(100);
+            _timer = new Timer(10);
             _timer.Elapsed += _timer_Elapsed;
 
             _specialStrategy = new SinaCSpecials();
@@ -94,64 +94,83 @@ namespace TetriNET.ConsoleWCFClient.AI
             DateTime searchBestMoveStartTime = DateTime.Now;
 
             // Use specials
-            List<SpecialAdvices> advices = new List<SpecialAdvices>();
-            _specialStrategy.GetSpecialAdvice(_client.Board, _client.CurrentTetrimino, _client.NextTetrimino, _client.Inventory, _client.InventorySize, _client.Opponents.ToList(), out advices);
-            foreach (SpecialAdvices advice in advices)
-            {
-                bool continueLoop = true;
-                switch (advice.SpecialAdviceAction)
-                {
-                    case SpecialAdvices.SpecialAdviceActions.Wait:
-                        continueLoop = false;
-                        break;
-                    case SpecialAdvices.SpecialAdviceActions.Discard:
-                        _client.DiscardFirstSpecial();
-                        continueLoop = true;
-                        break;
-                    case SpecialAdvices.SpecialAdviceActions.UseSelf:
-                        continueLoop = _client.UseSpecial(_client.PlayerId);
-                        break;
-                    case SpecialAdvices.SpecialAdviceActions.UseOpponent:
-                        continueLoop = _client.UseSpecial(advice.OpponentId);
-                        break;
-                }
-                if (!continueLoop)
-                    break;
-                System.Threading.Thread.Sleep(10); // delay next special use
-            }
+            //List<SpecialAdvices> advices;
+            //_specialStrategy.GetSpecialAdvice(_client.Board, _client.CurrentTetrimino, _client.NextTetrimino, _client.Inventory, _client.InventorySize, _client.Opponents.ToList(), out advices);
+            //foreach (SpecialAdvices advice in advices)
+            //{
+            //    bool continueLoop = true;
+            //    switch (advice.SpecialAdviceAction)
+            //    {
+            //        case SpecialAdvices.SpecialAdviceActions.Wait:
+            //            continueLoop = false;
+            //            break;
+            //        case SpecialAdvices.SpecialAdviceActions.Discard:
+            //            _client.DiscardFirstSpecial();
+            //            continueLoop = true;
+            //            break;
+            //        case SpecialAdvices.SpecialAdviceActions.UseSelf:
+            //            continueLoop = _client.UseSpecial(_client.PlayerId);
+            //            break;
+            //        case SpecialAdvices.SpecialAdviceActions.UseOpponent:
+            //            continueLoop = _client.UseSpecial(advice.OpponentId);
+            //            break;
+            //    }
+            //    if (!continueLoop)
+            //        break;
+            //    System.Threading.Thread.Sleep(10); // delay next special use
+            //}
 
             DateTime specialManaged = DateTime.Now;
 
             // Get best move
             int bestRotationDelta;
             int bestTranslationDelta;
-            _moveStrategy.GetBestMove(_client.Board, _client.CurrentTetrimino, _client.NextTetrimino, out bestRotationDelta, out bestTranslationDelta);
+            bool rotationBeforeTranslation;
+            _moveStrategy.GetBestMove(_client.Board, _client.CurrentTetrimino, _client.NextTetrimino, out bestRotationDelta, out bestTranslationDelta, out rotationBeforeTranslation);
 
-            // Perform move
-
-            // ROTATE
-            for (int rotateCount = 0; rotateCount < bestRotationDelta; rotateCount++)
-                _client.RotateClockwise();
-
-            // TRANSLATE
-            if (bestTranslationDelta < 0)
-                for (int translateCount = 0; translateCount > bestTranslationDelta; translateCount--)
-                    _client.MoveLeft();
-            if (bestTranslationDelta > 0)
-                for (int translateCount = 0; translateCount < bestTranslationDelta; translateCount++)
-                    _client.MoveRight();
-
-            // DROP (delayed)
             DateTime searchBestModeEndTime = DateTime.Now;
 
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "BEST MOVE found in {0} ms and special in {1} ms", (searchBestModeEndTime - specialManaged).TotalMilliseconds, (specialManaged - searchBestMoveStartTime).TotalMilliseconds);
-
-            TimeSpan timeSpan = searchBestModeEndTime - searchBestMoveStartTime;
+            // Perform move
+            if (rotationBeforeTranslation)
+            {
+                // Rotate
+                Rotate(bestRotationDelta);
+                // Translate
+                Translate(bestTranslationDelta);
+            }
+            else
+            {
+                // Translate
+                Translate(bestTranslationDelta);
+                // Rotate
+                Rotate(bestRotationDelta);
+            }
+            // Drop (delayed)
+            TimeSpan timeSpan = DateTime.Now - searchBestMoveStartTime;
             double sleepTime = SleepTime - timeSpan.TotalMilliseconds;
             if (sleepTime <= 0)
                 sleepTime = 10;
             System.Threading.Thread.Sleep((int) sleepTime); // delay drop instead of animating
             _client.Drop();
+            //
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "BEST MOVE found in {0} ms and special in {1} ms", (searchBestModeEndTime - specialManaged).TotalMilliseconds, (specialManaged - searchBestMoveStartTime).TotalMilliseconds);
+        }
+
+        private void Rotate(int rotationDelta)
+        {
+            for (int rotateCount = 0; rotateCount < rotationDelta; rotateCount++)
+                _client.RotateClockwise();
+        }
+
+        private void Translate(int translationDelta)
+        {
+            if (translationDelta < 0)
+                for (int translateCount = 0; translateCount > translationDelta; translateCount--)
+                    _client.MoveLeft();
+            if (translationDelta > 0)
+                for (int translateCount = 0; translateCount < translationDelta; translateCount++)
+                    _client.MoveRight();
+
         }
     }
 }

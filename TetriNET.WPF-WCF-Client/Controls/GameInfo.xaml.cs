@@ -88,6 +88,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
+        #region IClient events handler
         private void OnGameStarted()
         {
             ExecuteOnUIThread.Invoke(() =>
@@ -106,6 +107,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
         {
             ExecuteOnUIThread.Invoke(DisplayClearedLines);
         }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

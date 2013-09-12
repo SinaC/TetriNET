@@ -12,12 +12,19 @@ namespace TetriNET.WPF_WCF_Client.Controls
 {
     public class Textures
     {
-        public readonly Dictionary<Specials, Brush> BigSpecialsBrushes = new Dictionary<Specials, Brush>();
-        public readonly Dictionary<Tetriminos, Brush> BigTetriminosBrushes = new Dictionary<Tetriminos, Brush>();
-        public readonly Dictionary<Specials, Brush> SmallSpecialsBrushes = new Dictionary<Specials, Brush>();
-        public readonly Dictionary<Tetriminos, Brush> SmallTetriminosBrushes = new Dictionary<Tetriminos, Brush>();
-        public Brush BigBackground;
-        public Brush SmallBackground;
+        private readonly Dictionary<Specials, Brush> _bigSpecialsBrushes = new Dictionary<Specials, Brush>();
+        private readonly Dictionary<Tetriminos, Brush> _bigTetriminosBrushes = new Dictionary<Tetriminos, Brush>();
+        private readonly Dictionary<Specials, Brush> _smallSpecialsBrushes = new Dictionary<Specials, Brush>();
+        private readonly Dictionary<Tetriminos, Brush> _smallTetriminosBrushes = new Dictionary<Tetriminos, Brush>();
+        private readonly Brush _bigBackground;
+        private readonly Brush _smallBackground;
+
+        public Dictionary<Specials, Brush> BigSpecialsBrushes { get { return _bigSpecialsBrushes; } }
+        public Dictionary<Tetriminos, Brush> BigTetriminosBrushes { get { return _bigTetriminosBrushes; } }
+        public Dictionary<Specials, Brush> SmallSpecialsBrushes { get { return _smallSpecialsBrushes; } }
+        public Dictionary<Tetriminos, Brush> SmallTetriminosBrushes { get { return _smallTetriminosBrushes; } }
+        public Brush BigBackground { get { return _bigBackground; }}
+        public Brush SmallBackground { get { return _smallBackground; }}
 
         public Textures(Uri graphicsUri)
         {
@@ -28,7 +35,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 #region Big brushes
 
                 // Background
-                BigBackground = new ImageBrush(image)
+                _bigBackground = new ImageBrush(image)
                     {
                         ViewboxUnits = BrushMappingMode.Absolute,
                         Viewbox = new Rect(0, 24, 192, 352),
@@ -138,7 +145,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
                 #region Small brushes
 
-                SmallBackground = new ImageBrush(image)
+                _smallBackground = new ImageBrush(image)
                     {
                         ViewboxUnits = BrushMappingMode.Absolute,
                         Viewbox = new Rect(192, 24, 96, 176),
@@ -251,7 +258,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 Log.WriteLine(Log.LogLevels.Error, "Invalid texture file {0}. Exception: {1}", graphicsUri, ex);
 
                 // Set default values
-                BigBackground = new SolidColorBrush(Colors.Black);
+                _bigBackground = new SolidColorBrush(Colors.Black);
                 BigTetriminosBrushes.Add(Tetriminos.TetriminoI, new SolidColorBrush(Colors.Blue));
                 BigTetriminosBrushes.Add(Tetriminos.TetriminoJ, new SolidColorBrush(Colors.Green));
                 BigTetriminosBrushes.Add(Tetriminos.TetriminoL, new SolidColorBrush(Colors.Magenta));
@@ -271,7 +278,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 BigSpecialsBrushes.Add(Specials.ClearColumn, CreateDummySpecialBrush(Specials.ClearColumn, false));
                 BigSpecialsBrushes.Add(Specials.ZebraField, CreateDummySpecialBrush(Specials.ZebraField, false));
 
-                SmallBackground = new SolidColorBrush(Colors.Black);
+                _smallBackground = new SolidColorBrush(Colors.Black);
                 SmallTetriminosBrushes.Add(Tetriminos.TetriminoI, new SolidColorBrush(Colors.Blue));
                 SmallTetriminosBrushes.Add(Tetriminos.TetriminoJ, new SolidColorBrush(Colors.Green));
                 SmallTetriminosBrushes.Add(Tetriminos.TetriminoL, new SolidColorBrush(Colors.Magenta));

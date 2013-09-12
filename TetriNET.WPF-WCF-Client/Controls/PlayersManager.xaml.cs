@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.Logger;
-using TetriNET.WPF_WCF_Client.Annotations;
 using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.Controls
@@ -103,6 +102,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
                     oldClient.OnPlayerJoined -= _this.OnPlayerJoined;
                     oldClient.OnPlayerLeft -= _this.OnPlayerLeft;
                     oldClient.OnPlayerRegistered -= _this.OnPlayerRegistered;
+                    oldClient.OnConnectionLost -= _this.OnConnectionLost;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
@@ -114,8 +114,16 @@ namespace TetriNET.WPF_WCF_Client.Controls
                     newClient.OnPlayerJoined += _this.OnPlayerJoined;
                     newClient.OnPlayerLeft += _this.OnPlayerLeft;
                     newClient.OnPlayerRegistered += _this.OnPlayerRegistered;
+                    newClient.OnConnectionLost += _this.OnConnectionLost;
                 }
             }
+        }
+
+        #region IClient events handler
+        private void OnConnectionLost(ConnectionLostReasons reason)
+        {
+            ExecuteOnUIThread.Invoke(() => _playerList.Clear());
+            IsServerMaster = false;
         }
 
         private void OnServerMasterModified(int serverMasterId)
@@ -138,7 +146,9 @@ namespace TetriNET.WPF_WCF_Client.Controls
         {
             ExecuteOnUIThread.Invoke(() => AddEntry(playerId, Client.Name));
         }
+        #endregion
 
+        #region UI events handler
         private void KickPlayer_OnClick(object sender, RoutedEventArgs e)
         {
             if (SelectedPlayer != null && SelectedPlayer.RealPlayerId != Client.PlayerId)
@@ -150,6 +160,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             if (SelectedPlayer != null && SelectedPlayer.RealPlayerId != Client.PlayerId)
                 Client.BanPlayer(SelectedPlayer.RealPlayerId);
         }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

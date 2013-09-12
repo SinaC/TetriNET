@@ -4,9 +4,12 @@ using System.Configuration;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
+using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.Controls
 {
@@ -37,6 +40,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 {
                     _username = value;
                     OnPropertyChanged();
+                    Settings.Default.Username = _username;
+                    Settings.Default.Save();
                 }
             }
         }
@@ -54,6 +59,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 {
                     _serverAddress = value;
                     OnPropertyChanged();
+                    Settings.Default.Server = _serverAddress;
+                    Settings.Default.Save();
                 }
             }
         }
@@ -98,20 +105,16 @@ namespace TetriNET.WPF_WCF_Client.Controls
         {
             InitializeComponent();
 
-            Username = "Joel";
-            ServerAddress = ConfigurationManager.AppSettings["address"];
+            //Username = "Joel";
+            //ServerAddress = ConfigurationManager.AppSettings["address"];
+            Username = Settings.Default.Username;
+            ServerAddress = Settings.Default.Server;
         }
 
-        private void Success(string msg)
+        private void SetConnectionResultMessage(string msg, Color color)
         {
             ConnectionResult = msg;
-            ConnectionResultColor = new SolidColorBrush(Colors.Green);
-        }
-
-        private void Fail(string msg)
-        {
-            ConnectionResult = msg;
-            ConnectionResultColor = new SolidColorBrush(Colors.Red);
+            ConnectionResultColor = new SolidColorBrush(color);
         }
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -139,9 +142,16 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
-        private void OnConnectionLost()
+        #region IClient events handler
+        private void OnConnectionLost(ConnectionLostReasons reason)
         {
-            ExecuteOnUIThread.Invoke(() => Fail("Connection lost or Registration failed"));
+            string msg;
+            if (reason == ConnectionLostReasons.ServerNotFound)
+                msg = "Server not found";
+            else
+                msg = "Connection lost";
+
+            ExecuteOnUIThread.Invoke(() => SetConnectionResultMessage(msg, Colors.Red));
             _isRegistered = false;
             OnPropertyChanged("ConnectDisconnectLabel");
         }
@@ -149,45 +159,59 @@ namespace TetriNET.WPF_WCF_Client.Controls
         private void OnPlayerRegistered(bool succeeded, int playerId)
         {
             if (succeeded)
-                ExecuteOnUIThread.Invoke(() => Success(String.Format("Registered as player {0}", playerId+1)));
+                ExecuteOnUIThread.Invoke(() => SetConnectionResultMessage(String.Format("Registered as player {0}", playerId + 1), Colors.Green));
             else
-                ExecuteOnUIThread.Invoke(() => Fail("Registration failed"));
+            {
+                Client.Disconnect();
+                ExecuteOnUIThread.Invoke(() => SetConnectionResultMessage("Registration failed", Colors.Red));
+            }
             _isRegistered = Client.IsRegistered;
             OnPropertyChanged("ConnectDisconnectLabel");
         }
+        #endregion
 
+        #region UI events handler
         private void ConnectDisconnect_OnClick(object sender, RoutedEventArgs e)
         {
-            if (!Client.IsRegistered)
+            Mouse.OverrideCursor = Cursors.Wait;
+            try
             {
-                if (String.IsNullOrEmpty(ServerAddress))
+                if (!Client.IsRegistered)
                 {
-                    ExecuteOnUIThread.Invoke(() => Fail("Missing server address"));
-                    return;
-                }
-                if (String.IsNullOrEmpty(Username))
-                {
-                    ExecuteOnUIThread.Invoke(() => Fail("Missing username"));
-                    return;
-                }
-                bool connected = Client.Connect(callback => new WCFProxy.WCFProxy(callback, ServerAddress));
-                if (!connected)
-                {
-                    ExecuteOnUIThread.Invoke(() => Fail("Connection failed"));
+                    if (String.IsNullOrEmpty(ServerAddress))
+                    {
+                        ExecuteOnUIThread.Invoke(() => SetConnectionResultMessage("Missing server address", Colors.Red));
+                        return;
+                    }
+                    if (String.IsNullOrEmpty(Username))
+                    {
+                        ExecuteOnUIThread.Invoke(() => SetConnectionResultMessage("Missing username", Colors.Red));
+                        return;
+                    }
+                    bool connected = Client.Connect(callback => new WCFProxy.WCFProxy(callback, ServerAddress));
+                    if (!connected)
+                    {
+                        ExecuteOnUIThread.Invoke(() => SetConnectionResultMessage("Connection failed", Colors.Red));
+                    }
+                    else
+                        Client.Register(Username);
                 }
                 else
-                    Client.Register(Username);
+                {
+                    Client.Unregister();
+                    bool disconnected = Client.Disconnect();
+                    if (disconnected)
+                        ExecuteOnUIThread.Invoke(() => SetConnectionResultMessage("Disconnected", Colors.Red));
+                    else
+                        ExecuteOnUIThread.Invoke(() => SetConnectionResultMessage("Disconnection failed", Colors.Red));
+                }
             }
-            else
+            finally
             {
-                Client.Unregister();
-                bool disconnected = Client.Disconnect();
-                if (disconnected)
-                    ExecuteOnUIThread.Invoke(() => Success("Disconnected"));
-                else
-                    ExecuteOnUIThread.Invoke(() => Fail("Disconnection failed"));
+                Mouse.OverrideCursor = null;
             }
         }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

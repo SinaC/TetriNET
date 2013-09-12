@@ -77,11 +77,13 @@ namespace TetriNET.WPF_WCF_Client.Controls
         {
             if (Client == null)
                 return;
+            // Reset
+            for (int i = 0; i < MaxInventorySize; i++)
+                _inventory[i].Fill = TransparentColor;
+            // Draw
             List<Specials> specials = Client.Inventory;
             if (specials != null && specials.Any())
             {
-                for (int i = 0; i < MaxInventorySize; i++)
-                    _inventory[i].Fill = TransparentColor;
                 for (int i = 0; i < specials.Count; i++)
                     _inventory[i].Fill = _textures.BigSpecialsBrushes[specials[i]];
                 FirstSpecial = Mapper.MapSpecialToString(specials[0]);
@@ -117,6 +119,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
+        #region IClient events handler
         private void OnGameStarted()
         {
             ExecuteOnUIThread.Invoke(DrawInventory);
@@ -126,6 +129,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
         {
             ExecuteOnUIThread.Invoke(DrawInventory);
         }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

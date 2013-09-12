@@ -6,21 +6,26 @@ using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 using TetriNET.Common.Interfaces;
+using TetriNET.Logger;
 
 namespace TetriNET.WCFHost
 {
-    public class IPFilterServiceBehavior : IDispatchMessageInspector, IServiceBehavior
+    internal class IPFilterServiceBehavior : IDispatchMessageInspector, IServiceBehavior
     {
         private static readonly object HttpAccessDenied = new object();
         private static readonly object AccessDenied = new object();
         private readonly IBanManager _verifier;
+        private readonly IPlayerManager _playerManager;
 
-        public IPFilterServiceBehavior(IBanManager verifier)
+        public IPFilterServiceBehavior(IBanManager verifier, IPlayerManager playerManager)
         {
             if (verifier == null)
                 throw new ArgumentNullException("verifier");
+            if (playerManager == null)
+                throw new ArgumentNullException("playerManager");
 
             _verifier = verifier;
+            _playerManager = playerManager;
         }
 
         /// <summary>
@@ -45,7 +50,7 @@ namespace TetriNET.WCFHost
                 // If ip address is denied clear the request mesage so service method does not get execute
                 if (_verifier.IsBanned(address))
                 {
-                    Logger.Log.WriteLine(Logger.Log.LogLevels.Warning, "Banned player {0} tried to connect", address);
+                    Log.WriteLine(Log.LogLevels.Warning, "Banned player {0} tried to connect", address);
 
                     request = null;
                     object result = (channel.LocalAddress.Uri.Scheme.Equals(Uri.UriSchemeHttp) ||
@@ -53,6 +58,18 @@ namespace TetriNET.WCFHost
                         HttpAccessDenied : AccessDenied;
                     return result;
                 }
+                // TODO
+                //else
+                //{
+                //    // Check SPAM
+                //    ITetriNETCallback callback = OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
+                //    IPlayer player = _playerManager[callback];
+                //    if (player != null)
+                //    {
+                //        TimeSpan timeSpan = DateTime.Now - player.LastActionFromClient;
+                //        //Log.WriteLine(Log.LogLevels.Debug, "DELAY BETWEEN LAST MSG AND NOW:{0} | {1}", timeSpan.TotalMilliseconds, player.LastActionFromClient);
+                //    }
+                //}
             }
 
             return null;

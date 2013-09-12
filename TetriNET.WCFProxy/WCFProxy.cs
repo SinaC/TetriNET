@@ -113,7 +113,7 @@ namespace TetriNET.WCFProxy
             }
             catch (Exception ex)
             {
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Error, "Exception:{1}", ex);
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Warning, "Exception:{0}", ex);
                 _factory.Abort();
             }
             _factory = null;

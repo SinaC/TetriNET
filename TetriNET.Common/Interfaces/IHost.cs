@@ -44,6 +44,7 @@ namespace TetriNET.Common.Interfaces
         event PlayerLeftHandler OnPlayerLeft;
 
         IBanManager BanManager { get; }
+        IPlayerManager PlayerManager { get; }
 
         void Start();
         void Stop();

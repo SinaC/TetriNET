@@ -3,7 +3,7 @@ using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Client.DefaultBoardAndTetriminos
 {
-    public class TetriminoI : Tetrimino
+    internal class TetriminoI : Tetrimino
     {
         protected TetriminoI()
         {

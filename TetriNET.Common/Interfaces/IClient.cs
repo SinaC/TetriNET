@@ -5,7 +5,7 @@ using TetriNET.Common.GameDatas;
 
 namespace TetriNET.Common.Interfaces
 {
-    public delegate void ClientConnectionLostHandler();
+    public delegate void ClientConnectionLostHandler(ConnectionLostReasons reason);
 
     public delegate void ClientRoundStartedHandler();
     public delegate void ClientRoundFinishedHandler();

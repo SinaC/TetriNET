@@ -1,15 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
+using TetriNET.Logger;
 
 namespace TetriNET.Strategy
 {
     // http://www.colinfahey.com/tetris/tetris.html
     public class PierreDellacherieOnePiece : IMoveStrategy
     {
-        public bool GetBestMove(IBoard board, ITetrimino current, ITetrimino next, out int bestRotationDelta, out int bestTranslationDelta)
+        private class Move
+        {
+            public int RotationDelta { get; set; }
+            public int TranslationDelta { get; set; }
+            public double Rating { get; set; }
+            public int Priority { get; set; }
+        }
+
+        private class MoveManager
+        {
+            private readonly List<Move> _moves = new List<Move>();
+
+            public bool Exists(int rotationDelta, int translationDelta)
+            {
+                return _moves.Any(x => x.RotationDelta == rotationDelta && x.TranslationDelta == translationDelta);
+            }
+
+            public void Add(int rotationDelta, int translationDelta, double rating, int priority)
+            {
+                _moves.Add(new Move
+                {
+                    RotationDelta = rotationDelta,
+                    TranslationDelta = translationDelta,
+                    Rating = rating,
+                    Priority = priority
+                });
+            }
+        }
+
+        public bool GetBestMove(IBoard board, ITetrimino current, ITetrimino next, out int bestRotationDelta, out int bestTranslationDelta, out bool rotationBeforeTranslation)
         {
             int currentBestTranslationDelta = 0;
             int currentBestRotationDelta = 0;
@@ -17,10 +48,14 @@ namespace TetriNET.Strategy
             int currentBestPriority = 0;
 
             if (current.PosY == board.Height) // TODO: put current totally in board before trying to get best move
-             current.Translate(0, -1);
+                current.Translate(0, -1);
 
             IBoard tempBoard = board.Clone();
             ITetrimino tempTetrimino = current.Clone();
+
+            MoveManager moveManager = new MoveManager();
+
+            #region Rotation then translation
 
             // Consider all possible rotations
             for (int trialRotationDelta = 0; trialRotationDelta < current.MaxOrientations; trialRotationDelta++)
@@ -36,62 +71,140 @@ namespace TetriNET.Strategy
                 int maxDeltaX;
                 BoardHelper.GetAccessibleTranslationsForOrientation(board, tempTetrimino, out isMovePossible, out minDeltaX, out maxDeltaX);
 
-                StringBuilder sb = new StringBuilder();
-                for (int i = 1; i <= tempTetrimino.TotalCells; i++)
-                {
-                    int x, y;
-                    tempTetrimino.GetCellAbsolutePosition(i, out x, out y);
-                    sb.Append(String.Format("[{0}->{1},{2}]", i, x - tempTetrimino.PosX, y - tempTetrimino.PosY));
-                }
+                //StringBuilder sb = new StringBuilder();
+                //for (int i = 1; i <= tempTetrimino.TotalCells; i++)
+                //{
+                //    int x, y;
+                //    tempTetrimino.GetCellAbsolutePosition(i, out x, out y);
+                //    sb.Append(String.Format("[{0}->{1},{2}]", i, x - tempTetrimino.PosX, y - tempTetrimino.PosY));
+                //}
                 //Log.Log.WriteLine("{0} {1} -> {2}  {3}", trialRotationDelta, minDeltaX, maxDeltaX, sb.ToString());
                 if (isMovePossible)
                 {
                     // Consider all allowed translations
                     for (int trialTranslationDelta = minDeltaX; trialTranslationDelta <= maxDeltaX; trialTranslationDelta++)
                     {
-                        // Evaluate this move
+                        // Check if not already evaluated
+                        bool found = moveManager.Exists(trialRotationDelta, trialTranslationDelta);
 
-                        // Copy tetrimino
-                        tempTetrimino.CopyFrom(current);
-                        // Rotate
-                        tempTetrimino.Rotate(trialRotationDelta);
-                        // Translate
-                        tempTetrimino.Translate(trialTranslationDelta, 0);
-
-                        // Check if move is acceptable
-                        if (board.CheckNoConflict(tempTetrimino))
+                        if (!found)
                         {
-                            // Copy board
-                            tempBoard.CopyFrom(board);
-                            // Drop tetrimino
-                            tempBoard.DropAndCommit(tempTetrimino);
+                            // Evaluate this move
 
-                            // Evaluate
-                            double trialRating;
-                            int trialPriority;
-                            EvaluteMove(tempBoard, tempTetrimino, out trialRating, out trialPriority);
+                            // Copy tetrimino
+                            tempTetrimino.CopyFrom(current);
+                            // Rotate
+                            tempTetrimino.Rotate(trialRotationDelta);
+                            // Translate
+                            tempTetrimino.Translate(trialTranslationDelta, 0);
 
-                            //Log.Log.WriteLine("R:{0:0.0000} P:{1} R:{2} T:{3}", trialRating, trialPriority, trialRotationDelta, trialTranslationDelta);
-
-                            // Check if better than previous best
-                            if (trialRating > currentBestRating || (Math.Abs(trialRating - currentBestRating) < 0.0001 && trialPriority > currentBestPriority))
+                            // Check if move is acceptable
+                            if (board.CheckNoConflict(tempTetrimino))
                             {
-                                currentBestRating = trialRating;
-                                currentBestPriority = trialPriority;
-                                currentBestTranslationDelta = trialTranslationDelta;
-                                currentBestRotationDelta = trialRotationDelta;
+                                // Copy board
+                                tempBoard.CopyFrom(board);
+                                // Drop tetrimino
+                                tempBoard.DropAndCommit(tempTetrimino);
+
+                                // Evaluate
+                                double trialRating;
+                                int trialPriority;
+                                EvaluteMove(tempBoard, tempTetrimino, out trialRating, out trialPriority);
+
+                                //Log.Log.WriteLine("R:{0:0.0000} P:{1} R:{2} T:{3}", trialRating, trialPriority, trialRotationDelta, trialTranslationDelta);
+
+                                // Check if better than previous best
+                                if (trialRating > currentBestRating || (Math.Abs(trialRating - currentBestRating) < 0.0001 && trialPriority > currentBestPriority))
+                                {
+                                    currentBestRating = trialRating;
+                                    currentBestPriority = trialPriority;
+                                    currentBestTranslationDelta = trialTranslationDelta;
+                                    currentBestRotationDelta = trialRotationDelta;
+                                }
+
+                                moveManager.Add(trialRotationDelta, trialTranslationDelta, trialRating, trialPriority);
                             }
                         }
                     }
                 }
             }
+            Log.WriteLine(Log.LogLevels.Debug, "ROTATION + TRANSLATION: {0} {1} {2:0.000} {3}", currentBestTranslationDelta, currentBestRotationDelta, currentBestRating, currentBestPriority);
+            #endregion
 
-            // commit to this move
+            #region Translation then rotation
+            bool isTrialMovePossible;
+            int minTrialDeltaX;
+            int maxTrialDeltaX;
+            BoardHelper.GetAccessibleTranslationsForOrientation(board, tempTetrimino, out isTrialMovePossible, out minTrialDeltaX, out maxTrialDeltaX);
+            if (isTrialMovePossible)
+            {
+                for (int trialTranslationDelta = minTrialDeltaX; trialTranslationDelta <= maxTrialDeltaX; trialTranslationDelta++)
+                {
+                    // Copy tetrimino
+                    tempTetrimino.CopyFrom(current);
+                    // Translate
+                    tempTetrimino.Translate(trialTranslationDelta, 0);
+
+                    // Consider all rotations
+                    for (int trialRotationDelta = 0; trialRotationDelta <= current.MaxOrientations; trialRotationDelta++)
+                    {
+                        // Rotate
+                        tempTetrimino.Rotate(trialRotationDelta);
+
+                        // Check if not already evaluated
+                        bool found = moveManager.Exists(trialRotationDelta, trialTranslationDelta);
+
+                        if (!found)
+                        {
+                            // Evaluate this move
+
+                            // Copy tetrimino
+                            tempTetrimino.CopyFrom(current);
+                            // Rotate
+                            tempTetrimino.Rotate(trialRotationDelta);
+                            // Translate
+                            tempTetrimino.Translate(trialTranslationDelta, 0);
+
+                            // Check if move is acceptable
+                            if (board.CheckNoConflict(tempTetrimino))
+                            {
+                                // Copy board
+                                tempBoard.CopyFrom(board);
+                                // Drop tetrimino
+                                tempBoard.DropAndCommit(tempTetrimino);
+
+                                // Evaluate
+                                double trialRating;
+                                int trialPriority;
+                                EvaluteMove(tempBoard, tempTetrimino, out trialRating, out trialPriority);
+
+                                //Log.Log.WriteLine("R:{0:0.0000} P:{1} R:{2} T:{3}", trialRating, trialPriority, trialRotationDelta, trialTranslationDelta);
+
+                                // Check if better than previous best
+                                if (trialRating > currentBestRating || (Math.Abs(trialRating - currentBestRating) < 0.0001 && trialPriority > currentBestPriority))
+                                {
+                                    currentBestRating = trialRating;
+                                    currentBestPriority = trialPriority;
+                                    currentBestTranslationDelta = trialTranslationDelta;
+                                    currentBestRotationDelta = trialRotationDelta;
+                                    Log.WriteLine(Log.LogLevels.Debug, "FOUND BETTER MOVE USING TRANSLATION + ROTATION");
+                                }
+
+                                moveManager.Add(trialRotationDelta, trialTranslationDelta, trialRating, trialPriority);
+                            }
+                        }
+                    }
+                }
+            }
+            Log.WriteLine(Log.LogLevels.Debug, "TRANSLATION + ROTATION: {0} {1} {2:0.000} {3}", currentBestTranslationDelta, currentBestRotationDelta, currentBestRating, currentBestPriority);
+            #endregion
+
+            // Commit to this move
+            rotationBeforeTranslation = true;
             bestTranslationDelta = currentBestTranslationDelta;
             bestRotationDelta = currentBestRotationDelta;
 
-            //Console.SetCursorPosition(0, _client.Board.Height+1);
-            // Console.WriteLine("{0} {1} {2:0.000} {3}", bestRotationDelta, bestTranslationDelta, currentBestRating, currentBestPriority);
+            // Log.WriteLine(Log.LogLevels.Debug, "{0} {1} {2:0.000} {3}", bestRotationDelta, bestTranslationDelta, currentBestRating, currentBestPriority);
 
             return true;
         }
@@ -131,7 +244,7 @@ namespace TetriNET.Strategy
             if (completedRows > 0)
             {
                 // Count tetrimino cells eroded by completed rows before doing collapse on pile.
-                int tetriminoCellsEliminated = BoardHelper.CountPieceCellsEliminated(board, tetrimino);
+                int tetriminoCellsEliminated = BoardHelper.CountPieceCellsEliminated(board, tetrimino, true);
 
                 // Now it's okay to collapse completed rows
                 List<Specials> specials;

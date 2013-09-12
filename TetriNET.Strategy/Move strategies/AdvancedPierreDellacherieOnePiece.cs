@@ -9,7 +9,7 @@ namespace TetriNET.Strategy.Move_strategies
     // http://hal.archives-ouvertes.fr/docs/00/41/89/54/PDF/article.pdf
     public class AdvancedPierreDellacherieOnePiece : IMoveStrategy
     {
-        public bool GetBestMove(IBoard board, ITetrimino current, ITetrimino next, out int bestRotationDelta, out int bestTranslationDelta)
+        public bool GetBestMove(IBoard board, ITetrimino current, ITetrimino next, out int bestRotationDelta, out int bestTranslationDelta, out bool rotationBeforeTranslation)
         {
             int currentBestTranslationDelta = 0;
             int currentBestRotationDelta = 0;
@@ -86,6 +86,7 @@ namespace TetriNET.Strategy.Move_strategies
             }
 
             // commit to this move
+            rotationBeforeTranslation = true;
             bestTranslationDelta = currentBestTranslationDelta;
             bestRotationDelta = currentBestRotationDelta;
 
@@ -130,7 +131,7 @@ namespace TetriNET.Strategy.Move_strategies
             if (completedRows > 0)
             {
                 // Count tetrimino cells eroded by completed rows before doing collapse on pile.
-                int tetriminoCellsEliminated = BoardHelper.CountPieceCellsEliminated(board, tetrimino);
+                int tetriminoCellsEliminated = BoardHelper.CountPieceCellsEliminated(board, tetrimino, true);
 
                 // Now it's okay to collapse completed rows
                 List<Specials> specials;
@@ -167,7 +168,7 @@ namespace TetriNET.Strategy.Move_strategies
                 boardWells += BoardHelper.GetAllWellsForColumn(board, x);
                 if (buriedHoles > 0)
                     boardColumnWithHoles++;
-                boardHoleDepth += BoardHelper.GetHoleDepthForColumn(board, x);
+                boardHoleDepth += BoardHelper.GetHoleDepthForColumn(board, x); // TODO
             }
 
             // Final rating

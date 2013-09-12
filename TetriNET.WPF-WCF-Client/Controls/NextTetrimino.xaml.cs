@@ -125,6 +125,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
+        #region IClient events handler
         private void OnGameStarted()
         {
             ExecuteOnUIThread.Invoke(DrawNextTetrimino);
@@ -134,5 +135,6 @@ namespace TetriNET.WPF_WCF_Client.Controls
         {
             ExecuteOnUIThread.Invoke(DrawNextTetrimino);
         }
+        #endregion
     }
 }

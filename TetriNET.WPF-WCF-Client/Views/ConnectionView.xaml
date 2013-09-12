@@ -5,8 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:TetriNET.WPF_WCF_Client.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="600">
     <Grid>
-           <controls:Connection x:Name="Connection" /> 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <controls:Connection Grid.Column="0" x:Name="Connection" Margin="0,0,4,0" /> 
+        <controls:ServerList Grid.Column="1" x:Name="ServerList" Margin="4,0,0,0" />
     </Grid>
 </UserControl>

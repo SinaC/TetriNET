@@ -84,7 +84,7 @@ namespace TetriNET.Common.GameDatas
                 new SpecialOccurancy
                 {
                     Value = Specials.ClearLines,
-                    Occurancy = 18
+                    Occurancy = 16
                 },
                 new SpecialOccurancy
                 {

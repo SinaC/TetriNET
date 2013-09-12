@@ -22,7 +22,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
     /// </summary>
     public partial class InGameMessages : UserControl
     {
-        private const int MaxEntries = 10;
+        private const int MaxEntries = 15;
 
         public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("InGameMessagesClientProperty", typeof (IClient), typeof (InGameMessages), new PropertyMetadata(Client_Changed));
         public IClient Client
@@ -88,6 +88,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
+        #region IClient events handler
         private void OnGameStarted()
         {
             ExecuteOnUIThread.Invoke(ClearEntries);
@@ -102,5 +103,6 @@ namespace TetriNET.WPF_WCF_Client.Controls
         {
             ExecuteOnUIThread.Invoke(() => AddEntry(specialId + 1, Mapper.MapSpecialToString(special), playerName, targetName));
         }
+        #endregion
     }
 }

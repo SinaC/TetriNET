@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Controls;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
-using TetriNET.WPF_WCF_Client.Annotations;
 using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.Views
@@ -68,6 +67,7 @@ namespace TetriNET.WPF_WCF_Client.Views
                 {
                     oldClient.OnServerMasterModified -= _this.OnServerMasterModified;
                     oldClient.OnWinListModified -= _this.OnWinListModified;
+                    oldClient.OnConnectionLost -= _this.OnConnectionLost;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
@@ -77,8 +77,15 @@ namespace TetriNET.WPF_WCF_Client.Views
                 {
                     newClient.OnServerMasterModified += _this.OnServerMasterModified;
                     newClient.OnWinListModified += _this.OnWinListModified;
+                    newClient.OnConnectionLost += _this.OnConnectionLost;
                 }
             }
+        }
+
+        #region IClient events handler
+        private void OnConnectionLost(ConnectionLostReasons reason)
+        {
+            IsServerMaster = false;
         }
 
         private void OnWinListModified(List<WinEntry> winList)
@@ -90,15 +97,16 @@ namespace TetriNET.WPF_WCF_Client.Views
         {
             IsServerMaster = Client.IsServerMaster;
         }
+        #endregion
 
+        #region UI events handler
         private void ResetWinList_OnClick(object sender, RoutedEventArgs e)
         {
             Client.ResetWinList();
         }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;

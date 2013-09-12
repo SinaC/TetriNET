@@ -26,6 +26,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
     /// </summary>
     public partial class Chat : UserControl, INotifyPropertyChanged
     {
+        private const int MaxEntries = 500;
+
         public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("ChatClientProperty", typeof(IClient), typeof(Chat), new PropertyMetadata(Client_Changed));
         public IClient Client
         {
@@ -57,6 +59,20 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
+        private bool _isRegistered;
+        public bool IsRegistered
+        {
+            get { return _isRegistered; }
+            set
+            {
+                if (_isRegistered != value)
+                {
+                    _isRegistered = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public Chat()
         {
             InitializeComponent();
@@ -71,6 +87,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
                     PlayerVisibility = String.IsNullOrEmpty(playerName) ? Visibility.Collapsed : Visibility.Visible,
                     Color = new SolidColorBrush(color),
                 });
+            if (ChatEntries.Count > MaxEntries)
+                ChatEntries.RemoveAt(0);
         }
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -120,9 +138,16 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
-        private void OnConnectionLost()
+        #region IClient events handler
+        private void OnConnectionLost(ConnectionLostReasons reason)
         {
-            ExecuteOnUIThread.Invoke(() => AddEntry(String.Format("*** Connection LOST"), Colors.Red));
+            string msg;
+            if (reason == ConnectionLostReasons.ServerNotFound)
+                msg = "*** Server not found";
+            else
+                msg = "*** Connection lost";
+            ExecuteOnUIThread.Invoke(() => AddEntry(msg, Colors.Red));
+            IsRegistered = false;
         }
 
         private void OnPlayerLeft(int playerid, string playerName, LeaveReasons reason)
@@ -163,7 +188,10 @@ namespace TetriNET.WPF_WCF_Client.Controls
         private void OnPlayerRegistered(bool succeeded, int playerId)
         {
             if (succeeded)
+            {
                 ExecuteOnUIThread.Invoke(() => AddEntry("*** You've registered successfully", Colors.Green));
+                IsRegistered = true;
+            }
             else
                 ExecuteOnUIThread.Invoke(() => AddEntry("*** You've FAILED registering !!!", Colors.Red));
         }
@@ -213,6 +241,9 @@ namespace TetriNET.WPF_WCF_Client.Controls
             ExecuteOnUIThread.Invoke(() => AddEntry(msg, Colors.Blue));
         }
 
+        #endregion
+
+        #region UI events handler
         private void InputChat_OnKeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -222,6 +253,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
                     exp.UpdateSource();
             }
         }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

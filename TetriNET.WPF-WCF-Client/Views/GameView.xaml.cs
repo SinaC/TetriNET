@@ -67,11 +67,12 @@ namespace TetriNET.WPF_WCF_Client.Views
                     newClient.OnPlayerLeft += _this.OnPlayerLeft;
 
                     _this._controller = new GameController.GameController(newClient);
-                    _this._bot = new PierreDellacherieOnePieceBot(newClient);
+                    _this._bot = new PierreDellacherieOnePieceBot(newClient, _this._controller);
                 }
             }
         }
 
+        #region IClient events handler
         private void OnPlayerRegistered(bool succeeded, int playerId)
         {
             if (succeeded)
@@ -128,7 +129,9 @@ namespace TetriNET.WPF_WCF_Client.Views
                 }
             }
         }
+        #endregion
 
+        #region UI events handler
         private void GameView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.S)
@@ -161,6 +164,7 @@ namespace TetriNET.WPF_WCF_Client.Views
             if (cmd != Commands.Invalid)
                 _controller.KeyUp(cmd);
         }
+        #endregion
 
         private static Commands MapKeyToCommand(Key key)
         {

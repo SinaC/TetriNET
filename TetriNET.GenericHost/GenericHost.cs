@@ -10,7 +10,6 @@ namespace TetriNET.GenericHost
     public abstract class GenericHost : IHost
     {
         protected readonly Func<string, ITetriNETCallback, IPlayer> CreatePlayerFunc;
-        protected readonly IPlayerManager PlayerManager;
 
         protected GenericHost(IPlayerManager playerManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc)
         {
@@ -54,6 +53,7 @@ namespace TetriNET.GenericHost
         public event PlayerLeftHandler OnPlayerLeft;
 
         public IBanManager BanManager { get; private set; }
+        public IPlayerManager PlayerManager { get; private set; }
 
         public abstract void Start();
         public abstract void Stop();

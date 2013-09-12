@@ -77,6 +77,7 @@
     <Compile Include="Controls\GameInfo.xaml.cs">
       <DependentUpon>GameInfo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ListBoxExtenders.cs" />
     <Compile Include="Controls\NextTetrimino.xaml.cs">
       <DependentUpon>NextTetrimino.xaml</DependentUpon>
     </Compile>
@@ -86,7 +87,11 @@
     <Compile Include="Controls\PlayersManager.xaml.cs">
       <DependentUpon>PlayersManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ServerList.xaml.cs">
+      <DependentUpon>ServerList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Textures.cs" />
+    <Compile Include="Validators\NumericValidationRule.cs" />
     <Compile Include="Views\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
     </Compile>
@@ -128,6 +133,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\PlayersManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ServerList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

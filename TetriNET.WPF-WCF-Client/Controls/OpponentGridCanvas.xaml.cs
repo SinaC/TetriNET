@@ -188,6 +188,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
+        #region IClient events handler
         private void OnGameStarted()
         {
             ExecuteOnUIThread.Invoke(ClearGrid);
@@ -199,12 +200,16 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 ExecuteOnUIThread.Invoke(() => DrawGrid(board));
         }
 
-        private void OnConnectionLost()
+        private void OnConnectionLost(ConnectionLostReasons reason)
         {
             PlayerId = -1;
             PlayerName = "Not playing";
-            PlayerIdVisibility = Visibility.Hidden;
+            ExecuteOnUIThread.Invoke(() =>
+            {
+                PlayerIdVisibility = Visibility.Hidden;
+            });
         }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

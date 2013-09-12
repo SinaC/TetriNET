@@ -84,7 +84,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
         }
 
         private bool _isHintActivated;
-        private IMoveStrategy _moveHint;
+        private IMoveStrategy _moveStrategy;
+        private ITetrimino _tetriminoHint;
         private readonly Textures _textures;
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
@@ -127,7 +128,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
         {
             _isHintActivated = !_isHintActivated;
             if (_isHintActivated)
-                _moveHint = _moveHint ?? new PierreDellacherieOnePiece();
+                _moveStrategy = _moveStrategy ?? new PierreDellacherieOnePiece();
         }
 
         private void DrawTetrimino(IBoard board, ITetrimino tetrimono, Brush brush)
@@ -140,7 +141,8 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 int cellX = x - 1;
 
                 Rectangle uiPart = GetControl(cellX, cellY);
-                uiPart.Fill = brush;
+                if (uiPart != null)
+                    uiPart.Fill = brush;
             }
         }
 
@@ -148,23 +150,33 @@ namespace TetriNET.WPF_WCF_Client.Controls
         {
             if(_isHintActivated)
             {
-                // Clone board, current and next
-                IBoard board = Client.Board.Clone();
-                ITetrimino current = Client.CurrentTetrimino.Clone();
-                ITetrimino next = Client.NextTetrimino.Clone();
+                if (_tetriminoHint == null)
+                {
+                    // Clone board, current and next
+                    IBoard board = Client.Board.Clone();
+                    _tetriminoHint = Client.CurrentTetrimino.Clone();
+                    ITetrimino next = Client.NextTetrimino.Clone();
 
-                // Get hint
-                int bestRotationDelta;
-                int bestTranslationDelta;
-                _moveHint.GetBestMove(board, current, next, out bestRotationDelta, out bestTranslationDelta);
+                    // Get hint
+                    int bestRotationDelta, bestTranslationDelta;
+                    bool rotationBeforeTranslation;
+                    _moveStrategy.GetBestMove(board, _tetriminoHint, next, out bestRotationDelta, out bestTranslationDelta, out rotationBeforeTranslation);
 
-                // Perform move
-                current.Rotate(bestRotationDelta);
-                current.Translate(bestTranslationDelta, 0);
-                board.Drop(current);
-
+                    // Perform move
+                    if (rotationBeforeTranslation)
+                    {
+                        _tetriminoHint.Rotate(bestRotationDelta);
+                        _tetriminoHint.Translate(bestTranslationDelta, 0);
+                    }
+                    else
+                    {
+                        _tetriminoHint.Translate(bestTranslationDelta, 0);
+                        _tetriminoHint.Rotate(bestRotationDelta);
+                    }
+                    board.Drop(_tetriminoHint);
+                }
                 // Draw tetrimino
-                DrawTetrimino(board, current, HintColor); // FF, C0, CB
+                DrawTetrimino(Client.Board, _tetriminoHint, HintColor); // FF, C0, CB
             }
         }
 
@@ -198,19 +210,22 @@ namespace TetriNET.WPF_WCF_Client.Controls
                         byte cellValue = board[x, y];
 
                         Rectangle uiPart = GetControl(cellX, cellY);
-                        if (cellValue == CellHelper.EmptyCell)
-                            uiPart.Fill = TransparentColor;
-                        else
+                        if (uiPart != null)
                         {
-                            Specials special = CellHelper.GetSpecial(cellValue);
-                            Tetriminos color = CellHelper.GetColor(cellValue);
-
-                            if (special == Specials.Invalid)
-                                uiPart.Fill = _textures.BigTetriminosBrushes[color];
+                            if (cellValue == CellHelper.EmptyCell)
+                                uiPart.Fill = TransparentColor;
                             else
-                                uiPart.Fill = _textures.BigSpecialsBrushes[special];
+                            {
+                                Specials special = CellHelper.GetSpecial(cellValue);
+                                Tetriminos color = CellHelper.GetColor(cellValue);
+
+                                if (special == Specials.Invalid)
+                                    uiPart.Fill = _textures.BigTetriminosBrushes[color];
+                                else
+                                    uiPart.Fill = _textures.BigSpecialsBrushes[special];
+                            }
                         }
-            }
+                    }
         }
 
         private void ClearGrid()
@@ -219,8 +234,17 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 uiPart.Fill = TransparentColor;
         }
 
+        private void DrawEverything()
+        {
+            DrawGrid();
+            DrawHint();
+            DrawCurrentTetrimino();
+        }
+
         private Rectangle GetControl(int cellX, int cellY)
         {
+            if (cellX < 0 || cellX >= ColumnsCount || cellY < 0 || cellY >= RowsCount)
+                return null;
             return _grid[cellX + cellY * ColumnsCount];
         }
 
@@ -265,28 +289,27 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
         }
 
+        #region IClient events handler
         private void OnRedraw()
         {
-            ExecuteOnUIThread.Invoke(() =>
-            {
-                DrawGrid();
-                DrawCurrentTetrimino();
-                DrawHint();
-            });
+            _tetriminoHint = null; // reset hint
+            ExecuteOnUIThread.Invoke(DrawEverything);
         }
 
         private void OnTetriminoMoved()
         {
-            OnRedraw();
+            ExecuteOnUIThread.Invoke(DrawEverything);
         }
 
         private void OnRoundStarted()
         {
-            OnRedraw();
+            _tetriminoHint = null; // reset hint
+            ExecuteOnUIThread.Invoke(DrawEverything);
         }
 
         private void OnGameStarted()
         {
+            _tetriminoHint = null; // reset hint>
             ExecuteOnUIThread.Invoke(() =>
             {
                 ClearGrid();
@@ -294,12 +317,16 @@ namespace TetriNET.WPF_WCF_Client.Controls
             });
         }
 
-        private void OnConnectionLost()
+        private void OnConnectionLost(ConnectionLostReasons reason)
         {
             PlayerId = -1;
             PlayerName = "Not registered";
-            PlayerIdVisibility = Visibility.Hidden;
+            ExecuteOnUIThread.Invoke(() =>
+            {
+                PlayerIdVisibility = Visibility.Hidden;
+            });
         }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

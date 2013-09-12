@@ -2,8 +2,8 @@
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
-using TetriNET.WPF_WCF_Client.Annotations;
 
 namespace TetriNET.WPF_WCF_Client.Views
 {
@@ -98,6 +98,7 @@ namespace TetriNET.WPF_WCF_Client.Views
             }
         }
 
+        #region IClient events handler
         private void OnGameResumed()
         {
             _isGamePaused = false;
@@ -131,15 +132,21 @@ namespace TetriNET.WPF_WCF_Client.Views
         private void OnPlayerRegistered(bool succeeded, int playerId)
         {
             _isRegistered = Client.IsRegistered;
+            _isGameStarted = Client.IsGameStarted;
+            _isServerMaster = Client.IsServerMaster;
+            _isGamePaused = false;
             UpdateEnability();
         }
 
-        private void OnConnectionLost()
+        private void OnConnectionLost(ConnectionLostReasons reason)
         {
             _isRegistered = false;
+            _isServerMaster = false;
             UpdateEnability();
         }
+        #endregion
 
+        #region UI events handler
         private void StartStopGame_OnClick(object sender, RoutedEventArgs e)
         {
             if (Client.IsGameStarted)
@@ -155,10 +162,9 @@ namespace TetriNET.WPF_WCF_Client.Views
             else
                 Client.PauseGame();
         }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
