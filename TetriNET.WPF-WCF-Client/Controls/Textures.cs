@@ -26,11 +26,11 @@ namespace TetriNET.WPF_WCF_Client.Controls
         public Brush BigBackground { get { return _bigBackground; }}
         public Brush SmallBackground { get { return _smallBackground; }}
 
-        public Textures(Uri graphicsUri)
+        public Textures(string filename)
         {
             try
             {
-                BitmapImage image = new BitmapImage(graphicsUri);
+                BitmapImage image = new BitmapImage(new Uri(filename, UriKind.RelativeOrAbsolute));
 
                 #region Big brushes
 
@@ -255,7 +255,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
             }
             catch(Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Invalid texture file {0}. Exception: {1}", graphicsUri, ex);
+                Log.WriteLine(Log.LogLevels.Error, "Invalid texture file {0}. Exception: {1}", filename, ex);
 
                 // Set default values
                 _bigBackground = new SolidColorBrush(Colors.Black);

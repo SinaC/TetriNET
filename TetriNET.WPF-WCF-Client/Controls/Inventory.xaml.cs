@@ -53,7 +53,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
 
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                _textures = new Textures(new Uri(ConfigurationManager.AppSettings["texture"]));
+                _textures = new Textures(ConfigurationManager.AppSettings["texture"]);
             }
 
             for (int i = 0; i < MaxInventorySize; i++)

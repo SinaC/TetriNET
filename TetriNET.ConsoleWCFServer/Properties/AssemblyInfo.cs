@@ -1,16 +1,15 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TetriNET.Server")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("TetriNET WCF Server")]
+[assembly: AssemblyDescription("TetriNET WCF Server")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("N-ALLO")]
-[assembly: AssemblyProduct("TetriNET.Server")]
-[assembly: AssemblyCopyright("Copyright © N-ALLO 2013")]
+[assembly: AssemblyCompany("SinaC")]
+[assembly: AssemblyProduct("TetriNET WCF Server")]
+[assembly: AssemblyCopyright("Copyright © SinaC 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

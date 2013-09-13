@@ -1,5 +1,4 @@
-﻿using System.Windows.Media;
-using TetriNET.Common.GameDatas;
+﻿using TetriNET.Common.GameDatas;
 
 namespace TetriNET.WPF_WCF_Client.Controls
 {

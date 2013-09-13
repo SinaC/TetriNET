@@ -43,6 +43,7 @@ namespace TetriNET.WPF_WCF_Client.Models
             }
         }
 
+
         #region Singleton
         public static readonly ThreadSafeSingleton<Options> OptionsSingleton = new ThreadSafeSingleton<Options>(() => new Options());
 

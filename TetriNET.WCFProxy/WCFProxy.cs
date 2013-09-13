@@ -5,7 +5,6 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.GameDatas;
-using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.WCF;
 

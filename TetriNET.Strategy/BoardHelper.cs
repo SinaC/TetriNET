@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using TetriNET.Common.Interfaces;
+﻿using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Strategy
 {

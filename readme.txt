@@ -14,18 +14,9 @@ GameController -> interface
 AdvancedPierreDellacherieOnePiece: finish GetHoleDepthForColumn
 Move strategy: rotation followed by translation AND translation followed by rotation (useful with tetrimino I and board almost full)
 
-Client: disconnect -> clear player list, clear player grid, opponent grid, ...   use ConnectionLost event
-end game: empty board action queue
-
-Server: split TaskResolveGameActions -> TimeoutTask and GameActionTask
-
-Bug in client: 
-*sometimes a piece is not dropped correctly even when not using game controller, even when using bot, even in solo mode
-*end game is called 2 times
-*if GameTimerOnElapsed trigger at the same time BOT drop the piece, 2 identical PlaceTetrimino are sent to server
-==> solution to all these problems is to serialize action on board like game action are serialized in server
-MoveLeft, MoveRight, MoveDown, Drop, Specials will be pushed in a queue and handled by a task   !!! client State must be handle correctly and must be check before any action
- -> no more lock needed in Board
+Connect+Register and Disconnect+Unregister should be merged into one method
+Client: add a server state: GameStarted when receiving OnGameStarted and WaitingStartGame when receiving OnGameFinished (starting value is WaitingStartGame)
+	Pause and Stop are accessible if server state is GameStarted and we're ServerMaster
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf

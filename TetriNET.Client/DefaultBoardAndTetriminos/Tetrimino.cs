@@ -9,6 +9,8 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
         public int PosY { get; protected set; } // coordinates in board
         public int Orientation { get; protected set; } // 1 -> 4
 
+        public int Index { get; protected set; }
+
         public Tetriminos Value { get; protected set; }
         
         public abstract int MaxOrientations { get; }
@@ -20,11 +22,12 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
         {
         }
 
-        protected Tetrimino(int spawnX, int spawnY, int spawnOrientation)
+        protected Tetrimino(int spawnX, int spawnY, int spawnOrientation, int index)
         {
             PosX = spawnX;
             PosY = spawnY;
             Orientation = spawnOrientation;
+            Index = index;
         }
 
         public void CopyFrom(ITetrimino tetrimino)
@@ -94,27 +97,27 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             }
         }
 
-        public static ITetrimino CreateTetrimino(Tetriminos tetrimino, int spawnX, int spawnY, int spawnOrientation)
+        public static ITetrimino CreateTetrimino(Tetriminos tetrimino, int spawnX, int spawnY, int spawnOrientation, int index)
         {
             switch (tetrimino)
             {
                 case Tetriminos.TetriminoI:
-                    return new TetriminoI(spawnX, spawnY, spawnOrientation);
+                    return new TetriminoI(spawnX, spawnY, spawnOrientation, index);
                 case Tetriminos.TetriminoJ:
-                    return new TetriminoJ(spawnX, spawnY, spawnOrientation);
+                    return new TetriminoJ(spawnX, spawnY, spawnOrientation, index);
                 case Tetriminos.TetriminoL:
-                    return new TetriminoL(spawnX, spawnY, spawnOrientation);
+                    return new TetriminoL(spawnX, spawnY, spawnOrientation, index);
                 case Tetriminos.TetriminoO:
-                    return new TetriminoO(spawnX, spawnY, spawnOrientation);
+                    return new TetriminoO(spawnX, spawnY, spawnOrientation, index);
                 case Tetriminos.TetriminoS:
-                    return new TetriminoS(spawnX, spawnY, spawnOrientation);
+                    return new TetriminoS(spawnX, spawnY, spawnOrientation, index);
                 case Tetriminos.TetriminoT:
-                    return new TetriminoT(spawnX, spawnY, spawnOrientation);
+                    return new TetriminoT(spawnX, spawnY, spawnOrientation, index);
                 case Tetriminos.TetriminoZ:
-                    return new TetriminoZ(spawnX, spawnY, spawnOrientation);
+                    return new TetriminoZ(spawnX, spawnY, spawnOrientation, index);
             }
             Logger.Log.WriteLine(Logger.Log.LogLevels.Warning, "Create random Tetrimino because server didn't send next tetrimino");
-            return new TetriminoZ(spawnX, spawnY, spawnOrientation); // TODO: sometimes server takes time to send next tetrimino, it should send 2 or 3 next tetriminoes to ensure this never happens
+            return new TetriminoZ(spawnX, spawnY, spawnOrientation, index); // TODO: sometimes server takes time to send next tetrimino, it should send 2 or 3 next tetriminoes to ensure this never happens
         }
     }
 }

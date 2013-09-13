@@ -7,10 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-
-using CPF.GRV10;
-
 
 
 namespace CPF.StandardTetris

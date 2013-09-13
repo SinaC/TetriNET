@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Helpers;
@@ -187,7 +186,7 @@ namespace TetriNET.Strategy
         public bool SoloMode(IBoard board, List<Specials> inventory, int inventoryMaxSize, List<SpecialAdvices> advices)
         {
             //  drop everything except Nuke/Gravity/ClearLines
-            //  use clear line if no nuke/gravity on bottom line or when reaching top of board or when inventory is full
+            //  use clear line if no nuke/gravity on bottom line and board not empty or when reaching top of board or when inventory is full
             //  use nuke when reaching top of board
             //  use gravity when reaching mid-board
 
@@ -213,18 +212,16 @@ namespace TetriNET.Strategy
                 case Specials.ClearLines:
                     {
                         bool hasValuableBottomLine = HasNukeGravityOnBottomLine(board);
-                        if (!hasValuableBottomLine || maxPile >= 14)
+                        if ((!hasValuableBottomLine && maxPile > 4) || maxPile >= 14)
                             advices.Add(new SpecialAdvices
                             {
                                 SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
                             });
-
                         else if (maxPile >= 10 || inventory.Count + 2 >= inventoryMaxSize)
                             advices.Add(new SpecialAdvices
                             {
                                 SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseSelf,
                             });
-
                         break;
                     }
                 default:

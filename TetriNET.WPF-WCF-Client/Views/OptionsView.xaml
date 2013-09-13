@@ -16,12 +16,15 @@
         </Grid.RowDefinitions>
         <GroupBox Grid.Row="0" Header="Local settings">
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox Grid.Column="0" IsChecked="{Binding Options.AutomaticallySwitchToPartyLineOnRegistered, Mode=TwoWay}">Automatic switch on connect</CheckBox>
-                <CheckBox Grid.Column="1" IsChecked="{Binding Options.AutomaticallySwitchToPlayFieldOnGameStarted, Mode=TwoWay}">Automatic switch on start/stop game</CheckBox>
+                <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding Options.AutomaticallySwitchToPartyLineOnRegistered, Mode=TwoWay}">Automatic switch on connect</CheckBox>
+                <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding Options.AutomaticallySwitchToPlayFieldOnGameStarted, Mode=TwoWay}">Automatic switch on start/stop game</CheckBox>
             </Grid>
         </GroupBox>
         <GroupBox Grid.Row="1" Header="Server settings" IsEnabled="{Binding IsServerMaster}">
@@ -43,19 +46,30 @@
                             <RowDefinition Height="20"/>
                             <RowDefinition Height="20"/>
                             <RowDefinition Height="20"/>
+                            <RowDefinition Height="20"/>
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Classic Style Multiplayer Rules"/>
                         <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding Options.ServerOptions.ClassicStyleMultiplayerRules}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Lines to Make For Special Block:"/>
                         <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Options.ServerOptions.LinesToMakeForSpecials}" Minimum="1" Maximum="4" />
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Number of Special Blocks Added Each Time:"/>
-                        <xctk:IntegerUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Options.ServerOptions.LinesToMakeForSpecials}" Minimum="1" Maximum="4" />
+                        <xctk:IntegerUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Options.ServerOptions.SpecialsAddedEachTime}" Minimum="1" Maximum="4" />
                         <TextBlock Grid.Row="0" Grid.Column="2" Text="Capacity of Special Block Inventory:" Margin="4,0,0,0"/>
                         <xctk:IntegerUpDown Grid.Row="0" Grid.Column="3" Value="{Binding Options.ServerOptions.InventorySize}" Minimum="1" Maximum="15" />
                         <TextBlock Grid.Row="1" Grid.Column="2" Text="Minutes Before Lines Start Being Added:" Margin="4,0,0,0"/>
                         <xctk:IntegerUpDown Grid.Row="1" Grid.Column="3" Value="{Binding Options.ServerOptions.DelayBeforeSuddenDeath}" Minimum="0" Maximum="15" />
                         <TextBlock Grid.Row="2" Grid.Column="2" Text="Seconds Between Lines Being Added:" Margin="4,0,0,0"/>
                         <xctk:IntegerUpDown Grid.Row="2" Grid.Column="3" Value="{Binding Options.ServerOptions.SuddenDeathTick}" Minimum="1" Maximum="30" />
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Starting level:" Margin="0,0,5,0"/>
+                        <TextBox Grid.Row="3" Grid.Column="1" MaxWidth="40" Width="40" Height="20">
+                            <TextBox.Text>
+                                <Binding Path="Options.ServerOptions.StartingLevel" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <validators:NumericValidationRule Minimum="0" Maximum="100"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
                     </Grid>
                 </GroupBox>
                 <Grid Grid.Row="1">
@@ -108,7 +122,7 @@
                                             <TextBox.Text>
                                                 <Binding Path="Occurancy" UpdateSourceTrigger="PropertyChanged">
                                                     <Binding.ValidationRules>
-                                                        <validators:NumericValidationRule PositiveOnly="True"/>
+                                                        <validators:NumericValidationRule Minimum="0" Maximum="100"/>
                                                     </Binding.ValidationRules>
                                                 </Binding>
                                             </TextBox.Text>
@@ -174,8 +188,11 @@
                         </ItemsControl>
                     </GroupBox>
                 </Grid>
-                <Button Grid.Row="2" Width="150" HorizontalAlignment="Left" Click="SendOptionsToServer_OnClick" IsEnabled="{Binding IsSendOptionsToServerEnabled}">
+                <Button Grid.Row="2" Width="150" Margin="0,4,0,0" HorizontalAlignment="Left" Click="SendOptionsToServer_OnClick" IsEnabled="{Binding IsSendOptionsToServerEnabled}">
                     <TextBlock Text="Send options to server"/>
+                </Button>
+                <Button Grid.Row="2" Width="150" HorizontalAlignment="Right" Click="ResetOptions_OnClick" IsEnabled="{Binding IsSendOptionsToServerEnabled}">
+                    <TextBlock Text="Reset to default"/>
                 </Button>
             </Grid>
         </GroupBox>

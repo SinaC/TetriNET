@@ -9,7 +9,7 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
         {
         }
 
-        public TetriminoO(int spawnX, int spawnY, int spawnOrientation) : base(spawnX, spawnY, spawnOrientation)
+        public TetriminoO(int spawnX, int spawnY, int spawnOrientation, int index) : base(spawnX, spawnY, spawnOrientation, index)
         {
             Value = Tetriminos.TetriminoO;
         }
@@ -59,7 +59,8 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
                 PosX = PosX,
                 PosY = PosY,
                 Orientation = Orientation,
-                Value = Value
+                Value = Value,
+                Index = Index
             };
         }
     }

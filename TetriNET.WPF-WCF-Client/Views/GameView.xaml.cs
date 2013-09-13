@@ -142,13 +142,21 @@ namespace TetriNET.WPF_WCF_Client.Views
             {
                 Client.StopGame();
             }
-            else if (e.Key == Key.A)
+            else if (e.Key == Key.A && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift) )
             {
                 _bot.Activated = !_bot.Activated;
             }
-            else if (e.Key == Key.H)
+            else if (e.Key == Key.H && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
             {
                 PlayerGrid.ToggleHint();
+            }
+            else if (e.Key == Key.Add)
+            {
+                _bot.SleepTime += 100;
+            }
+            else if (e.Key == Key.Subtract)
+            {
+                _bot.SleepTime -= 100;
             }
             else
             {

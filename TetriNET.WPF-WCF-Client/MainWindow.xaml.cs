@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq;
 using System.Windows;
 using TetriNET.Client.DefaultBoardAndTetriminos;
 using TetriNET.Common.GameDatas;
@@ -16,6 +17,8 @@ namespace TetriNET.WPF_WCF_Client
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly IClient _client;
+
         public MainWindow()
         {
             string logFilename = "WPF_" + Guid.NewGuid().ToString().Substring(0, 5)+".log";
@@ -26,25 +29,30 @@ namespace TetriNET.WPF_WCF_Client
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
             Log.WriteLine(Log.LogLevels.Info, "Local user config path: {0}", config.FilePath);
 
-            IClient client = new Client.Client(Tetrimino.CreateTetrimino, () => new Board(12, 22));
+            _client = new Client.Client(Tetrimino.CreateTetrimino, () => new Board(12, 22));
             // Get default options
-            Options.OptionsSingleton.Instance.ServerOptions = client.Options;
+            Options.OptionsSingleton.Instance.ServerOptions = Settings.Default.GameOptions ?? _client.Options;
+            // TODO: fix this bug  ---- Workaround: remove duplicate key
+            Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies = Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();
+            Options.OptionsSingleton.Instance.ServerOptions.TetriminoOccurancies = Options.OptionsSingleton.Instance.ServerOptions.TetriminoOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();
+
             Options.OptionsSingleton.Instance.AutomaticallySwitchToPartyLineOnRegistered = Settings.Default.AutomaticallySwitchToPartyLineOnRegistered;
             Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted = Settings.Default.AutomaticallySwitchToPlayFieldOnGameStarted;
 
             InitializeComponent();
 
-            client.OnPlayerRegistered += OnPlayerRegistered;
-            client.OnGameStarted += OnGameStarted;
-            client.OnGameFinished += OnGameFinished;
-            client.OnGameOver += OnGameOver;
-            client.OnConnectionLost += OnConnectionLost;
+            _client.OnPlayerRegistered += OnPlayerRegistered;
+            _client.OnGameStarted += OnGameStarted;
+            _client.OnGameFinished += OnGameFinished;
+            _client.OnGameOver += OnGameOver;
+            _client.OnConnectionLost += OnConnectionLost;
 
-            ConnectionView.Client = client;
-            OptionsView.Client = client;
-            WinListView.Client = client;
-            PartyLineView.Client = client;
-            GameView.Client = client;
+            ConnectionView.Client = _client;
+            OptionsView.Client = _client;
+            WinListView.Client = _client;
+            PartyLineView.Client = _client;
+            GameView.Client = _client;
+            ClientStatisticsView.Client = _client;
         }
 
         #region IClient events handler
@@ -56,6 +64,8 @@ namespace TetriNET.WPF_WCF_Client
                     if (TabConnect.IsSelected)
                         TabPartyLine.IsSelected = true;
                 });
+            if (succeeded && _client.IsServerMaster)
+                _client.ChangeOptions(Options.OptionsSingleton.Instance.ServerOptions);
         }
 
         private void OnGameStarted()

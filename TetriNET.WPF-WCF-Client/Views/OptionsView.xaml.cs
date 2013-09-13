@@ -1,14 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Configuration;
-using System.Net.Mime;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Controls;
+using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.Views
 {
@@ -93,7 +92,7 @@ namespace TetriNET.WPF_WCF_Client.Views
 
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                _textures = new Textures(new Uri(ConfigurationManager.AppSettings["texture"]));
+                _textures = new Textures(ConfigurationManager.AppSettings["texture"]);
             }
         }
 
@@ -111,6 +110,7 @@ namespace TetriNET.WPF_WCF_Client.Views
                     oldClient.OnGameStarted -= _this.OnGameStarted;
                     oldClient.OnServerMasterModified -= _this.OnServerMasterModified;
                     oldClient.OnConnectionLost -= _this.OnConnectionLost;
+                    oldClient.OnPlayerUnregistered -= _this.OnPlayerUnregister;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
@@ -122,11 +122,19 @@ namespace TetriNET.WPF_WCF_Client.Views
                     newClient.OnGameStarted += _this.OnGameStarted;
                     newClient.OnServerMasterModified += _this.OnServerMasterModified;
                     newClient.OnConnectionLost += _this.OnConnectionLost;
+                    newClient.OnPlayerUnregistered += _this.OnPlayerUnregister;
                 }
             }
         }
 
         #region IClient events handler
+
+        private void OnPlayerUnregister()
+        {
+            IsServerMaster = Client.IsServerMaster;
+            IsGameNotStarted = true;
+        }
+
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
             IsServerMaster = false;
@@ -157,6 +165,14 @@ namespace TetriNET.WPF_WCF_Client.Views
         {
             // TODO: should be enabled only when an option has been modified
             Client.ChangeOptions(Models.Options.OptionsSingleton.Instance.ServerOptions);
+            Settings.Default.GameOptions = Models.Options.OptionsSingleton.Instance.ServerOptions;
+            Settings.Default.Save();
+        }
+
+        private void ResetOptions_OnClick(object sender, RoutedEventArgs e)
+        {
+            Models.Options.OptionsSingleton.Instance.ServerOptions = new GameOptions();
+            OnPropertyChanged("Options");
         }
 
         private void TetriminoOccurancy_OnTextChanged(object sender, TextChangedEventArgs e)

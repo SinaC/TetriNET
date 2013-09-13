@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using TetriNET.Common.Contracts;
 
 namespace TetriNET.Common.Interfaces

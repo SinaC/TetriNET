@@ -123,7 +123,7 @@ namespace TetriNET.Strategy.Move_strategies
             tetrimino.GetAbsoluteBoundingRectangle(out tetriminoMinX, out tetriminoMinY, out tetriminoMaxX, out tetriminoMaxY);
 
             // Landing Height (vertical midpoint)
-            double landingHeight = 0.5*(tetriminoMinY + tetriminoMaxY);
+            double landingHeight = 0.5 * (tetriminoMinY + tetriminoMaxY);
 
             //
             int completedRows = BoardHelper.GetTotalCompletedRows(board);
@@ -138,7 +138,7 @@ namespace TetriNET.Strategy.Move_strategies
                 board.CollapseCompletedRows(out specials);
 
                 // Weight eroded cells by completed rows
-                erodedPieceCellsMetric = (completedRows*tetriminoCellsEliminated);
+                erodedPieceCellsMetric = (completedRows * tetriminoCellsEliminated);
             }
 
             //
@@ -147,7 +147,7 @@ namespace TetriNET.Strategy.Move_strategies
             // Each empty row (above pile height) has two (2) "transitions"
             // (We could call ref_Board.GetTransitionCountForRow( y ) for
             // these unoccupied rows, but this is an optimization.)
-            int boardRowTransitions = 2*(board.Height - pileHeight);
+            int boardRowTransitions = 2 * (board.Height - pileHeight);
 
             // Only go up to the pile height, and later we'll account for the
             // remaining rows transitions (2 per empty row).
@@ -182,14 +182,14 @@ namespace TetriNET.Strategy.Move_strategies
             //   [8] Punish column with holes
 
             rating = 0.0;
-            rating += -12.63*landingHeight;
-            rating += 6.60*erodedPieceCellsMetric;
-            rating += -9.22*boardRowTransitions;
-            rating += -19.77*boardColumnTransitions;
-            rating += -13.08*boardBuriedHoles;
-            rating += -10.49*boardWells;
-            rating += -1.61*boardHoleDepth;
-            rating += -24.04*boardColumnWithHoles;
+            rating += -12.63 * landingHeight;
+            rating += 6.60 * erodedPieceCellsMetric;
+            rating += -9.22 * boardRowTransitions;
+            rating += -19.77 * boardColumnTransitions;
+            rating += -13.08 * boardBuriedHoles;
+            rating += -10.49 * boardWells;
+            rating += -1.61 * boardHoleDepth;
+            rating += -24.04 * boardColumnWithHoles;
 
             // PRIORITY:  
             //   Priority is further differentiation between possible moves.
@@ -209,7 +209,7 @@ namespace TetriNET.Strategy.Move_strategies
             int absoluteDistanceX = Math.Abs(tetrimino.PosX - board.TetriminoSpawnX);
 
             priority = 0;
-            priority += (100*absoluteDistanceX);
+            priority += (100 * absoluteDistanceX);
             if (tetrimino.PosX < board.TetriminoSpawnX)
                 priority += 10;
             priority -= tetrimino.Orientation - 1;

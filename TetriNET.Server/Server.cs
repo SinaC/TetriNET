@@ -33,7 +33,7 @@ namespace TetriNET.Server
         private const bool IsTimeoutDetectionActive = false;
 
         private readonly TetriminoQueue _tetriminoQueue;
-        private readonly ManualResetEvent _stopActionTaskEvent = new ManualResetEvent(false);
+        private readonly ManualResetEvent _stopBackgroundTaskEvent = new ManualResetEvent(false);
         private readonly IPlayerManager _playerManager;
         private readonly List<IHost> _hosts;
 
@@ -87,7 +87,8 @@ namespace TetriNET.Server
 
             SpecialId = 0;
 
-            Task.Factory.StartNew(TaskResolveGameActions);
+            Task.Factory.StartNew(TimeoutTask);
+            Task.Factory.StartNew(GameActionsTask);
 
             State = States.WaitingStartServer;
         }
@@ -136,8 +137,8 @@ namespace TetriNET.Server
             {
                 // Reset action list
                 Action outAction;
-                while (!_actionQueue.IsEmpty)
-                    _actionQueue.TryDequeue(out outAction);
+                while (!_gameActionQueue.IsEmpty)
+                    _gameActionQueue.TryDequeue(out outAction);
 
                 // Reset special id
                 SpecialId = 0;
@@ -339,22 +340,22 @@ namespace TetriNET.Server
 
         private void PlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid)
         {
-            _actionQueue.Enqueue(() => PlaceTetrimino(player, index, tetrimino, orientation, posX, posY, grid));
+            EnqueueAction(() => PlaceTetrimino(player, index, tetrimino, orientation, posX, posY, grid));
         }
 
         private void UseSpecialHandler(IPlayer player, IPlayer target, Specials special)
         {
-            _actionQueue.Enqueue(() => Special(player, target, special));
+            EnqueueAction(() => Special(player, target, special));
         }
 
         private void SendLinesHandler(IPlayer player, int count)
         {
-            _actionQueue.Enqueue(() => SendLines(player, count));
+            EnqueueAction(() => SendLines(player, count));
         }
 
         private void ModifyGridHandler(IPlayer player, byte[] grid)
         {
-            _actionQueue.Enqueue(() => ModifyGrid(player, grid));
+            EnqueueAction(() => ModifyGrid(player, grid));
         }
 
         private void StartGameHandler(IPlayer player)
@@ -403,7 +404,7 @@ namespace TetriNET.Server
 
         private void GameLostHandler(IPlayer player)
         {
-            _actionQueue.Enqueue(() => GameLost(player));
+            EnqueueAction(() => GameLost(player));
         }
 
         private void ChangeOptionsHandler(IPlayer player, GameOptions options)
@@ -586,82 +587,51 @@ namespace TetriNET.Server
         #endregion
 
         #region Game action queue
+        private readonly ManualResetEvent _actionEnqueuedEvent = new ManualResetEvent(false);
+        private readonly ConcurrentQueue<Action> _gameActionQueue = new ConcurrentQueue<Action>();
 
-        private readonly ConcurrentQueue<Action> _actionQueue = new ConcurrentQueue<Action>();
-
-        private void TaskResolveGameActions()
+        private void EnqueueAction(Action action)
         {
+            _gameActionQueue.Enqueue(action);
+            _actionEnqueuedEvent.Set();
+        }
+
+        private void GameActionsTask()
+        {
+            WaitHandle[] waitHandles =
+            {
+                _stopBackgroundTaskEvent,
+                _actionEnqueuedEvent
+            };
+
             while (true)
             {
+                int handle = WaitHandle.WaitAny(waitHandles, 100);
+                if (handle == 0) // _stopBackgroundTaskEvent
+                    break; // Stop here
+                // Even if WaitAny returned WaitHandle.WaitTimeout, we check action queue
+                _actionEnqueuedEvent.Reset();
                 // Perform game actions
-                if (State == States.GameStarted && !_actionQueue.IsEmpty)
+                if (State == States.GameStarted && !_gameActionQueue.IsEmpty)
                 {
-                    Action action;
-                    bool dequeue = _actionQueue.TryDequeue(out action);
-                    if (dequeue)
+                    while (!_gameActionQueue.IsEmpty)
                     {
-                        try
+                        Action action;
+                        bool dequeue = _gameActionQueue.TryDequeue(out action);
+                        if (dequeue)
                         {
-                            action();
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Log.WriteLine(Logger.Log.LogLevels.Error, "Exception raised in TaskResolveGameActions. Exception:{0}", ex);
-                        }
-                    }
-                }
-
-                // Check sudden death
-                if (State == States.GameStarted && _isSuddenDeathActive)
-                {
-                    if (DateTime.Now > _suddenDeathStartTime)
-                    {
-                        TimeSpan timespan = DateTime.Now - _lastSuddenDeathAddLines;
-                        if (timespan.TotalSeconds >= _options.SuddenDeathTick)
-                        {
-                            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Sudden death tick");
-                            // Delay elapsed, send lines
-                            foreach (IPlayer p in _playerManager.Players.Where(p => p.State == PlayerStates.Playing))
-                                p.OnServerAddLines(1);
-                            _lastSuddenDeathAddLines = DateTime.Now;
+                            try
+                            {
+                                action();
+                                Thread.Sleep(1);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Log.WriteLine(Logger.Log.LogLevels.Error, "Exception raised in TaskResolveGameActions. Exception:{0}", ex);
+                            }
                         }
                     }
                 }
-
-                // Check running game without any player
-                if (State == States.GameStarted || State == States.GamePaused)
-                {
-                    if (_playerManager.Players.Count(x => x.State == PlayerStates.Playing) == 0)
-                    {
-                        Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Game finished because no more playing players");
-                        // Stop game
-                        StopGame();
-                    }
-                }
-
-                // Check player timeout + send heartbeat if needed
-                foreach (IPlayer p in _playerManager.Players)
-                {
-                    // Check player timeout
-                    TimeSpan timespan = DateTime.Now - p.LastActionFromClient;
-                    if (timespan.TotalMilliseconds > TimeoutDelay && IsTimeoutDetectionActive)
-                    {
-                        Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Timeout++ for player {0}", p.Name);
-                        // Update timeout count
-                        p.SetTimeout();
-                        if (p.TimeoutCount >= MaxTimeoutCountBeforeDisconnection)
-                            PlayerLeftHandler(p, LeaveReasons.Timeout);
-                    }
-
-                    // Send heartbeat if needed
-                    TimeSpan delayFromPreviousHeartbeat = DateTime.Now - p.LastActionToClient;
-                    if (delayFromPreviousHeartbeat.TotalMilliseconds > HeartbeatDelay)
-                        p.OnHeartbeatReceived();
-                }
-
-                // Stop task if stop event is raised
-                if (_stopActionTaskEvent.WaitOne(10))
-                    break;
             }
         }
 
@@ -811,5 +781,63 @@ namespace TetriNET.Server
         }
 
         #endregion
+
+        private void TimeoutTask()
+        {
+            while (true)
+            {
+                // Check sudden death
+                if (State == States.GameStarted && _isSuddenDeathActive)
+                {
+                    if (DateTime.Now > _suddenDeathStartTime)
+                    {
+                        TimeSpan timespan = DateTime.Now - _lastSuddenDeathAddLines;
+                        if (timespan.TotalSeconds >= _options.SuddenDeathTick)
+                        {
+                            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Sudden death tick");
+                            // Delay elapsed, send lines
+                            foreach (IPlayer p in _playerManager.Players.Where(p => p.State == PlayerStates.Playing))
+                                p.OnServerAddLines(1);
+                            _lastSuddenDeathAddLines = DateTime.Now;
+                        }
+                    }
+                }
+
+                // Check running game without any player
+                if (State == States.GameStarted || State == States.GamePaused)
+                {
+                    if (_playerManager.Players.Count(x => x.State == PlayerStates.Playing) == 0)
+                    {
+                        Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Game finished because no more playing players");
+                        // Stop game
+                        StopGame();
+                    }
+                }
+
+                // Check player timeout + send heartbeat if needed
+                foreach (IPlayer p in _playerManager.Players)
+                {
+                    // Check player timeout
+                    TimeSpan timespan = DateTime.Now - p.LastActionFromClient;
+                    if (timespan.TotalMilliseconds > TimeoutDelay && IsTimeoutDetectionActive)
+                    {
+                        Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Timeout++ for player {0}", p.Name);
+                        // Update timeout count
+                        p.SetTimeout();
+                        if (p.TimeoutCount >= MaxTimeoutCountBeforeDisconnection)
+                            PlayerLeftHandler(p, LeaveReasons.Timeout);
+                    }
+
+                    // Send heartbeat if needed
+                    TimeSpan delayFromPreviousHeartbeat = DateTime.Now - p.LastActionToClient;
+                    if (delayFromPreviousHeartbeat.TotalMilliseconds > HeartbeatDelay)
+                        p.OnHeartbeatReceived();
+                }
+
+                // Stop task if stop event is raised
+                if (_stopBackgroundTaskEvent.WaitOne(10))
+                    break;
+            }
+        }
     }
 }

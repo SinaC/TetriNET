@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
-using TetriNET.Logger;
 
 namespace TetriNET.Strategy
 {
@@ -55,6 +53,8 @@ namespace TetriNET.Strategy
 
             MoveManager moveManager = new MoveManager();
 
+            //Log.WriteLine(Log.LogLevels.Debug, "Get Best Move for Tetrimino {0} {1}", tempTetrimino.Value, tempTetrimino.Index);
+
             #region Rotation then translation
 
             // Consider all possible rotations
@@ -70,6 +70,8 @@ namespace TetriNET.Strategy
                 int minDeltaX;
                 int maxDeltaX;
                 BoardHelper.GetAccessibleTranslationsForOrientation(board, tempTetrimino, out isMovePossible, out minDeltaX, out maxDeltaX);
+
+                //Log.WriteLine(Log.LogLevels.Debug, "Accessible translation {0} {1} {2} {3} {4}  {5} {6}", minDeltaX, maxDeltaX, trialRotationDelta, current.PosX, current.PosY, tempTetrimino.Value, tempTetrimino.Index);
 
                 //StringBuilder sb = new StringBuilder();
                 //for (int i = 1; i <= tempTetrimino.TotalCells; i++)
@@ -128,7 +130,7 @@ namespace TetriNET.Strategy
                     }
                 }
             }
-            Log.WriteLine(Log.LogLevels.Debug, "ROTATION + TRANSLATION: {0} {1} {2:0.000} {3}", currentBestTranslationDelta, currentBestRotationDelta, currentBestRating, currentBestPriority);
+            //Log.WriteLine(Log.LogLevels.Debug, "ROTATION + TRANSLATION: {0} {1} {2:0.000} {3}", currentBestTranslationDelta, currentBestRotationDelta, currentBestRating, currentBestPriority);
             #endregion
 
             #region Translation then rotation
@@ -187,7 +189,7 @@ namespace TetriNET.Strategy
                                     currentBestPriority = trialPriority;
                                     currentBestTranslationDelta = trialTranslationDelta;
                                     currentBestRotationDelta = trialRotationDelta;
-                                    Log.WriteLine(Log.LogLevels.Debug, "FOUND BETTER MOVE USING TRANSLATION + ROTATION");
+                                    //Log.WriteLine(Log.LogLevels.Debug, "FOUND BETTER MOVE USING TRANSLATION + ROTATION");
                                 }
 
                                 moveManager.Add(trialRotationDelta, trialTranslationDelta, trialRating, trialPriority);
@@ -196,7 +198,7 @@ namespace TetriNET.Strategy
                     }
                 }
             }
-            Log.WriteLine(Log.LogLevels.Debug, "TRANSLATION + ROTATION: {0} {1} {2:0.000} {3}", currentBestTranslationDelta, currentBestRotationDelta, currentBestRating, currentBestPriority);
+            //Log.WriteLine(Log.LogLevels.Debug, "TRANSLATION + ROTATION: {0} {1} {2:0.000} {3}", currentBestTranslationDelta, currentBestRotationDelta, currentBestRating, currentBestPriority);
             #endregion
 
             // Commit to this move

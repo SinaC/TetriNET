@@ -20,6 +20,7 @@ namespace TetriNET.Common.Interfaces
     public delegate void ClientTetriminoMovingHandler();
     public delegate void ClientTetriminoMovedHandler();
     public delegate void ClientPlayerRegisteredHandler(bool succeeded, int playerId);
+    public delegate void ClientPlayerUnregisteredHandler();
     public delegate void ClientWinListModifiedHandler(List<WinEntry> winList);
     public delegate void ClientServerMasterModifiedHandler(int serverMasterId);
     public delegate void ClientPlayerLostHandler(int playerId, string playerName);
@@ -55,6 +56,7 @@ namespace TetriNET.Common.Interfaces
         //IBoard GetBoard(int playerId);
         //bool IsPlaying(int playerId);
         IEnumerable<IOpponent> Opponents { get; }
+        IClientStatistics Statistics { get; }
 
         event ClientConnectionLostHandler OnConnectionLost;
 
@@ -72,6 +74,7 @@ namespace TetriNET.Common.Interfaces
         event ClientTetriminoMovingHandler OnTetriminoMoving;
         event ClientTetriminoMovedHandler OnTetriminoMoved;
         event ClientPlayerRegisteredHandler OnPlayerRegistered;
+        event ClientPlayerUnregisteredHandler OnPlayerUnregistered;
         event ClientWinListModifiedHandler OnWinListModified;
         event ClientServerMasterModifiedHandler OnServerMasterModified;
         event ClientPlayerLostHandler OnPlayerLost;

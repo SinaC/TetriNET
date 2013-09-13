@@ -58,6 +58,7 @@
     <Compile Include="Interfaces\IBanManager.cs" />
     <Compile Include="Interfaces\IBoard.cs" />
     <Compile Include="Interfaces\IClient.cs" />
+    <Compile Include="Interfaces\IClientStatistics.cs" />
     <Compile Include="Interfaces\IHost.cs" />
     <Compile Include="Interfaces\IOpponent.cs" />
     <Compile Include="Interfaces\IPlayer.cs" />

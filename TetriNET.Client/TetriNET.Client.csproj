@@ -55,10 +55,6 @@
       <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
       <Name>TetriNET.Logger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Strategy\TetriNET.Strategy.csproj">
-      <Project>{b77d651e-658c-45d4-972a-3c0d569d689e}</Project>
-      <Name>TetriNET.Strategy</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

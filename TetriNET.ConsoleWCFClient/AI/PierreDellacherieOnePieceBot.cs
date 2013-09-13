@@ -94,31 +94,31 @@ namespace TetriNET.ConsoleWCFClient.AI
             DateTime searchBestMoveStartTime = DateTime.Now;
 
             // Use specials
-            //List<SpecialAdvices> advices;
-            //_specialStrategy.GetSpecialAdvice(_client.Board, _client.CurrentTetrimino, _client.NextTetrimino, _client.Inventory, _client.InventorySize, _client.Opponents.ToList(), out advices);
-            //foreach (SpecialAdvices advice in advices)
-            //{
-            //    bool continueLoop = true;
-            //    switch (advice.SpecialAdviceAction)
-            //    {
-            //        case SpecialAdvices.SpecialAdviceActions.Wait:
-            //            continueLoop = false;
-            //            break;
-            //        case SpecialAdvices.SpecialAdviceActions.Discard:
-            //            _client.DiscardFirstSpecial();
-            //            continueLoop = true;
-            //            break;
-            //        case SpecialAdvices.SpecialAdviceActions.UseSelf:
-            //            continueLoop = _client.UseSpecial(_client.PlayerId);
-            //            break;
-            //        case SpecialAdvices.SpecialAdviceActions.UseOpponent:
-            //            continueLoop = _client.UseSpecial(advice.OpponentId);
-            //            break;
-            //    }
-            //    if (!continueLoop)
-            //        break;
-            //    System.Threading.Thread.Sleep(10); // delay next special use
-            //}
+            List<SpecialAdvices> advices;
+            _specialStrategy.GetSpecialAdvice(_client.Board, _client.CurrentTetrimino, _client.NextTetrimino, _client.Inventory, _client.InventorySize, _client.Opponents.ToList(), out advices);
+            foreach (SpecialAdvices advice in advices)
+            {
+                bool continueLoop = true;
+                switch (advice.SpecialAdviceAction)
+                {
+                    case SpecialAdvices.SpecialAdviceActions.Wait:
+                        continueLoop = false;
+                        break;
+                    case SpecialAdvices.SpecialAdviceActions.Discard:
+                        _client.DiscardFirstSpecial();
+                        continueLoop = true;
+                        break;
+                    case SpecialAdvices.SpecialAdviceActions.UseSelf:
+                        continueLoop = _client.UseSpecial(_client.PlayerId);
+                        break;
+                    case SpecialAdvices.SpecialAdviceActions.UseOpponent:
+                        continueLoop = _client.UseSpecial(advice.OpponentId);
+                        break;
+                }
+                if (!continueLoop)
+                    break;
+                System.Threading.Thread.Sleep(10); // delay next special use
+            }
 
             DateTime specialManaged = DateTime.Now;
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
-using Tetris.Model.Blocks;
 
 namespace Tetris.Model
 {

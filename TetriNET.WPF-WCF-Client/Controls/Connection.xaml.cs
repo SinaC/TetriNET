@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Configuration;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -127,6 +126,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 IClient oldClient = args.OldValue as IClient;
                 if (oldClient != null)
                 {
+                    oldClient.OnPlayerUnregistered -= _this.OnPlayerUnregistered;
                     oldClient.OnPlayerRegistered -= _this.OnPlayerRegistered;
                     oldClient.OnConnectionLost -= _this.OnConnectionLost;
                 }
@@ -136,6 +136,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
                 // Add new handlers
                 if (newClient != null)
                 {
+                    newClient.OnPlayerUnregistered += _this.OnPlayerUnregistered;
                     newClient.OnPlayerRegistered += _this.OnPlayerRegistered;
                     newClient.OnConnectionLost += _this.OnConnectionLost;
                 }
@@ -168,6 +169,13 @@ namespace TetriNET.WPF_WCF_Client.Controls
             _isRegistered = Client.IsRegistered;
             OnPropertyChanged("ConnectDisconnectLabel");
         }
+
+        private void OnPlayerUnregistered()
+        {
+            _isRegistered = Client.IsRegistered;
+            OnPropertyChanged("ConnectDisconnectLabel");
+        }
+
         #endregion
 
         #region UI events handler

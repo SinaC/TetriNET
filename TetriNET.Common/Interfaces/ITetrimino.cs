@@ -7,6 +7,7 @@ namespace TetriNET.Common.Interfaces
         int PosX { get; } // coordinates in board
         int PosY { get; } // coordinates in board
         int Orientation { get; } // 1 -> 4
+        int Index { get; } // index in sequence
 
         Tetriminos Value { get; }
 

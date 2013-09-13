@@ -73,6 +73,7 @@ namespace TetriNET.WPF_WCF_Client.Views
                 {
                     oldClient.OnConnectionLost -= _this.OnConnectionLost;
                     oldClient.OnPlayerRegistered -= _this.OnPlayerRegistered;
+                    oldClient.OnPlayerUnregistered -= _this.OnPlayerUnregistered;
                     oldClient.OnServerMasterModified -= _this.OnServerMasterModified;
                     oldClient.OnGameStarted -= _this.OnGameStarted;
                     oldClient.OnGameFinished -= _this.OnGameFinished;
@@ -89,6 +90,7 @@ namespace TetriNET.WPF_WCF_Client.Views
                 {
                     newClient.OnConnectionLost += _this.OnConnectionLost;
                     newClient.OnPlayerRegistered += _this.OnPlayerRegistered;
+                    newClient.OnPlayerUnregistered += _this.OnPlayerUnregistered;
                     newClient.OnServerMasterModified += _this.OnServerMasterModified;
                     newClient.OnGameStarted += _this.OnGameStarted;
                     newClient.OnGameFinished += _this.OnGameFinished;
@@ -130,6 +132,15 @@ namespace TetriNET.WPF_WCF_Client.Views
         }
 
         private void OnPlayerRegistered(bool succeeded, int playerId)
+        {
+            _isRegistered = Client.IsRegistered;
+            _isGameStarted = Client.IsGameStarted;
+            _isServerMaster = Client.IsServerMaster;
+            _isGamePaused = false;
+            UpdateEnability();
+        }
+
+        private void OnPlayerUnregistered()
         {
             _isRegistered = Client.IsRegistered;
             _isGameStarted = Client.IsGameStarted;

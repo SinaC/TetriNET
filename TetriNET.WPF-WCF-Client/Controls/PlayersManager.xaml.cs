@@ -68,6 +68,11 @@ namespace TetriNET.WPF_WCF_Client.Controls
             //OnPropertyChanged("PlayerList");
         }
 
+        private void ClearEntries()
+        {
+            PlayerList.Clear();
+        }
+
         private void AddEntry(int playerId, string playerName)
         {
             // TODO: sort: http://msdn.microsoft.com/en-us/library/ms742542.aspx
@@ -102,6 +107,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
                     oldClient.OnPlayerJoined -= _this.OnPlayerJoined;
                     oldClient.OnPlayerLeft -= _this.OnPlayerLeft;
                     oldClient.OnPlayerRegistered -= _this.OnPlayerRegistered;
+                    oldClient.OnPlayerUnregistered -= _this.OnPlayerUnregistered;
                     oldClient.OnConnectionLost -= _this.OnConnectionLost;
                 }
                 // Set new client
@@ -114,6 +120,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
                     newClient.OnPlayerJoined += _this.OnPlayerJoined;
                     newClient.OnPlayerLeft += _this.OnPlayerLeft;
                     newClient.OnPlayerRegistered += _this.OnPlayerRegistered;
+                    newClient.OnPlayerUnregistered += _this.OnPlayerUnregistered;
                     newClient.OnConnectionLost += _this.OnConnectionLost;
                 }
             }
@@ -122,7 +129,7 @@ namespace TetriNET.WPF_WCF_Client.Controls
         #region IClient events handler
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
-            ExecuteOnUIThread.Invoke(() => _playerList.Clear());
+            ExecuteOnUIThread.Invoke(ClearEntries);
             IsServerMaster = false;
         }
 
@@ -142,9 +149,20 @@ namespace TetriNET.WPF_WCF_Client.Controls
             ExecuteOnUIThread.Invoke(() => DeleteEntry(playerId, playerName));
         }
 
+        private void OnPlayerUnregistered()
+        {
+            ExecuteOnUIThread.Invoke(ClearEntries);
+            IsServerMaster = Client.IsServerMaster;
+        }
+
         private void OnPlayerRegistered(bool succeeded, int playerId)
         {
-            ExecuteOnUIThread.Invoke(() => AddEntry(playerId, Client.Name));
+            ExecuteOnUIThread.Invoke(() =>
+            {
+                ClearEntries();
+                AddEntry(playerId, Client.Name);
+            });
+            IsServerMaster = Client.IsServerMaster;
         }
         #endregion
 

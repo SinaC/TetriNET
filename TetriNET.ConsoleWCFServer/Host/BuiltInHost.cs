@@ -1,7 +1,6 @@
 ﻿using System;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.Interfaces;
-using TetriNET.Server;
 
 namespace TetriNET.ConsoleWCFServer.Host
 {

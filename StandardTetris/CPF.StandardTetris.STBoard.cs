@@ -2,13 +2,6 @@
 // 2007 June 4 ; Visit web site to check for any updates to this file.
 
 
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-
-
 namespace CPF.StandardTetris
 {
     public class STBoard
