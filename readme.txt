@@ -18,6 +18,8 @@ Connect+Register and Disconnect+Unregister should be merged into one method
 Client: add a server state: GameStarted when receiving OnGameStarted and WaitingStartGame when receiving OnGameFinished (starting value is WaitingStartGame)
 	Pause and Stop are accessible if server state is GameStarted and we're ServerMaster
 
+WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
+
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf
 http://gafferongames.com/networking-for-game-programmers/udp-vs-tcp/
