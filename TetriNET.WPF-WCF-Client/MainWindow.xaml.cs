@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using TetriNET.Client.DefaultBoardAndTetriminos;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
@@ -109,5 +110,10 @@ namespace TetriNET.WPF_WCF_Client
             });
         }
         #endregion
+
+        private void MainWindow_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
+        }
     }
 }

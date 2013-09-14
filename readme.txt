@@ -19,6 +19,7 @@ Client: add a server state: GameStarted when receiving OnGameStarted and Waiting
 	Pause and Stop are accessible if server state is GameStarted and we're ServerMaster
 
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
+WPF Client: MVVM
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf

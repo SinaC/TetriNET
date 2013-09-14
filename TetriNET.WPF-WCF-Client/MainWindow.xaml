@@ -3,6 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:views="clr-namespace:TetriNET.WPF_WCF_Client.Views"
         UseLayoutRounding="True"
+        WindowStyle="None"
+        AllowsTransparency="True" 
+        Background="Transparent" 
+	    ResizeMode="NoResize"
+        MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
         Icon="TetriNET.ico"
         Title="TetriNET" Height="480" Width="720">
     <Grid>
