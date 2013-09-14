@@ -31,14 +31,17 @@ namespace TetriNET.WPF_WCF_Client
             Log.WriteLine(Log.LogLevels.Info, "Local user config path: {0}", config.FilePath);
 
             _client = new Client.Client(Tetrimino.CreateTetrimino, () => new Board(12, 22));
-            // Get default options
+            
+            // Get saved or default options
             Options.OptionsSingleton.Instance.ServerOptions = Settings.Default.GameOptions ?? _client.Options;
             // TODO: fix this bug  ---- Workaround: remove duplicate key
             Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies = Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();
             Options.OptionsSingleton.Instance.ServerOptions.TetriminoOccurancies = Options.OptionsSingleton.Instance.ServerOptions.TetriminoOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();
-
             Options.OptionsSingleton.Instance.AutomaticallySwitchToPartyLineOnRegistered = Settings.Default.AutomaticallySwitchToPartyLineOnRegistered;
             Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted = Settings.Default.AutomaticallySwitchToPlayFieldOnGameStarted;
+
+            // Get textures
+            Textures.Textures.TexturesSingleton.Instance.ReadFromFile(ConfigurationManager.AppSettings["texture"]);
 
             InitializeComponent();
 

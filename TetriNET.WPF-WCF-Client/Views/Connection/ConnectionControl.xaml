@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="TetriNET.WPF_WCF_Client.Views.Connection.ConnectionControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             >
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition  Width="240" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Username: " />
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Username}"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Server address: " />
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ServerAddress}"/>
+        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,4,0,4" Click="ConnectDisconnect_OnClick">
+            <TextBlock Text="{Binding ConnectDisconnectLabel}"/>
+        </Button>
+        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding ConnectionResult}" Foreground="{Binding ConnectionResultColor}"/>
+    </Grid>
+</UserControl>
