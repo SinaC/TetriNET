@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -37,10 +36,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Game
         {
             InitializeComponent();
 
-            if (!DesignerProperties.GetIsInDesignMode(this))
-            {
-                _textures = Textures.Textures.TexturesSingleton.Instance;
-            }
+            _textures = Textures.Textures.TexturesSingleton.Instance;
 
             for(int y = 0; y < 4; y++)
                 for (int x = 0; x < 4; x++)

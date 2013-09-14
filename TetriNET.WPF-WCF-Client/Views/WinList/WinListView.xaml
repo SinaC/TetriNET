@@ -2,9 +2,10 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:winList="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.WinList"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance winList:WinListViewModel}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -24,7 +25,8 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Grid.Row="1" Grid.Column="0" Click="ResetWinList_OnClick" Width="100" HorizontalAlignment="Left"  IsEnabled="{Binding IsServerMaster}">
+        <Button Grid.Row="1" Grid.Column="0" Width="100" HorizontalAlignment="Left" IsEnabled="{Binding IsServerMaster}"
+                Command="{Binding ResetWinListCommand}">
             <TextBlock Text="Reset Scores"/>
         </Button>
     </Grid>

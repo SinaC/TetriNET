@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -98,9 +97,9 @@ namespace TetriNET.WPF_WCF_Client.Views.Game
             PlayerName = "Not registered";
             PlayerIdVisibility = Visibility.Hidden;
 
+            _textures = Textures.Textures.TexturesSingleton.Instance;
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                _textures = Textures.Textures.TexturesSingleton.Instance;
                 Canvas.Background = _textures.BigBackground;
             }
 

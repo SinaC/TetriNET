@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:connection="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
              mc:Ignorable="d" 
-             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             d:DataContext="{d:DesignInstance connection:ConnectionControlViewModel}"
              >
     <Grid>
         <Grid.ColumnDefinitions>
@@ -21,7 +22,8 @@
         <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Username}"/>
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Server address: " />
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ServerAddress}"/>
-        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,4,0,4" Click="ConnectDisconnect_OnClick">
+        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,4,0,4"
+                Command="{Binding ConnectDisconnectCommand}">
             <TextBlock Text="{Binding ConnectDisconnectLabel}"/>
         </Button>
         <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding ConnectionResult}" Foreground="{Binding ConnectionResultColor}"/>

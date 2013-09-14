@@ -2,10 +2,12 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="600"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:statistics="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Statistics"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance statistics:ClientStatisticsViewModel}"
+             d:DesignHeight="450" d:DesignWidth="600">
+    <!-- TODO: create control with one group box (datacontext: check ClientStatisticsViewModel) -->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -192,7 +194,8 @@
                 <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LinesPerSec, StringFormat={}{0:0.00}}"/>
             </Grid>
         </GroupBox>
-        <Button Grid.Row="2" Grid.Column="0" Click="RefreshStatistics_OnClick">
+        <Button Grid.Row="2" Grid.Column="0"
+                Command="{Binding RefreshStatisticsCommand}">
             <TextBlock Text="Refresh"/>
         </Button>
     </Grid>

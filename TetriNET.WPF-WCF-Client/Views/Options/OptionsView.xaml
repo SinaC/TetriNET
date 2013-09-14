@@ -6,9 +6,12 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:gameDatas="clr-namespace:TetriNET.Common.GameDatas;assembly=TetriNET.Common"
              xmlns:validators="clr-namespace:TetriNET.WPF_WCF_Client.Validators"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers"
+             xmlns:options="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Options"
              mc:Ignorable="d" 
-             d:DesignHeight="480" d:DesignWidth="640"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+             d:DataContext="{d:DesignInstance options:OptionsViewModel}"
+             d:DesignHeight="480" d:DesignWidth="640">
     <Grid IsEnabled="{Binding IsGameNotStarted}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -118,7 +121,12 @@
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{Binding Value}" Margin="5,0,5,0"/>
-                                        <TextBox Grid.Column="1" MaxWidth="40" Width="40" TextChanged="TetriminoOccurancy_OnTextChanged">
+                                        <TextBox Grid.Column="1" MaxWidth="40" Width="40">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="TextChanged">
+                                                    <helpers:EventToCommand Command="{Binding Mode=OneWay, Path=DataContext.TetriminoOccurancyChangedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
                                             <TextBox.Text>
                                                 <Binding Path="Occurancy" UpdateSourceTrigger="PropertyChanged">
                                                     <Binding.ValidationRules>
@@ -173,11 +181,16 @@
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="{Binding Value}" Margin="5,0,5,0" />
-                                        <TextBox Grid.Column="1" MaxWidth="40" Width="40" TextChanged="SpecialOccurancy_OnTextChanged">
+                                        <TextBox Grid.Column="1" MaxWidth="40" Width="40">
+                                            <i:Interaction.Triggers>
+                                                <i:EventTrigger EventName="TextChanged">
+                                                    <helpers:EventToCommand Command="{Binding Mode=OneWay, Path=DataContext.SpecialOccurancyChangedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}}"/>
+                                                </i:EventTrigger>
+                                            </i:Interaction.Triggers>
                                             <TextBox.Text>
                                                 <Binding Path="Occurancy" UpdateSourceTrigger="PropertyChanged">
                                                     <Binding.ValidationRules>
-                                                        <validators:NumericValidationRule PositiveOnly="True"/>
+                                                        <validators:NumericValidationRule Minimum="0" Maximum="100"/>
                                                     </Binding.ValidationRules>
                                                 </Binding>
                                             </TextBox.Text>
@@ -188,10 +201,12 @@
                         </ItemsControl>
                     </GroupBox>
                 </Grid>
-                <Button Grid.Row="2" Width="150" Margin="0,4,0,0" HorizontalAlignment="Left" Click="SendOptionsToServer_OnClick" IsEnabled="{Binding IsSendOptionsToServerEnabled}">
+                <Button Grid.Row="2" Width="150" Margin="0,4,0,0" HorizontalAlignment="Left" IsEnabled="{Binding IsSendOptionsToServerEnabled}"
+                        Command="{Binding SendOptionsToServerCommand}">
                     <TextBlock Text="Send options to server"/>
                 </Button>
-                <Button Grid.Row="2" Width="150" HorizontalAlignment="Right" Click="ResetOptions_OnClick" IsEnabled="{Binding IsSendOptionsToServerEnabled}">
+                <Button Grid.Row="2" Width="150" HorizontalAlignment="Right" IsEnabled="{Binding IsSendOptionsToServerEnabled}"
+                        Command="{Binding ResetOptionsCommand}">
                     <TextBlock Text="Reset to default"/>
                 </Button>
             </Grid>

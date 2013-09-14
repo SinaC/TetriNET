@@ -415,7 +415,15 @@ namespace TetriNET.Server
             if (masterPlayer == player && State == States.WaitingStartGame)
             {
                 // Check options before accepting them
-                bool accepted = RangeRandom.SumOccurancies(options.TetriminoOccurancies) == 100 && RangeRandom.SumOccurancies(options.SpecialOccurancies) == 100;
+                bool accepted =
+                    RangeRandom.SumOccurancies(options.TetriminoOccurancies) == 100 &&
+                    RangeRandom.SumOccurancies(options.SpecialOccurancies) == 100 &&
+                    options.InventorySize >= 1 && options.InventorySize <= 15 &&
+                    options.LinesToMakeForSpecials >= 1 && options.LinesToMakeForSpecials <= 4 &&
+                    options.SpecialsAddedEachTime >= 1 && options.SpecialsAddedEachTime <= 4 &&
+                    options.DelayBeforeSuddenDeath >= 0 && options.DelayBeforeSuddenDeath <= 15 &&
+                    options.SuddenDeathTick >= 1 && options.SuddenDeathTick <= 30 &&
+                    options.StartingLevel >= 0 && options.StartingLevel <= 100;
                 if (accepted)
                     _options = options; // Options will be sent to players when starting a new game
                 else

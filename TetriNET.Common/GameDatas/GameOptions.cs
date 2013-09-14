@@ -16,22 +16,22 @@ namespace TetriNET.Common.GameDatas
         public bool ClassicStyleMultiplayerRules { get; set; } // if true, lines are send to other players when collapsing multiple lines (2->1, 3->2, Tetris->4)
 
         [DataMember]
-        public int StartingLevel { get; set; }
+        public int StartingLevel { get; set; } // 0 -> 100
 
         [DataMember]
-        public int InventorySize { get; set; }
+        public int InventorySize { get; set; } // 1 -> 15
 
         [DataMember]
-        public int LinesToMakeForSpecials { get; set; }
+        public int LinesToMakeForSpecials { get; set; } // 1 -> 4
 
         [DataMember]
-        public int SpecialsAddedEachTime { get; set; }
+        public int SpecialsAddedEachTime { get; set; } // 1 -> 4
 
         [DataMember]
-        public int DelayBeforeSuddenDeath { get; set; } // in minutes, 0 means no sudden death
+        public int DelayBeforeSuddenDeath { get; set; } // 0 -> 15, in minutes (0 means no sudden death)
 
         [DataMember]
-        public int SuddenDeathTick { get; set; } // in seconds
+        public int SuddenDeathTick { get; set; } // 1 -> 30, in seconds
 
         public GameOptions()
         {

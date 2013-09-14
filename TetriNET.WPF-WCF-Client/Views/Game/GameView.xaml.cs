@@ -6,6 +6,7 @@ using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.GameController;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.ViewModels.Game;
 
 namespace TetriNET.WPF_WCF_Client.Views.Game
 {
@@ -15,6 +16,8 @@ namespace TetriNET.WPF_WCF_Client.Views.Game
     public partial class GameView : UserControl
     {
         public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("GameViewClientProperty", typeof (IClient), typeof (GameView), new PropertyMetadata(Client_Changed));
+
+        public GameViewModel GameViewModel { get; set; }
 
         public IClient Client
         {
@@ -29,6 +32,8 @@ namespace TetriNET.WPF_WCF_Client.Views.Game
         public GameView()
         {
             InitializeComponent();
+
+            GameViewModel = new GameViewModel();
 
             //http://stackoverflow.com/questions/15241118/keydown-event-not-raising-from-a-grid
             Focusable = true; // This is needed to catch KeyUp/KeyDown
@@ -58,6 +63,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Game
                 _this.InGameMessages.Client = newClient;
                 _this.NextTetrimino.Client = newClient;
                 _this.GameInfo.Client = newClient;
+                //_this.GameViewModel.Client = newClient;
                 // Add new handlers
                 if (newClient != null)
                 {

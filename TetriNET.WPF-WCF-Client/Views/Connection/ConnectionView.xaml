@@ -4,14 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:connection="clr-namespace:TetriNET.WPF_WCF_Client.Views.Connection"
+             xmlns:connectionViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance connectionViewModels:ConnectionViewModel}"
              d:DesignHeight="300" d:DesignWidth="600">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <connection:ConnectionControl Grid.Column="0" x:Name="Connection" Margin="0,0,4,0" /> 
-        <connection:ServerListControl Grid.Column="1" x:Name="ServerList" Margin="4,0,0,0" />
+        <connection:ConnectionControl Grid.Column="0" Margin="0,0,4,0" DataContext="{Binding ConnectionControlViewModel}" />
+        <connection:ServerListControl Grid.Column="1" Margin="4,0,0,0" DataContext="{Binding ServerListViewModel}" />
     </Grid>
 </UserControl>

@@ -74,6 +74,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Game
                 {
                     oldClient.OnLinesClearedChanged -= _this.OnLinesClearedChanged;
                     oldClient.OnLevelChanged -= _this.OnLevelChanged;
+                    oldClient.OnGameStarted -= _this.OnGameStarted;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;

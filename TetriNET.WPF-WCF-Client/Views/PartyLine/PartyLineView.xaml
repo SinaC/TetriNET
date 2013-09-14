@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:partyLine="clr-namespace:TetriNET.WPF_WCF_Client.Views.PartyLine"
-             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             xmlns:partyLineViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PartyLine"
+             d:DataContext="{d:DesignInstance partyLineViewModels:PartyLineViewModel}"
              mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
@@ -15,19 +16,21 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <partyLine:ChatControl x:Name="Chat" Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Width="480" Height="380" />
+        <partyLine:ChatControl Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Width="480" Height="380" DataContext="{Binding ChatViewModel}" />
         <Grid Grid.Row="1" Grid.Column="1" Margin="2,4,0,4" VerticalAlignment="Bottom">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Button Grid.Row="0" Click="PauseResumeGame_OnClick" IsEnabled="{Binding IsPauseResumeEnabled}" Margin="0,2,0,2">
+            <Button Grid.Row="0" IsEnabled="{Binding IsPauseResumeEnabled}" Margin="0,2,0,2"
+                    Command="{Binding PauseResumeCommand}">
                 <TextBlock Text="{Binding PauseResumeLabel}"/>
             </Button>
-            <Button Grid.Row="1" Click="StartStopGame_OnClick" IsEnabled="{Binding IsStartStopEnabled}" Margin="0,2,0,2">
+            <Button Grid.Row="1" IsEnabled="{Binding IsStartStopEnabled}" Margin="0,2,0,2"
+                    Command="{Binding StartStopCommand}">
                 <TextBlock Text="{Binding StartStopLabel}"/>
             </Button>
         </Grid>
-        <partyLine:PlayersManagerControl x:Name="PlayersManager" Grid.Row="0" Grid.Column="1" Height="300" Margin="2,0,0,0" />
+        <partyLine:PlayersManagerControl Grid.Row="0" Grid.Column="1" Height="300" Margin="2,0,0,0" DataContext="{Binding PlayersManagerViewModel}" />
     </Grid>
 </UserControl>

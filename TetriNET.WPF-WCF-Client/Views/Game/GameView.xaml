@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:game="clr-namespace:TetriNET.WPF_WCF_Client.Views.Game"
              mc:Ignorable="d" 
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
              KeyDown="GameView_KeyDown"
              KeyUp="GameView_KeyUp">
     <Grid>
@@ -28,8 +29,10 @@
         <game:OpponentGridControl x:Name="OpponentGrid4" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0"/>
         <game:OpponentGridControl x:Name="OpponentGrid5" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" />
         <game:InventoryControl x:Name="Inventory" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <!--<game:InGameChatControl Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,4,0,0" DataContext="{Binding GameViewModel.InGameChatViewModel}"/>-->
         <game:InGameChatControl x:Name="InGameMessages" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,4,0,0"/>
         <game:NextTetriminoControl x:Name="NextTetrimino" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="16,0,16,0"/>
-        <game:GameInfoControl x:Name="GameInfo" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16,0,0,16"/>
+        <!--<game:GameInfoControl Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16,0,0,16" DataContext="{Binding GameViewModel.GameInfoViewModel}"/>-->
+        <game:GameInfoControl x:Name="GameInfo"  Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16,0,0,16"/>
     </Grid>
 </UserControl>

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
+using TetriNET.WPF_WCF_Client.ViewModels.Connection;
 
 namespace TetriNET.WPF_WCF_Client.Views.Connection
 {
@@ -13,48 +9,16 @@ namespace TetriNET.WPF_WCF_Client.Views.Connection
     /// </summary>
     public partial class ServerListControl : UserControl
     {
-        private readonly ObservableCollection<string> _servers = new ObservableCollection<string>();
-        public ObservableCollection<string> Servers { get { return _servers; }}
-
-        public event EventHandler<string> OnServerSelected;
-
         public ServerListControl()
         {
             InitializeComponent();
         }
 
-        private void ScanForServers_OnClick(object sender, RoutedEventArgs e)
+        private void ServerList_DoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Mouse.OverrideCursor = Cursors.Wait;
-            try
-            {
-                Servers.Clear();
-                List<string> servers = WCFProxy.WCFProxy.DiscoverHosts();
-                if (servers == null || !servers.Any())
-                    Servers.Add("No server found");
-                else
-                    foreach (string s in servers)
-                        Servers.Add(s);
-            }
-            catch
-            {
-                Servers.Add("Error while scanning");
-            }
-            finally
-            {
-                Mouse.OverrideCursor = null;
-            }
-        }
-
-        private void Server_OnDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            ListBoxItem item = sender as ListBoxItem;
-            if (item != null)
-            {
-                string serverAddress = item.DataContext as string;
-                if (!String.IsNullOrEmpty(serverAddress) && OnServerSelected != null)
-                    OnServerSelected(this, serverAddress);
-            }
+            ServerListViewModel vm = DataContext as ServerListViewModel;
+            if (vm != null)
+                vm.SelectServerCommand.Execute(null);
         }
     }
 }

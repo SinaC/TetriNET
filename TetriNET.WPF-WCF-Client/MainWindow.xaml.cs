@@ -1,15 +1,9 @@
-﻿using System;
-using System.Configuration;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
-using TetriNET.Client.DefaultBoardAndTetriminos;
 using TetriNET.Common.GameDatas;
-using TetriNET.Common.Interfaces;
-using TetriNET.Logger;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.Models;
-using TetriNET.WPF_WCF_Client.Properties;
+using TetriNET.WPF_WCF_Client.ViewModels;
 
 namespace TetriNET.WPF_WCF_Client
 {
@@ -18,45 +12,31 @@ namespace TetriNET.WPF_WCF_Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly IClient _client;
+        private MainWindowViewModel _mainWindowViewModel; // TODO: temporary code to be removed
 
         public MainWindow()
         {
-            string logFilename = "WPF_" + Guid.NewGuid().ToString().Substring(0, 5)+".log";
-            Log.Initialize(ConfigurationManager.AppSettings["logpath"], logFilename);
-
-            ExecuteOnUIThread.Initialize();
-
-            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
-            Log.WriteLine(Log.LogLevels.Info, "Local user config path: {0}", config.FilePath);
-
-            _client = new Client.Client(Tetrimino.CreateTetrimino, () => new Board(12, 22));
-            
-            // Get saved or default options
-            Options.OptionsSingleton.Instance.ServerOptions = Settings.Default.GameOptions ?? _client.Options;
-            // TODO: fix this bug  ---- Workaround: remove duplicate key
-            Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies = Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();
-            Options.OptionsSingleton.Instance.ServerOptions.TetriminoOccurancies = Options.OptionsSingleton.Instance.ServerOptions.TetriminoOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();
-            Options.OptionsSingleton.Instance.AutomaticallySwitchToPartyLineOnRegistered = Settings.Default.AutomaticallySwitchToPartyLineOnRegistered;
-            Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted = Settings.Default.AutomaticallySwitchToPlayFieldOnGameStarted;
-
-            // Get textures
-            Textures.Textures.TexturesSingleton.Instance.ReadFromFile(ConfigurationManager.AppSettings["texture"]);
-
             InitializeComponent();
+        }
 
-            _client.OnPlayerRegistered += OnPlayerRegistered;
-            _client.OnGameStarted += OnGameStarted;
-            _client.OnGameFinished += OnGameFinished;
-            _client.OnGameOver += OnGameOver;
-            _client.OnConnectionLost += OnConnectionLost;
+        // TODO: temporary code to be removed
+        public void Initialize()
+        {
+            _mainWindowViewModel = DataContext as MainWindowViewModel;
 
-            ConnectionView.Client = _client;
-            OptionsView.Client = _client;
-            WinListView.Client = _client;
-            PartyLineView.Client = _client;
-            GameView.Client = _client;
-            ClientStatisticsView.Client = _client;
+            // TODO: temporary code to be removed
+            _mainWindowViewModel.Client.OnPlayerRegistered += OnPlayerRegistered;
+            _mainWindowViewModel.Client.OnGameStarted += OnGameStarted;
+            _mainWindowViewModel.Client.OnGameFinished += OnGameFinished;
+            _mainWindowViewModel.Client.OnGameOver += OnGameOver;
+            _mainWindowViewModel.Client.OnConnectionLost += OnConnectionLost;
+
+            //ConnectionView.Client = _mainWindowViewModel.Client;
+            //OptionsView.Client = _mainWindowViewModel.Client;
+            //WinListView.Client = _mainWindowViewModel.Client;
+            //PartyLineView.Client = _mainWindowViewModel.Client;
+            GameView.Client = _mainWindowViewModel.Client;
+            //ClientStatisticsView.Client = _mainWindowViewModel.Client;
         }
 
         #region IClient events handler
@@ -68,8 +48,8 @@ namespace TetriNET.WPF_WCF_Client
                     if (TabConnect.IsSelected)
                         TabPartyLine.IsSelected = true;
                 });
-            if (succeeded && _client.IsServerMaster)
-                _client.ChangeOptions(Options.OptionsSingleton.Instance.ServerOptions);
+            if (succeeded && _mainWindowViewModel.Client.IsServerMaster)
+                _mainWindowViewModel.Client.ChangeOptions(Options.OptionsSingleton.Instance.ServerOptions);
         }
 
         private void OnGameStarted()
