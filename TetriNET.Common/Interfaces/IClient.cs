@@ -47,8 +47,9 @@ namespace TetriNET.Common.Interfaces
         int LinesCleared { get; }
         int Level { get; }
         bool IsRegistered { get; }
-        bool IsGamePaused { get; }
-        bool IsGameStarted { get; }
+        bool IsGamePaused { get; } // Server-state
+        bool IsGameStarted { get; } // Server-state
+        bool IsPlaying { get; }
         int InventorySize { get; }
         GameOptions Options { get; }
         bool IsServerMaster { get; }

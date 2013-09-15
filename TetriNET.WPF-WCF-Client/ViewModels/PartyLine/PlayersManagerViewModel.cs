@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
@@ -19,7 +18,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         }
 
         public string PlayerName { get; set; }
-        public Visibility IsServerMaster { get; set; } // TODO: remove visibility
+        public bool IsServerMaster { get; set; }
     }
 
     public class PlayersManagerViewModel : ViewModelBase
@@ -55,7 +54,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             {
                 // TODO: how could we update visibility in UI ??? OnPropertyChanged doesn't work
                 foreach (PlayerData p in PlayerList)
-                    p.IsServerMaster = p.RealPlayerId == serverMasterId ? Visibility.Visible : Visibility.Hidden;
+                    p.IsServerMaster = p.RealPlayerId == serverMasterId;
                 //OnPropertyChanged("PlayerList");
             });
         }
@@ -72,7 +71,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             {
                 RealPlayerId = playerId,
                 PlayerName = playerName,
-                IsServerMaster = Visibility.Hidden,
+                IsServerMaster = false,
             }));
         }
 

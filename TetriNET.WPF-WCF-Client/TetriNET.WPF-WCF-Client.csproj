@@ -78,14 +78,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\ChatColorBrushConverter.cs" />
     <Compile Include="Helpers\EventToCommand.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="ViewModels\Connection\ConnectionControlViewModel.cs" />
     <Compile Include="ViewModels\Connection\ConnectionViewModel.cs" />
     <Compile Include="ViewModels\Connection\ServerListViewModel.cs" />
-    <Compile Include="ViewModels\Game\GameInfoViewModel.cs" />
-    <Compile Include="ViewModels\Game\GameViewModel.cs" />
-    <Compile Include="ViewModels\Game\InGameChatViewModel.cs" />
+    <Compile Include="ViewModels\PlayField\GameInfoViewModel.cs" />
+    <Compile Include="ViewModels\PlayField\PlayFieldViewModel.cs" />
+    <Compile Include="ViewModels\PlayField\InGameChatViewModel.cs" />
     <Compile Include="ViewModels\PartyLine\ChatViewModel.cs" />
     <Compile Include="ViewModels\PartyLine\PlayersManagerViewModel.cs" />
     <Compile Include="ViewModels\Statistics\ClientStatisticsViewModel.cs" />
@@ -97,14 +98,14 @@
     <Compile Include="Views\Connection\ConnectionControl.xaml.cs">
       <DependentUpon>ConnectionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Game\GameInfoControl.xaml.cs">
+    <Compile Include="Views\PlayField\GameInfoControl.xaml.cs">
       <DependentUpon>GameInfoControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ListBoxExtenders.cs" />
-    <Compile Include="Views\Game\NextTetriminoControl.xaml.cs">
+    <Compile Include="Views\PlayField\NextTetriminoControl.xaml.cs">
       <DependentUpon>NextTetriminoControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Game\OpponentGridControl.xaml.cs">
+    <Compile Include="Views\PlayField\OpponentGridControl.xaml.cs">
       <DependentUpon>OpponentGridControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PartyLine\PlayersManagerControl.xaml.cs">
@@ -122,7 +123,7 @@
     <Compile Include="Views\Options\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Game\PlayerGridControl.xaml.cs">
+    <Compile Include="Views\PlayField\PlayerGridControl.xaml.cs">
       <DependentUpon>PlayerGridControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Options.cs" />
@@ -130,8 +131,8 @@
     <Compile Include="Views\Connection\ConnectionView.xaml.cs">
       <DependentUpon>ConnectionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Game\GameView.xaml.cs">
-      <DependentUpon>GameView.xaml</DependentUpon>
+    <Compile Include="Views\PlayField\PlayFieldView.xaml.cs">
+      <DependentUpon>PlayFieldView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PartyLine\PartyLineView.xaml.cs">
       <DependentUpon>PartyLineView.xaml</DependentUpon>
@@ -147,15 +148,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Game\GameInfoControl.xaml">
+    <Page Include="Views\PlayField\GameInfoControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Game\NextTetriminoControl.xaml">
+    <Page Include="Views\PlayField\NextTetriminoControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Game\OpponentGridControl.xaml">
+    <Page Include="Views\PlayField\OpponentGridControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -175,15 +176,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Game\PlayerGridControl.xaml">
+    <Page Include="Views\PlayField\PlayerGridControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Game\InGameChatControl.xaml">
+    <Page Include="Views\PlayField\InGameChatControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Game\InventoryControl.xaml">
+    <Page Include="Views\PlayField\InventoryControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -199,10 +200,10 @@
     <Compile Include="Views\PartyLine\ChatControl.xaml.cs">
       <DependentUpon>ChatControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Game\InGameChatControl.xaml.cs">
+    <Compile Include="Views\PlayField\InGameChatControl.xaml.cs">
       <DependentUpon>InGameChatControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Game\InventoryControl.xaml.cs">
+    <Compile Include="Views\PlayField\InventoryControl.xaml.cs">
       <DependentUpon>InventoryControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Mapper.cs" />
@@ -216,7 +217,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Game\GameView.xaml">
+    <Page Include="Views\PlayField\PlayFieldView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -307,9 +308,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

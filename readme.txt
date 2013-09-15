@@ -20,6 +20,7 @@ Client: add a server state: GameStarted when receiving OnGameStarted and Waiting
 
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
 WPF Client: MVVM   --> GameView not yet converted
+WPF Client: save win list locally if server master
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf

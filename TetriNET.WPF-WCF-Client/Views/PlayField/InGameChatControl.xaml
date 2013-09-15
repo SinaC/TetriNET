@@ -1,11 +1,15 @@
-﻿<UserControl x:Class="TetriNET.WPF_WCF_Client.Views.Game.InGameChatControl"
+﻿<UserControl x:Class="TetriNET.WPF_WCF_Client.Views.PlayField.InGameChatControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
-             x:Name="InGameMessagesControl"
-             DataContext="{Binding ElementName=InGameMessagesControl}">
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+<UserControl.Resources>
+    <ResourceDictionary>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </ResourceDictionary>
+</UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -27,8 +31,8 @@
                         <TextBlock Text="{Binding Id}" Foreground="Black" FontSize="8" Margin="0,0,2,0"/>
                         <TextBlock Text="." Foreground="Black" FontSize="8" Margin="0,0,2,0"/>
                         <TextBlock Text="{Binding Special}" Foreground="DarkMagenta" FontSize="8" Margin="0,0,2,0"/>
-                        <TextBlock Text="on" Foreground="black" Visibility="{Binding TargetVisibility}" FontSize="8" Margin="0,0,2,0"/>
-                        <TextBlock Text="{Binding Target}" Foreground="Blue" Visibility="{Binding TargetVisibility}" FontSize="8" Margin="0,0,2,0"/>
+                        <TextBlock Text="on" Foreground="black" Visibility="{Binding IsTargetVisible, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="8" Margin="0,0,2,0"/>
+                        <TextBlock Text="{Binding Target}" Foreground="Blue" Visibility="{Binding IsTargetVisible, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="8" Margin="0,0,2,0"/>
                         <TextBlock Text="from" Foreground="black" FontSize="8" Margin="0,0,2,0"/>
                         <TextBlock Text="{Binding Source}" Foreground="Blue" FontSize="8"/>
                     </WrapPanel>

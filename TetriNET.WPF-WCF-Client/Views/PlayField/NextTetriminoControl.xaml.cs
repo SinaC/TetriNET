@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -8,7 +7,7 @@ using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
 
-namespace TetriNET.WPF_WCF_Client.Views.Game
+namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
     /// <summary>
     /// Interaction logic for NextTetriminoControl.xaml

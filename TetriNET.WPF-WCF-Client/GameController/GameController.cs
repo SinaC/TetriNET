@@ -48,7 +48,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
  
         public void KeyDown(Commands cmd)
         {
-            if (_client.IsGameStarted)
+            if (_client.IsPlaying)
             {
                 if (_timers.ContainsKey(cmd) && _timers[cmd].IsEnabled)
                     return;

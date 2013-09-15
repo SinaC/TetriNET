@@ -219,6 +219,13 @@ namespace TetriNET.Client
             Paused // --> Playing | Registered
         }
 
+        public enum ServerStates
+        {
+            Waiting,
+            Playing,
+            Paused
+        }
+
         private readonly Func<Tetriminos, int, int, int, int, ITetrimino> _createTetriminoFunc;
         private readonly Func<IBoard> _createBoardFunc;
         private readonly PlayerData[] _playersData = new PlayerData[MaxPlayers];
@@ -229,6 +236,7 @@ namespace TetriNET.Client
         private readonly System.Timers.Timer _gameTimer;
 
         public States State { get; private set; }
+        public ServerStates ServerState { get; private set; }
 
         private IProxy _proxy;
         private GameOptions _options;
@@ -271,6 +279,7 @@ namespace TetriNET.Client
             _clientPlayerId = -1;
            
             State = States.Created;
+            ServerState = ServerStates.Waiting;
             IsServerMaster = false;
 
             Task.Factory.StartNew(TimeoutTask);
@@ -321,23 +330,24 @@ namespace TetriNET.Client
                 if (playerId >= 0 && playerId < MaxPlayers)
                 {
                     _clientPlayerId = playerId;
-                    PlayerData playerData = new PlayerData
+                    PlayerData player = new PlayerData
                     {
                         Name = Name,
                         PlayerId = playerId,
                         Board = _createBoardFunc(),
                         State = PlayerData.States.Joined
                     };
-                    _playersData[_clientPlayerId] = playerData;
+                    _playersData[_clientPlayerId] = player;
 
                     State = States.Registered;
+                    ServerState = isGameStarted ? ServerStates.Playing : ServerStates.Waiting;// TODO: handle server paused
 
                     if (ClientOnPlayerRegistered != null)
                         ClientOnPlayerRegistered(true, playerId);
 
                     if (isGameStarted)
                     {
-                        playerData.Board.FillWithRandomCells(() => RangeRandom.Random(_options.TetriminoOccurancies));
+                        player.Board.FillWithRandomCells(() => RangeRandom.Random(_options.TetriminoOccurancies));
 
                         if (ClientOnRedraw != null)
                             ClientOnRedraw();
@@ -399,6 +409,14 @@ namespace TetriNET.Client
             ResetTimeout();
             if (playerId != _clientPlayerId && playerId >= 0 && playerId < MaxPlayers)
             {
+                PlayerData player = _playersData[playerId];
+                if (player != null)
+                {
+                    player.Board.Clear();
+                    if (ClientOnRedrawBoard != null)
+                        ClientOnRedrawBoard(playerId, player.Board);
+                }
+
                 _playersData[playerId] = null;
 
                 if (ClientOnPlayerLeft != null)
@@ -475,6 +493,7 @@ namespace TetriNET.Client
                 _boardActionQueue.TryDequeue(out outAction);
             // Set state
             State = States.Playing;
+            ServerState = ServerStates.Playing;
             // Reset statistics
             _statistics.Reset();
             // Reset options
@@ -524,6 +543,7 @@ namespace TetriNET.Client
 
             ResetTimeout();
             State = States.Registered;
+            ServerState = ServerStates.Waiting;
             for (int i = 0; i < MaxPlayers; i++)
             {
                 PlayerData playerData = _playersData[i];
@@ -546,13 +566,13 @@ namespace TetriNET.Client
             Log.WriteLine(Log.LogLevels.Debug, "Game paused");
 
             ResetTimeout();
+
+            ServerState = ServerStates.Paused;
             if (State == States.Playing)
-            {
                 State = States.Paused;
 
-                if (ClientOnGamePaused != null)
-                    ClientOnGamePaused();
-            }
+            if (ClientOnGamePaused != null)
+                ClientOnGamePaused();
         }
 
         public void OnGameResumed()
@@ -560,13 +580,13 @@ namespace TetriNET.Client
             Log.WriteLine(Log.LogLevels.Debug, "Game resumed");
 
             ResetTimeout();
+
+            ServerState = ServerStates.Playing;
             if (State == States.Paused)
-            {
                 State = States.Playing;
 
-                if (ClientOnGameResumed != null)
-                    ClientOnGameResumed();
-            }
+            if (ClientOnGameResumed != null)
+                ClientOnGameResumed();
         }
 
         public void OnServerAddLines(int lineCount)
@@ -895,11 +915,19 @@ namespace TetriNET.Client
         {
             get
             {
-                return State == States.Paused;
+                return ServerState == ServerStates.Paused;
             }
         }
 
         public bool IsGameStarted
+        {
+            get
+            {
+                return ServerState == ServerStates.Playing;
+            }
+        }
+
+        public bool IsPlaying 
         {
             get
             {
@@ -1225,25 +1253,25 @@ namespace TetriNET.Client
 
         public void StartGame()
         {
-            if (State == States.Registered)
+            if (State == States.Registered && ServerState == ServerStates.Waiting)
                 _proxy.StartGame(this);
         }
 
         public void StopGame()
         {
-            if (State == States.Playing)
+            if (ServerState == ServerStates.Playing)
                 _proxy.StopGame(this);
         }
 
         public void PauseGame()
         {
-            if (State == States.Playing)
+            if (ServerState == ServerStates.Playing)
                 _proxy.PauseGame(this);
         }
 
         public void ResumeGame()
         {
-            if (State == States.Paused)
+            if (ServerState == ServerStates.Paused)
                 _proxy.ResumeGame(this);
         }
 

@@ -1,19 +1,27 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Media;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 {
-    public class ChatEntry // TODO: remove Brush and Visibility and use style
+    public enum ChatColor
+    {
+        Red,
+        Green,
+        Orange,
+        Blue,
+        Black,
+        Yellow
+    }
+
+    public class ChatEntry
     {
         public string PlayerName { get; set; }
-        public Visibility PlayerVisibility { get; set; } // false if server message
+        public bool IsPlayerVisible { get; set; } // false if server message
         public string Msg { get; set; }
-        public Brush Color { get; set; }
+        public ChatColor Color { get; set; }
     }
 
     public class ChatViewModel : ViewModelBase
@@ -59,7 +67,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             }
         }
 
-        private void AddEntry(string msg, Color color, string playerName = null)
+        private void AddEntry(string msg, ChatColor color, string playerName = null)
         {
             ExecuteOnUIThread.Invoke(() =>
             {
@@ -67,8 +75,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                 {
                     PlayerName = playerName,
                     Msg = msg,
-                    PlayerVisibility = String.IsNullOrEmpty(playerName) ? Visibility.Collapsed : Visibility.Visible,
-                    Color = new SolidColorBrush(color),
+                    IsPlayerVisible = !String.IsNullOrEmpty(playerName),
+                    Color = color,
                 });
                 if (ChatEntries.Count > MaxEntries)
                     ChatEntries.RemoveAt(0);
@@ -119,7 +127,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                 msg = "*** Server not found";
             else
                 msg = "*** Connection lost";
-            AddEntry(msg, Colors.Red);
+            AddEntry(msg, ChatColor.Red);
             IsRegistered = false;
         }
 
@@ -150,68 +158,68 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                     msg = String.Format("*** {0} has left {1}", playerName, reason);
                     break;
             }
-            AddEntry(msg, Colors.Green);
+            AddEntry(msg, ChatColor.Green);
         }
 
         private void OnPlayerJoined(int playerid, string playerName)
         {
-            AddEntry(String.Format("*** {0} has joined", playerName), Colors.Green);
+            AddEntry(String.Format("*** {0} has joined", playerName), ChatColor.Green);
         }
 
         private void OnPlayerRegistered(bool succeeded, int playerId)
         {
             if (succeeded)
             {
-                AddEntry("*** You've registered successfully", Colors.Green);
+                AddEntry("*** You've registered successfully", ChatColor.Green);
                 IsRegistered = true;
             }
             else
-                AddEntry("*** You've FAILED registering !!!", Colors.Red);
+                AddEntry("*** You've FAILED registering !!!", ChatColor.Red);
         }
 
         private void OnPlayerWon(int playerId, string playerName)
         {
-            AddEntry(String.Format("*** {0} has WON", playerName), Colors.Orange);
+            AddEntry(String.Format("*** {0} has WON", playerName), ChatColor.Orange);
         }
 
         private void OnPlayerLost(int playerId, string playerName)
         {
-            AddEntry(String.Format("*** {0} has LOST", playerName), Colors.Orange);
+            AddEntry(String.Format("*** {0} has LOST", playerName), ChatColor.Orange);
         }
 
         private void OnGameResumed()
         {
-            AddEntry("*** The game has been Resumed", Colors.Yellow);
+            AddEntry("*** The game has been Resumed", ChatColor.Yellow);
         }
 
         private void OnGamePaused()
         {
-            AddEntry("*** The game has been Paused", Colors.Yellow);
+            AddEntry("*** The game has been Paused", ChatColor.Yellow);
         }
 
         private void OnGameOver()
         {
-            AddEntry("*** You have LOST", Colors.Orange);
+            AddEntry("*** You have LOST", ChatColor.Orange);
         }
 
         private void OnGameFinished()
         {
-            AddEntry("*** The Game has Ended", Colors.Red);
+            AddEntry("*** The Game has Ended", ChatColor.Red);
         }
 
         private void OnGameStarted()
         {
-            AddEntry("*** The Game has Started", Colors.Red);
+            AddEntry("*** The Game has Started", ChatColor.Red);
         }
 
         private void OnPlayerPublishMessage(string playerName, string msg)
         {
-            AddEntry(msg, Colors.Black, playerName);
+            AddEntry(msg, ChatColor.Black, playerName);
         }
 
         private void OnServerPublishMessage(string msg)
         {
-            AddEntry(msg, Colors.Blue);
+            AddEntry(msg, ChatColor.Blue);
         }
 
         #endregion

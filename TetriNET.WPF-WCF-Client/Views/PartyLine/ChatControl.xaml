@@ -4,8 +4,23 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers"
+             xmlns:partyLine="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PartyLine"
+             xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance partyLine:ChatViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
+<UserControl.Resources>
+    <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary>
+                <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            </ResourceDictionary>
+            <ResourceDictionary>
+                <converters:ChatColorBrushConverter x:Key="ChatColorBrushConverter"/>
+            </ResourceDictionary>
+        </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+</UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -13,13 +28,12 @@
         </Grid.RowDefinitions>
         <ListBox 
             Grid.Row="0" helpers:ListBoxExtenders.AutoScrollToEnd="True"
-            ItemsSource="{Binding ChatEntries}"
-            >
+            ItemsSource="{Binding ChatEntries}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
-                        <TextBlock Text="{Binding PlayerName, StringFormat=&lt;{0}&gt;}" TextDecorations="Underline" FontWeight="Bold" Visibility="{Binding PlayerVisibility}" Foreground="{Binding Color}" />
-                        <TextBlock Text="{Binding Msg}" Foreground="{Binding Color}" />
+                        <TextBlock Text="{Binding PlayerName, StringFormat=&lt;{0}&gt;}" TextDecorations="Underline" FontWeight="Bold" Visibility="{Binding IsPlayerVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" />
+                        <TextBlock Text="{Binding Msg}" Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" />
                     </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>            

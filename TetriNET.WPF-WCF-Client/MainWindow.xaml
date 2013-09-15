@@ -3,13 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:statistics="clr-namespace:TetriNET.WPF_WCF_Client.Views.Statistics"
         xmlns:connection="clr-namespace:TetriNET.WPF_WCF_Client.Views.Connection"
-        xmlns:game="clr-namespace:TetriNET.WPF_WCF_Client.Views.Game"
         xmlns:options="clr-namespace:TetriNET.WPF_WCF_Client.Views.Options"
         xmlns:partyLine="clr-namespace:TetriNET.WPF_WCF_Client.Views.PartyLine"
         xmlns:winList="clr-namespace:TetriNET.WPF_WCF_Client.Views.WinList"
         xmlns:local="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:playField="clr-namespace:TetriNET.WPF_WCF_Client.Views.PlayField"
+        mc:Ignorable="d"
         UseLayoutRounding="True"
         MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
         d:DataContext="{d:DesignInstance local:MainWindowViewModel}"
@@ -145,7 +146,7 @@
                 <partyLine:PartyLineView DataContext="{Binding Path=PartyLineViewModel}"/>
             </TabItem>
             <TabItem x:Name="TabGameView" Header="Play fields">
-                <game:GameView x:Name="GameView"/>
+                <playField:PlayFieldView x:Name="GameView"/>
             </TabItem>
             <TabItem x:Name="TabStatistics" Header="Client statistics">
                 <statistics:ClientStatisticsView DataContext="{Binding Path=ClientStatisticsViewModel}"/>

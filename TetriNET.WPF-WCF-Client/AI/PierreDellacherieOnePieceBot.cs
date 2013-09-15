@@ -105,7 +105,7 @@ namespace TetriNET.WPF_WCF_Client.AI
 
                 if (handle == 1) // stop event
                     break;
-                if (handle == 0 /*next tetrimino event*/ && _client.IsGameStarted && _client.Board != null && _client.CurrentTetrimino != null && _client.NextTetrimino != null)
+                if (handle == 0 /*next tetrimino event*/ && _client.IsPlaying && _client.Board != null && _client.CurrentTetrimino != null && _client.NextTetrimino != null)
                 {
                     int currentTetriminoIndex = _client.CurrentTetrimino.Index;
                     //Log.WriteLine(Log.LogLevels.Debug, "Searching best move for Tetrimino {0} {1}", _client.CurrentTetrimino.Value, _client.CurrentTetrimino.Index);

@@ -1,19 +1,23 @@
-﻿<UserControl x:Class="TetriNET.WPF_WCF_Client.Views.Game.OpponentGridControl"
+﻿<UserControl x:Class="TetriNET.WPF_WCF_Client.Views.PlayField.OpponentGridControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             DataContext="{Binding RelativeSource={RelativeSource Self}}"
-             >
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+<UserControl.Resources>
+    <ResourceDictionary>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </ResourceDictionary>
+</UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="16"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" MaxWidth="96">
-            <TextBlock Text="{Binding DisplayPlayerId}" Visibility="{Binding PlayerIdVisibility}"/>
-            <TextBlock Text="." Visibility="{Binding PlayerIdVisibility}" Margin="0,0,2,0"/>
+            <TextBlock Text="{Binding DisplayPlayerId}" Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <TextBlock Text="." Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,2,0"/>
             <TextBlock Text="{Binding PlayerName}" />
         </StackPanel>
         <Border Grid.Row="1" Background="Green">

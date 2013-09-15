@@ -11,7 +11,7 @@ using TetriNET.Common.Interfaces;
 using TetriNET.Strategy;
 using TetriNET.WPF_WCF_Client.Helpers;
 
-namespace TetriNET.WPF_WCF_Client.Views.Game
+namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
     /// <summary>
     /// Interaction logic for PlayerGridControl.xaml
@@ -36,15 +36,15 @@ namespace TetriNET.WPF_WCF_Client.Views.Game
             set { SetValue(ClientProperty, value); }
         }
 
-        private Visibility _playerIdVisibility;
-        public Visibility PlayerIdVisibility
+        private bool _isPlayerIdVisible;
+        public bool IsPlayerIdVisible
         {
-            get { return _playerIdVisibility; }
+            get { return _isPlayerIdVisible; }
             set
             {
-                if (_playerIdVisibility != value)
+                if (_isPlayerIdVisible != value)
                 {
-                    _playerIdVisibility = value;
+                    _isPlayerIdVisible = value;
                     OnPropertyChanged();
                 }
             }
@@ -95,7 +95,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Game
 
             PlayerId = -1;
             PlayerName = "Not registered";
-            PlayerIdVisibility = Visibility.Hidden;
+            IsPlayerIdVisible = false;
 
             _textures = Textures.Textures.TexturesSingleton.Instance;
             if (!DesignerProperties.GetIsInDesignMode(this))
@@ -270,7 +270,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Game
                 {
                     _this.PlayerName = newClient.Name;
                     _this.PlayerId = newClient.PlayerId;
-                    _this.PlayerIdVisibility = Visibility.Visible;
+                    _this.IsPlayerIdVisible = true;
 
                     newClient.OnConnectionLost += _this.OnConnectionLost;
                     newClient.OnGameStarted += _this.OnGameStarted;
@@ -282,7 +282,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Game
                 {
                     _this.PlayerName = "Not registered";
                     _this.PlayerId = -1;
-                    _this.PlayerIdVisibility = Visibility.Hidden;
+                    _this.IsPlayerIdVisible = false;
                 }
             }
         }
@@ -319,10 +319,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Game
         {
             PlayerId = -1;
             PlayerName = "Not registered";
-            ExecuteOnUIThread.Invoke(() =>
-            {
-                PlayerIdVisibility = Visibility.Hidden;
-            });
+            IsPlayerIdVisible = false;
         }
         #endregion
 

@@ -6,7 +6,7 @@ using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
 
-namespace TetriNET.WPF_WCF_Client.Views.Game
+namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
     public class InGameChatEntry
     {
@@ -14,7 +14,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Game
         public string Special { get; set; }
         public string Source { get; set; }
         public string Target { get; set; }
-        public Visibility TargetVisibility { get; set; }
+        public bool IsTargetVisible { get; set; }
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Game
                     Special = special,
                     Source = source,
                     Target = target,
-                    TargetVisibility = String.IsNullOrEmpty(target) ? Visibility.Collapsed : Visibility.Visible
+                    IsTargetVisible = !String.IsNullOrEmpty(target)
                 });
             if (Entries.Count > MaxEntries)
                 Entries.RemoveAt(0);

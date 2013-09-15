@@ -48,7 +48,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             PauseResumeCommand = new RelayCommand(PauseResume);
         }
 
-        private void UpdateEnability()
+        private void UpdateEnabilityAndLabel()
         {
             OnPropertyChanged("IsStartStopEnabled");
             OnPropertyChanged("IsPauseResumeEnabled");
@@ -62,6 +62,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                 Client.StopGame();
             else
                 Client.StartGame();
+            UpdateEnabilityAndLabel();
         }
 
         private void PauseResume()
@@ -70,6 +71,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                 Client.ResumeGame();
             else
                 Client.PauseGame();
+            UpdateEnabilityAndLabel();
         }
 
         #region ViewModelBase
@@ -108,31 +110,31 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         private void OnGameResumed()
         {
             _isGamePaused = false;
-            UpdateEnability();
+            UpdateEnabilityAndLabel();
         }
 
         private void OnGamePaused()
         {
             _isGamePaused = true;
-            UpdateEnability();
+            UpdateEnabilityAndLabel();
         }
 
         private void OnGameFinished()
         {
             _isGameStarted = false;
-            UpdateEnability();
+            UpdateEnabilityAndLabel();
         }
 
         private void OnGameStarted()
         {
             _isGameStarted = true;
-            UpdateEnability();
+            UpdateEnabilityAndLabel();
         }
 
         private void OnServerMasterModified(int serverMasterId)
         {
             _isServerMaster = Client.IsServerMaster;
-            UpdateEnability();
+            UpdateEnabilityAndLabel();
         }
 
         private void OnPlayerRegistered(bool succeeded, int playerId)
@@ -141,7 +143,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             _isGameStarted = Client.IsGameStarted;
             _isServerMaster = Client.IsServerMaster;
             _isGamePaused = false;
-            UpdateEnability();
+            UpdateEnabilityAndLabel();
         }
 
         private void OnPlayerUnregistered()
@@ -150,14 +152,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             _isGameStarted = Client.IsGameStarted;
             _isServerMaster = Client.IsServerMaster;
             _isGamePaused = false;
-            UpdateEnability();
+            UpdateEnabilityAndLabel();
         }
 
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
             _isRegistered = false;
             _isServerMaster = false;
-            UpdateEnability();
+            UpdateEnabilityAndLabel();
         }
         #endregion
 
