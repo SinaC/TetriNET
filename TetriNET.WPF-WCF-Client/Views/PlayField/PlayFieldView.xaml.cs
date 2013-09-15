@@ -6,6 +6,7 @@ using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.GameController;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
 
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
@@ -21,12 +22,16 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             set { SetValue(ClientProperty, value); }
         }
 
+        public PlayFieldViewModel PlayFieldViewModel { get; set; }
+
         private PierreDellacherieOnePieceBot _bot;
         private GameController.GameController _controller;
         private int _playerId;
 
         public PlayFieldView()
         {
+            PlayFieldViewModel = new PlayFieldViewModel();
+
             InitializeComponent();
 
             //http://stackoverflow.com/questions/15241118/keydown-event-not-raising-from-a-grid
@@ -54,10 +59,13 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 IClient newClient = args.NewValue as IClient;
                 _this.Client = newClient;
                 _this.Inventory.Client = newClient;
-                _this.InGameMessages.Client = newClient;
+                //_this.InGameMessages.Client = newClient;
                 _this.NextTetrimino.Client = newClient;
-                _this.GameInfo.Client = newClient;
-                //_this.PlayFieldViewModel.Client = newClient;
+                //_this.GameInfo.Client = newClient;
+
+                // GameInfo and InGameChat are MVVM compliant
+                _this.PlayFieldViewModel.Client = newClient;
+                
                 // Add new handlers
                 if (newClient != null)
                 {
