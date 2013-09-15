@@ -10,6 +10,7 @@ using TetriNET.WPF_WCF_Client.Properties;
 using TetriNET.WPF_WCF_Client.ViewModels.Connection;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
 using TetriNET.WPF_WCF_Client.ViewModels.PartyLine;
+using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
 using TetriNET.WPF_WCF_Client.ViewModels.Statistics;
 using TetriNET.WPF_WCF_Client.ViewModels.WinList;
 
@@ -22,6 +23,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         public OptionsViewModel OptionsViewModel { get; set; }
         public PartyLineViewModel PartyLineViewModel { get; set; }
         public ConnectionViewModel ConnectionViewModel { get; set; }
+        public PlayFieldViewModel PlayFieldViewModel { get; set; }
 
         public MainWindowViewModel()
         {
@@ -34,6 +36,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             OptionsViewModel = new OptionsViewModel();
             PartyLineViewModel = new PartyLineViewModel();
             ConnectionViewModel = new ConnectionViewModel();
+            PlayFieldViewModel = new PlayFieldViewModel();
 
             // Initialize Log
             string logFilename = "WPF_" + Guid.NewGuid().ToString().Substring(0, 5) + ".log";
@@ -85,6 +88,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             OptionsViewModel.Client = newClient;
             PartyLineViewModel.Client = newClient;
             ConnectionViewModel.Client = newClient;
+            PlayFieldViewModel.Client = newClient;
         }
         #endregion
 

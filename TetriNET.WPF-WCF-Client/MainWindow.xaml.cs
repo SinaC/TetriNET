@@ -31,15 +31,11 @@ namespace TetriNET.WPF_WCF_Client
             _mainWindowViewModel.Client.OnGameOver += OnGameOver;
             _mainWindowViewModel.Client.OnConnectionLost += OnConnectionLost;
 
-            //ConnectionView.Client = _mainWindowViewModel.Client;
-            //OptionsView.Client = _mainWindowViewModel.Client;
-            //WinListView.Client = _mainWindowViewModel.Client;
-            //PartyLineView.Client = _mainWindowViewModel.Client;
-            GameView.Client = _mainWindowViewModel.Client;
-            //ClientStatisticsView.Client = _mainWindowViewModel.Client;
+            PlayFieldView.PlayFieldViewModel = _mainWindowViewModel.PlayFieldViewModel;
         }
 
         #region IClient events handler
+        // TODO: MVVM
         private void OnPlayerRegistered(bool succeeded, int playerId)
         {
             if (succeeded && Options.OptionsSingleton.Instance.AutomaticallySwitchToPartyLineOnRegistered)

@@ -146,7 +146,7 @@
                 <partyLine:PartyLineView DataContext="{Binding Path=PartyLineViewModel}"/>
             </TabItem>
             <TabItem x:Name="TabGameView" Header="Play fields">
-                <playField:PlayFieldView x:Name="GameView"/>
+                <playField:PlayFieldView x:Name="PlayFieldView"/>
             </TabItem>
             <TabItem x:Name="TabStatistics" Header="Client statistics">
                 <statistics:ClientStatisticsView DataContext="{Binding Path=ClientStatisticsViewModel}"/>

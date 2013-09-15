@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace TetriNET.WPF_WCF_Client.Views.Statistics
 {
@@ -12,14 +11,5 @@ namespace TetriNET.WPF_WCF_Client.Views.Statistics
         {
             InitializeComponent();
         }
-
-        #region UI events handler
-
-        private void RefreshStatistics_OnClick(object sender, RoutedEventArgs e)
-        {
-            //Refresh(); TODO
-        }
-
-        #endregion
     }
 }

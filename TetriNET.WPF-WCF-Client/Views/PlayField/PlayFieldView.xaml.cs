@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Input;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
@@ -15,14 +14,40 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
     /// </summary>
     public partial class PlayFieldView : UserControl
     {
-        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("PlayFieldViewClientProperty", typeof(IClient), typeof(PlayFieldView), new PropertyMetadata(Client_Changed));
-        public IClient Client
-        {
-            get { return (IClient) GetValue(ClientProperty); }
-            set { SetValue(ClientProperty, value); }
-        }
+        private PlayFieldViewModel _playFieldViewModel;
+        public PlayFieldViewModel PlayFieldViewModel { get { return _playFieldViewModel; }
+            set
+            {
+                // Remove old handlers
+                IClient oldClient = _playFieldViewModel == null ? null : _playFieldViewModel.Client;
+                if (oldClient != null)
+                {
+                    oldClient.OnPlayerRegistered -= OnPlayerRegistered;
+                    oldClient.OnPlayerJoined -= OnPlayerJoined;
+                    oldClient.OnPlayerLeft -= OnPlayerLeft;
 
-        public PlayFieldViewModel PlayFieldViewModel { get; set; }
+                    // TODO: unregister old GameController+Bot from old client events
+                }
+                //
+                _playFieldViewModel = value;
+                // Set new client
+                IClient newClient = value == null ? null : value.Client;
+                Inventory.Client = newClient;
+                NextTetrimino.Client = newClient;
+                // PlayerGrid and OpponentGrid will be set later
+                // Add new handlers
+                if (newClient != null)
+                {
+                    newClient.OnPlayerRegistered += OnPlayerRegistered;
+                    newClient.OnPlayerJoined += OnPlayerJoined;
+                    newClient.OnPlayerLeft += OnPlayerLeft;
+
+                    // And create controller + bot
+                    _controller = new GameController.GameController(newClient);
+                    _bot = new PierreDellacherieOnePieceBot(newClient, _controller);
+                }
+            }
+        }
 
         private PierreDellacherieOnePieceBot _bot;
         private GameController.GameController _controller;
@@ -30,53 +55,11 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         public PlayFieldView()
         {
-            PlayFieldViewModel = new PlayFieldViewModel();
-
             InitializeComponent();
 
             //http://stackoverflow.com/questions/15241118/keydown-event-not-raising-from-a-grid
             Focusable = true; // This is needed to catch KeyUp/KeyDown
             Loaded += (sender, args) => Focus(); // This is needed to catch KeyUp/KeyDown
-        }
-
-        private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-        {
-            PlayFieldView _this = sender as PlayFieldView;
-
-            if (_this != null)
-            {
-                // Remove old handlers
-                IClient oldClient = args.OldValue as IClient;
-                if (oldClient != null)
-                {
-                    oldClient.OnPlayerRegistered -= _this.OnPlayerRegistered;
-                    oldClient.OnPlayerJoined -= _this.OnPlayerJoined;
-                    oldClient.OnPlayerLeft -= _this.OnPlayerLeft;
-
-                    // TODO: unregister old GameController+Bot from old client events
-                }
-                // Set new client
-                IClient newClient = args.NewValue as IClient;
-                _this.Client = newClient;
-                _this.Inventory.Client = newClient;
-                //_this.InGameMessages.Client = newClient;
-                _this.NextTetrimino.Client = newClient;
-                //_this.GameInfo.Client = newClient;
-
-                // GameInfo and InGameChat are MVVM compliant
-                _this.PlayFieldViewModel.Client = newClient;
-                
-                // Add new handlers
-                if (newClient != null)
-                {
-                    newClient.OnPlayerRegistered += _this.OnPlayerRegistered;
-                    newClient.OnPlayerJoined += _this.OnPlayerJoined;
-                    newClient.OnPlayerLeft += _this.OnPlayerLeft;
-
-                    _this._controller = new GameController.GameController(newClient);
-                    _this._bot = new PierreDellacherieOnePieceBot(newClient, _this._controller);
-                }
-            }
         }
 
         #region IClient events handler
@@ -87,7 +70,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 _playerId = playerId;
                 ExecuteOnUIThread.Invoke(() =>
                 {
-                    PlayerGrid.Client = Client;
+                    PlayerGrid.Client = PlayFieldViewModel.Client;
                 });
             }
             else
@@ -125,7 +108,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 {
                     ExecuteOnUIThread.Invoke(() =>
                     {
-                        grid.Client = Client;
+                        grid.Client = PlayFieldViewModel.Client;
                     });
                     grid.PlayerId = playerId;
                     grid.PlayerName = playerName;
@@ -143,11 +126,11 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         {
             if (e.Key == Key.S)
             {
-                Client.StartGame();
+                PlayFieldViewModel.Client.StartGame();
             }
             else if (e.Key == Key.T)
             {
-                Client.StopGame();
+                PlayFieldViewModel.Client.StopGame();
             }
             else if (e.Key == Key.A && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift) )
             {

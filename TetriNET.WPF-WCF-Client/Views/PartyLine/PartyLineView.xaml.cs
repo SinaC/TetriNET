@@ -10,7 +10,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PartyLine
         public PartyLineView()
         {
             InitializeComponent();
-
         }
     }
 }
