@@ -19,7 +19,7 @@ Client: add a server state: GameStarted when receiving OnGameStarted and Waiting
 	Pause and Stop are accessible if server state is GameStarted and we're ServerMaster
 
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
-WPF Client: MVVM   --> GameView started: PlayerGrid, Inventory, OpponentGrid, NextTetrimino not yet converted + selected tab
+WPF Client: MVVM   --> PlayFieldView started: PlayerGrid, Inventory, OpponentGrid, NextTetrimino not yet converted
 WPF Client: save win list locally if server master
 
 wcf

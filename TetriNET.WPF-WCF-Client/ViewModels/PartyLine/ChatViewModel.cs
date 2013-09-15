@@ -99,6 +99,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             oldClient.OnPlayerJoined -= OnPlayerJoined;
             oldClient.OnPlayerLeft -= OnPlayerLeft;
             oldClient.OnConnectionLost -= OnConnectionLost;
+            oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
@@ -116,10 +117,18 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             newClient.OnPlayerJoined += OnPlayerJoined;
             newClient.OnPlayerLeft += OnPlayerLeft;
             newClient.OnConnectionLost += OnConnectionLost;
+            newClient.OnPlayerUnregistered += OnPlayerUnregistered;
         }
         #endregion
 
         #region IClient events handler
+
+        private void OnPlayerUnregistered()
+        {
+            AddEntry("*** You've unregistered successfully", ChatColor.Green);
+            IsRegistered = true;
+        }
+
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
             string msg;

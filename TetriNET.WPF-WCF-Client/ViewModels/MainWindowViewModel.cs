@@ -25,6 +25,22 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         public ConnectionViewModel ConnectionViewModel { get; set; }
         public PlayFieldViewModel PlayFieldViewModel { get; set; }
 
+        private int _activeTabItemIndex;
+        public int ActiveTabItemIndex {
+            get
+            {
+                return _activeTabItemIndex;
+            }
+            set
+            {
+                if (_activeTabItemIndex != value)
+                {
+                    _activeTabItemIndex = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public MainWindowViewModel()
         {
             //
@@ -65,6 +81,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnPlayerRegistered -= OnPlayerRegistered;
+            oldClient.OnPlayerUnregistered -= OnPlayerUnregisted;
             oldClient.OnGameStarted -= OnGameStarted;
             oldClient.OnGameFinished -= OnGameFinished;
             oldClient.OnGameOver -= OnGameOver;
@@ -74,6 +91,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         public override void SubscribeToClientEvents(IClient newClient)
         {
             newClient.OnPlayerRegistered += OnPlayerRegistered;
+            newClient.OnPlayerUnregistered += OnPlayerUnregisted;
             newClient.OnGameStarted += OnGameStarted;
             newClient.OnGameFinished += OnGameFinished;
             newClient.OnGameOver += OnGameOver;
@@ -95,55 +113,45 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         #region IClient events handler
         private void OnPlayerRegistered(bool succeeded, int playerId)
         {
-            //if (succeeded && Options.OptionsSingleton.Instance.AutomaticallySwitchToPartyLineOnRegistered)
-            //    ExecuteOnUIThread.Invoke(() =>
-            //    {
-            //        if (TabConnect.IsSelected)
-            //            TabPartyLine.IsSelected = true;
-            //    });
-            //if (succeeded && _client.IsServerMaster)
-            //    _client.ChangeOptions(Options.OptionsSingleton.Instance.ServerOptions);
+            if (succeeded && Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPartyLineOnRegistered)
+                if (ActiveTabItemIndex == 0) // Connect
+                    ActiveTabItemIndex = 3; // Party line
+            if (succeeded && Client.IsServerMaster)
+                Client.ChangeOptions(Models.Options.OptionsSingleton.Instance.ServerOptions);
+        }
+
+        private void OnPlayerUnregisted()
+        {
+            ActiveTabItemIndex = 0; // Connect
         }
 
         private void OnGameStarted()
         {
-            //if (Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
-            //    ExecuteOnUIThread.Invoke(() =>
-            //    {
-            //        TabGameView.IsSelected = true;
-            //    });
+            if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
+                ActiveTabItemIndex = 4; // Play fields
         }
 
         private void OnGameFinished()
         {
-            //if (Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
-            //{
-            //    ExecuteOnUIThread.Invoke(() =>
-            //    {
-            //        if (TabGameView.IsSelected)
-            //            TabPartyLine.IsSelected = true;
-            //    });
-            //}
+            if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
+            {
+                if (ActiveTabItemIndex == 4) // Play fields
+                    ActiveTabItemIndex = 3; // Party line
+            }
         }
 
         private void OnGameOver()
         {
-            //if (Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
-            //{
-            //    ExecuteOnUIThread.Invoke(() =>
-            //    {
-            //        if (TabGameView.IsSelected)
-            //            TabPartyLine.IsSelected = true;
-            //    });
-            //}
+            if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
+            {
+                if (ActiveTabItemIndex == 4) // Play fields
+                    ActiveTabItemIndex = 3; // Party line
+            }
         }
 
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
-            //ExecuteOnUIThread.Invoke(() =>
-            //{
-            //    TabConnect.IsSelected = true;
-            //});
+            ActiveTabItemIndex = 0; // Connect
         }
         #endregion
     }

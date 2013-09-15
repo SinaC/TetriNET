@@ -84,6 +84,7 @@
     <Compile Include="ViewModels\Connection\ConnectionControlViewModel.cs" />
     <Compile Include="ViewModels\Connection\ConnectionViewModel.cs" />
     <Compile Include="ViewModels\Connection\ServerListViewModel.cs" />
+    <Compile Include="ViewModels\PlayField\PlayerViewModel.cs" />
     <Compile Include="ViewModels\PlayField\GameInfoViewModel.cs" />
     <Compile Include="ViewModels\PlayField\PlayFieldViewModel.cs" />
     <Compile Include="ViewModels\PlayField\InGameChatViewModel.cs" />

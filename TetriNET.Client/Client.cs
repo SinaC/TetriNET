@@ -293,6 +293,7 @@ namespace TetriNET.Client
             States previousState = State;
             State = States.Created;
             IsServerMaster = false;
+            _clientPlayerId = -1;
             Disconnect();
             if (ClientOnConnectionLost != null)
             {
@@ -935,7 +936,10 @@ namespace TetriNET.Client
             }
         }
 
-        public bool IsRegistered { get { return State != States.Created && State != States.Registering; }}
+        public bool IsRegistered
+        {
+            get { return State != States.Created && State != States.Registering; }
+        }
 
         public List<Specials> Inventory
         {
@@ -993,6 +997,7 @@ namespace TetriNET.Client
 
             State = States.Created;
             IsServerMaster = false;
+            _clientPlayerId = -1;
 
             _proxy.OnConnectionLost -= ConnectionLostHandler;
             _proxy.Disconnect();
@@ -1244,6 +1249,7 @@ namespace TetriNET.Client
         {
             State = States.Created;
             IsServerMaster = false;
+            _clientPlayerId = -1;
 
             _proxy.UnregisterPlayer(this);
 

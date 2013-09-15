@@ -22,7 +22,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 IClient oldClient = _playFieldViewModel == null ? null : _playFieldViewModel.Client;
                 if (oldClient != null)
                 {
-                    oldClient.OnPlayerRegistered -= OnPlayerRegistered;
                     oldClient.OnPlayerJoined -= OnPlayerJoined;
                     oldClient.OnPlayerLeft -= OnPlayerLeft;
 
@@ -34,11 +33,14 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 IClient newClient = value == null ? null : value.Client;
                 Inventory.Client = newClient;
                 NextTetrimino.Client = newClient;
+                PlayerGrid.Client = newClient;
                 // PlayerGrid and OpponentGrid will be set later
+                // Set ViewModel as DataContext
+                GameInfo.DataContext = value == null ? null : value.GameInfoViewModel; // set DataContext in xaml set it to null
+                InGameMessages.DataContext = value == null ? null : value.InGameChatViewModel;
                 // Add new handlers
                 if (newClient != null)
                 {
-                    newClient.OnPlayerRegistered += OnPlayerRegistered;
                     newClient.OnPlayerJoined += OnPlayerJoined;
                     newClient.OnPlayerLeft += OnPlayerLeft;
 
@@ -63,27 +65,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         }
 
         #region IClient events handler
-        private void OnPlayerRegistered(bool succeeded, int playerId)
-        {
-            if (succeeded)
-            {
-                _playerId = playerId;
-                ExecuteOnUIThread.Invoke(() =>
-                {
-                    PlayerGrid.Client = PlayFieldViewModel.Client;
-                });
-            }
-            else
-            {
-                _playerId = -1;
-                ExecuteOnUIThread.Invoke(() =>
-                {
-                    PlayerGrid.Client = null;
-                });
-                PlayerGrid.PlayerId = -1;
-                PlayerGrid.PlayerName = "Not registered";
-            }
-        }
 
         private void OnPlayerLeft(int playerId, string playerName, LeaveReasons reason)
         {

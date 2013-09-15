@@ -34,21 +34,15 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             set { SetValue(ClientProperty, value); }
         }
 
-        private bool _isPlayerIdVisible;
         public bool IsPlayerIdVisible
         {
-            get { return _isPlayerIdVisible; }
-            set
-            {
-                if (_isPlayerIdVisible != value)
-                {
-                    _isPlayerIdVisible = value;
-                    OnPropertyChanged();
-                }
-            }
+            get { return PlayerId != -1; }
         }
 
-        public int DisplayPlayerId { get { return _playerId + 1; } }
+        public int DisplayPlayerId
+        {
+            get { return PlayerId + 1; }
+        }
 
         private int _playerId;
         public int PlayerId {
@@ -60,6 +54,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     _playerId = value;
                     OnPropertyChanged();
                     OnPropertyChanged("DisplayPlayerId");
+                    OnPropertyChanged("IsPlayerIdVisible");
                 }
             }
         }
@@ -86,8 +81,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
             PlayerId = -1;
             PlayerName = "Not playing";
-            IsPlayerIdVisible = false;
-
+            
             _textures = Textures.Textures.TexturesSingleton.Instance;
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
@@ -161,6 +155,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 IClient oldClient = args.OldValue as IClient;
                 if (oldClient != null)
                 {
+                    oldClient.OnPlayerUnregistered -= _this.OnPlayerUnregistered;
                     oldClient.OnConnectionLost -= _this.OnConnectionLost;
                     oldClient.OnGameStarted -= _this.OnGameStarted;
                     oldClient.OnRedrawBoard -= _this.OnRedrawBoard;
@@ -171,8 +166,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 // Add new handlers
                 if (newClient != null)
                 {
-                    _this.IsPlayerIdVisible = true;
-
+                    newClient.OnPlayerUnregistered += _this.OnPlayerUnregistered;
                     newClient.OnConnectionLost += _this.OnConnectionLost;
                     newClient.OnGameStarted += _this.OnGameStarted;
                     newClient.OnRedrawBoard += _this.OnRedrawBoard;
@@ -181,7 +175,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 {
                     _this.PlayerId = -1;
                     _this.PlayerName = "Not playing";
-                    _this.IsPlayerIdVisible = false;
                 }
             }
         }
@@ -202,8 +195,14 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         {
             PlayerId = -1;
             PlayerName = "Not playing";
-            IsPlayerIdVisible = false;
         }
+
+        private void OnPlayerUnregistered()
+        {
+            PlayerId = -1;
+            PlayerName = "Not playing";
+        }
+
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;

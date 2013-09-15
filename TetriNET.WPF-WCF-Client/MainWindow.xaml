@@ -10,6 +10,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:playField="clr-namespace:TetriNET.WPF_WCF_Client.Views.PlayField"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers"
         mc:Ignorable="d"
         UseLayoutRounding="True"
         MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
@@ -20,11 +22,35 @@
         WindowStyle="None"
         AllowsTransparency="True" 
         Background="Transparent" 
-	    ResizeMode="NoResize"
+	    ResizeMode="NoResize"        
     -->
+    <!--<Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Close"
+                        Executed="CloseCommandHandler"/>
+    </Window.CommandBindings>-->
     <Grid>
-        <TabControl x:Name="TabControl">
-            <TabItem x:Name="TabConnect" Header="Connect">
+        <TabControl SelectedIndex="{Binding ActiveTabItemIndex}">
+            <!--
+            <TabControl.Template>
+                <ControlTemplate TargetType="TabControl">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Border BorderThickness="0,0,1,1" BorderBrush="#D0CEBF" Grid.Row="1">
+                            <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter ContentSource="SelectedContent"/>
+                                </Border>
+                            </Border>
+                        </Border>
+                        <DockPanel IsItemsHost="True" LastChildFill="False" Margin="2,2,2,0" />
+                    </Grid>
+                </ControlTemplate>
+            </TabControl.Template>
+            -->
+            <TabItem Header="Connect">
                 <connection:ConnectionView DataContext="{Binding ConnectionViewModel}"/>
                 <!-- TEST CODE -->
                 <!--
@@ -118,7 +144,7 @@
                 </StackPanel>
                 -->
             </TabItem>
-            <TabItem x:Name="TabOptions" Header="Options">
+            <TabItem Header="Options">
                 <options:OptionsView DataContext="{Binding Path=OptionsViewModel}"/>
                 <!-- TEST CODE -->
                 <!--
@@ -139,26 +165,43 @@
                 </StackPanel>
                 -->
             </TabItem>
-            <TabItem x:Name="TabWinList" Header="Win list">
+            <TabItem Header="Win list">
                 <winList:WinListView DataContext="{Binding Path=WinListViewModel}" />
             </TabItem>
-            <TabItem x:Name="TabPartyLine" Header="Party line">
+            <TabItem Header="Party line">
                 <partyLine:PartyLineView DataContext="{Binding Path=PartyLineViewModel}"/>
             </TabItem>
-            <TabItem x:Name="TabGameView" Header="Play fields">
+            <TabItem Header="Play fields">
                 <playField:PlayFieldView x:Name="PlayFieldView"/>
             </TabItem>
-            <TabItem x:Name="TabStatistics" Header="Client statistics">
+            <TabItem Header="Client statistics">
                 <statistics:ClientStatisticsView DataContext="{Binding Path=ClientStatisticsViewModel}"/>
             </TabItem>
-
-            <!--<TabItem>
+<!--
+            <TabItem DockPanel.Dock="Right" Header="X">
                 <TabItem.Template>
                     <ControlTemplate>
-                        <Button Content="X"/>
+                        <Button Content="X" Command="ApplicationCommands.Close" BorderThickness="1">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                                <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                                                <GradientStop Color="#FFEBEBEB" Offset="0.5"/>
+                                                <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+                                                <GradientStop Color="#FFCDCDCD" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="BorderBrush" Value="#FF8C8E94"/>
+                                </Style>
+                            </Button.Style>
+                        </Button>
                     </ControlTemplate>
                 </TabItem.Template>
-            </TabItem>-->
+            </TabItem>
+-->
         </TabControl>
     </Grid>
 </Window>

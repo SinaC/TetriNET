@@ -36,21 +36,20 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             set { SetValue(ClientProperty, value); }
         }
 
-        private bool _isPlayerIdVisible;
         public bool IsPlayerIdVisible
         {
-            get { return _isPlayerIdVisible; }
-            set
-            {
-                if (_isPlayerIdVisible != value)
-                {
-                    _isPlayerIdVisible = value;
-                    OnPropertyChanged();
-                }
-            }
+            get { return PlayerId != -1; }
         }
 
-        public int DisplayPlayerId { get { return _playerId + 1; } }
+        public int DisplayPlayerId
+        {
+            get { return PlayerId + 1; }
+        }
+
+        public string PlayerName
+        {
+            get { return Client == null || !Client.IsRegistered ? "Not registered" : Client.Name; }
+        }
 
         private int _playerId;
         public int PlayerId
@@ -63,20 +62,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     _playerId = value;
                     OnPropertyChanged();
                     OnPropertyChanged("DisplayPlayerId");
-                }
-            }
-        }
-
-        private string _playerName;
-        public string PlayerName
-        {
-            get { return _playerName; }
-            set
-            {
-                if (_playerName != value)
-                {
-                    _playerName = value;
-                    OnPropertyChanged();
+                    OnPropertyChanged("IsPlayerIdVisible");
+                    OnPropertyChanged("PlayerName");
                 }
             }
         }
@@ -94,8 +81,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             _isHintActivated = false;
 
             PlayerId = -1;
-            PlayerName = "Not registered";
-            IsPlayerIdVisible = false;
 
             _textures = Textures.Textures.TexturesSingleton.Instance;
             if (!DesignerProperties.GetIsInDesignMode(this))
@@ -256,6 +241,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 IClient oldClient = args.OldValue as IClient;
                 if (oldClient != null)
                 {
+                    oldClient.OnPlayerRegistered -= _this.OnPlayerRegistered;
+                    oldClient.OnPlayerUnregistered -= _this.OnPlayerUnregistered;
                     oldClient.OnConnectionLost -= _this.OnConnectionLost;
                     oldClient.OnGameStarted -= _this.OnGameStarted;
                     oldClient.OnRoundStarted -= _this.OnRoundStarted;
@@ -268,21 +255,13 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 // Add new handlers
                 if (newClient != null)
                 {
-                    _this.PlayerName = newClient.Name;
-                    _this.PlayerId = newClient.PlayerId;
-                    _this.IsPlayerIdVisible = true;
-
+                    newClient.OnPlayerRegistered += _this.OnPlayerRegistered;
+                    newClient.OnPlayerUnregistered += _this.OnPlayerUnregistered;
                     newClient.OnConnectionLost += _this.OnConnectionLost;
                     newClient.OnGameStarted += _this.OnGameStarted;
                     newClient.OnRoundStarted += _this.OnRoundStarted;
                     newClient.OnTetriminoMoved += _this.OnTetriminoMoved;
                     newClient.OnRedraw += _this.OnRedraw;
-                }
-                else
-                {
-                    _this.PlayerName = "Not registered";
-                    _this.PlayerId = -1;
-                    _this.IsPlayerIdVisible = false;
                 }
             }
         }
@@ -318,9 +297,21 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
             PlayerId = -1;
-            PlayerName = "Not registered";
-            IsPlayerIdVisible = false;
         }
+
+        private void OnPlayerRegistered(bool succeeded, int playerId)
+        {
+            if (succeeded)
+            {
+                PlayerId = playerId;
+            }
+        }
+
+        private void OnPlayerUnregistered()
+        {
+            PlayerId = -1;
+        }
+
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
