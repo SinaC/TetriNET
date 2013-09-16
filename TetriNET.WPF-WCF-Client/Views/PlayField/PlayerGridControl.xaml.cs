@@ -85,7 +85,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             _textures = Textures.Textures.TexturesSingleton.Instance;
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                Canvas.Background = _textures.BigBackground;
+                Canvas.Background = _textures.GetBigBackground();
             }
 
             for(int y = 0; y < RowsCount; y++)
@@ -174,7 +174,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             if (currentTetrimino == null)
                 return;
             Tetriminos cellTetrimino = Client.CurrentTetrimino.Value;
-            Brush brush = _textures.BigTetriminosBrushes[cellTetrimino];
+            Brush brush = _textures.GetBigTetrimino(cellTetrimino);
             DrawTetrimino(board, currentTetrimino, brush);
         }
 
@@ -203,9 +203,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                                 Tetriminos color = CellHelper.GetColor(cellValue);
 
                                 if (special == Specials.Invalid)
-                                    uiPart.Fill = _textures.BigTetriminosBrushes[color];
+                                    uiPart.Fill = _textures.GetBigTetrimino(color);
                                 else
-                                    uiPart.Fill = _textures.BigSpecialsBrushes[special];
+                                    uiPart.Fill = _textures.GetBigSpecial(special);
                             }
                         }
                     }

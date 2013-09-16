@@ -81,6 +81,7 @@
     <Compile Include="Converters\ChatColorBrushConverter.cs" />
     <Compile Include="Helpers\EventToCommand.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
+    <Compile Include="Textures\ITextureManager.cs" />
     <Compile Include="ViewModels\Connection\ConnectionControlViewModel.cs" />
     <Compile Include="ViewModels\Connection\ConnectionViewModel.cs" />
     <Compile Include="ViewModels\Connection\ServerListViewModel.cs" />

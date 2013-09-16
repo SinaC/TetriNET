@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using TetriNET.Client.DefaultBoardAndTetriminos;
 using TetriNET.Common.GameDatas;
@@ -76,7 +77,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted = Settings.Default.AutomaticallySwitchToPlayFieldOnGameStarted;
 
             // Get textures
-            Textures.Textures.TexturesSingleton.Instance.ReadFromFile(ConfigurationManager.AppSettings["texture"]);
+            string textureFilename = ConfigurationManager.AppSettings["texture"];
+            FileAttributes attr = File.GetAttributes(textureFilename);
+            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                Textures.Textures.TexturesSingleton.Instance.ReadFromPath(textureFilename);
+            else
+                Textures.Textures.TexturesSingleton.Instance.ReadFromFile(textureFilename);
         }
 
         #region ViewModelBase

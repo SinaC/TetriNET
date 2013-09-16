@@ -85,7 +85,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 int cellX = x;
 
                 Rectangle uiPart = GetControl(cellX, cellY);
-                uiPart.Fill = _textures.BigTetriminosBrushes[cellTetrimino];
+                uiPart.Fill = _textures.GetBigTetrimino(cellTetrimino);
             }
         }
 
