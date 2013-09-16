@@ -24,6 +24,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 {
                     oldClient.OnPlayerJoined -= OnPlayerJoined;
                     oldClient.OnPlayerLeft -= OnPlayerLeft;
+                    oldClient.OnPlayerRegistered -= OnPlayerRegistered;
 
                     // TODO: unregister old GameController+Bot from old client events
                 }
@@ -43,6 +44,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 {
                     newClient.OnPlayerJoined += OnPlayerJoined;
                     newClient.OnPlayerLeft += OnPlayerLeft;
+                    newClient.OnPlayerRegistered += OnPlayerRegistered;
 
                     // And create controller + bot
                     _controller = new GameController.GameController(newClient);
@@ -100,6 +102,15 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 }
             }
         }
+
+        private void OnPlayerRegistered(bool succeeded, int playerId)
+        {
+            if (succeeded)
+                _playerId = playerId;
+            else
+                _playerId = -1;
+        }
+
         #endregion
 
         #region UI events handler
