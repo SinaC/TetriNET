@@ -54,6 +54,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             ConnectionViewModel = new ConnectionViewModel();
             PlayFieldViewModel = new PlayFieldViewModel();
 
+            ClientChanged += OnClientChanged;
+
             // Initialize Log
             string logFilename = "WPF_" + Guid.NewGuid().ToString().Substring(0, 5) + ".log";
             Log.Initialize(ConfigurationManager.AppSettings["logpath"], logFilename);
@@ -78,6 +80,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         }
 
         #region ViewModelBase
+        private void OnClientChanged(IClient oldClient, IClient newClient)
+        {
+            WinListViewModel.Client = newClient;
+            ClientStatisticsViewModel.Client = newClient;
+            OptionsViewModel.Client = newClient;
+            PartyLineViewModel.Client = newClient;
+            ConnectionViewModel.Client = newClient;
+            PlayFieldViewModel.Client = newClient;
+        }
+
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnPlayerRegistered -= OnPlayerRegistered;
@@ -96,17 +108,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             newClient.OnGameFinished += OnGameFinished;
             newClient.OnGameOver += OnGameOver;
             newClient.OnConnectionLost += OnConnectionLost;
-        }
-
-        public override void OnClientAssigned(IClient newClient)
-        {
-            // TODO: use reflection to set Client on each ViewModel
-            WinListViewModel.Client = newClient;
-            ClientStatisticsViewModel.Client = newClient;
-            OptionsViewModel.Client = newClient;
-            PartyLineViewModel.Client = newClient;
-            ConnectionViewModel.Client = newClient;
-            PlayFieldViewModel.Client = newClient;
         }
         #endregion
 

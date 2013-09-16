@@ -12,6 +12,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             ConnectionControlViewModel = new ConnectionControlViewModel();
             ServerListViewModel = new ServerListViewModel();
             ServerListViewModel.OnServerSelected += OnServerSelected;
+
+            ClientChanged += OnClientChanged;
         }
 
         private void OnServerSelected(object sender, string serverAddress)
@@ -20,6 +22,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         }
 
         #region ViewModelBase
+        private void OnClientChanged(IClient oldClient, IClient newClient)
+        {
+            ConnectionControlViewModel.Client = newClient;
+        }
+        
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             // NOP
@@ -29,12 +36,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         {
             // NOP
         }
-
-        public override void OnClientAssigned(IClient newClient)
-        {
-            ConnectionControlViewModel.Client = newClient;
-        }
-
         #endregion
     }
 }

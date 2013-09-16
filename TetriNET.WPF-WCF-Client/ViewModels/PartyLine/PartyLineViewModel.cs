@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
@@ -46,6 +47,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
             StartStopCommand = new RelayCommand(StartStop);
             PauseResumeCommand = new RelayCommand(PauseResume);
+
+            ClientChanged += OnClientChanged;
         }
 
         private void UpdateEnabilityAndLabel()
@@ -75,6 +78,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         }
 
         #region ViewModelBase
+        private void OnClientChanged(IClient oldClient, IClient newClient)
+        {
+            ChatViewModel.Client = newClient;
+            PlayersManagerViewModel.Client = newClient;
+        }
+
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnConnectionLost -= OnConnectionLost;
@@ -97,12 +106,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             newClient.OnGameFinished += OnGameFinished;
             newClient.OnGamePaused += OnGamePaused;
             newClient.OnGameResumed += OnGameResumed;
-        }
-
-        public override void OnClientAssigned(IClient newClient)
-        {
-            ChatViewModel.Client = newClient;
-            PlayersManagerViewModel.Client = newClient;
         }
         #endregion
 

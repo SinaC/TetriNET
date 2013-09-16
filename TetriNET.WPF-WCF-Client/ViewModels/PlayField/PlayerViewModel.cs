@@ -63,6 +63,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         #endregion
 
         #region IClient events handler
+
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
             PlayerId = -1;

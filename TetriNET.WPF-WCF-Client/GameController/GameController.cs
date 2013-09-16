@@ -45,7 +45,13 @@ namespace TetriNET.WPF_WCF_Client.GameController
             _timers.Add(Commands.Left, CreateTimer(100, LeftTickHandler));
             _timers.Add(Commands.Right, CreateTimer(100, RightTickHandler));
         }
- 
+
+        public void UnsubscribeFromClientEvents()
+        {
+            _client.OnGamePaused -= OnGamePaused;
+            _client.OnGameFinished -= OnGameFinished;
+        }
+
         public void KeyDown(Commands cmd)
         {
             if (_client.IsPlaying)

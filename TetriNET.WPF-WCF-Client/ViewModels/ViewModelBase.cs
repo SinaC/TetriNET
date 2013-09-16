@@ -6,6 +6,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
+        public delegate void ClientChangedEventHandler(IClient oldClient, IClient newClient);
+
+        public event ClientChangedEventHandler ClientChanged;
+
         private IClient _client;
         public IClient Client {
             get
@@ -18,8 +22,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
                 {
                     if (_client != null)
                         UnsubscribeFromClientEvents(_client);
+                    IClient oldValue = _client;
                     _client = value;
-                    OnClientAssigned(_client);
+                    if (ClientChanged != null)
+                        ClientChanged(oldValue, _client);
                     if (_client != null)
                         SubscribeToClientEvents(_client);
                 }
@@ -28,10 +34,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
         public abstract void UnsubscribeFromClientEvents(IClient oldClient);
         public abstract void SubscribeToClientEvents(IClient newClient);
-        public virtual void OnClientAssigned(IClient newClient)
-        {
-            // NOP
-        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
