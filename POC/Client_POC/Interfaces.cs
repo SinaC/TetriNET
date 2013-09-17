@@ -1,18 +1,18 @@
-﻿using System;
-using TetriNET.Common.Contracts;
+﻿//using System;
+//using TetriNET.Common.Contracts;
 
-namespace POC.Client_POC
-{
-    public delegate void ConnectionLostHandler();
+//namespace POC.Client_POC
+//{
+//    public delegate void ConnectionLostHandler();
 
-    public interface IProxy : ITetriNET
-    {
-        event ConnectionLostHandler OnConnectionLost;
+//    public interface IProxy : ITetriNET
+//    {
+//        event ConnectionLostHandler OnConnectionLost;
 
-        DateTime LastServerAction { get; }
-        int TimeoutCount { get; }
+//        DateTime LastServerAction { get; }
+//        int TimeoutCount { get; }
 
-        void ResetTimeout();
-        void SetTimeout();
-    }
-}
+//        void ResetTimeout();
+//        void SetTimeout();
+//    }
+//}

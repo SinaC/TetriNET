@@ -39,11 +39,22 @@ namespace TetriNET.WPF_WCF_Client.GameController
 
             client.OnGamePaused += OnGamePaused;
             client.OnGameFinished += OnGameFinished;
+        }
 
-            _timers.Add(Commands.Drop, CreateTimer(100, DropTickHandler));
-            _timers.Add(Commands.Down, CreateTimer(50, DownTickHandler));
-            _timers.Add(Commands.Left, CreateTimer(100, LeftTickHandler));
-            _timers.Add(Commands.Right, CreateTimer(100, RightTickHandler));
+        public void SubscribeToTickHandler()
+        {
+            AddTimer(Commands.Drop, 100, DropTickHandler);
+            AddTimer(Commands.Down, 50, DownTickHandler);
+            AddTimer(Commands.Left, 100, LeftTickHandler);
+            AddTimer(Commands.Right, 100, RightTickHandler);
+        }
+
+        public void UnsubscribeToTickHandler()
+        {
+            RemoveTimer(Commands.Drop);
+            RemoveTimer(Commands.Down);
+            RemoveTimer(Commands.Left);
+            RemoveTimer(Commands.Right);
         }
 
         public void UnsubscribeFromClientEvents()
@@ -148,11 +159,24 @@ namespace TetriNET.WPF_WCF_Client.GameController
             _client.MoveRight();
         }
 
-        private static DispatcherTimer CreateTimer(double interval, EventHandler handler)
+        private void AddTimer(Commands cmd, double interval, EventHandler handler)
         {
-            DispatcherTimer timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval), DispatcherPriority.Normal, handler, Dispatcher.CurrentDispatcher);
-            timer.Stop(); // Dunno why but these timer are started by default
-            return timer;
+            if (!_timers.ContainsKey(cmd))
+            {
+                DispatcherTimer timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval), DispatcherPriority.Normal, handler, Dispatcher.CurrentDispatcher);
+                timer.Stop(); // Dunno why but these timer are started by default
+                _timers.Add(cmd, timer);
+            }
+        }
+
+        private void RemoveTimer(Commands cmd)
+        {
+            DispatcherTimer timer;
+            if (_timers.TryGetValue(cmd, out timer))
+            {
+                timer.Stop();
+                _timers.Remove(cmd);
+            }
         }
     }
 }

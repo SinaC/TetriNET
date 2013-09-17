@@ -1,5 +1,5 @@
 ﻿using System;
-using POC.Client_POC;
+//using POC.Client_POC;
 
 namespace POC
 {
@@ -7,28 +7,28 @@ namespace POC
     {
         private static void Main(string[] args)
         {
-            Client client = new Client(callback => new WCFProxy(@"net.tcp://localhost:8765/TetriNET", callback));
-            client.Name = "joel-wpf-client";
-            client._proxy.RegisterPlayer(client, client.Name);
+            //Client client = new Client(callback => new WCFProxy(@"net.tcp://localhost:8765/TetriNET", callback));
+            //client.Name = "joel-wpf-client";
+            //client._proxy.RegisterPlayer(client, client.Name);
 
-            bool stopped = false;
-            while (!stopped)
-            {
-                if (Console.KeyAvailable)
-                {
-                    ConsoleKeyInfo cki = Console.ReadKey(true);
-                    switch (cki.Key)
-                    {
-                        case ConsoleKey.X:
-                            stopped = true;
-                            break;
-                    }
-                }
-                else
-                {
-                    System.Threading.Thread.Sleep(100);
-                }
-            }
+            //bool stopped = false;
+            //while (!stopped)
+            //{
+            //    if (Console.KeyAvailable)
+            //    {
+            //        ConsoleKeyInfo cki = Console.ReadKey(true);
+            //        switch (cki.Key)
+            //        {
+            //            case ConsoleKey.X:
+            //                stopped = true;
+            //                break;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        System.Threading.Thread.Sleep(100);
+            //    }
+            //}
 
             //TCPServer server = new TCPServer
             //    {

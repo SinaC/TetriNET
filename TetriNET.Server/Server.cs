@@ -662,9 +662,10 @@ namespace TetriNET.Server
             int indexToSend = player.TetriminoIndex + 2; // indices 0, 1 and 2 have been sent when starting game
             Tetriminos nextTetriminoToSend = _tetriminoQueue[indexToSend];
 
-            // Send grid to other players
+            // Send grid to other playing players
             int playerId = _playerManager.GetId(player);
-            foreach (IPlayer p in _playerManager.Players.Where(p => p != player && p.State == PlayerStates.Playing))
+            //foreach (IPlayer p in _playerManager.Players.Where(p => p != player && p.State == PlayerStates.Playing))
+            foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
                 p.OnGridModified(playerId, grid);
 
             //Logger.Log.WriteLine("Send next tetrimino {0} {1} to {2}", nextTetriminoToSend, indexToSend, player.Name);
@@ -686,13 +687,16 @@ namespace TetriNET.Server
             // If special is Switch, call OnGridModified with switched grids
             if (special == Specials.SwitchFields)
             {
-                // Send grid to player and target
+                // Send switched grid to player and target
                 target.OnGridModified(targetId, player.Grid);
                 player.OnGridModified(playerId, target.Grid);
                 // Switch locally
                 byte[] tmp = target.Grid;
                 target.Grid = player.Grid;
                 player.Grid = tmp;
+                // Send new grid to player and target
+                target.OnGridModified(playerId, player.Grid);
+                player.OnGridModified(targetId, target.Grid);
             }
             // Inform about special use
             foreach (IPlayer p in _playerManager.Players)

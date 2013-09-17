@@ -105,14 +105,16 @@ namespace TetriNET.WPF_WCF_Client.Textures
 
         public void ReadFromFile(string filename)
         {
+            BigTetriminosBrushes = new Dictionary<Tetriminos, Brush>();
+            BigSpecialsBrushes = new Dictionary<Specials, Brush>();
+            SmallTetriminosBrushes = new Dictionary<Tetriminos, Brush>();
+            SmallSpecialsBrushes = new Dictionary<Specials, Brush>();
+            
             try
             {
                 BitmapImage image = new BitmapImage(new Uri(filename, UriKind.RelativeOrAbsolute));
 
                 #region Big brushes
-
-                BigTetriminosBrushes = new Dictionary<Tetriminos, Brush>();
-                BigSpecialsBrushes = new Dictionary<Specials, Brush>();
 
                 // Background
                 BigBackground = new ImageBrush(image)
@@ -224,9 +226,6 @@ namespace TetriNET.WPF_WCF_Client.Textures
                 #endregion
 
                 #region Small brushes
-
-                SmallTetriminosBrushes = new Dictionary<Tetriminos, Brush>();
-                SmallSpecialsBrushes = new Dictionary<Specials, Brush>();
 
                 SmallBackground = new ImageBrush(image)
                 {

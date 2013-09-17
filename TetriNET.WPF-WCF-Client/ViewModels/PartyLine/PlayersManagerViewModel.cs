@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
@@ -8,7 +10,7 @@ using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 {
-    public class PlayerData
+    public class PlayerData : INotifyPropertyChanged
     {
         public int RealPlayerId { get; set; }
 
@@ -18,7 +20,27 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         }
 
         public string PlayerName { get; set; }
-        public bool IsServerMaster { get; set; }
+
+        private bool _isServerMaster;
+        public bool IsServerMaster
+        {
+            get { return _isServerMaster; }
+            set
+            {
+                if (_isServerMaster != value)
+                {
+                    _isServerMaster = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     public class PlayersManagerViewModel : ViewModelBase

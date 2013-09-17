@@ -4,7 +4,6 @@ using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.GameController;
-using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
 
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
@@ -26,7 +25,10 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     oldClient.OnPlayerLeft -= OnPlayerLeft;
                     oldClient.OnPlayerRegistered -= OnPlayerRegistered;
 
-                    // TODO: unregister old GameController+Bot from old client events
+                    if (_controller != null)
+                        _controller.UnsubscribeFromClientEvents();
+                    if (_bot != null)
+                        _bot.UnsubscribeFromClientEvents();
                 }
                 //
                 _playFieldViewModel = value;
@@ -35,7 +37,11 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 Inventory.Client = newClient;
                 NextTetrimino.Client = newClient;
                 PlayerGrid.Client = newClient;
-                // PlayerGrid and OpponentGrid will be set later
+                OpponentGrid1.Client = newClient;
+                OpponentGrid2.Client = newClient;
+                OpponentGrid3.Client = newClient;
+                OpponentGrid4.Client = newClient;
+                OpponentGrid5.Client = newClient;
                 // Set ViewModel as DataContext
                 GameInfo.DataContext = value == null ? null : value.GameInfoViewModel; // set DataContext in xaml set it to null
                 InGameMessages.DataContext = value == null ? null : value.InGameChatViewModel;
@@ -49,6 +55,11 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     // And create controller + bot
                     _controller = new GameController.GameController(newClient);
                     _bot = new PierreDellacherieOnePieceBot(newClient, _controller);
+                }
+                else
+                {
+                    _controller = null;
+                    _bot = null;
                 }
             }
         }
@@ -70,13 +81,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnPlayerLeft(int playerId, string playerName, LeaveReasons reason)
         {
-            if (playerId != _playerId)
+            OpponentGridControl grid = GetOpponentGrid(playerId);
+            if (grid != null)
             {
-                OpponentGridControl grid = GetOpponentGrid(playerId);
-                ExecuteOnUIThread.Invoke(() =>
-                {
-                    grid.Client = null;
-                });
                 grid.PlayerId = -1;
                 grid.PlayerName = "Not playing";
             }
@@ -84,22 +91,11 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnPlayerJoined(int playerId, string playerName)
         {
-            if (playerId != _playerId)
+            OpponentGridControl grid = GetOpponentGrid(playerId);
+            if (grid != null)
             {
-                OpponentGridControl grid = GetOpponentGrid(playerId);
-                if (grid.PlayerId == -1)
-                {
-                    ExecuteOnUIThread.Invoke(() =>
-                    {
-                        grid.Client = PlayFieldViewModel.Client;
-                    });
-                    grid.PlayerId = playerId;
-                    grid.PlayerName = playerName;
-                }
-                else
-                {
-                    Logger.Log.WriteLine(Logger.Log.LogLevels.Error, "Trying to reassign an opponent {0} {1} to grid {2}", playerId, playerName, grid.PlayerId);
-                }
+                grid.PlayerId = playerId;
+                grid.PlayerName = playerName;
             }
         }
 

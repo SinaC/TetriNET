@@ -54,6 +54,10 @@
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Logger\TetriNET.Logger.csproj">
+      <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
+      <Name>TetriNET.Logger</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

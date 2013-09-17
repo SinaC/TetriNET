@@ -668,8 +668,8 @@ namespace TetriNET.Client
 
             ResetTimeout();
 
-            if (State == States.Playing)
-            {
+            //if (State == States.Playing)
+            //{
                 PlayerData playerData = GetPlayer(playerId);
                 if (playerData != null)
                 {
@@ -685,7 +685,7 @@ namespace TetriNET.Client
                             ClientOnRedrawBoard(playerId, playerData.Board);
                     }
                 }
-            }
+            //}
         }
 
         public void OnServerMasterChanged(int playerId)
@@ -984,10 +984,18 @@ namespace TetriNET.Client
             if (_proxy != null)
                 return false; // should disconnect first
 
-            _proxy = createProxyFunc(this);
-            _proxy.OnConnectionLost += ConnectionLostHandler;
+            try
+            {
+                _proxy = createProxyFunc(this);
+                _proxy.OnConnectionLost += ConnectionLostHandler;
 
-            return true;
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Log.WriteLine(Log.LogLevels.Error, "Problem while creating proxy. Exception:{0}", ex.ToString());
+                return false;
+            }
         }
 
         public bool Disconnect()

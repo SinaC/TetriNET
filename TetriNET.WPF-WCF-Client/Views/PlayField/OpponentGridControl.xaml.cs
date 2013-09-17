@@ -187,7 +187,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnRedrawBoard(int playerId, IBoard board)
         {
-            if (playerId == PlayerId)
+            if (playerId == PlayerId && Models.Options.OptionsSingleton.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
                 ExecuteOnUIThread.Invoke(() => DrawGrid(board));
         }
 

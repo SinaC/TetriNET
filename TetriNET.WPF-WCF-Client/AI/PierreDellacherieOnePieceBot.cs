@@ -47,7 +47,6 @@ namespace TetriNET.WPF_WCF_Client.AI
             }
         }
 
-
         public PierreDellacherieOnePieceBot(IClient client, GameController.GameController controller)
         {
             _client = client;
@@ -66,6 +65,14 @@ namespace TetriNET.WPF_WCF_Client.AI
 
             SleepTime = 75;
             Activated = false;
+        }
+
+        public void UnsubscribeFromClientEvents()
+        {
+            _client.OnRoundStarted -= _client_OnRoundStarted;
+            _client.OnGameStarted -= client_OnGameStarted;
+            _client.OnGameFinished -= _client_OnGameFinished;
+            _client.OnGameOver -= _client_OnGameOver;
         }
 
         private void _client_OnRoundStarted()

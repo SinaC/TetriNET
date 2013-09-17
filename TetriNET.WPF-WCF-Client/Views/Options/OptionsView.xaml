@@ -21,6 +21,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -28,6 +29,7 @@
                 </Grid.ColumnDefinitions>
                 <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding Options.AutomaticallySwitchToPartyLineOnRegistered, Mode=TwoWay}">Automatic switch on connect</CheckBox>
                 <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding Options.AutomaticallySwitchToPlayFieldOnGameStarted, Mode=TwoWay}">Automatic switch on start/stop game</CheckBox>
+                <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding Options.DisplayOpponentsFieldEvenWhenNotPlaying, Mode=TwoWay}">Show opponents field even when not playing</CheckBox>
             </Grid>
         </GroupBox>
         <GroupBox Grid.Row="1" Header="Server settings" IsEnabled="{Binding IsServerMaster}">

@@ -78,8 +78,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
             // Get textures
             string textureFilename = ConfigurationManager.AppSettings["texture"];
-            FileAttributes attr = File.GetAttributes(textureFilename);
-            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+            bool isDirectory = false;
+            try
+            {
+                FileAttributes attr = File.GetAttributes(textureFilename);
+                isDirectory = (attr & FileAttributes.Directory) == FileAttributes.Directory;
+            }
+            catch
+            {
+            }
+            if (isDirectory)
                 Textures.Textures.TexturesSingleton.Instance.ReadFromPath(textureFilename);
             else
                 Textures.Textures.TexturesSingleton.Instance.ReadFromFile(textureFilename);

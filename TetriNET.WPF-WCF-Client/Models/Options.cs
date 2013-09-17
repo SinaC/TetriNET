@@ -43,6 +43,20 @@ namespace TetriNET.WPF_WCF_Client.Models
             }
         }
 
+        private bool _displayOpponentsFieldEvenWhenNotPlaying;
+        public bool DisplayOpponentsFieldEvenWhenNotPlaying
+        {
+            get { return _displayOpponentsFieldEvenWhenNotPlaying; }
+            set
+            {
+                if (_displayOpponentsFieldEvenWhenNotPlaying != value)
+                {
+                    _displayOpponentsFieldEvenWhenNotPlaying = value;
+                    Settings.Default.DisplayOpponentsFieldEvenWhenNotPlaying = _displayOpponentsFieldEvenWhenNotPlaying;
+                    Settings.Default.Save();
+                }
+            }
+        }
 
         #region Singleton
         public static readonly ThreadSafeSingleton<Options> OptionsSingleton = new ThreadSafeSingleton<Options>(() => new Options());

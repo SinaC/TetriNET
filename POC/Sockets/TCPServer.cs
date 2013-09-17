@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common;
 using TetriNET.Common.Contracts;
+using TetriNET.Logger;
 
 namespace POC.Sockets
 {
@@ -81,7 +82,7 @@ namespace POC.Sockets
                 catch(Exception ex)
                 {
                     // TODO
-                    Log.WriteLine("Exception: {0}", ex.ToString());
+                    Log.WriteLine(Log.LogLevels.Error, "Exception: {0}", ex.ToString());
                     break;
                 }
             }
@@ -103,13 +104,13 @@ namespace POC.Sockets
                 }
                 catch (Exception ex)
                 {
-                    Log.WriteLine("[{0}] Exception: {1}", clientEndPoint, ex.ToString());
+                    Log.WriteLine(Log.LogLevels.Error, "[{0}] Exception: {1}", clientEndPoint, ex.ToString());
                     break;
                 }
 
                 if (bytesRead == 0)
                 {
-                    Log.WriteLine("[{0}] client disconnected", clientEndPoint);
+                    Log.WriteLine(Log.LogLevels.Error, "[{0}] client disconnected", clientEndPoint);
                     // TODO: event ?
                     break;
                 }
@@ -125,7 +126,7 @@ namespace POC.Sockets
                 
                 // shortcut: we consider we receive a whole message
                 string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                Log.WriteLine("[{0}]:{1}", clientEndPoint, message);
+                Log.WriteLine(Log.LogLevels.Error, "[{0}]:{1}", clientEndPoint, message);
             }
         }
     }

@@ -20,5 +20,8 @@
     <Setting Name="GameOptions" Type="TetriNET.Common.GameDatas.GameOptions" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="DisplayOpponentsFieldEvenWhenNotPlaying" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

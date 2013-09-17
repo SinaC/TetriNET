@@ -15,12 +15,14 @@ AdvancedPierreDellacherieOnePiece: finish GetHoleDepthForColumn
 Move strategy: rotation followed by translation AND translation followed by rotation (useful with tetrimino I and board almost full)
 
 Connect+Register and Disconnect+Unregister should be merged into one method
-Client: add a server state: GameStarted when receiving OnGameStarted and WaitingStartGame when receiving OnGameFinished (starting value is WaitingStartGame)
-	Pause and Stop are accessible if server state is GameStarted and we're ServerMaster
 
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
 WPF Client: MVVM   --> PlayFieldView started: PlayerGrid, Inventory, OpponentGrid, NextTetrimino not yet converted
 WPF Client: save win list locally if server master
+
+add event to ViewModelBase Client setter, OnClientChanged(oldClient, newClient)
+add handler DataContextChanged in PlayField, add handler to OnClientChanged of new DataContext
+add add/remove IClient event handler in handler above
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf
