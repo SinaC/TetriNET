@@ -16,7 +16,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
     // TODO: create sub view model with an ObservableDictionary + Matching Sum
 
-    public class ClientStatisticsViewModel : ViewModelBase
+    public class ClientStatisticsViewModel : ViewModelBase, ITabIndex
     {
         public ObservableDictionary<Tetriminos, ValuePercentage> TetriminoCount
         {
@@ -155,6 +155,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             OnPropertyChanged("NextTetriminoNotYetReceived");
             OnPropertyChanged("LinesPerSec");
         }
+
+        #region ITabIndex
+        public int TabIndex { get { return 5; } }
+        #endregion
 
         #region ViewModelBase
         public override void UnsubscribeFromClientEvents(IClient oldClient)

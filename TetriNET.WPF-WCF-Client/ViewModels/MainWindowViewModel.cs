@@ -1,12 +1,7 @@
-﻿using System;
-using System.Configuration;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using TetriNET.Client.DefaultBoardAndTetriminos;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
-using TetriNET.Logger;
-using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.Properties;
 using TetriNET.WPF_WCF_Client.ViewModels.Connection;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
@@ -44,9 +39,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
         public MainWindowViewModel()
         {
-            //
-            ExecuteOnUIThread.Initialize();
-
             // Create sub view models
             WinListViewModel = new WinListViewModel();
             ClientStatisticsViewModel = new ClientStatisticsViewModel();
@@ -57,16 +49,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
             ClientChanged += OnClientChanged;
 
-            // Initialize Log
-            string logFilename = "WPF_" + Guid.NewGuid().ToString().Substring(0, 5) + ".log";
-            Log.Initialize(ConfigurationManager.AppSettings["logpath"], logFilename);
-
-            // Log user settings path
-            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
-            Log.WriteLine(Log.LogLevels.Info, "Local user config path: {0}", config.FilePath);
-
             // Create client
-            Client = new Client.Client(Tetrimino.CreateTetrimino, () => new Board(12, 22));
+            Client = new Client.Client(Tetrimino.CreateTetrimino, () => new Board(Models.Options.Width, Models.Options.Height));
 
             // Get saved or default options
             Models.Options.OptionsSingleton.Instance.ServerOptions = Settings.Default.GameOptions ?? Client.Options;
@@ -75,22 +59,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             Models.Options.OptionsSingleton.Instance.ServerOptions.TetriminoOccurancies = Models.Options.OptionsSingleton.Instance.ServerOptions.TetriminoOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();
             Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPartyLineOnRegistered = Settings.Default.AutomaticallySwitchToPartyLineOnRegistered;
             Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted = Settings.Default.AutomaticallySwitchToPlayFieldOnGameStarted;
-
-            // Get textures
-            string textureFilename = ConfigurationManager.AppSettings["texture"];
-            bool isDirectory = false;
-            try
-            {
-                FileAttributes attr = File.GetAttributes(textureFilename);
-                isDirectory = (attr & FileAttributes.Directory) == FileAttributes.Directory;
-            }
-            catch
-            {
-            }
-            if (isDirectory)
-                Textures.Textures.TexturesSingleton.Instance.ReadFromPath(textureFilename);
-            else
-                Textures.Textures.TexturesSingleton.Instance.ReadFromFile(textureFilename);
         }
 
         #region ViewModelBase
@@ -129,29 +97,29 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         private void OnPlayerRegistered(bool succeeded, int playerId)
         {
             if (succeeded && Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPartyLineOnRegistered)
-                if (ActiveTabItemIndex == 0) // Connect
-                    ActiveTabItemIndex = 3; // Party line
+                if (ActiveTabItemIndex == ConnectionViewModel.TabIndex)
+                    ActiveTabItemIndex = PartyLineViewModel.TabIndex;
             if (succeeded && Client.IsServerMaster)
                 Client.ChangeOptions(Models.Options.OptionsSingleton.Instance.ServerOptions);
         }
 
         private void OnPlayerUnregisted()
         {
-            ActiveTabItemIndex = 0; // Connect
+            ActiveTabItemIndex = ConnectionViewModel.TabIndex;
         }
 
         private void OnGameStarted()
         {
             if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
-                ActiveTabItemIndex = 4; // Play fields
+                ActiveTabItemIndex = PlayFieldViewModel.TabIndex;
         }
 
         private void OnGameFinished()
         {
             if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
             {
-                if (ActiveTabItemIndex == 4) // Play fields
-                    ActiveTabItemIndex = 3; // Party line
+                if (ActiveTabItemIndex == PlayFieldViewModel.TabIndex)
+                    ActiveTabItemIndex = PartyLineViewModel.TabIndex;
             }
         }
 
@@ -159,14 +127,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         {
             if (Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
             {
-                if (ActiveTabItemIndex == 4) // Play fields
-                    ActiveTabItemIndex = 3; // Party line
+                if (ActiveTabItemIndex == PlayFieldViewModel.TabIndex)
+                    ActiveTabItemIndex = PartyLineViewModel.TabIndex;
             }
         }
 
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
-            ActiveTabItemIndex = 0; // Connect
+            ActiveTabItemIndex = ConnectionViewModel.TabIndex;
         }
         #endregion
     }

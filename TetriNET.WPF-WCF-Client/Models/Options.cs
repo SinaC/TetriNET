@@ -6,6 +6,9 @@ namespace TetriNET.WPF_WCF_Client.Models
 {
     public class Options
     {
+        public const int Width = 12;
+        public const int Height = 22;
+
         public GameOptions ServerOptions { get; set; } // Modified by UI and by Server on each game started
 
         // Automatically switch to play field when game is started and to party line when game is over

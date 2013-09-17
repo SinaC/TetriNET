@@ -17,9 +17,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
     /// </summary>
     public partial class OpponentGridControl : UserControl, INotifyPropertyChanged
     {
-        // TODO: dynamically get width/height
-        private const int ColumnsCount = 12;
-        private const int RowsCount = 22;
         private const int CellWidth = 8;
         private const int CellHeight = 8;
         private const int MarginWidth = 0;
@@ -88,8 +85,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 Canvas.Background = _textures.GetSmallBackground();
             }
 
-            for (int y = 0; y < RowsCount; y++)
-                for (int x = 0; x < ColumnsCount; x++)
+            for (int y = 0; y < Models.Options.Height; y++)
+                for (int x = 0; x < Models.Options.Width; x++)
                 {
                     int canvasLeft = x * (CellWidth + MarginWidth);
                     int canvasTop = y * (CellHeight + MarginHeight);
@@ -142,7 +139,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private Rectangle GetControl(int cellX, int cellY)
         {
-            return _grid[cellX + cellY * ColumnsCount];
+            if (cellX < 0 || cellX >= Models.Options.Width || cellY < 0 || cellY >= Models.Options.Height)
+                return null;
+            return _grid[cellX + cellY * Models.Options.Width];
         }
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -187,7 +186,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnRedrawBoard(int playerId, IBoard board)
         {
-            if (playerId == PlayerId && Models.Options.OptionsSingleton.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
+            if (playerId == PlayerId && (Client.IsPlaying || Models.Options.OptionsSingleton.Instance.DisplayOpponentsFieldEvenWhenNotPlaying))
                 ExecuteOnUIThread.Invoke(() => DrawGrid(board));
         }
 

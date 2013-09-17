@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
 using TetriNET.WPF_WCF_Client.ViewModels;
 
@@ -12,13 +13,9 @@ namespace TetriNET.WPF_WCF_Client
         public MainWindow()
         {
             InitializeComponent();
-        }
 
-        // TODO: temporary code to be removed
-        public void Initialize()
-        {
-            // TODO: temporary code to be removed
-            PlayFieldView.PlayFieldViewModel = (DataContext as MainWindowViewModel).PlayFieldViewModel;
+            if (!DesignerProperties.GetIsInDesignMode(this))
+                DataContext = new MainWindowViewModel();
         }
 
         #region UI Events

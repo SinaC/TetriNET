@@ -3,7 +3,7 @@ using TetriNET.Common.Interfaces;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
-    public class PlayFieldViewModel : ViewModelBase
+    public class PlayFieldViewModel : ViewModelBase, ITabIndex
     {
         public int OpponentCount = 5;
 
@@ -39,6 +39,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                 id = playerId;
             return Opponents[id - 1];
         }
+
+        #region ITabIndex
+        public int TabIndex { get { return 4; } }
+        #endregion
 
         #region ViewModelBase
         private void OnClientChanged(IClient oldClient, IClient newClient)

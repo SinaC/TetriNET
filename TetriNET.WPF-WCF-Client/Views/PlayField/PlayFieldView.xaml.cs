@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
@@ -13,57 +14,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
     /// </summary>
     public partial class PlayFieldView : UserControl
     {
-        private PlayFieldViewModel _playFieldViewModel;
-        public PlayFieldViewModel PlayFieldViewModel { get { return _playFieldViewModel; }
-            set
-            {
-                // Remove old handlers
-                IClient oldClient = _playFieldViewModel == null ? null : _playFieldViewModel.Client;
-                if (oldClient != null)
-                {
-                    oldClient.OnPlayerJoined -= OnPlayerJoined;
-                    oldClient.OnPlayerLeft -= OnPlayerLeft;
-                    oldClient.OnPlayerRegistered -= OnPlayerRegistered;
-
-                    if (_controller != null)
-                        _controller.UnsubscribeFromClientEvents();
-                    if (_bot != null)
-                        _bot.UnsubscribeFromClientEvents();
-                }
-                //
-                _playFieldViewModel = value;
-                // Set new client
-                IClient newClient = value == null ? null : value.Client;
-                Inventory.Client = newClient;
-                NextTetrimino.Client = newClient;
-                PlayerGrid.Client = newClient;
-                OpponentGrid1.Client = newClient;
-                OpponentGrid2.Client = newClient;
-                OpponentGrid3.Client = newClient;
-                OpponentGrid4.Client = newClient;
-                OpponentGrid5.Client = newClient;
-                // Set ViewModel as DataContext
-                GameInfo.DataContext = value == null ? null : value.GameInfoViewModel; // set DataContext in xaml set it to null
-                InGameMessages.DataContext = value == null ? null : value.InGameChatViewModel;
-                // Add new handlers
-                if (newClient != null)
-                {
-                    newClient.OnPlayerJoined += OnPlayerJoined;
-                    newClient.OnPlayerLeft += OnPlayerLeft;
-                    newClient.OnPlayerRegistered += OnPlayerRegistered;
-
-                    // And create controller + bot
-                    _controller = new GameController.GameController(newClient);
-                    _bot = new PierreDellacherieOnePieceBot(newClient, _controller);
-                }
-                else
-                {
-                    _controller = null;
-                    _bot = null;
-                }
-            }
-        }
-
         private PierreDellacherieOnePieceBot _bot;
         private GameController.GameController _controller;
         private int _playerId;
@@ -112,13 +62,16 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         #region UI events handler
         private void GameView_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.S)
+            PlayFieldViewModel vm = DataContext as PlayFieldViewModel;
+            if (e.Key == Key.S )
             {
-                PlayFieldViewModel.Client.StartGame();
+                if (vm != null)
+                    vm.Client.StartGame();
             }
             else if (e.Key == Key.T)
             {
-                PlayFieldViewModel.Client.StopGame();
+                if (vm != null)
+                    vm.Client.StopGame();
             }
             else if (e.Key == Key.A && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift) )
             {
@@ -216,6 +169,60 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             if (id == 5)
                 return OpponentGrid5;
             return null;
+        }
+
+        private void PlayFieldView_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // Crappy workaround MVVM -> code behind
+            PlayFieldViewModel vm = DataContext as PlayFieldViewModel;
+            if (vm != null)
+            {
+                vm.ClientChanged += OnClientChanged;
+
+                if (vm.Client != null)
+                    OnClientChanged(null, vm.Client);
+            }
+        }
+
+        private void OnClientChanged(IClient oldClient, IClient newClient)
+        {
+            // Remove old handlers
+            if (oldClient != null)
+            {
+                oldClient.OnPlayerJoined -= OnPlayerJoined;
+                oldClient.OnPlayerLeft -= OnPlayerLeft;
+                oldClient.OnPlayerRegistered -= OnPlayerRegistered;
+
+                if (_controller != null)
+                    _controller.UnsubscribeFromClientEvents();
+                if (_bot != null)
+                    _bot.UnsubscribeFromClientEvents();
+            }
+            // Set new client
+            Inventory.Client = newClient;
+            NextTetrimino.Client = newClient;
+            PlayerGrid.Client = newClient;
+            OpponentGrid1.Client = newClient;
+            OpponentGrid2.Client = newClient;
+            OpponentGrid3.Client = newClient;
+            OpponentGrid4.Client = newClient;
+            OpponentGrid5.Client = newClient;
+            // Add new handlers
+            if (newClient != null)
+            {
+                newClient.OnPlayerJoined += OnPlayerJoined;
+                newClient.OnPlayerLeft += OnPlayerLeft;
+                newClient.OnPlayerRegistered += OnPlayerRegistered;
+
+                // And create controller + bot
+                _controller = new GameController.GameController(newClient);
+                _bot = new PierreDellacherieOnePieceBot(newClient, _controller);
+            }
+            else
+            {
+                _controller = null;
+                _bot = null;
+            }
         }
     }
 }

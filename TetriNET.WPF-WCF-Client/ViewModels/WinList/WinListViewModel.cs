@@ -8,7 +8,7 @@ using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
 {
-    public class WinListViewModel : ViewModelBase
+    public class WinListViewModel : ViewModelBase, ITabIndex
     {
         private bool _isServerMaster;
         public bool IsServerMaster
@@ -41,6 +41,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
             foreach (WinEntry entry in winList.OrderByDescending(x => x.Score))
                 _winList.Add(entry);
         }
+
+        #region ITabIndex
+        public int TabIndex { get { return 2; } }
+        #endregion
 
         #region ViewModelBase
         public override void UnsubscribeFromClientEvents(IClient oldClient)

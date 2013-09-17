@@ -6,7 +6,7 @@ using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 {
-    public class OptionsViewModel : ViewModelBase
+    public class OptionsViewModel : ViewModelBase, ITabIndex
     {
         private bool _isGameNotStarted;
         public bool IsGameNotStarted
@@ -102,6 +102,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             OnPropertyChanged("IsTetriminosSumValid");
             OnPropertyChanged("IsSendOptionsToServerEnabled");
         }
+
+        #region ITabIndex
+        public int TabIndex { get { return 1; } }
+        #endregion
 
         #region ViewModelBase
         public override void UnsubscribeFromClientEvents(IClient oldClient)

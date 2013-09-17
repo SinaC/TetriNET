@@ -15,11 +15,18 @@
             <RowDefinition Height="16"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center"  MaxWidth="192">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" MaxWidth="192">
             <TextBlock Text="{Binding DisplayPlayerId}" Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             <TextBlock Text="." Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,2,0"/>
             <TextBlock Text="{Binding PlayerName}" />
         </StackPanel>
+        <!--<TextBlock HorizontalAlignment="Center" MaxWidth="192">
+            <TextBlock Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Run Text="{Binding DisplayPlayerId}"/>
+                <Run Text=". "/>
+            </TextBlock>
+            <Run Text="{Binding PlayerName}"/>
+        </TextBlock>-->
         <Border Grid.Row="1" Background="Green">
             <Canvas Background="Black" x:Name="Canvas" VerticalAlignment="Top" HorizontalAlignment="Left" Width="192" Height="352">
                 <!-- will be filled with controls in ctor -->

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using TetriNET.Common.GameDatas;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 {
-    public class PartyLineViewModel : ViewModelBase
+    public class PartyLineViewModel : ViewModelBase, ITabIndex
     {
         public ChatViewModel ChatViewModel { get; set; }
         public PlayersManagerViewModel PlayersManagerViewModel { get; set; }
@@ -76,6 +75,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                 Client.PauseGame();
             UpdateEnabilityAndLabel();
         }
+
+        #region ITabIndex
+        public int TabIndex { get { return 3; } }
+        #endregion
 
         #region ViewModelBase
         private void OnClientChanged(IClient oldClient, IClient newClient)

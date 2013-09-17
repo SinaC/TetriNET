@@ -2,7 +2,7 @@
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 {
-    public class ConnectionViewModel : ViewModelBase
+    public class ConnectionViewModel : ViewModelBase, ITabIndex
     {
         public ConnectionControlViewModel ConnectionControlViewModel { get; set; }
         public ServerListViewModel ServerListViewModel { get; set; }
@@ -20,6 +20,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         {
             ConnectionControlViewModel.ServerAddress = serverAddress;
         }
+
+        #region ITabIndex
+        public int TabIndex { get { return 0; } }
+        #endregion
 
         #region ViewModelBase
         private void OnClientChanged(IClient oldClient, IClient newClient)

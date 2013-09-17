@@ -608,10 +608,10 @@ namespace TetriNET.Client
 
             ResetTimeout();
 
-            if (State == States.Playing)
-            {
+            //if (State == States.Playing)
+            //{
                 // Don't add line to ourself
-                if (playerId != _clientPlayerId)
+                if (playerId != _clientPlayerId && State == States.Playing)
                 {
                     EnqueueBoardAction(() => AddLines(lineCount));
                 }
@@ -623,7 +623,7 @@ namespace TetriNET.Client
 
                     ClientOnPlayerAddLines(playerName, specialId, lineCount);
                 }
-            }
+            //}
         }
 
         public void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special)
@@ -631,10 +631,9 @@ namespace TetriNET.Client
             Log.WriteLine(Log.LogLevels.Debug, "Special {0}[{1}] from {2} to {3}", special, specialId, playerId, targetId);
 
             ResetTimeout();
-
-            if (State == States.Playing)
-            {
-                if (targetId == _clientPlayerId)
+            //if (State == States.Playing)
+            //{
+                if (targetId == _clientPlayerId && State == States.Playing)
                 {
                     EnqueueBoardAction(() => SpecialUsed(special));
                 }
@@ -649,7 +648,7 @@ namespace TetriNET.Client
 
                     ClientOnSpecialUsed(playerName, targetName, specialId, special);
                 }
-            }
+            //}
         }
 
         public void OnNextTetrimino(int index, Tetriminos tetrimino)

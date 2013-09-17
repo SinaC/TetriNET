@@ -15,9 +15,10 @@
         mc:Ignorable="d"
         UseLayoutRounding="True"
         MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
-        d:DataContext="{d:DesignInstance local:MainWindowViewModel}"
+        d:DataContext="{d:DesignInstance local:MainWindowViewModel, IsDesignTimeCreatable=False}"
         Icon="TetriNET.ico"
-        Title="TetriNET" Height="480" Width="720">
+        Title="TetriNET" 
+        Height="480" Width="720">
     <!-- No window border ==> no close button either :p add a custom one before using this
         WindowStyle="None"
         AllowsTransparency="True" 
@@ -172,7 +173,7 @@
                 <partyLine:PartyLineView DataContext="{Binding Path=PartyLineViewModel}"/>
             </TabItem>
             <TabItem Header="Play fields">
-                <playField:PlayFieldView x:Name="PlayFieldView"/>
+                <playField:PlayFieldView DataContext="{Binding Path=PlayFieldViewModel}"/>
             </TabItem>
             <TabItem Header="Client statistics">
                 <statistics:ClientStatisticsView DataContext="{Binding Path=ClientStatisticsViewModel}"/>
