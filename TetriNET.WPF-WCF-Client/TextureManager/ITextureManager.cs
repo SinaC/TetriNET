@@ -1,7 +1,7 @@
 ﻿using System.Windows.Media;
 using TetriNET.Common.GameDatas;
 
-namespace TetriNET.WPF_WCF_Client.Textures
+namespace TetriNET.WPF_WCF_Client.TextureManager
 {
     public interface ITextureManager
     {

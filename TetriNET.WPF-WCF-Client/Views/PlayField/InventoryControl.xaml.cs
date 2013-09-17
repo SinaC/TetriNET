@@ -28,7 +28,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             set { SetValue(ClientProperty, value); }
         }
 
-        private readonly Textures.Textures _textures;
         private readonly List<Rectangle> _inventory = new List<Rectangle>();
 
         private string _firstSpecial;
@@ -48,8 +47,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         public InventoryControl()
         {
             InitializeComponent();
-
-            _textures = Textures.Textures.TexturesSingleton.Instance;
 
             for (int i = 0; i < MaxInventorySize; i++)
             {
@@ -80,7 +77,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             if (specials != null && specials.Any())
             {
                 for (int i = 0; i < specials.Count; i++)
-                    _inventory[i].Fill = _textures.GetBigSpecial(specials[i]);
+                    _inventory[i].Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigSpecial(specials[i]);
                 FirstSpecial = Mapper.MapSpecialToString(specials[0]);
             }
             else

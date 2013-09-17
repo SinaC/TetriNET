@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Threading;
 using TetriNET.Common.Interfaces;
+using TetriNET.Logger;
 
 namespace TetriNET.WPF_WCF_Client.GameController
 {
@@ -27,18 +29,35 @@ namespace TetriNET.WPF_WCF_Client.GameController
 
     public class GameController
     {
+        private static readonly Commands[] CommandsAvailableForConfusion =
+            {
+                Commands.Drop,
+                Commands.Down,
+                Commands.Left,
+                Commands.Right,
+                Commands.RotateClockwise,
+                Commands.RotateCounterclockwise
+            };
+
+        private readonly Random _random;
         private readonly IClient _client;
         private readonly Dictionary<Commands, DispatcherTimer> _timers = new Dictionary<Commands, DispatcherTimer>();
+        private readonly Dictionary<Commands, Commands> _confusionMapping = new Dictionary<Commands, Commands>();
+
+        private bool _isConfusionActive;
 
         public GameController(IClient client)
         {
             if (client == null)
                 throw new ArgumentNullException("client");
 
+            _random = new Random();
             _client = client;
+            _isConfusionActive = false;
 
             client.OnGamePaused += OnGamePaused;
             client.OnGameFinished += OnGameFinished;
+            client.OnConfusionToggled += OnConfusionToggled;
         }
 
         public void SubscribeToTickHandler()
@@ -61,12 +80,19 @@ namespace TetriNET.WPF_WCF_Client.GameController
         {
             _client.OnGamePaused -= OnGamePaused;
             _client.OnGameFinished -= OnGameFinished;
+            _client.OnConfusionToggled -= OnConfusionToggled;
         }
 
         public void KeyDown(Commands cmd)
         {
             if (_client.IsPlaying)
             {
+                if (_isConfusionActive)
+                {
+                    Commands confusedCmd;
+                    if (_confusionMapping.TryGetValue(cmd, out confusedCmd))
+                        cmd = confusedCmd;
+                }
                 if (_timers.ContainsKey(cmd) && _timers[cmd].IsEnabled)
                     return;
                 switch (cmd)
@@ -137,6 +163,22 @@ namespace TetriNET.WPF_WCF_Client.GameController
                 timer.Stop();
         }
 
+        private void OnConfusionToggled(bool active)
+        {
+            _isConfusionActive = active;
+            if (active)
+            {
+                _confusionMapping.Clear();
+                //List<Commands> commands = Enum.GetValues(typeof(Commands)).Cast<Commands>().Where(x => x != Commands.Invalid).ToList();
+                List<Commands> shuffled = Shuffle(_random, CommandsAvailableForConfusion);
+                for (int i = 0; i < CommandsAvailableForConfusion.Length; i++)
+                {
+                    _confusionMapping.Add(CommandsAvailableForConfusion[i], shuffled[i]);
+                    Log.WriteLine(Log.LogLevels.Debug, "Confusion mapping {0} -> {1}", CommandsAvailableForConfusion[i], shuffled[i]);
+                }
+            }
+        }
+
         #endregion
 
         private void DropTickHandler(object sender, EventArgs elapsedEventArgs)
@@ -177,6 +219,21 @@ namespace TetriNET.WPF_WCF_Client.GameController
                 timer.Stop();
                 _timers.Remove(cmd);
             }
+        }
+
+        private List<T> Shuffle<T>(Random random, IEnumerable<T> list)
+        {
+            List<T> newList = list.Select(x => x).ToList();
+            for (int i = newList.Count; i > 1; i--)
+            {
+                // Pick random element to swap.
+                int j = random.Next(i); // 0 <= j <= i-1
+                // Swap.
+                T tmp = newList[j];
+                newList[j] = newList[i - 1];
+                newList[i - 1] = tmp;
+            }
+            return newList;
         }
     }
 }

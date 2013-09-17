@@ -28,14 +28,11 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             set { SetValue(ClientProperty, value); }
         }
 
-        private readonly Textures.Textures _textures;
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
         public NextTetriminoControl()
         {
             InitializeComponent();
-
-            _textures = Textures.Textures.TexturesSingleton.Instance;
 
             for(int y = 0; y < 4; y++)
                 for (int x = 0; x < 4; x++)
@@ -85,7 +82,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 int cellX = x;
 
                 Rectangle uiPart = GetControl(cellX, cellY);
-                uiPart.Fill = _textures.GetBigTetrimino(cellTetrimino);
+                uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigTetrimino(cellTetrimino);
             }
         }
 

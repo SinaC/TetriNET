@@ -244,6 +244,11 @@ namespace TetriNET.Client
         private DateTime _lastActionFromServer;
         private int _timeoutCount;
         private int _tetriminoIndex;
+        private DateTime _pauseStartTime;
+        private bool _isDarknessActive;
+        private bool _isConfusionActive;
+        private DateTime _darknessEndTime;
+        private DateTime _confusionEndTime;
 
         private PlayerData Player
         {
@@ -281,6 +286,9 @@ namespace TetriNET.Client
             State = States.Created;
             ServerState = ServerStates.Waiting;
             IsServerMaster = false;
+            _isDarknessActive = false;
+            _isConfusionActive = false;
+            _pauseStartTime = DateTime.Now;
 
             Task.Factory.StartNew(TimeoutTask);
             Task.Factory.StartNew(BoardActionTask);
@@ -569,6 +577,8 @@ namespace TetriNET.Client
             ResetTimeout();
 
             ServerState = ServerStates.Paused;
+            _pauseStartTime = DateTime.Now;
+
             if (State == States.Playing)
                 State = States.Paused;
 
@@ -583,6 +593,13 @@ namespace TetriNET.Client
             ResetTimeout();
 
             ServerState = ServerStates.Playing;
+            TimeSpan pauseTime = DateTime.Now - _pauseStartTime;
+            // Add pause time to confusion and darkness end time
+            if (_isConfusionActive)
+                _confusionEndTime = _confusionEndTime.Add(pauseTime);
+            if (_isDarknessActive)
+                _darknessEndTime = _darknessEndTime.Add(pauseTime);
+
             if (State == States.Paused)
                 State = States.Playing;
 
@@ -1202,6 +1219,20 @@ namespace TetriNET.Client
             remove { ClientOnPlayerAddLines -= value; }
         }
 
+        private event ClientToggleDarkness ClientOnDarknessToggled;
+        event ClientToggleDarkness IClient.OnDarknessToggled
+        {
+            add { ClientOnDarknessToggled += value; }
+            remove { ClientOnDarknessToggled -= value; }
+        }
+
+        private event ClientToggleConfusion ClientOnConfusionToggled;
+        event ClientToggleConfusion IClient.OnConfusionToggled
+        {
+            add { ClientOnConfusionToggled += value; }
+            remove { ClientOnConfusionToggled -= value; }
+        }
+
         public void Dump()
         {
             // Players
@@ -1447,8 +1478,12 @@ namespace TetriNET.Client
                     return 'O';
                 case Specials.ClearColumn:
                     return 'V';
-                case Specials.ZebraField:
-                    return 'Z';
+                case Specials.Darkness:
+                    return 'D';
+                case Specials.Confusion:
+                    return 'F';
+                //case Specials.ZebraField: // will be available when Left Gravity is implemented
+                //    return 'Z';
             }
             return '?';
         }
@@ -1477,10 +1512,31 @@ namespace TetriNET.Client
                         _proxy.Heartbeat(this);
                     }
 
-                    // Stop task if stop event is raised
-                    if (_stopBackgroundTaskEvent.WaitOne(10))
-                        break;
                 }
+
+                if (_isConfusionActive)
+                {
+                    if (DateTime.Now > _confusionEndTime)
+                    {
+                        _isConfusionActive = false;
+                        if (ClientOnConfusionToggled != null)
+                            ClientOnConfusionToggled(false);
+                    }
+                }
+
+                if (_isDarknessActive)
+                {
+                    if (DateTime.Now > _darknessEndTime)
+                    {
+                        _isDarknessActive = false;
+                        if (ClientOnDarknessToggled != null)
+                            ClientOnDarknessToggled(false);
+                    }
+                }
+
+                // Stop task if stop event is raised
+                if (_stopBackgroundTaskEvent.WaitOne(10))
+                    break;
             }
         }
 
@@ -1569,9 +1625,15 @@ namespace TetriNET.Client
                 case Specials.ClearColumn:
                     ClearColumn();
                     break;
-                case Specials.ZebraField:
-                    ZebraField();
+                case Specials.Darkness:
+                    Darkness(5);
                     break;
+                case Specials.Confusion:
+                    Confusion(5);
+                    break;
+                //case Specials.ZebraField: // will be available when Left Gravity is implemented
+                //    ZebraField();
+                //    break;
             }
         }
 
@@ -1756,6 +1818,36 @@ namespace TetriNET.Client
 
             if (ClientOnRedraw != null)
                 ClientOnRedraw();
+        }
+
+        private void Darkness(int delayInSeconds)
+        {
+            // If already active, add delay to remaining
+            if (_isDarknessActive)
+                _darknessEndTime = _darknessEndTime.AddSeconds(delayInSeconds);
+            // Else, raise event
+            else
+            {
+                _isDarknessActive = true;
+                _darknessEndTime = DateTime.Now.AddSeconds(delayInSeconds);
+                if (ClientOnDarknessToggled != null)
+                    ClientOnDarknessToggled(true);
+            }
+        }
+
+        private void Confusion(int delayInSeconds)
+        {
+            // If already active, add delay to remaining
+            if (_isConfusionActive)
+                _confusionEndTime = _confusionEndTime.AddSeconds(delayInSeconds);
+            // Else, raise event
+            else
+            {
+                _isConfusionActive = true;
+                _confusionEndTime = DateTime.Now.AddSeconds(delayInSeconds);
+                if (ClientOnConfusionToggled != null)
+                    ClientOnConfusionToggled(true);
+            }
         }
 
         private void ZebraField()

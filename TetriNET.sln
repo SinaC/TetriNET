@@ -32,6 +32,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Logger", "TetriNET
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Strategy", "TetriNET.Strategy\TetriNET.Strategy.csproj", "{B77D651E-658C-45D4-972A-3C0D569D689E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{C9AD63A5-DD1F-44E7-8612-26CBA1AF5385}"
+	ProjectSection(SolutionItems) = preProject
+		Images\tetrinet2.bmp = Images\tetrinet2.bmp
+		Images\TNETBLKS.BMP = Images\TNETBLKS.BMP
+		Images\x2mod.bmp = Images\x2mod.bmp
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -31,14 +31,16 @@ namespace TetriNET.Common.GameDatas
         // TetriNET 2 (http://harddrop.com/wiki/Tetrinet2 or http://en.wikipedia.org/wiki/TetriNET or http://web.archive.org/web/20070623140748/www.tetrinet2.com/?page=overview_specials)
         [EnumMember]
         ClearColumn,
+        [EnumMember]
+        Darkness,
+        [EnumMember]
+        Confusion,
         // NOT IMPLEMENTED Immunity
         // NOT IMPLEMENTED Mutate Pieces
-        // NOT IMPLEMENTED Darkness
-        // NOT IMPLEMENTED Confusion
 
         // Blocktrix (http://en.wikipedia.org/wiki/TetriNET)
-        [EnumMember]
-        ZebraField,
+        //[EnumMember]
+        //ZebraField, // will be available when Left Gravity is implemented
         // NOT IMPLEMENTED Piece Change
         // NOT IMPLEMENTED Left Gravity
 

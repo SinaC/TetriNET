@@ -69,5 +69,9 @@ namespace TetriNET.WPF_WCF_Client.Models
             // Singleton
         }
         #endregion
+
+        //public void AddDefaultForMissingOptions()
+        //{
+        //}
     }
 }

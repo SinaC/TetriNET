@@ -128,9 +128,19 @@ namespace TetriNET.Common.GameDatas
                 },
                 new SpecialOccurancy
                 {
-                    Value = Specials.ZebraField,
+                    Value = Specials.Darkness,
                     Occurancy = 0
                 },
+                new SpecialOccurancy
+                {
+                    Value = Specials.Confusion,
+                    Occurancy = 0
+                },
+                //new SpecialOccurancy // will be available when Left Gravity is implemented
+                //{
+                //    Value = Specials.ZebraField,
+                //    Occurancy = 0
+                //},
             };
             ClassicStyleMultiplayerRules = true;
             InventorySize = 10;

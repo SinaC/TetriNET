@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("POC")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("N-ALLO")]
+[assembly: AssemblyCompany("SinaC")]
 [assembly: AssemblyProduct("POC")]
-[assembly: AssemblyCopyright("Copyright © N-ALLO 2013")]
+[assembly: AssemblyCopyright("Copyright © SinaC 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

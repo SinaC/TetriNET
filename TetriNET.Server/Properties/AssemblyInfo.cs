@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("TetriNET.Server")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("N-ALLO")]
+[assembly: AssemblyCompany("SinaC")]
 [assembly: AssemblyProduct("TetriNET.Server")]
-[assembly: AssemblyCopyright("Copyright © N-ALLO 2013")]
+[assembly: AssemblyCopyright("Copyright © SinaC 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

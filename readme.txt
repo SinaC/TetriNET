@@ -8,7 +8,7 @@ when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 discovery doesn't work on cross/multiple machine
 client/server version used when registering
 add room notion in server (server can handle multiple rooms and client register on a room)
-SinaCSpecials: use gravity when board has enough holes or when to high + zebra + clear column
+SinaCSpecials: use gravity when board has enough holes or when to high + zebra + clear column + confusion + darkness
 GameController -> interface
 
 AdvancedPierreDellacherieOnePiece: finish GetHoleDepthForColumn
@@ -17,12 +17,10 @@ Move strategy: rotation followed by translation AND translation followed by rota
 Connect+Register and Disconnect+Unregister should be merged into one method
 
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
-WPF Client: MVVM   --> PlayFieldView started: PlayerGrid, Inventory, OpponentGrid, NextTetrimino not yet converted
 WPF Client: save win list locally if server master
 
-add event to ViewModelBase Client setter, OnClientChanged(oldClient, newClient)
-add handler DataContextChanged in PlayField, add handler to OnClientChanged of new DataContext
-add add/remove IClient event handler in handler above
+Confusion could be managed client-side
+
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf

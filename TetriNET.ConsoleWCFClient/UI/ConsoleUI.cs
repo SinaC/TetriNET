@@ -541,8 +541,12 @@ namespace TetriNET.ConsoleWCFClient.UI
                     return 'O';
                 case Specials.ClearColumn:
                     return 'V';
-                case Specials.ZebraField:
-                    return 'Z';
+                case Specials.Darkness:
+                    return 'D';
+                case Specials.Confusion:
+                    return 'F';
+                //case Specials.ZebraField: // will be available when Left Gravity is implemented
+                //    return 'Z';
             }
             return '?';
         }
@@ -571,8 +575,12 @@ namespace TetriNET.ConsoleWCFClient.UI
                     return "Block Bomb";
                 case Specials.ClearColumn:
                     return "Clear Column";
-                case Specials.ZebraField:
-                    return "Zebra Field";
+                case Specials.Darkness:
+                    return "Darkness";
+                case Specials.Confusion:
+                    return "Confusion";
+                //case Specials.ZebraField: // will be available when Left Gravity is implemented
+                //    return "Zebra Field";
             }
             return special.ToString();
         }

@@ -19,6 +19,8 @@ namespace TetriNET.WPF_WCF_Client.AI
         private readonly GameController.GameController _controller;
         private readonly ManualResetEvent _handleNextTetriminoEvent;
         private readonly ManualResetEvent _stopEvent;
+
+        private bool _isConfusionActive;
         private Task _botTask;
 
         private bool _activated;
@@ -59,6 +61,7 @@ namespace TetriNET.WPF_WCF_Client.AI
             _client.OnGameStarted += client_OnGameStarted;
             _client.OnGameFinished += _client_OnGameFinished;
             _client.OnGameOver += _client_OnGameOver;
+            _client.OnConfusionToggled += _client_OnConfusionToggled;
 
             _stopEvent = new ManualResetEvent(false);
             _handleNextTetriminoEvent = new ManualResetEvent(false);
@@ -73,6 +76,12 @@ namespace TetriNET.WPF_WCF_Client.AI
             _client.OnGameStarted -= client_OnGameStarted;
             _client.OnGameFinished -= _client_OnGameFinished;
             _client.OnGameOver -= _client_OnGameOver;
+            _client.OnConfusionToggled -= _client_OnConfusionToggled;
+        }
+
+        private void _client_OnConfusionToggled(bool active)
+        {
+            _isConfusionActive = active;
         }
 
         private void _client_OnRoundStarted()
@@ -147,6 +156,13 @@ namespace TetriNET.WPF_WCF_Client.AI
                     }
 
                     DateTime specialManaged = DateTime.Now;
+
+                    // No move evaluation if confusion is active
+                    if (_isConfusionActive)
+                    {
+                        Log.WriteLine(Log.LogLevels.Info, "Confusion is active, no move evaluated");
+                        continue;
+                    }
 
                     // Get best move
                     int bestRotationDelta;

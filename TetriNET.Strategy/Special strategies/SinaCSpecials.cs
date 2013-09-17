@@ -9,6 +9,7 @@ namespace TetriNET.Strategy
     public class SinaCSpecials : ISpecialStrategy
     {
         // TODO: helpers should return IOpponent instead of int
+        // TODO: when confusion is activated, bot doesn't do anything
 
         public bool GetSpecialAdvice(IBoard board, ITetrimino current, ITetrimino next, List<Specials> inventory, int inventoryMaxSize, List<IOpponent> opponents, out List<SpecialAdvices> advices)
         {
@@ -27,7 +28,7 @@ namespace TetriNET.Strategy
             //      else, 
             //          empty inventory by sending offensive specials to weakest opponent (highest board) + sending ClearLine to ourself -> not saved
             // If we are saved,
-            //  if there is only one player left, and we have enough AddLines to kill him, drop everything except AddLines and send them to last opponent
+            //  if there is only one player left, and we have enough AddLines to kill him, drop everything except AddLines, Quake, Confusion, Darkness and send them to last opponent
             //  if first special is Switch, destroy own board and switch with strongest opponent
             //  if first special is Nuke or Gravity, NOP
             //  if first special is AddLines, send to strongest opponent
@@ -61,7 +62,7 @@ namespace TetriNET.Strategy
             //      if none, send to strongest opponent
             //  if first special is Quake,
             //      send to opponent with most towers or strongest opponent [TO BE DEFINED]
-            // TODO: zebra and clear column
+            // TODO: zebra, clear column, confusion and darkness
 
             //
             advices = new List<SpecialAdvices>();
@@ -370,7 +371,15 @@ namespace TetriNET.Strategy
                         SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
                         OpponentId = lastOpponentId
                     });
-
+                }
+                else if (currentSpecial == Specials.BlockQuake || currentSpecial == Specials.Confusion || currentSpecial == Specials.Darkness)
+                {
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "[KILLING LAST]Use {0} on last opponent {1}", currentSpecial, lastOpponentId);
+                    advices.Add(new SpecialAdvices
+                    {
+                        SpecialAdviceAction = SpecialAdvices.SpecialAdviceActions.UseOpponent,
+                        OpponentId = lastOpponentId
+                    });
                 }
                 // Else, discard
                 else
@@ -699,6 +708,8 @@ namespace TetriNET.Strategy
                 //  if first special is Quake,
                 //      send to opponent with most towers or strongest opponent [TO BE DEFINED]
                 // ClearColumn
+                // Darkness
+                // Confusion
                 // ZebraField
 
                 // Send to strongest opponent

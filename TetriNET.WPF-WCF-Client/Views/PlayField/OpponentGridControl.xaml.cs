@@ -69,7 +69,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
         }
 
-        private readonly Textures.Textures _textures;
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
         public OpponentGridControl()
@@ -79,10 +78,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             PlayerId = -1;
             PlayerName = "Not playing";
             
-            _textures = Textures.Textures.TexturesSingleton.Instance;
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                Canvas.Background = _textures.GetSmallBackground();
+                Canvas.Background = TextureManager.TextureManager.TexturesSingleton.Instance.GetSmallBackground();
             }
 
             for (int y = 0; y < Models.Options.Height; y++)
@@ -124,9 +122,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                         Tetriminos color = CellHelper.GetColor(cellValue);
 
                         if (special == Specials.Invalid)
-                            uiPart.Fill = _textures.GetSmallTetrimino(color);
+                            uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetSmallTetrimino(color);
                         else
-                            uiPart.Fill = _textures.GetSmallSpecial(special);
+                            uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetSmallSpecial(special);
                     }
                 }
         }

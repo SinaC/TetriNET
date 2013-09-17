@@ -65,10 +65,10 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
         }
 
+        private bool _isDarknessActive;
         private bool _isHintActivated;
         private IMoveStrategy _moveStrategy;
         private ITetrimino _tetriminoHint;
-        private readonly Textures.Textures _textures;
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
         public PlayerGridControl()
@@ -79,10 +79,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
             PlayerId = -1;
 
-            _textures = Textures.Textures.TexturesSingleton.Instance;
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                Canvas.Background = _textures.GetBigBackground();
+                Canvas.Background = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
             }
 
             for(int y = 0; y < Models.Options.Height; y++)
@@ -171,7 +170,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             if (currentTetrimino == null)
                 return;
             Tetriminos cellTetrimino = Client.CurrentTetrimino.Value;
-            Brush brush = _textures.GetBigTetrimino(cellTetrimino);
+            Brush brush = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigTetrimino(cellTetrimino);
             DrawTetrimino(board, currentTetrimino, brush);
         }
 
@@ -200,9 +199,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                                 Tetriminos color = CellHelper.GetColor(cellValue);
 
                                 if (special == Specials.Invalid)
-                                    uiPart.Fill = _textures.GetBigTetrimino(color);
+                                    uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigTetrimino(color);
                                 else
-                                    uiPart.Fill = _textures.GetBigSpecial(special);
+                                    uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigSpecial(special);
                             }
                         }
                     }
@@ -216,9 +215,17 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void DrawEverything()
         {
-            DrawGrid();
-            DrawHint();
-            DrawCurrentTetrimino();
+            if (!_isDarknessActive)
+            {
+                DrawGrid();
+                DrawHint();
+                DrawCurrentTetrimino();
+            }
+            else
+            {
+                ClearGrid();
+                DrawCurrentTetrimino();
+            }
         }
 
         private Rectangle GetControl(int cellX, int cellY)
@@ -245,6 +252,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     oldClient.OnRoundStarted -= _this.OnRoundStarted;
                     oldClient.OnTetriminoMoved -= _this.OnTetriminoMoved;
                     oldClient.OnRedraw -= _this.OnRedraw;
+                    oldClient.OnDarknessToggled -= _this.OnDarknessToggled;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
@@ -259,11 +267,27 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     newClient.OnRoundStarted += _this.OnRoundStarted;
                     newClient.OnTetriminoMoved += _this.OnTetriminoMoved;
                     newClient.OnRedraw += _this.OnRedraw;
+                    newClient.OnDarknessToggled += _this.OnDarknessToggled;
                 }
             }
         }
 
         #region IClient events handler
+        private void OnDarknessToggled(bool active)
+        {
+            _isDarknessActive = active;
+            if (active)
+            {
+                ExecuteOnUIThread.Invoke(() =>
+                    {
+                        ClearGrid();
+                        DrawCurrentTetrimino();
+                    });
+            }
+            else
+                ExecuteOnUIThread.Invoke(DrawEverything);
+        }
+
         private void OnRedraw()
         {
             _tetriminoHint = null; // reset hint

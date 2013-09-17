@@ -12,9 +12,9 @@ using TetriNET.Common.Helpers;
 using TetriNET.Logger;
 using TetriNET.WPF_WCF_Client.Helpers;
 
-namespace TetriNET.WPF_WCF_Client.Textures
+namespace TetriNET.WPF_WCF_Client.TextureManager
 {
-    public sealed class Textures : ITextureManager
+    public sealed class TextureManager : ITextureManager
     {
         private Dictionary<Specials, Brush> BigSpecialsBrushes { get; set; }
         private Dictionary<Tetriminos, Brush> BigTetriminosBrushes { get; set; }
@@ -24,9 +24,9 @@ namespace TetriNET.WPF_WCF_Client.Textures
         private Brush SmallBackground { get; set; }
 
         #region Singleton
-        public static ThreadSafeSingleton<Textures> TexturesSingleton = new ThreadSafeSingleton<Textures>(() => new Textures());
+        public static ThreadSafeSingleton<TextureManager> TexturesSingleton = new ThreadSafeSingleton<TextureManager>(() => new TextureManager());
 
-        private Textures()
+        private TextureManager()
         {
             // Singleton
         }
@@ -117,222 +117,59 @@ namespace TetriNET.WPF_WCF_Client.Textures
                 #region Big brushes
 
                 // Background
-                BigBackground = new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(0, 24, 192, 352),
-                    Stretch = Stretch.None,
-                };
+                BigBackground = ExtractBackground(image, 0, 24, 192, 352, false);
                 // Tetriminos
-                BigTetriminosBrushes.Add(Tetriminos.TetriminoI, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(0, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
-                BigTetriminosBrushes.Add(Tetriminos.TetriminoJ, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(32, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
-                BigTetriminosBrushes.Add(Tetriminos.TetriminoL, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(48, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
-                BigTetriminosBrushes.Add(Tetriminos.TetriminoO, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(16, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
-                BigTetriminosBrushes.Add(Tetriminos.TetriminoS, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(0, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
-                BigTetriminosBrushes.Add(Tetriminos.TetriminoT, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(16, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
-                BigTetriminosBrushes.Add(Tetriminos.TetriminoZ, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(64, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
+                BigTetriminosBrushes.Add(Tetriminos.TetriminoI, ExtractTetriminoBrush(Tetriminos.TetriminoI, image, 0, 0, 16, 16, false));
+                BigTetriminosBrushes.Add(Tetriminos.TetriminoJ, ExtractTetriminoBrush(Tetriminos.TetriminoJ, image, 32, 0, 16, 16, false));
+                BigTetriminosBrushes.Add(Tetriminos.TetriminoL, ExtractTetriminoBrush(Tetriminos.TetriminoL, image, 48, 0, 16, 16, false));
+                BigTetriminosBrushes.Add(Tetriminos.TetriminoO, ExtractTetriminoBrush(Tetriminos.TetriminoO, image, 16, 0, 16, 16, false));
+                BigTetriminosBrushes.Add(Tetriminos.TetriminoS, ExtractTetriminoBrush(Tetriminos.TetriminoS, image, 0, 0, 16, 16, false));
+                BigTetriminosBrushes.Add(Tetriminos.TetriminoT, ExtractTetriminoBrush(Tetriminos.TetriminoT, image, 16, 0, 16, 16, false));
+                BigTetriminosBrushes.Add(Tetriminos.TetriminoZ, ExtractTetriminoBrush(Tetriminos.TetriminoZ, image, 64, 0, 16, 16, false));
                 // Specials
-                //ACNRSBGQO
-                BigSpecialsBrushes.Add(Specials.AddLines, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(80, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
-                BigSpecialsBrushes.Add(Specials.ClearLines, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(96, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
-                BigSpecialsBrushes.Add(Specials.NukeField, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(112, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
-                BigSpecialsBrushes.Add(Specials.RandomBlocksClear, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(128, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
-                BigSpecialsBrushes.Add(Specials.SwitchFields, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(144, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
-                BigSpecialsBrushes.Add(Specials.ClearSpecialBlocks, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(160, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
-                BigSpecialsBrushes.Add(Specials.BlockGravity, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(176, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
-                BigSpecialsBrushes.Add(Specials.BlockQuake, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(192, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
-                BigSpecialsBrushes.Add(Specials.BlockBomb, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(208, 0, 16, 16),
-                    Stretch = Stretch.None
-                });
+                BigSpecialsBrushes.Add(Specials.AddLines, ExtractSpecialBrush(Specials.AddLines, image, 80, 0, 16, 16, false));
+                BigSpecialsBrushes.Add(Specials.ClearLines, ExtractSpecialBrush(Specials.ClearLines, image, 96, 0, 16, 16, false));
+                BigSpecialsBrushes.Add(Specials.NukeField, ExtractSpecialBrush(Specials.NukeField, image, 112, 0, 16, 16, false));
+                BigSpecialsBrushes.Add(Specials.RandomBlocksClear, ExtractSpecialBrush(Specials.RandomBlocksClear, image, 128, 0, 16, 16, false));
+                BigSpecialsBrushes.Add(Specials.SwitchFields, ExtractSpecialBrush(Specials.SwitchFields, image, 144, 0, 16, 16, false));
+                BigSpecialsBrushes.Add(Specials.ClearSpecialBlocks, ExtractSpecialBrush(Specials.ClearSpecialBlocks, image, 160, 0, 16, 16, false));
+                BigSpecialsBrushes.Add(Specials.BlockGravity, ExtractSpecialBrush(Specials.BlockGravity, image, 176, 0, 16, 16, false));
+                BigSpecialsBrushes.Add(Specials.BlockQuake, ExtractSpecialBrush(Specials.BlockQuake, image, 192, 0, 16, 16, false));
+                BigSpecialsBrushes.Add(Specials.BlockBomb, ExtractSpecialBrush(Specials.BlockBomb, image, 208, 0, 16, 16, false));
+                BigSpecialsBrushes.Add(Specials.ClearColumn, ExtractSpecialBrush(Specials.ClearColumn, image, 224, 0, 16, 16, false));
+                //  in tetrinet2 bitmap, Immunity is between ClearColumn & Darkness
+                BigSpecialsBrushes.Add(Specials.Darkness, ExtractSpecialBrush(Specials.Darkness, image, 256, 0, 16, 16, false));
+                BigSpecialsBrushes.Add(Specials.Confusion, ExtractSpecialBrush(Specials.Darkness, image, 272, 0, 16, 16, false));
+                //BigSpecialsBrushes.Add(Specials.ZebraField, CreateDummySpecialBrush(Specials.ZebraField, false)); // will be available when Left Gravity is implemented
 
                 #endregion
 
                 #region Small brushes
 
-                SmallBackground = new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(192, 24, 96, 176),
-                    Stretch = Stretch.None,
-                };
+                SmallBackground = ExtractBackground(image, 192, 24, 96, 176, true);
                 // Tetriminos
-                SmallTetriminosBrushes.Add(Tetriminos.TetriminoI, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(0, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-                SmallTetriminosBrushes.Add(Tetriminos.TetriminoJ, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(16, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-                SmallTetriminosBrushes.Add(Tetriminos.TetriminoL, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(24, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-                SmallTetriminosBrushes.Add(Tetriminos.TetriminoO, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(8, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-                SmallTetriminosBrushes.Add(Tetriminos.TetriminoS, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(0, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-                SmallTetriminosBrushes.Add(Tetriminos.TetriminoT, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(8, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-                SmallTetriminosBrushes.Add(Tetriminos.TetriminoZ, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(32, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
+                SmallTetriminosBrushes.Add(Tetriminos.TetriminoI, ExtractTetriminoBrush(Tetriminos.TetriminoI, image, 0, 16, 8, 8, true));
+                SmallTetriminosBrushes.Add(Tetriminos.TetriminoJ, ExtractTetriminoBrush(Tetriminos.TetriminoJ, image, 16, 16, 8, 8, true));
+                SmallTetriminosBrushes.Add(Tetriminos.TetriminoL, ExtractTetriminoBrush(Tetriminos.TetriminoL, image, 24, 16, 8, 8, true));
+                SmallTetriminosBrushes.Add(Tetriminos.TetriminoO, ExtractTetriminoBrush(Tetriminos.TetriminoO, image, 8, 16, 8, 8, true));
+                SmallTetriminosBrushes.Add(Tetriminos.TetriminoS, ExtractTetriminoBrush(Tetriminos.TetriminoS, image, 0, 16, 8, 8, true));
+                SmallTetriminosBrushes.Add(Tetriminos.TetriminoT, ExtractTetriminoBrush(Tetriminos.TetriminoT, image, 8, 16, 8, 8, true));
+                SmallTetriminosBrushes.Add(Tetriminos.TetriminoZ, ExtractTetriminoBrush(Tetriminos.TetriminoZ, image, 32, 16, 8, 8, true));
                 // Specials
-                //ACNRSBGQO
-                SmallSpecialsBrushes.Add(Specials.AddLines, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(40, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-                SmallSpecialsBrushes.Add(Specials.ClearLines, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(48, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-                SmallSpecialsBrushes.Add(Specials.NukeField, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(56, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-                SmallSpecialsBrushes.Add(Specials.RandomBlocksClear, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(64, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-                SmallSpecialsBrushes.Add(Specials.SwitchFields, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(72, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-                SmallSpecialsBrushes.Add(Specials.ClearSpecialBlocks, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(80, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-                SmallSpecialsBrushes.Add(Specials.BlockGravity, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(88, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-                SmallSpecialsBrushes.Add(Specials.BlockQuake, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(96, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-                SmallSpecialsBrushes.Add(Specials.BlockBomb, new ImageBrush(image)
-                {
-                    ViewboxUnits = BrushMappingMode.Absolute,
-                    Viewbox = new Rect(104, 16, 8, 8),
-                    Stretch = Stretch.None
-                });
-
+                SmallSpecialsBrushes.Add(Specials.AddLines, ExtractSpecialBrush(Specials.AddLines, image, 40, 16, 8, 8, true));
+                SmallSpecialsBrushes.Add(Specials.ClearLines, ExtractSpecialBrush(Specials.ClearLines, image, 48, 16, 8, 8, true));
+                SmallSpecialsBrushes.Add(Specials.NukeField, ExtractSpecialBrush(Specials.NukeField, image, 56, 16, 8, 8, true));
+                SmallSpecialsBrushes.Add(Specials.RandomBlocksClear, ExtractSpecialBrush(Specials.RandomBlocksClear, image, 64, 16, 8, 8, true));
+                SmallSpecialsBrushes.Add(Specials.SwitchFields, ExtractSpecialBrush(Specials.SwitchFields, image, 72, 16, 8, 8, true));
+                SmallSpecialsBrushes.Add(Specials.ClearSpecialBlocks, ExtractSpecialBrush(Specials.ClearSpecialBlocks, image, 80, 16, 8, 8, true));
+                SmallSpecialsBrushes.Add(Specials.BlockGravity, ExtractSpecialBrush(Specials.BlockGravity, image, 88, 16, 8, 8, true));
+                SmallSpecialsBrushes.Add(Specials.BlockQuake, ExtractSpecialBrush(Specials.BlockQuake, image, 96, 16, 8, 8, true));
+                SmallSpecialsBrushes.Add(Specials.BlockBomb, ExtractSpecialBrush(Specials.BlockBomb, image, 104, 16, 8, 8, true));
+                SmallSpecialsBrushes.Add(Specials.ClearColumn, ExtractSpecialBrush(Specials.ClearColumn, image, 112, 16, 8, 8, true));
+                //  in tetrinet2 bitmap, Immunity is between ClearColumn & Darkness
+                SmallSpecialsBrushes.Add(Specials.Darkness, ExtractSpecialBrush(Specials.Darkness, image, 128, 16, 8, 8, true));
+                SmallSpecialsBrushes.Add(Specials.Confusion, ExtractSpecialBrush(Specials.Confusion, image, 136, 16, 8, 8, true));
+                //SmallSpecialsBrushes.Add(Specials.ZebraField, CreateDummySpecialBrush(Specials.ZebraField, true)); // will be available when Left Gravity is implemented
                 #endregion
             }
             catch (Exception ex)
@@ -358,7 +195,7 @@ namespace TetriNET.WPF_WCF_Client.Textures
                 BigSpecialsBrushes.Add(Specials.BlockQuake, CreateDummySpecialBrush(Specials.BlockQuake, false));
                 BigSpecialsBrushes.Add(Specials.BlockBomb, CreateDummySpecialBrush(Specials.BlockBomb, false));
                 BigSpecialsBrushes.Add(Specials.ClearColumn, CreateDummySpecialBrush(Specials.ClearColumn, false));
-                BigSpecialsBrushes.Add(Specials.ZebraField, CreateDummySpecialBrush(Specials.ZebraField, false));
+                //BigSpecialsBrushes.Add(Specials.ZebraField, CreateDummySpecialBrush(Specials.ZebraField, false)); // will be available when Left Gravity is implemented
 
                 SmallBackground = new SolidColorBrush(Colors.Black);
                 SmallTetriminosBrushes.Add(Tetriminos.TetriminoI, new SolidColorBrush(Colors.Blue));
@@ -378,7 +215,9 @@ namespace TetriNET.WPF_WCF_Client.Textures
                 SmallSpecialsBrushes.Add(Specials.BlockQuake, CreateDummySpecialBrush(Specials.BlockQuake, true));
                 SmallSpecialsBrushes.Add(Specials.BlockBomb, CreateDummySpecialBrush(Specials.BlockBomb, true));
                 SmallSpecialsBrushes.Add(Specials.ClearColumn, CreateDummySpecialBrush(Specials.ClearColumn, true));
-                SmallSpecialsBrushes.Add(Specials.ZebraField, CreateDummySpecialBrush(Specials.ZebraField, true));
+                SmallSpecialsBrushes.Add(Specials.Darkness, CreateDummySpecialBrush(Specials.Darkness, true));
+                SmallSpecialsBrushes.Add(Specials.Confusion, CreateDummySpecialBrush(Specials.Confusion, true));
+                //SmallSpecialsBrushes.Add(Specials.ZebraField, CreateDummySpecialBrush(Specials.ZebraField, true)); // will be available when Left Gravity is implemented
             }
         }
 
@@ -414,6 +253,66 @@ namespace TetriNET.WPF_WCF_Client.Textures
         }
         #endregion
 
+        private static Brush ExtractBackground(BitmapImage image, int posX, int posY, int width, int height, bool isSmall)
+        {
+            Brush background;
+            try
+            {
+                background = new ImageBrush(image)
+                {
+                    ViewboxUnits = BrushMappingMode.Absolute,
+                    Viewbox = new Rect(posX, posY, width, height),
+                    Stretch = Stretch.None
+                };
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine(Log.LogLevels.Error, "Error while extracting background texture. Image {0}. Exception: {1}", image.BaseUri, ex);
+                background = new SolidColorBrush(Colors.Black);
+            }
+            return background;
+        }
+
+        private static Brush ExtractTetriminoBrush(Tetriminos tetrimino, BitmapImage image, int posX, int posY, int width, int height, bool isSmall)
+        {
+            Brush specialBrush;
+            try
+            {
+                specialBrush = new ImageBrush(image)
+                {
+                    ViewboxUnits = BrushMappingMode.Absolute,
+                    Viewbox = new Rect(posX, posY, width, height),
+                    Stretch = Stretch.None
+                };
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine(Log.LogLevels.Error, "Error while extracting texture for {0}. Image {1}. Exception: {2}", tetrimino, image.BaseUri, ex);
+                specialBrush = CreateDummyTetriminoBrush(tetrimino, isSmall);
+            }
+            return specialBrush;
+        }
+
+        private static Brush ExtractSpecialBrush(Specials special, BitmapImage image, int posX, int posY, int width, int height, bool isSmall)
+        {
+            Brush specialBrush;
+            try
+            {
+                specialBrush = new ImageBrush(image)
+                    {
+                        ViewboxUnits = BrushMappingMode.Absolute,
+                        Viewbox = new Rect(posX, posY, width, height),
+                        Stretch = Stretch.None
+                    };
+            }
+            catch(Exception ex)
+            {
+                Log.WriteLine(Log.LogLevels.Error, "Error while extracting texture for {0}. Image {1}. Exception: {2}", special, image.BaseUri, ex);
+                specialBrush = CreateDummySpecialBrush(special, isSmall);
+            }
+            return specialBrush;
+        }
+
         private static Brush ReadBackground(string filename, bool isSmall)
         {
             Brush background;
@@ -431,37 +330,55 @@ namespace TetriNET.WPF_WCF_Client.Textures
 
         private static Brush ReadTetriminoBrush(Tetriminos tetrimino, string filename, bool isSmall)
         {
-            Brush bigTetriminoBrush;
+            Brush tetriminoBrush;
             try
             {
-                bigTetriminoBrush = LoadBrushFromFile(filename);
+                tetriminoBrush = LoadBrushFromFile(filename);
             }
             catch (Exception ex)
             {
                 Log.WriteLine(Log.LogLevels.Error, "Error while reading texture for {0}. File {1}. Exception: {2}", tetrimino, filename, ex);
-                bigTetriminoBrush = CreateDummyTetriminoBrush(tetrimino, isSmall);
+                tetriminoBrush = CreateDummyTetriminoBrush(tetrimino, isSmall);
             }
-            return bigTetriminoBrush;
+            return tetriminoBrush;
         }
 
         private static Brush ReadSpecialBrush(Specials special, string filename, bool isSmall)
         {
-            Brush bigSpecialBrush;
+            Brush specialBrush;
             try
             {
-                bigSpecialBrush = LoadBrushFromFile(filename);
+                specialBrush = LoadBrushFromFile(filename);
             }
             catch (Exception ex)
             {
                 Log.WriteLine(Log.LogLevels.Error, "Error while reading texture for {0}. File {1}. Exception: {2}", special, filename, ex);
-                bigSpecialBrush = CreateDummySpecialBrush(special, isSmall);
+                specialBrush = CreateDummySpecialBrush(special, isSmall);
             }
-            return bigSpecialBrush;
+            return specialBrush;
         }
 
         private static Brush CreateDummyTetriminoBrush(Tetriminos tetrimino, bool isSmall)
         {
-            return new SolidColorBrush(Colors.White);
+            switch (tetrimino)
+            {
+                case Tetriminos.TetriminoI:
+                    return new SolidColorBrush(Colors.Blue);
+                case Tetriminos.TetriminoJ:
+                    return new SolidColorBrush(Colors.Green);
+                case Tetriminos.TetriminoL:
+                    return new SolidColorBrush(Colors.Magenta);
+                case Tetriminos.TetriminoO:
+                    return new SolidColorBrush(Colors.Yellow);
+                case Tetriminos.TetriminoS:
+                    return new SolidColorBrush(Colors.Blue);
+                case Tetriminos.TetriminoT:
+                    return new SolidColorBrush(Colors.Yellow);
+                case Tetriminos.TetriminoZ:
+                    return new SolidColorBrush(Colors.Red);
+                default:
+                    return new SolidColorBrush(Colors.White);
+            }
         }
 
         private static Brush CreateDummySpecialBrush(Specials special, bool isSmall)

@@ -38,11 +38,11 @@ namespace TetriNET.WPF_WCF_Client
             {
             }
             if (isDirectory)
-                Textures.Textures.TexturesSingleton.Instance.ReadFromPath(textureFilepath);
+                TextureManager.TextureManager.TexturesSingleton.Instance.ReadFromPath(textureFilepath);
             else
             {
-                Textures.Textures.TexturesSingleton.Instance.ReadFromFile(textureFilepath);
-                //Textures.Textures.TexturesSingleton.Instance.SaveToPath(@"d:\temp\x2mod\");
+                TextureManager.TextureManager.TexturesSingleton.Instance.ReadFromFile(textureFilepath);
+                //Textures.Textures.TexturesSingleton.Instance.SaveToPath(@"d:\temp\tetrinet2\");
             }
 
             //

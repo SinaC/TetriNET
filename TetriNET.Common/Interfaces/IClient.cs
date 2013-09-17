@@ -34,6 +34,8 @@ namespace TetriNET.Common.Interfaces
     public delegate void ClientLevelChangedHandler();
     public delegate void ClientSpecialUsedHandler(string playerName, string targetName, int specialId, Specials special);
     public delegate void ClientPlayerAddLines(string playerName, int specialId, int count);
+    public delegate void ClientToggleDarkness(bool active);
+    public delegate void ClientToggleConfusion(bool active);
 
     public interface IClient
     {
@@ -89,6 +91,8 @@ namespace TetriNET.Common.Interfaces
         event ClientLevelChangedHandler OnLevelChanged;
         event ClientSpecialUsedHandler OnSpecialUsed;
         event ClientPlayerAddLines OnPlayerAddLines;
+        event ClientToggleDarkness OnDarknessToggled;
+        event ClientToggleConfusion OnConfusionToggled;
 
         bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc);
         bool Disconnect();
