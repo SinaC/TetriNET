@@ -3,12 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:options="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Options"
-             xmlns:validators="clr-namespace:TetriNET.WPF_WCF_Client.Validators" mc:Ignorable="d" 
+             xmlns:validators="clr-namespace:TetriNET.WPF_WCF_Client.Validators"
+             xmlns:optionsViewModel="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Options"
+             xmlns:options="clr-namespace:TetriNET.WPF_WCF_Client.Views.Options"
+             mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640"
-             d:DataContext="{d:DesignInstance options:ClientOptionsViewModel}">
+             d:DataContext="{d:DesignInstance optionsViewModel:ClientOptionsViewModel}">
     <Grid IsEnabled="{Binding IsGameNotStarted}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -21,10 +24,14 @@
         <CheckBox Grid.Row="0" IsChecked="{Binding Options.AutomaticallySwitchToPartyLineOnRegistered, Mode=TwoWay}">Switch on connect</CheckBox>
         <CheckBox Grid.Row="1" IsChecked="{Binding Options.AutomaticallySwitchToPlayFieldOnGameStarted, Mode=TwoWay}">Switch on start/stop game</CheckBox>
         <CheckBox Grid.Row="2" IsChecked="{Binding Options.DisplayOpponentsFieldEvenWhenNotPlaying, Mode=TwoWay}">Always show opponents field</CheckBox>
-        <GroupBox Grid.Row="3" Header="Controls">
-
+        <CheckBox Grid.Row="3" IsChecked="{Binding Options.IsDeveloperModeActivated, Mode=TwoWay}">Developer mode</CheckBox>
+        <GroupBox Grid.Row="4" Header="Controls"> 
+            <Grid>
+            <!-- TODO: put KeyBox in ItemsControl binding on Options.KeySettings -->
+            <!--<options:KeyBox KeySetting="{Binding Options.KeySettings[0]}"/>-->
+            </Grid>
         </GroupBox>
-        <GroupBox Grid.Row="4" Header="Sensibility">
+        <GroupBox Grid.Row="5" Header="Sensibility">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

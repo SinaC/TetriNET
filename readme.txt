@@ -13,6 +13,7 @@ AdvancedPierreDellacherieOnePiece: finish GetHoleDepthForColumn
 Connect+Register and Disconnect+Unregister should be merged into one method
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
 WPF Client: save win list locally if server master
+WPF Client: redefine controls in client options -> started, finish ClientOptionsView, Options and use KeySettings in PlayFieldView
 Confusion could be managed client-side
 
 wcf + jquery

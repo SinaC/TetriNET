@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance statistics:ClientStatisticsViewModel}"
              d:DesignHeight="450" d:DesignWidth="600">
-    <!-- TODO: create control with one group box (datacontext: check ClientStatisticsViewModel) -->
+    <!-- TODO: create control with one group box (datacontext: check ClientStatisticsViewModel) and reuse it 4 times -->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

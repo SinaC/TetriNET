@@ -82,6 +82,7 @@
     <Compile Include="Converters\ChatColorBrushConverter.cs" />
     <Compile Include="Helpers\EventToCommand.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
+    <Compile Include="Models\KeySetting.cs" />
     <Compile Include="ViewModels\ITabIndex.cs" />
     <Compile Include="TextureManager\ITextureManager.cs" />
     <Compile Include="ViewModels\Connection\ConnectionControlViewModel.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Views\Options\ClientOptionsView.xaml.cs">
       <DependentUpon>ClientOptionsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Options\KeyBox.cs" />
     <Compile Include="Views\Options\ServerOptionsView.xaml.cs">
       <DependentUpon>ServerOptionsView.xaml</DependentUpon>
     </Compile>

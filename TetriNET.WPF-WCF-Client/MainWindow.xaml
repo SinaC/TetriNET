@@ -13,6 +13,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers"
         xmlns:test="clr-namespace:TetriNET.WPF_WCF_Client.Views.Test"
+        xmlns:models="clr-namespace:TetriNET.WPF_WCF_Client.Models"
         mc:Ignorable="d"
         UseLayoutRounding="True"
         MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
@@ -30,6 +31,15 @@
         <CommandBinding Command="ApplicationCommands.Close"
                         Executed="CloseCommandHandler"/>
     </Window.CommandBindings>-->
+<Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
         <TabControl SelectedIndex="{Binding ActiveTabItemIndex}">
             <!--
@@ -54,118 +64,9 @@
             -->
             <TabItem Header="Connect">
                 <connection:ConnectionView DataContext="{Binding ConnectionViewModel}"/>
-                <!-- TEST CODE -->
-                <!--
-                <StackPanel Orientation="Vertical" VerticalAlignment="Top">
-                    <StackPanel Orientation="Horizontal">
-                        <Rectangle Width="16" Height="16" Margin="5,5">
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp" Stretch="None" ViewboxUnits="Absolute" Viewbox="0,0,16,16"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <Rectangle Width="16" Height="16" Margin="5,5">
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp" Stretch="None" ViewboxUnits="Absolute" Viewbox="16,0,16,16"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <Rectangle Width="16" Height="16" Margin="5,5">
-                            
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp" Stretch="None" ViewboxUnits="Absolute" Viewbox="32,0,16,16"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <Rectangle Width="16" Height="16" Margin="5,5">
-                            
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp" Stretch="None" ViewboxUnits="Absolute" Viewbox="48,0,16,16"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <Rectangle Width="16" Height="16" Margin="5,5">
-                            
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp" Stretch="None" ViewboxUnits="Absolute" Viewbox="64,0,16,16"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Rectangle Width="16" Height="16" Margin="5,5">
-                            
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp" Stretch="None" ViewboxUnits="Absolute" Viewbox="80,0,16,16"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <Rectangle Width="16" Height="16" Margin="5,5">
-                            
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp" Stretch="None" ViewboxUnits="Absolute" Viewbox="96,0,16,16"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <Rectangle Width="16" Height="16" Margin="5,5">
-                            
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp" Stretch="None" ViewboxUnits="Absolute" Viewbox="112,0,16,16"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <Rectangle Width="16" Height="16" Margin="5,5">
-                            
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp" Stretch="None" ViewboxUnits="Absolute" Viewbox="128,0,16,16"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <Rectangle Width="16" Height="16" Margin="5,5">
-                            
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp" Stretch="None" ViewboxUnits="Absolute" Viewbox="144,0,16,16"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <Rectangle Width="16" Height="16" Margin="5,5">
-                            
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp" Stretch="None" ViewboxUnits="Absolute" Viewbox="160,0,16,16"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <Rectangle Width="16" Height="16" Margin="5,5">
-                            
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp" Stretch="None" ViewboxUnits="Absolute" Viewbox="176,0,16,16"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <Rectangle Width="16" Height="16" Margin="5,5">
-                            
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp" Stretch="None" ViewboxUnits="Absolute" Viewbox="192,0,16,16"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                        <Rectangle Width="16" Height="16" Margin="5,5">
-                            
-                            <Rectangle.Fill>
-                                <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp" Stretch="None" ViewboxUnits="Absolute" Viewbox="208,0,16,16"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
-                    </StackPanel>
-                </StackPanel>
-                -->
             </TabItem>
             <TabItem Header="Options">
                 <options:OptionsView DataContext="{Binding Path=OptionsViewModel}"/>
-                <!-- TEST CODE -->
-                <!--
-                <StackPanel Orientation="Horizontal">
-                    <Rectangle HorizontalAlignment="Left" VerticalAlignment="Top" Width="288" Height="376" >
-                        
-                        <Rectangle.Fill>
-                            <ImageBrush ImageSource="D:\Oldies\TetriNET\x2mod\x2mod.bmp"  Viewbox="0,0,0.5,0.5" Stretch="None" AlignmentX="Left" AlignmentY="Top"/>
-                        </Rectangle.Fill>
-                    </Rectangle>
-                    <Rectangle Fill="Aqua" Width="10" Height="Auto"/>
-                    <Rectangle HorizontalAlignment="Left" VerticalAlignment="Top" Width="288" Height="376" >
-                        
-                        <Rectangle.Fill>
-                            <ImageBrush ImageSource="D:\Oldies\TetriNET\DATA\TNETBLKS.BMP" Viewbox="0,0,0.5,0.5" Stretch="None" AlignmentX="Left" AlignmentY="Top"/>
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </StackPanel>
-                -->
             </TabItem>
             <TabItem Header="Win list">
                 <winList:WinListView DataContext="{Binding Path=WinListViewModel}" />
@@ -176,10 +77,10 @@
             <TabItem Header="Play fields">
                 <playField:PlayFieldView DataContext="{Binding Path=PlayFieldViewModel}"/>
             </TabItem>
-            <TabItem Header="Client statistics">
+            <TabItem Header="Client statistics" Visibility="{Binding Source={x:Static models:Options.OptionsSingleton}, Path=Instance.IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <statistics:ClientStatisticsView DataContext="{Binding Path=ClientStatisticsViewModel}"/>
             </TabItem>
-            <TabItem Header="Textures test">
+            <TabItem Header="Textures test" Visibility="{Binding Source={x:Static models:Options.OptionsSingleton}, Path=Instance.IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <test:TestView />
             </TabItem>
 <!--

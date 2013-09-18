@@ -1,4 +1,5 @@
-﻿using TetriNET.Common.DataContracts;
+﻿using System.Collections.Generic;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.WPF_WCF_Client.Properties;
 
@@ -60,6 +61,28 @@ namespace TetriNET.WPF_WCF_Client.Models
                 }
             }
         }
+
+        private bool _isDeveloperModeActivated;
+        public bool IsDeveloperModeActivated
+        {
+            get { return _isDeveloperModeActivated; }
+            set
+            {
+                if (_isDeveloperModeActivated != value)
+                {
+                    _isDeveloperModeActivated = value;
+                    Settings.Default.IsDeveloperModeActivated = _isDeveloperModeActivated;
+                    Settings.Default.Save();
+                }
+            }
+        }
+
+        // TODO: finish following code (imply modification in KeyBox.cs, ClientOptionsViewModel.cs and ClientOptionsView.xaml (.cs)
+        #region Key settings
+
+        public List<KeySetting> KeySettings { get; set; }
+
+        #endregion
 
         #region Sensibility
         private bool _dropSensibilityActivated;
@@ -190,11 +213,12 @@ namespace TetriNET.WPF_WCF_Client.Models
         }
         #endregion
 
-        public void SetSavedOptions()
+        public void GetSavedOptions()
         {
             OptionsSingleton.Instance.AutomaticallySwitchToPartyLineOnRegistered = Settings.Default.AutomaticallySwitchToPartyLineOnRegistered;
             OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted = Settings.Default.AutomaticallySwitchToPlayFieldOnGameStarted;
             OptionsSingleton.Instance.DisplayOpponentsFieldEvenWhenNotPlaying = Settings.Default.DisplayOpponentsFieldEvenWhenNotPlaying;
+            OptionsSingleton.Instance.IsDeveloperModeActivated = Settings.Default.IsDeveloperModeActivated;
             OptionsSingleton.Instance.DropSensibilityActivated = Settings.Default.DropSensibilityActivated;
             OptionsSingleton.Instance.DropSensibility = Settings.Default.DropSensibility;
             OptionsSingleton.Instance.DownSensibilityActivated = Settings.Default.DownSensibilityActivated;

@@ -47,7 +47,7 @@ namespace TetriNET.WPF_WCF_Client
             }
 
             //
-            Models.Options.OptionsSingleton.Instance.SetSavedOptions();
+            Models.Options.OptionsSingleton.Instance.GetSavedOptions();
 
 
             //
