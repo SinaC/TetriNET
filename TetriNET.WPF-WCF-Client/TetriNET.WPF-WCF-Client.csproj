@@ -140,6 +140,9 @@
     <Compile Include="Views\PartyLine\PartyLineView.xaml.cs">
       <DependentUpon>PartyLineView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Test\TestView.xaml.cs">
+      <DependentUpon>TestView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\WinList\WinListView.xaml.cs">
       <DependentUpon>WinListView.xaml</DependentUpon>
     </Compile>
@@ -225,6 +228,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PartyLine\PartyLineView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Test\TestView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -12,6 +12,7 @@
         xmlns:playField="clr-namespace:TetriNET.WPF_WCF_Client.Views.PlayField"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers"
+        xmlns:test="clr-namespace:TetriNET.WPF_WCF_Client.Views.Test"
         mc:Ignorable="d"
         UseLayoutRounding="True"
         MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
@@ -177,6 +178,9 @@
             </TabItem>
             <TabItem Header="Client statistics">
                 <statistics:ClientStatisticsView DataContext="{Binding Path=ClientStatisticsViewModel}"/>
+            </TabItem>
+            <TabItem Header="Textures test">
+                <test:TestView />
             </TabItem>
 <!--
             <TabItem DockPanel.Dock="Right" Header="X">

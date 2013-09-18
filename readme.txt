@@ -16,8 +16,13 @@ Move strategy: rotation followed by translation AND translation followed by rota
 
 Connect+Register and Disconnect+Unregister should be merged into one method
 
+enum Attribute on Tetriminos/Specials: Playable or Available (ShortDescription='one character' LongDescription="string used by first special in inventory")
+
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
 WPF Client: save win list locally if server master
+WPF Client: split client and server options
+WPF Client: client options: sensibility -> gamecontroller needs interface and has to be created by MainViewModel
+WPF Client: new tab with graphics tests like displaying every textures on a green background to detect every problems
 
 Confusion could be managed client-side
 
