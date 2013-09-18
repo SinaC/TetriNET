@@ -78,6 +78,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AI\GenericBot.cs" />
     <Compile Include="Converters\ChatColorBrushConverter.cs" />
     <Compile Include="Helpers\EventToCommand.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
@@ -86,6 +87,8 @@
     <Compile Include="ViewModels\Connection\ConnectionControlViewModel.cs" />
     <Compile Include="ViewModels\Connection\ConnectionViewModel.cs" />
     <Compile Include="ViewModels\Connection\ServerListViewModel.cs" />
+    <Compile Include="ViewModels\Options\ClientOptionsViewModel.cs" />
+    <Compile Include="ViewModels\Options\ServerOptionsViewModel.cs" />
     <Compile Include="ViewModels\PlayField\PlayerViewModel.cs" />
     <Compile Include="ViewModels\PlayField\GameInfoViewModel.cs" />
     <Compile Include="ViewModels\PlayField\PlayFieldViewModel.cs" />
@@ -100,6 +103,12 @@
     <Compile Include="ViewModels\WinList\WinListViewModel.cs" />
     <Compile Include="Views\Connection\ConnectionControl.xaml.cs">
       <DependentUpon>ConnectionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Options\ClientOptionsView.xaml.cs">
+      <DependentUpon>ClientOptionsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Options\ServerOptionsView.xaml.cs">
+      <DependentUpon>ServerOptionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PlayField\GameInfoControl.xaml.cs">
       <DependentUpon>GameInfoControl.xaml</DependentUpon>
@@ -146,6 +155,14 @@
     <Compile Include="Views\WinList\WinListView.xaml.cs">
       <DependentUpon>WinListView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\Options\ClientOptionsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Options\ServerOptionsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PartyLine\ChatControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

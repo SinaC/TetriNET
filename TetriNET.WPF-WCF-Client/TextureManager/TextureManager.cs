@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Logger;
 using TetriNET.WPF_WCF_Client.Helpers;
@@ -71,7 +71,8 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             SmallTetriminosBrushes = new Dictionary<Tetriminos, Brush>();
             if (Directory.Exists(folderPath))
             {
-                foreach (Specials special in Enum.GetValues(typeof(Specials)).Cast<Specials>().Where(x => x != Specials.Invalid))
+                //foreach (Specials special in Enum.GetValues(typeof(Specials)).Cast<Specials>().Where(x => x != Specials.Invalid))
+                foreach (Specials special in EnumHelper.GetAvailableValues<Specials>())
                 {
                     string bigFilename = Path.Combine(folderPath, "big_" + special + ".bmp");
                     BigSpecialsBrushes.Add(special, ReadSpecialBrush(special, bigFilename, false));
@@ -79,7 +80,8 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                     SmallSpecialsBrushes.Add(special, ReadSpecialBrush(special, smallFilename, true));
                 }
 
-                foreach (Tetriminos tetrimino in Enum.GetValues(typeof(Tetriminos)).Cast<Tetriminos>().Where(x => x != Tetriminos.Invalid && x != Tetriminos.TetriminoLast && !x.ToString().Contains("Reserved")))
+                //foreach (Tetriminos tetrimino in Enum.GetValues(typeof(Tetriminos)).Cast<Tetriminos>().Where(x => x != Tetriminos.Invalid && x != Tetriminos.TetriminoLast && !x.ToString().Contains("Reserved")))
+                foreach (Tetriminos tetrimino in EnumHelper.GetAvailableValues<Tetriminos>())
                 {
                     string bigFilename = Path.Combine(folderPath, "big_" + tetrimino + ".bmp");
                     BigTetriminosBrushes.Add(tetrimino, ReadTetriminoBrush(tetrimino, bigFilename, false));
@@ -89,13 +91,15 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             }
             else
             {
-                foreach (Specials special in Enum.GetValues(typeof(Specials)).Cast<Specials>().Where(x => x != Specials.Invalid))
+                //foreach (Specials special in Enum.GetValues(typeof(Specials)).Cast<Specials>().Where(x => x != Specials.Invalid))
+                foreach (Specials special in EnumHelper.GetAvailableValues<Specials>())
                 {
                     BigSpecialsBrushes.Add(special, CreateDummySpecialBrush(special, false));
                     SmallSpecialsBrushes.Add(special, CreateDummySpecialBrush(special, true));
                 }
 
-                foreach (Tetriminos tetrimino in Enum.GetValues(typeof(Tetriminos)).Cast<Tetriminos>().Where(x => x != Tetriminos.Invalid && x != Tetriminos.TetriminoLast && !x.ToString().Contains("Reserved")))
+                //foreach (Tetriminos tetrimino in Enum.GetValues(typeof(Tetriminos)).Cast<Tetriminos>().Where(x => x != Tetriminos.Invalid && x != Tetriminos.TetriminoLast && !x.ToString().Contains("Reserved")))
+                foreach (Tetriminos tetrimino in EnumHelper.GetAvailableValues<Tetriminos>())
                 {
                     BigTetriminosBrushes.Add(tetrimino, CreateDummyTetriminoBrush(tetrimino, false));
                     SmallTetriminosBrushes.Add(tetrimino, CreateDummyTetriminoBrush(tetrimino, true));
@@ -146,6 +150,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
 
                 #region Small brushes
 
+                // Background
                 SmallBackground = ExtractBackground(image, 192, 24, 96, 176, true);
                 // Tetriminos
                 SmallTetriminosBrushes.Add(Tetriminos.TetriminoI, ExtractTetriminoBrush(Tetriminos.TetriminoI, image, 0, 16, 8, 8, true));
@@ -170,6 +175,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                 SmallSpecialsBrushes.Add(Specials.Darkness, ExtractSpecialBrush(Specials.Darkness, image, 128, 16, 8, 8, true));
                 SmallSpecialsBrushes.Add(Specials.Confusion, ExtractSpecialBrush(Specials.Confusion, image, 136, 16, 8, 8, true));
                 //SmallSpecialsBrushes.Add(Specials.ZebraField, CreateDummySpecialBrush(Specials.ZebraField, true)); // will be available when Left Gravity is implemented
+
                 #endregion
             }
             catch (Exception ex)

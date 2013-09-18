@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.ConsoleWCFServer.Ban;
 using TetriNET.ConsoleWCFServer.Host;

@@ -7,27 +7,7 @@ using TetriNET.Logger;
 
 namespace TetriNET.WPF_WCF_Client.GameController
 {
-    public enum Commands
-    {
-        Invalid,
-
-        Drop,
-        Down,
-        Left,
-        Right,
-        RotateClockwise,
-        RotateCounterclockwise,
-
-        DiscardFirstSpecial,
-        UseSpecialOn1,
-        UseSpecialOn2,
-        UseSpecialOn3,
-        UseSpecialOn4,
-        UseSpecialOn5,
-        UseSpecialOn6,
-    }
-
-    public class GameController
+    public class GameController : IGameController
     {
         private static readonly Commands[] CommandsAvailableForConfusion =
             {
@@ -40,7 +20,6 @@ namespace TetriNET.WPF_WCF_Client.GameController
             };
 
         private readonly Random _random;
-        private readonly IClient _client;
         private readonly Dictionary<Commands, DispatcherTimer> _timers = new Dictionary<Commands, DispatcherTimer>();
         private readonly Dictionary<Commands, Commands> _confusionMapping = new Dictionary<Commands, Commands>();
 
@@ -52,7 +31,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
                 throw new ArgumentNullException("client");
 
             _random = new Random();
-            _client = client;
+            Client = client;
             _isConfusionActive = false;
 
             client.OnGamePaused += OnGamePaused;
@@ -60,32 +39,49 @@ namespace TetriNET.WPF_WCF_Client.GameController
             client.OnConfusionToggled += OnConfusionToggled;
         }
 
-        public void SubscribeToTickHandler()
+        #region IGameController
+
+        public IClient Client { get; private set; }
+
+        public void AddSensibility(Commands cmd, int interval)
         {
-            AddTimer(Commands.Drop, 100, DropTickHandler);
-            AddTimer(Commands.Down, 50, DownTickHandler);
-            AddTimer(Commands.Left, 100, LeftTickHandler);
-            AddTimer(Commands.Right, 100, RightTickHandler);
+            DispatcherTimer timer;
+            if (_timers.TryGetValue(cmd, out timer))
+                timer.Interval = TimeSpan.FromMilliseconds(interval);
+            else
+                switch (cmd)
+                {
+                    case Commands.Drop:
+                        AddTimer(Commands.Drop, interval, DropTickHandler);
+                        break;
+                    case Commands.Down:
+                        AddTimer(Commands.Down, interval, DownTickHandler);
+                        break;
+                    case Commands.Left:
+                        AddTimer(Commands.Left, interval, LeftTickHandler);
+                        break;
+                    case Commands.Right:
+                        AddTimer(Commands.Right, interval, RightTickHandler);
+                        break;
+                }
         }
 
-        public void UnsubscribeToTickHandler()
+        public void RemoveSensibility(Commands cmd)
         {
-            RemoveTimer(Commands.Drop);
-            RemoveTimer(Commands.Down);
-            RemoveTimer(Commands.Left);
-            RemoveTimer(Commands.Right);
+            if (_timers.ContainsKey(cmd))
+                RemoveTimer(cmd);
         }
 
         public void UnsubscribeFromClientEvents()
         {
-            _client.OnGamePaused -= OnGamePaused;
-            _client.OnGameFinished -= OnGameFinished;
-            _client.OnConfusionToggled -= OnConfusionToggled;
+            Client.OnGamePaused -= OnGamePaused;
+            Client.OnGameFinished -= OnGameFinished;
+            Client.OnConfusionToggled -= OnConfusionToggled;
         }
 
         public void KeyDown(Commands cmd)
         {
-            if (_client.IsPlaying)
+            if (Client.IsPlaying)
             {
                 if (_isConfusionActive)
                 {
@@ -98,44 +94,44 @@ namespace TetriNET.WPF_WCF_Client.GameController
                 switch (cmd)
                 {
                     case Commands.Drop:
-                        _client.Drop();
+                        Client.Drop();
                         break;
                     case Commands.Down:
-                        _client.MoveDown();
+                        Client.MoveDown();
                         break;
                     case Commands.Left:
-                        _client.MoveLeft();
+                        Client.MoveLeft();
                         break;
                     case Commands.Right:
-                        _client.MoveRight();
+                        Client.MoveRight();
                         break;
                     case Commands.RotateClockwise:
-                        _client.RotateClockwise();
+                        Client.RotateClockwise();
                         break;
                     case Commands.RotateCounterclockwise:
-                        _client.RotateCounterClockwise();
+                        Client.RotateCounterClockwise();
                         break;
 
                     case Commands.DiscardFirstSpecial:
-                        _client.DiscardFirstSpecial();
+                        Client.DiscardFirstSpecial();
                         break;
                     case Commands.UseSpecialOn1:
-                        _client.UseSpecial(0);
+                        Client.UseSpecial(0);
                         break;
                     case Commands.UseSpecialOn2:
-                        _client.UseSpecial(1);
+                        Client.UseSpecial(1);
                         break;
                     case Commands.UseSpecialOn3:
-                        _client.UseSpecial(2);
+                        Client.UseSpecial(2);
                         break;
                     case Commands.UseSpecialOn4:
-                        _client.UseSpecial(3);
+                        Client.UseSpecial(3);
                         break;
                     case Commands.UseSpecialOn5:
-                        _client.UseSpecial(4);
+                        Client.UseSpecial(4);
                         break;
                     case Commands.UseSpecialOn6:
-                        _client.UseSpecial(5);
+                        Client.UseSpecial(5);
                         break;
                 }
                 if (_timers.ContainsKey(cmd))
@@ -148,6 +144,8 @@ namespace TetriNET.WPF_WCF_Client.GameController
             if (_timers.ContainsKey(cmd))
                 _timers[cmd].Stop();
         }
+
+        #endregion
 
         #region IClient event handlers
 
@@ -183,22 +181,22 @@ namespace TetriNET.WPF_WCF_Client.GameController
 
         private void DropTickHandler(object sender, EventArgs elapsedEventArgs)
         {
-            _client.Drop();
+            Client.Drop();
         }
 
         private void DownTickHandler(object sender, EventArgs e)
         {
-            _client.MoveDown();
+            Client.MoveDown();
         }
 
         private void LeftTickHandler(object sender, EventArgs e)
         {
-            _client.MoveLeft();
+            Client.MoveLeft();
         }
 
         private void RightTickHandler(object sender, EventArgs e)
         {
-            _client.MoveRight();
+            Client.MoveRight();
         }
 
         private void AddTimer(Commands cmd, double interval, EventHandler handler)
@@ -221,7 +219,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
             }
         }
 
-        private List<T> Shuffle<T>(Random random, IEnumerable<T> list)
+        private static List<T> Shuffle<T>(Random random, IEnumerable<T> list)
         {
             List<T> newList = list.Select(x => x).ToList();
             for (int i = newList.Count; i > 1; i--)

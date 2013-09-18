@@ -1,4 +1,5 @@
-﻿using TetriNET.Common.GameDatas;
+﻿using TetriNET.Client;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
@@ -70,9 +71,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             PlayerName = "Not registered";
         }
 
-        private void OnPlayerRegistered(bool succeeded, int playerId)
+        private void OnPlayerRegistered(RegistrationResults result, int playerId)
         {
-            if (succeeded)
+            if (result == RegistrationResults.RegistrationSuccessful)
             {
                 PlayerId = playerId;
                 PlayerName = Client.Name;

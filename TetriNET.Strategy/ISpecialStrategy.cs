@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Strategy

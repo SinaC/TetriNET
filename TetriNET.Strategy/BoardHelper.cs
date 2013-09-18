@@ -264,6 +264,49 @@ namespace TetriNET.Strategy
             return 0;
         }
 
+        // Number of block that’s directly above a hole
+        public static int GetBlockadesForColumn(IBoard board, int x)
+        {
+            int count = 0;
+            //for (int y = 1; y <= board.Height; y++)
+            //{
+            //    if (board[x, y] == 0)
+            //    {
+            //        while (board[x, y] == 0 && y <= board.Height)
+            //            y++;
+            //        if (y > board.Height)
+            //            break;
+            //        while (board[x, y] > 0 && y <= board.Height)
+            //        {
+            //            y++;
+            //            count++;
+            //        }
+            //        if (y > board.Height)
+            //            break;
+            //        y--;
+            //    }
+            //}
+            bool enable = false;
+            for (int y = 1; y <= board.Height; y++)
+            {
+                if (board[x, y] == 0)
+                    enable = true;
+                else if (enable)
+                    count++;
+            }
+            return count;
+        }
+
+        public static int GetTotalCellHeight(IBoard board)
+        {
+            int total = 0;
+            for (int y = 1; y <= board.Height; y++)
+                for (int x = 1; x <= board.Width; x++)
+                    if (board[x, y] != 0)
+                        total += y;
+            return total;
+        }
+
         private static int GetBlanksDownBeforeBlockedForColumn(IBoard board, int x, int topY) // result range: 0..topY
         {
             int totalBlanksBeforeBlocked = 0;

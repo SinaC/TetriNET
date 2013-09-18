@@ -3,7 +3,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using TetriNET.Common.GameDatas;
+using TetriNET.Client;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.Logger;
 using TetriNET.WPF_WCF_Client.Helpers;
@@ -172,7 +173,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             IsServerMaster = Client.IsServerMaster;
         }
 
-        private void OnPlayerRegistered(bool succeeded, int playerId)
+        private void OnPlayerRegistered(RegistrationResults result, int playerId)
         {
             ClearEntries();
             AddEntry(playerId, Client.Name);

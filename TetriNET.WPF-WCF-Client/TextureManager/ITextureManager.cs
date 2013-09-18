@@ -1,5 +1,5 @@
 ﻿using System.Windows.Media;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 
 namespace TetriNET.WPF_WCF_Client.TextureManager
 {

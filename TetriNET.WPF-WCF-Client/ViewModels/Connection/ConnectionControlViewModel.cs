@@ -1,7 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media;
-using TetriNET.Common.GameDatas;
+using TetriNET.Client;
+using TetriNET.Common.DataContracts;
+using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.Properties;
@@ -174,14 +177,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             OnPropertyChanged("ConnectDisconnectLabel");
         }
 
-        private void OnPlayerRegistered(bool succeeded, int playerId)
+        private void OnPlayerRegistered(RegistrationResults result, int playerId)
         {
-            if (succeeded)
+            if (result == RegistrationResults.RegistrationSuccessful)
                SetConnectionResultMessage(String.Format("Registered as player {0}", playerId + 1), Colors.Green);
             else
             {
+                DescriptionAttribute attribute = EnumHelper.GetAttribute<DescriptionAttribute>(result);
                 Client.Disconnect();
-                SetConnectionResultMessage("Registration failed", Colors.Red);
+                SetConnectionResultMessage(String.Format("Registration failed {0}", attribute == null ? result.ToString() : attribute.Description), Colors.Red);
             }
             _isRegistered = Client.IsRegistered;
             OnPropertyChanged("ConnectDisconnectLabel");

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using TetriNET.Common.Contracts;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.Logger;
 
@@ -69,11 +69,27 @@ namespace TetriNET.GenericHost
 
             // TODO: check ban list
 
+            RegistrationResults result = RegistrationResults.RegistrationSuccessful;
             IPlayer player = null;
             int id = -1;
             lock (PlayerManager.LockObject)
             {
-                if (!String.IsNullOrEmpty(playerName) && PlayerManager[playerName] == null && PlayerManager.PlayerCount < PlayerManager.MaxPlayers)
+                if (String.IsNullOrEmpty(playerName) || playerName.Length > 20)
+                {
+                    result = RegistrationResults.RegistrationFailedInvalidName;
+                    Log.WriteLine(Log.LogLevels.Warning, "Cannot register {0} because name is invalid", playerName);
+                }
+                else if (PlayerManager[playerName] != null)
+                {
+                    result = RegistrationResults.RegistrationFailedPlayerAlreadyExists;
+                    Log.WriteLine(Log.LogLevels.Warning, "Cannot register {0} because it already exists", playerName);
+                }
+                else if (PlayerManager.PlayerCount >= PlayerManager.MaxPlayers)
+                {
+                    result = RegistrationResults.RegistrationFailedTooManyPlayers;
+                    Log.WriteLine(Log.LogLevels.Warning, "Cannot register {0} because too many players are already connected", playerName);
+                }
+                else
                 {
                     player = CreatePlayerFunc(playerName, callback);
                     //
@@ -81,12 +97,8 @@ namespace TetriNET.GenericHost
                     //
                     id = PlayerManager.Add(player);
                 }
-                else
-                {
-                    Log.WriteLine(Log.LogLevels.Warning, "Cannot register {0} because name is invalid or already exists or too many players connected", playerName);
-                }
             }
-            if (id >= 0 && player != null)
+            if (id >= 0 && player != null && result == RegistrationResults.RegistrationSuccessful)
             {
                 //
                 player.ResetTimeout(); // player alive
@@ -98,7 +110,7 @@ namespace TetriNET.GenericHost
             {
                 Log.WriteLine(Log.LogLevels.Info, "Register failed for player {0}", playerName);
                 //
-                callback.OnPlayerRegistered(false, -1, false);
+                callback.OnPlayerRegistered(result, -1, false);
             }
         }
 

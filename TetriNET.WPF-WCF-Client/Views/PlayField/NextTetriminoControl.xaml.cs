@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
 

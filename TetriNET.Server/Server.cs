@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.Randomizer;
@@ -297,7 +297,7 @@ namespace TetriNET.Server
             Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "New player:[{0}]{1}", playerId, player.Name);
 
             // Send player id back to player
-            player.OnPlayerRegistered(true, playerId, State == States.GameStarted || State == States.GamePaused);
+            player.OnPlayerRegistered(RegistrationResults.RegistrationSuccessful, playerId, State == States.GameStarted || State == States.GamePaused);
 
             // Inform new player about other players
             foreach (IPlayer p in _playerManager.Players.Where(x => x != player))

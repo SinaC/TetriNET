@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Common.Interfaces
 {

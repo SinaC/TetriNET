@@ -1,5 +1,6 @@
 ﻿using System.Windows.Input;
-using TetriNET.Common.GameDatas;
+using TetriNET.Client;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
 
@@ -143,7 +144,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             UpdateEnabilityAndLabel();
         }
 
-        private void OnPlayerRegistered(bool succeeded, int playerId)
+        private void OnPlayerRegistered(RegistrationResults result, int playerId)
         {
             _isRegistered = Client.IsRegistered;
             _isGameStarted = Client.IsGameStarted;

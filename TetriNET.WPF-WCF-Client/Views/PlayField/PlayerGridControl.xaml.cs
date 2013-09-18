@@ -5,7 +5,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using TetriNET.Common.GameDatas;
+using TetriNET.Client;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.Strategy;
@@ -320,12 +321,12 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             PlayerId = -1;
         }
 
-        private void OnPlayerRegistered(bool succeeded, int playerId)
+        private void OnPlayerRegistered(RegistrationResults result, int playerId)
         {
-            if (succeeded)
-            {
+            if (result == RegistrationResults.RegistrationSuccessful)
                 PlayerId = playerId;
-            }
+            else
+                PlayerId = -1;
         }
 
         private void OnPlayerUnregistered()

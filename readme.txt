@@ -1,4 +1,4 @@
-TODO:
+<TODO:
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
 Manage new connection and disconnection at one place -> ideally in Server because there can be many hosts and we can remove a player only once
 when Server calls BanPlayer on hosts, only one host must add it to ban manager:
@@ -9,23 +9,17 @@ discovery doesn't work on cross/multiple machine
 client/server version used when registering
 add room notion in server (server can handle multiple rooms and client register on a room)
 SinaCSpecials: use gravity when board has enough holes or when to high + zebra + clear column + confusion + darkness
-GameController -> interface
-
 AdvancedPierreDellacherieOnePiece: finish GetHoleDepthForColumn
-Move strategy: rotation followed by translation AND translation followed by rotation (useful with tetrimino I and board almost full)
-
 Connect+Register and Disconnect+Unregister should be merged into one method
-
-enum Attribute on Tetriminos/Specials: Playable or Available (ShortDescription='one character' LongDescription="string used by first special in inventory")
-
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
 WPF Client: save win list locally if server master
-WPF Client: split client and server options
-WPF Client: client options: sensibility -> gamecontroller needs interface and has to be created by MainViewModel
-WPF Client: new tab with graphics tests like displaying every textures on a green background to detect every problems
-
 Confusion could be managed client-side
 
+wcf + jquery
+http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-with-nettcpbinding
+http://www.codeproject.com/Articles/132809/Calling-WCF-Services-using-jQuery
+http://www.codeproject.com/Questions/604639/howplustoplusconsumepluswcfplusservicepluswithplus
+http://www.dotnetcurry.com/ShowArticle.aspx?ID=728
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf

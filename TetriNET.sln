@@ -39,6 +39,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{C9AD63
 		Images\x2mod.bmp = Images\x2mod.bmp
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Tests", "TetriNET.Tests\TetriNET.Tests.csproj", "{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -179,6 +181,16 @@ Global
 		{B77D651E-658C-45D4-972A-3C0D569D689E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{B77D651E-658C-45D4-972A-3C0D569D689E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{B77D651E-658C-45D4-972A-3C0D569D689E}.Release|x86.ActiveCfg = Release|Any CPU
+		{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -69,7 +69,7 @@ namespace TetriNET.Common.Randomizer
         /// <returns></returns>
         public static int SumOccurancies<T>(IEnumerable<IOccurancy<T>> occurancies)
         {
-            return occurancies.Aggregate(0, (n, i) => n + i.Occurancy); ;
+            return occurancies.Aggregate(0, (n, i) => n + i.Occurancy);
         }
     }
 }

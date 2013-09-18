@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ServiceModel;
 using TetriNET.Common.Contracts;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 
 namespace TetriNET.ConsoleWCFServer.Player
@@ -85,9 +85,9 @@ namespace TetriNET.ConsoleWCFServer.Player
             ExceptionFreeAction(() => Callback.OnServerStopped(), "OnServerStopped");
         }
 
-        public void OnPlayerRegistered(bool succeeded, int playerId, bool gameStarted)
+        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted)
         {
-            ExceptionFreeAction(() => Callback.OnPlayerRegistered(succeeded, playerId, gameStarted), "OnPlayerRegistered");
+            ExceptionFreeAction(() => Callback.OnPlayerRegistered(result, playerId, gameStarted), "OnPlayerRegistered");
         }
 
         public void OnPlayerJoined(int playerId, string name)

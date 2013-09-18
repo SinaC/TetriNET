@@ -5,27 +5,8 @@ using TetriNET.Common.Interfaces;
 
 namespace TetriNET.ConsoleWCFClient.GameController
 {
-    public enum Commands
+    public class GameController : IGameController
     {
-        Drop,
-        Down,
-        Left,
-        Right,
-        RotateClockwise,
-        RotateCounterclockwise,
-
-        DiscardFirstSpecial,
-        UseSpecialOn1,
-        UseSpecialOn2,
-        UseSpecialOn3,
-        UseSpecialOn4,
-        UseSpecialOn5,
-        UseSpecialOn6,
-    }
-
-    public class GameController
-    {
-        private readonly IClient _client;
         private readonly Dictionary<Commands, Timer> _timers = new Dictionary<Commands, Timer>();
 
         public GameController(IClient client)
@@ -33,9 +14,10 @@ namespace TetriNET.ConsoleWCFClient.GameController
             if (client == null)
                 throw new ArgumentNullException("client");
 
-            _client = client;
+            Client = client;
 
-            client.OnGamePaused += ClientOnOnGamePaused;
+            client.OnGamePaused += OnGamePaused;
+            client.OnGameFinished += OnGameFinished;
 
             _timers.Add(Commands.Drop, CreateTimer(75, DropTickHandler));
             _timers.Add(Commands.Down, CreateTimer(75, DownTickHandler));
@@ -43,53 +25,71 @@ namespace TetriNET.ConsoleWCFClient.GameController
             _timers.Add(Commands.Right, CreateTimer(170, RightTickHandler));
         }
 
+        #region IGameController
+
+        public IClient Client { get; private set; }
+
+        public void AddSensibility(Commands cmd, int interval)
+        {
+        }
+
+        public void RemoveSensibility(Commands cmd)
+        {
+        }
+
+        public void UnsubscribeFromClientEvents()
+        {
+            Client.OnGamePaused -= OnGamePaused;
+            Client.OnGameFinished -= OnGameFinished;
+        }
+
         public void KeyDown(Commands cmd)
         {
-            if (_client.IsPlaying)
+            if (Client.IsPlaying)
             {
                 if (_timers.ContainsKey(cmd) && _timers[cmd].Enabled)
                     return;
                 switch (cmd)
                 {
                     case Commands.Drop:
-                        _client.Drop();
+                        Client.Drop();
                         break;
                     case Commands.Down:
-                        _client.MoveDown();
+                        Client.MoveDown();
                         break;
                     case Commands.Left:
-                        _client.MoveLeft();
+                        Client.MoveLeft();
                         break;
                     case Commands.Right:
-                        _client.MoveRight();
+                        Client.MoveRight();
                         break;
                     case Commands.RotateClockwise:
-                        _client.RotateClockwise();
+                        Client.RotateClockwise();
                         break;
                     case Commands.RotateCounterclockwise:
-                        _client.RotateCounterClockwise();
+                        Client.RotateCounterClockwise();
                         break;
 
                     case Commands.DiscardFirstSpecial:
-                        _client.DiscardFirstSpecial();
+                        Client.DiscardFirstSpecial();
                         break;
                     case Commands.UseSpecialOn1:
-                        _client.UseSpecial(0);
+                        Client.UseSpecial(0);
                         break;
                     case Commands.UseSpecialOn2:
-                        _client.UseSpecial(1);
+                        Client.UseSpecial(1);
                         break;
                     case Commands.UseSpecialOn3:
-                        _client.UseSpecial(2);
+                        Client.UseSpecial(2);
                         break;
                     case Commands.UseSpecialOn4:
-                        _client.UseSpecial(3);
+                        Client.UseSpecial(3);
                         break;
                     case Commands.UseSpecialOn5:
-                        _client.UseSpecial(4);
+                        Client.UseSpecial(4);
                         break;
                     case Commands.UseSpecialOn6:
-                        _client.UseSpecial(5);
+                        Client.UseSpecial(5);
                         break;
                 }
                 if (_timers.ContainsKey(cmd))
@@ -102,36 +102,42 @@ namespace TetriNET.ConsoleWCFClient.GameController
             if (_timers.ContainsKey(cmd))
                 _timers[cmd].Stop();
         }
-
-        private void DropTickHandler(object sender, ElapsedEventArgs elapsedEventArgs)
-        {
-            _client.Drop();
-        }
-
-        private void DownTickHandler(object sender, ElapsedEventArgs e)
-        {
-            _client.MoveDown();
-        }
-
-        private void LeftTickHandler(object sender, ElapsedEventArgs e)
-        {
-            _client.MoveLeft();
-        }
-
-        private void RightTickHandler(object sender, ElapsedEventArgs e)
-        {
-            _client.MoveRight();
-        }
+        #endregion
 
         #region IClient event handlers
-        
-        private void ClientOnOnGamePaused()
+
+        private void OnGameFinished()
         {
             foreach (Timer timer in _timers.Values)
                 timer.Stop();
         }
 
+        private void OnGamePaused()
+        {
+            foreach (Timer timer in _timers.Values)
+                timer.Stop();
+        }
         #endregion
+
+        private void DropTickHandler(object sender, ElapsedEventArgs elapsedEventArgs)
+        {
+            Client.Drop();
+        }
+
+        private void DownTickHandler(object sender, ElapsedEventArgs e)
+        {
+            Client.MoveDown();
+        }
+
+        private void LeftTickHandler(object sender, ElapsedEventArgs e)
+        {
+            Client.MoveLeft();
+        }
+
+        private void RightTickHandler(object sender, ElapsedEventArgs e)
+        {
+            Client.MoveRight();
+        }
 
         private static Timer CreateTimer(double interval, ElapsedEventHandler handler)
         {

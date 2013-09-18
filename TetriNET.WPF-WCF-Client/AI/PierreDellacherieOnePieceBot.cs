@@ -55,7 +55,8 @@ namespace TetriNET.WPF_WCF_Client.AI
             _controller = controller;
 
             _specialStrategy = new SinaCSpecials();
-            _moveStrategy = new AdvancedPierreDellacherieOnePiece();
+            //_moveStrategy = new AdvancedPierreDellacherieOnePiece();
+            _moveStrategy = new LuckyToiletOnePiece();
 
             _client.OnRoundStarted += _client_OnRoundStarted;
             _client.OnGameStarted += client_OnGameStarted;
@@ -247,6 +248,12 @@ namespace TetriNET.WPF_WCF_Client.AI
                     //Log.WriteLine(Log.LogLevels.Debug, "BEST MOVE found in {0} ms and special in {1} ms  {2} {3}", (searchBestModeEndTime - specialManaged).TotalMilliseconds, (specialManaged - searchBestMoveStartTime).TotalMilliseconds, _client.CurrentTetrimino.Value, _client.CurrentTetrimino.Index);
                 }
             }
+        }
+
+        private void Down(int times)
+        {
+            for (int i = 0; i < times; i++)
+                _client.MoveDown();
         }
 
         private void Rotate(int rotationDelta)

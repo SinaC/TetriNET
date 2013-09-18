@@ -1,13 +1,13 @@
 ﻿using System.Runtime.Serialization;
 using TetriNET.Common.Randomizer;
 
-namespace TetriNET.Common.GameDatas
+namespace TetriNET.Common.DataContracts
 {
     [DataContract]
-    public class SpecialOccurancy : IOccurancy<Specials>
+    public class TetriminoOccurancy : IOccurancy<Tetriminos>
     {
         [DataMember]
-        public Specials Value { get; set; }
+        public Tetriminos Value { get; set; }
 
         [DataMember]
         public int Occurancy { get; set; }

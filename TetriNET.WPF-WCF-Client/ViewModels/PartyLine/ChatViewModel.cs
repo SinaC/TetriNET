@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using TetriNET.Common.GameDatas;
+using TetriNET.Client;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
 
@@ -175,9 +176,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             AddEntry(String.Format("*** {0} has joined", playerName), ChatColor.Green);
         }
 
-        private void OnPlayerRegistered(bool succeeded, int playerId)
+        private void OnPlayerRegistered(RegistrationResults result, int playerId)
         {
-            if (succeeded)
+            if (result == RegistrationResults.RegistrationSuccessful)
             {
                 AddEntry("*** You've registered successfully", ChatColor.Green);
                 IsRegistered = true;

@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using TetriNET.Common.Contracts;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Common.Interfaces
 {
+    public enum ConnectionLostReasons
+    {
+        ServerNotFound,
+        Other,
+    }
+
     public delegate void ClientConnectionLostHandler(ConnectionLostReasons reason);
 
     public delegate void ClientRoundStartedHandler();
@@ -19,7 +25,7 @@ namespace TetriNET.Common.Interfaces
     public delegate void ClientRedrawBoardHandler(int playerId, IBoard board);
     public delegate void ClientTetriminoMovingHandler();
     public delegate void ClientTetriminoMovedHandler();
-    public delegate void ClientPlayerRegisteredHandler(bool succeeded, int playerId);
+    public delegate void ClientPlayerRegisteredHandler(RegistrationResults result, int playerId);
     public delegate void ClientPlayerUnregisteredHandler();
     public delegate void ClientWinListModifiedHandler(List<WinEntry> winList);
     public delegate void ClientServerMasterModifiedHandler(int serverMasterId);

@@ -1,39 +1,53 @@
 ﻿using System.Runtime.Serialization;
+using TetriNET.Common.Helpers;
 
-namespace TetriNET.Common.GameDatas
+namespace TetriNET.Common.DataContracts
 {
     [DataContract]
     public enum Specials // Specials index start after last tetrimino
     {
         [EnumMember]
+        [Availability(false)]
         Invalid = 0,
 
         // TetriNET (http://en.wikipedia.org/wiki/TetriNET)
         [EnumMember]
+        [Availability(true, 'A', "Add Line")]
         AddLines = Tetriminos.TetriminoLast+1,
         [EnumMember]
+        [Availability(true, 'C', "Clear Line")]
         ClearLines,
         [EnumMember]
+        [Availability(true, 'N', "Nuke Field")]
         NukeField,
         [EnumMember]
+        [Availability(true, 'R', "Random Blocks Clear")]
         RandomBlocksClear,
         [EnumMember]
+        [Availability(true, 'S', "Switch Fields")]
         SwitchFields,
         [EnumMember]
+        [Availability(true, 'B', "Clear Special Blocks")]
         ClearSpecialBlocks,
         [EnumMember]
+        [Availability(true, 'G', "Block Gravity")]
         BlockGravity,
         [EnumMember]
+        [Availability(true, 'Q', "Block Quake")]
         BlockQuake,
         [EnumMember]
+        [Availability(true, 'O', "Block Bomb")]
         BlockBomb,
 
         // TetriNET 2 (http://harddrop.com/wiki/Tetrinet2 or http://en.wikipedia.org/wiki/TetriNET or http://web.archive.org/web/20070623140748/www.tetrinet2.com/?page=overview_specials)
         [EnumMember]
+        [Availability(true, 'V', "Clear Column")]
         ClearColumn,
         [EnumMember]
+        [Availability(true, 'D', "Darkness")]
         Darkness,
         [EnumMember]
+        [Availability(true, 'F', "Confusion")]
         Confusion,
         // NOT IMPLEMENTED Immunity
         // NOT IMPLEMENTED Mutate Pieces

@@ -1,5 +1,5 @@
 ﻿using TetriNET.Common.Contracts;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Common.Interfaces
 {

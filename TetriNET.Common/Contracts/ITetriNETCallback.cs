@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ServiceModel;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Common.Contracts
 {
@@ -14,7 +14,7 @@ namespace TetriNET.Common.Contracts
         void OnServerStopped();
 
         [OperationContract(IsOneWay = true)]
-        void OnPlayerRegistered(bool succeeded, int playerId, bool gameStarted); // Player Number + In-Game
+        void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted); // Player Number + In-Game
 
         [OperationContract(IsOneWay = true)] // Player Joined
         void OnPlayerJoined(int playerId, string name);

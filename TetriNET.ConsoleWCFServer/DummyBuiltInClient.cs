@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using TetriNET.Common.Contracts;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 
 namespace TetriNET.ConsoleWCFServer
 {
@@ -180,11 +180,11 @@ namespace TetriNET.ConsoleWCFServer
             ResetTimeout();
         }
 
-        public void OnPlayerRegistered(bool succeeded, int playerId, bool gameStarted)
+        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "OnPlayerRegistered[{0}]:{1} => {2} {3}", PlayerName, succeeded, playerId, gameStarted);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "OnPlayerRegistered[{0}]:{1} => {2} {3}", PlayerName, result, playerId, gameStarted);
             ResetTimeout();
-            if (succeeded)
+            if (result == RegistrationResults.RegistrationSuccessful)
             {
                 PlayerId = playerId;
                 State = States.WaitingStartGame;

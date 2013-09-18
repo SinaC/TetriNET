@@ -1,4 +1,4 @@
-﻿using TetriNET.Common.GameDatas;
+﻿using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField

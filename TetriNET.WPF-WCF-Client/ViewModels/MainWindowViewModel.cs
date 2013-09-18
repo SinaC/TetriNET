@@ -1,6 +1,7 @@
 ﻿using System.Linq;
+using TetriNET.Client;
 using TetriNET.Client.DefaultBoardAndTetriminos;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Properties;
 using TetriNET.WPF_WCF_Client.ViewModels.Connection;
@@ -57,8 +58,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             // TODO: fix this bug  ---- Workaround: remove duplicate key
             Models.Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies = Models.Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();
             Models.Options.OptionsSingleton.Instance.ServerOptions.TetriminoOccurancies = Models.Options.OptionsSingleton.Instance.ServerOptions.TetriminoOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();
-            Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPartyLineOnRegistered = Settings.Default.AutomaticallySwitchToPartyLineOnRegistered;
-            Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted = Settings.Default.AutomaticallySwitchToPlayFieldOnGameStarted;
         }
 
         #region ViewModelBase
@@ -94,12 +93,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         #endregion
 
         #region IClient events handler
-        private void OnPlayerRegistered(bool succeeded, int playerId)
+        private void OnPlayerRegistered(RegistrationResults result, int playerId)
         {
-            if (succeeded && Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPartyLineOnRegistered)
+            if (result == RegistrationResults.RegistrationSuccessful && Models.Options.OptionsSingleton.Instance.AutomaticallySwitchToPartyLineOnRegistered)
                 if (ActiveTabItemIndex == ConnectionViewModel.TabIndex)
                     ActiveTabItemIndex = PartyLineViewModel.TabIndex;
-            if (succeeded && Client.IsServerMaster)
+            if (result == RegistrationResults.RegistrationSuccessful && Client.IsServerMaster)
                 Client.ChangeOptions(Models.Options.OptionsSingleton.Instance.ServerOptions);
         }
 

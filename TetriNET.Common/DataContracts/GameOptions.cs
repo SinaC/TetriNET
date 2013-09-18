@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace TetriNET.Common.GameDatas
+namespace TetriNET.Common.DataContracts
 {
     [DataContract]
     public class GameOptions

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
 

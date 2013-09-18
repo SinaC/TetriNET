@@ -1,10 +1,10 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
+using TetriNET.Strategy.Move_strategies;
 using TetriNET.WPF_WCF_Client.AI;
-using TetriNET.WPF_WCF_Client.GameController;
 using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
 
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
@@ -14,7 +14,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
     /// </summary>
     public partial class PlayFieldView : UserControl
     {
-        private PierreDellacherieOnePieceBot _bot;
+        private GenericBot _bot;
         private GameController.GameController _controller;
         private int _playerId;
 
@@ -49,17 +49,38 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
         }
 
-        private void OnPlayerRegistered(bool succeeded, int playerId)
+        private void OnPlayerRegistered(RegistrationResults result, int playerId)
         {
-            if (succeeded)
+            if (result == RegistrationResults.RegistrationSuccessful)
                 _playerId = playerId;
             else
                 _playerId = -1;
         }
 
+        private void OnGameStarted()
+        {
+            if (Models.Options.OptionsSingleton.Instance.DropSensibilityActivated)
+                _controller.RemoveSensibility(Commands.Drop);
+            else
+                _controller.AddSensibility(Commands.Drop, Models.Options.OptionsSingleton.Instance.DropSensibility);
+            if (Models.Options.OptionsSingleton.Instance.DownSensibilityActivated)
+                _controller.RemoveSensibility(Commands.Down);
+            else
+                _controller.AddSensibility(Commands.Down, Models.Options.OptionsSingleton.Instance.DownSensibility);
+            if (Models.Options.OptionsSingleton.Instance.LeftSensibilityActivated)
+                _controller.RemoveSensibility(Commands.Left);
+            else
+                _controller.AddSensibility(Commands.Left, Models.Options.OptionsSingleton.Instance.LeftSensibility);
+            if (Models.Options.OptionsSingleton.Instance.RightSensibilityActivated)
+                _controller.RemoveSensibility(Commands.Right);
+            else
+                _controller.AddSensibility(Commands.Down, Models.Options.OptionsSingleton.Instance.RightSensibility);
+        }
+
         #endregion
 
         #region UI events handler
+
         private void GameView_KeyDown(object sender, KeyEventArgs e)
         {
             PlayFieldViewModel vm = DataContext as PlayFieldViewModel;
@@ -103,6 +124,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             if (cmd != Commands.Invalid)
                 _controller.KeyUp(cmd);
         }
+        
         #endregion
 
         private static Commands MapKeyToCommand(Key key)
@@ -192,6 +214,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 oldClient.OnPlayerJoined -= OnPlayerJoined;
                 oldClient.OnPlayerLeft -= OnPlayerLeft;
                 oldClient.OnPlayerRegistered -= OnPlayerRegistered;
+                oldClient.OnGameStarted -= OnGameStarted;
 
                 if (_controller != null)
                     _controller.UnsubscribeFromClientEvents();
@@ -213,10 +236,11 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 newClient.OnPlayerJoined += OnPlayerJoined;
                 newClient.OnPlayerLeft += OnPlayerLeft;
                 newClient.OnPlayerRegistered += OnPlayerRegistered;
+                newClient.OnGameStarted += OnGameStarted;
 
                 // And create controller + bot
                 _controller = new GameController.GameController(newClient);
-                _bot = new PierreDellacherieOnePieceBot(newClient, _controller);
+                _bot = new GenericBot(newClient, new LuckyToiletOnePiece(), null);
             }
             else
             {

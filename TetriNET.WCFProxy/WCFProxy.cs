@@ -4,7 +4,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using TetriNET.Common.Contracts;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.WCF;
 

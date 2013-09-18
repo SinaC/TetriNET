@@ -1,4 +1,4 @@
-﻿using TetriNET.Common.GameDatas;
+﻿using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Common.Helpers
 {

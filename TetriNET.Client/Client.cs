@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using TetriNET.Common.Contracts;
-using TetriNET.Common.GameDatas;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.Randomizer;
@@ -33,9 +33,11 @@ namespace TetriNET.Client
             SpecialUsed = new Dictionary<Specials, int>();
             SpecialDiscarded = new Dictionary<Specials, int>();
 
-            foreach (Tetriminos tetrimino in Enum.GetValues(typeof(Tetriminos)).Cast<Tetriminos>().Where(x => x != Tetriminos.Invalid && x != Tetriminos.TetriminoLast && !x.ToString().Contains("Reserved")))
+            //foreach (Tetriminos tetrimino in Enum.GetValues(typeof(Tetriminos)).Cast<Tetriminos>().Where(x => x != Tetriminos.Invalid && x != Tetriminos.TetriminoLast && !x.ToString().Contains("Reserved")))
+            foreach(Tetriminos tetrimino in EnumHelper.GetAvailableValues<Tetriminos>())
                 TetriminoCount.Add(tetrimino, 0);
-            foreach (Specials special in Enum.GetValues(typeof(Specials)).Cast<Specials>().Where(x => x != Specials.Invalid))
+            //foreach (Specials special in Enum.GetValues(typeof(Specials)).Cast<Specials>().Where(x => x != Specials.Invalid))
+            foreach (Specials special in EnumHelper.GetAvailableValues<Specials>())
             {
                 SpecialCount.Add(special, 0);
                 SpecialUsed.Add(special, 0);
@@ -329,10 +331,10 @@ namespace TetriNET.Client
             ConnectionLostHandler();
         }
 
-        public void OnPlayerRegistered(bool succeeded, int playerId, bool isGameStarted)
+        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool isGameStarted)
         {
             ResetTimeout();
-            if (succeeded && State == States.Registering)
+            if (result == RegistrationResults.RegistrationSuccessful && State == States.Registering)
             {
                 Log.WriteLine(Log.LogLevels.Info, "Registered as player {0} game started {1}", playerId, isGameStarted);
 
@@ -352,7 +354,7 @@ namespace TetriNET.Client
                     ServerState = isGameStarted ? ServerStates.Playing : ServerStates.Waiting;// TODO: handle server paused
 
                     if (ClientOnPlayerRegistered != null)
-                        ClientOnPlayerRegistered(true, playerId);
+                        ClientOnPlayerRegistered(RegistrationResults.RegistrationSuccessful, playerId);
 
                     if (isGameStarted)
                     {
@@ -367,6 +369,9 @@ namespace TetriNET.Client
                     State = States.Created;
                     IsServerMaster = false;
                     Log.WriteLine(Log.LogLevels.Warning, "Wrong id {0}", playerId);
+
+                    if (ClientOnPlayerRegistered != null)
+                        ClientOnPlayerRegistered(RegistrationResults.RegistrationFailedInvalidId, -1);
                 }
             }
             else
@@ -375,9 +380,9 @@ namespace TetriNET.Client
                 IsServerMaster = false;
 
                 if (ClientOnPlayerRegistered != null)
-                    ClientOnPlayerRegistered(false, -1);
+                    ClientOnPlayerRegistered(result, -1);
 
-                Log.WriteLine(Log.LogLevels.Info, "Registration failed");
+                Log.WriteLine(Log.LogLevels.Info, "Registration failed {0}", result);
             }
         }
 
@@ -1456,36 +1461,8 @@ namespace TetriNET.Client
 
         private static char ConvertSpecial(Specials special)
         {
-            switch (special)
-            {
-                case Specials.AddLines:
-                    return 'A';
-                case Specials.ClearLines:
-                    return 'C';
-                case Specials.NukeField:
-                    return 'N';
-                case Specials.RandomBlocksClear:
-                    return 'R';
-                case Specials.SwitchFields:
-                    return 'S';
-                case Specials.ClearSpecialBlocks:
-                    return 'B';
-                case Specials.BlockGravity:
-                    return 'G';
-                case Specials.BlockQuake:
-                    return 'Q';
-                case Specials.BlockBomb:
-                    return 'O';
-                case Specials.ClearColumn:
-                    return 'V';
-                case Specials.Darkness:
-                    return 'D';
-                case Specials.Confusion:
-                    return 'F';
-                //case Specials.ZebraField: // will be available when Left Gravity is implemented
-                //    return 'Z';
-            }
-            return '?';
+            AvailabilityAttribute attribute = EnumHelper.GetAttribute<AvailabilityAttribute>(special);
+            return attribute == null ? '?' : attribute.ShortName;
         }
 
         private void TimeoutTask()
