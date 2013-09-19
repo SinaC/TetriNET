@@ -53,7 +53,27 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             // Create client
             Client = new Client.Client(Tetrimino.CreateTetrimino, () => new Board(Models.Options.Width, Models.Options.Height));
 
-            // Get saved or default options
+            /*// Default values
+            Options.OptionsSingleton.Instance.KeySettings = new List<KeySetting>
+                {
+                    new KeySetting(Key.Space, Commands.Drop),
+                    new KeySetting(Key.Down, Commands.Down),
+                    new KeySetting(Key.Up, Commands.RotateCounterclockwise),
+                    new KeySetting(Key.PageUp, Commands.RotateClockwise),
+                    new KeySetting(Key.Left, Commands.Left),
+                    new KeySetting(Key.Right, Commands.Right),
+                    new KeySetting(Key.D, Commands.DiscardFirstSpecial),
+                    new KeySetting(Key.D1, Commands.UseSpecialOn1),
+                    new KeySetting(Key.D1, Commands.UseSpecialOn2),
+                    new KeySetting(Key.D3, Commands.UseSpecialOn3),
+                    new KeySetting(Key.D4, Commands.UseSpecialOn4),
+                    new KeySetting(Key.D5, Commands.UseSpecialOn5),
+                    new KeySetting(Key.D6, Commands.UseSpecialOn6),
+                };
+             * */
+            // Get saved options
+            Models.Options.OptionsSingleton.Instance.GetSavedOptions();
+            // Get saved or default server options
             Models.Options.OptionsSingleton.Instance.ServerOptions = Settings.Default.GameOptions ?? Client.Options;
             // TODO: fix this bug  ---- Workaround: remove duplicate key
             Models.Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies = Models.Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();

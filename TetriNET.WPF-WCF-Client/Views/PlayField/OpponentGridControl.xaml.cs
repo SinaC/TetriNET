@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using TetriNET.Client;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
@@ -145,34 +144,34 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
-            OpponentGridControl _this = sender as OpponentGridControl;
+            OpponentGridControl @this = sender as OpponentGridControl;
 
-            if (_this != null)
+            if (@this != null)
             {
                 // Remove old handlers
                 IClient oldClient = args.OldValue as IClient;
                 if (oldClient != null)
                 {
-                    oldClient.OnPlayerUnregistered -= _this.OnPlayerUnregistered;
-                    oldClient.OnConnectionLost -= _this.OnConnectionLost;
-                    oldClient.OnGameStarted -= _this.OnGameStarted;
-                    oldClient.OnRedrawBoard -= _this.OnRedrawBoard;
+                    oldClient.OnPlayerUnregistered -= @this.OnPlayerUnregistered;
+                    oldClient.OnConnectionLost -= @this.OnConnectionLost;
+                    oldClient.OnGameStarted -= @this.OnGameStarted;
+                    oldClient.OnRedrawBoard -= @this.OnRedrawBoard;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
-                _this.Client = newClient;
+                @this.Client = newClient;
                 // Add new handlers
                 if (newClient != null)
                 {
-                    newClient.OnPlayerUnregistered += _this.OnPlayerUnregistered;
-                    newClient.OnConnectionLost += _this.OnConnectionLost;
-                    newClient.OnGameStarted += _this.OnGameStarted;
-                    newClient.OnRedrawBoard += _this.OnRedrawBoard;
+                    newClient.OnPlayerUnregistered += @this.OnPlayerUnregistered;
+                    newClient.OnConnectionLost += @this.OnConnectionLost;
+                    newClient.OnGameStarted += @this.OnGameStarted;
+                    newClient.OnRedrawBoard += @this.OnRedrawBoard;
                 }
                 else
                 {
-                    _this.PlayerId = -1;
-                    _this.PlayerName = "Not playing";
+                    @this.PlayerId = -1;
+                    @this.PlayerName = "Not playing";
                 }
             }
         }

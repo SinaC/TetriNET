@@ -1,10 +1,12 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.Strategy.Move_strategies;
 using TetriNET.WPF_WCF_Client.AI;
+using TetriNET.WPF_WCF_Client.Models;
 using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
 
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
@@ -129,6 +131,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private static Commands MapKeyToCommand(Key key)
         {
+            KeySetting keySetting = Models.Options.OptionsSingleton.Instance.KeySettings.FirstOrDefault(x => x.Key == key);
+            if (keySetting != null)
+                return keySetting.Command;
             switch (key)
             {
                 case Key.Space:

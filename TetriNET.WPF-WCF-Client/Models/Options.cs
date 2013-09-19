@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
+using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.Models
@@ -16,10 +18,7 @@ namespace TetriNET.WPF_WCF_Client.Models
         private bool _automaticallySwitchToPlayFieldOnGameStarted;
         public bool AutomaticallySwitchToPlayFieldOnGameStarted
         {
-            get
-            {
-                return _automaticallySwitchToPlayFieldOnGameStarted;
-            }
+            get { return _automaticallySwitchToPlayFieldOnGameStarted; }
             set
             {
                 if (_automaticallySwitchToPlayFieldOnGameStarted != value)
@@ -77,24 +76,26 @@ namespace TetriNET.WPF_WCF_Client.Models
             }
         }
 
-        // TODO: finish following code (imply modification in KeyBox.cs, ClientOptionsViewModel.cs and ClientOptionsView.xaml (.cs)
         #region Key settings
 
-        public List<KeySetting> KeySettings { get; set; }
+        public ObservableCollection<KeySetting> KeySettings { get; set; }
 
         #endregion
 
         #region Sensibility
+
         private bool _dropSensibilityActivated;
         public bool DropSensibilityActivated
         {
             get { return _dropSensibilityActivated; }
-            set { if (_dropSensibilityActivated != value)
+            set
             {
-                _dropSensibilityActivated = value;
-                Settings.Default.DropSensibilityActivated = _dropSensibilityActivated;
-                Settings.Default.Save();
-            }
+                if (_dropSensibilityActivated != value)
+                {
+                    _dropSensibilityActivated = value;
+                    Settings.Default.DropSensibilityActivated = _dropSensibilityActivated;
+                    Settings.Default.Save();
+                }
             }
         }
 
@@ -202,31 +203,58 @@ namespace TetriNET.WPF_WCF_Client.Models
                 }
             }
         }
+
         #endregion
 
         #region Singleton
+
         public static readonly ThreadSafeSingleton<Options> OptionsSingleton = new ThreadSafeSingleton<Options>(() => new Options());
 
         private Options()
         {
             // Singleton
+            KeySettings = new ObservableCollection<KeySetting>();
         }
+
         #endregion
 
         public void GetSavedOptions()
         {
-            OptionsSingleton.Instance.AutomaticallySwitchToPartyLineOnRegistered = Settings.Default.AutomaticallySwitchToPartyLineOnRegistered;
-            OptionsSingleton.Instance.AutomaticallySwitchToPlayFieldOnGameStarted = Settings.Default.AutomaticallySwitchToPlayFieldOnGameStarted;
-            OptionsSingleton.Instance.DisplayOpponentsFieldEvenWhenNotPlaying = Settings.Default.DisplayOpponentsFieldEvenWhenNotPlaying;
-            OptionsSingleton.Instance.IsDeveloperModeActivated = Settings.Default.IsDeveloperModeActivated;
-            OptionsSingleton.Instance.DropSensibilityActivated = Settings.Default.DropSensibilityActivated;
-            OptionsSingleton.Instance.DropSensibility = Settings.Default.DropSensibility;
-            OptionsSingleton.Instance.DownSensibilityActivated = Settings.Default.DownSensibilityActivated;
-            OptionsSingleton.Instance.DownSensibility = Settings.Default.DownSensibility;
-            OptionsSingleton.Instance.LeftSensibilityActivated = Settings.Default.LeftSensibilityActivated;
-            OptionsSingleton.Instance.LeftSensibility = Settings.Default.LeftSensibility;
-            OptionsSingleton.Instance.RightSensibilityActivated = Settings.Default.RightSensibilityActivated;
-            OptionsSingleton.Instance.RightSensibility = Settings.Default.RightSensibility;
+            AutomaticallySwitchToPartyLineOnRegistered = Settings.Default.AutomaticallySwitchToPartyLineOnRegistered;
+            AutomaticallySwitchToPlayFieldOnGameStarted = Settings.Default.AutomaticallySwitchToPlayFieldOnGameStarted;
+            DisplayOpponentsFieldEvenWhenNotPlaying = Settings.Default.DisplayOpponentsFieldEvenWhenNotPlaying;
+            IsDeveloperModeActivated = Settings.Default.IsDeveloperModeActivated;
+            DropSensibilityActivated = Settings.Default.DropSensibilityActivated;
+            DropSensibility = Settings.Default.DropSensibility;
+            DownSensibilityActivated = Settings.Default.DownSensibilityActivated;
+            DownSensibility = Settings.Default.DownSensibility;
+            LeftSensibilityActivated = Settings.Default.LeftSensibilityActivated;
+            LeftSensibility = Settings.Default.LeftSensibility;
+            RightSensibilityActivated = Settings.Default.RightSensibilityActivated;
+            RightSensibility = Settings.Default.RightSensibility;
+
+            SetSetting(Settings.Default.Down, Commands.Down);
+            SetSetting(Settings.Default.Drop, Commands.Drop);
+            SetSetting(Settings.Default.Left, Commands.Left);
+            SetSetting(Settings.Default.Right, Commands.Right);
+            SetSetting(Settings.Default.RotateClockwise, Commands.RotateClockwise);
+            SetSetting(Settings.Default.RotateCounterclockwise, Commands.RotateCounterclockwise);
+            SetSetting(Settings.Default.DiscardFirstSpecial, Commands.DiscardFirstSpecial);
+            SetSetting(Settings.Default.UseSpecialOn1, Commands.UseSpecialOn1);
+            SetSetting(Settings.Default.UseSpecialOn2, Commands.UseSpecialOn2);
+            SetSetting(Settings.Default.UseSpecialOn3, Commands.UseSpecialOn3);
+            SetSetting(Settings.Default.UseSpecialOn4, Commands.UseSpecialOn4);
+            SetSetting(Settings.Default.UseSpecialOn5, Commands.UseSpecialOn5);
+            SetSetting(Settings.Default.UseSpecialOn6, Commands.UseSpecialOn6);
+        }
+
+        private void SetSetting(int key, Commands cmd)
+        {
+            KeySetting keySetting = KeySettings.FirstOrDefault(x => x.Command == cmd);
+            if (keySetting != null)
+                keySetting.Key = (System.Windows.Input.Key) key;
+            else
+                KeySettings.Add(new KeySetting((System.Windows.Input.Key) key, cmd));
         }
 
         //public void AddDefaultForMissingOptions()

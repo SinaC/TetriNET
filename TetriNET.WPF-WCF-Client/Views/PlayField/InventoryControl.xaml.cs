@@ -88,25 +88,25 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
-            InventoryControl _this = sender as InventoryControl;
+            InventoryControl @this = sender as InventoryControl;
 
-            if (_this != null)
+            if (@this != null)
             {
                 // Remove old handlers
                 IClient oldClient = args.OldValue as IClient;
                 if (oldClient != null)
                 {
-                    oldClient.OnGameStarted -= _this.OnGameStarted;
-                    oldClient.OnInventoryChanged -= _this.OnInventoryChanged;
+                    oldClient.OnGameStarted -= @this.OnGameStarted;
+                    oldClient.OnInventoryChanged -= @this.OnInventoryChanged;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
-                _this.Client = newClient;
+                @this.Client = newClient;
                 // Add new handlers
                 if (newClient != null)
                 {
-                    newClient.OnGameStarted += _this.OnGameStarted;
-                    newClient.OnInventoryChanged += _this.OnInventoryChanged;
+                    newClient.OnGameStarted += @this.OnGameStarted;
+                    newClient.OnInventoryChanged += @this.OnInventoryChanged;
                 }
             }
         }

@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using TetriNET.Client;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
@@ -238,37 +237,37 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
-            PlayerGridControl _this = sender as PlayerGridControl;
+            PlayerGridControl @this = sender as PlayerGridControl;
 
-            if (_this != null)
+            if (@this != null)
             {
                 // Remove old handlers
                 IClient oldClient = args.OldValue as IClient;
                 if (oldClient != null)
                 {
-                    oldClient.OnPlayerRegistered -= _this.OnPlayerRegistered;
-                    oldClient.OnPlayerUnregistered -= _this.OnPlayerUnregistered;
-                    oldClient.OnConnectionLost -= _this.OnConnectionLost;
-                    oldClient.OnGameStarted -= _this.OnGameStarted;
-                    oldClient.OnRoundStarted -= _this.OnRoundStarted;
-                    oldClient.OnTetriminoMoved -= _this.OnTetriminoMoved;
-                    oldClient.OnRedraw -= _this.OnRedraw;
-                    oldClient.OnDarknessToggled -= _this.OnDarknessToggled;
+                    oldClient.OnPlayerRegistered -= @this.OnPlayerRegistered;
+                    oldClient.OnPlayerUnregistered -= @this.OnPlayerUnregistered;
+                    oldClient.OnConnectionLost -= @this.OnConnectionLost;
+                    oldClient.OnGameStarted -= @this.OnGameStarted;
+                    oldClient.OnRoundStarted -= @this.OnRoundStarted;
+                    oldClient.OnTetriminoMoved -= @this.OnTetriminoMoved;
+                    oldClient.OnRedraw -= @this.OnRedraw;
+                    oldClient.OnDarknessToggled -= @this.OnDarknessToggled;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
-                _this.Client = newClient;
+                @this.Client = newClient;
                 // Add new handlers
                 if (newClient != null)
                 {
-                    newClient.OnPlayerRegistered += _this.OnPlayerRegistered;
-                    newClient.OnPlayerUnregistered += _this.OnPlayerUnregistered;
-                    newClient.OnConnectionLost += _this.OnConnectionLost;
-                    newClient.OnGameStarted += _this.OnGameStarted;
-                    newClient.OnRoundStarted += _this.OnRoundStarted;
-                    newClient.OnTetriminoMoved += _this.OnTetriminoMoved;
-                    newClient.OnRedraw += _this.OnRedraw;
-                    newClient.OnDarknessToggled += _this.OnDarknessToggled;
+                    newClient.OnPlayerRegistered += @this.OnPlayerRegistered;
+                    newClient.OnPlayerUnregistered += @this.OnPlayerUnregistered;
+                    newClient.OnConnectionLost += @this.OnConnectionLost;
+                    newClient.OnGameStarted += @this.OnGameStarted;
+                    newClient.OnRoundStarted += @this.OnRoundStarted;
+                    newClient.OnTetriminoMoved += @this.OnTetriminoMoved;
+                    newClient.OnRedraw += @this.OnRedraw;
+                    newClient.OnDarknessToggled += @this.OnDarknessToggled;
                 }
             }
         }

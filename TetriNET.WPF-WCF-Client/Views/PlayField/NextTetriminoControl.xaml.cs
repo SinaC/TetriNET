@@ -93,25 +93,25 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
-            NextTetriminoControl _this = sender as NextTetriminoControl;
+            NextTetriminoControl @this = sender as NextTetriminoControl;
 
-            if (_this != null)
+            if (@this != null)
             {
                 // Remove old handlers
                 IClient oldClient = args.OldValue as IClient;
                 if (oldClient != null)
                 {
-                    oldClient.OnGameStarted -= _this.OnGameStarted;
-                    oldClient.OnRoundStarted -= _this.OnRoundStarted;
+                    oldClient.OnGameStarted -= @this.OnGameStarted;
+                    oldClient.OnRoundStarted -= @this.OnRoundStarted;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
-                _this.Client = newClient;
+                @this.Client = newClient;
                 // Add new handlers
                 if (newClient != null)
                 {
-                    newClient.OnGameStarted += _this.OnGameStarted;
-                    newClient.OnRoundStarted += _this.OnRoundStarted;
+                    newClient.OnGameStarted += @this.OnGameStarted;
+                    newClient.OnRoundStarted += @this.OnRoundStarted;
                 }
             }
         }
