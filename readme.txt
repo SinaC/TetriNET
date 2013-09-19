@@ -90,6 +90,8 @@ http://tetrisconcept.net/wiki/Tetris_AI
 http://www.ryanheise.com/tetris/tetris_artificial_intelligence.html
 http://www.vidarholen.net/contents/junk/tetris/
 http://hal.archives-ouvertes.fr/docs/00/41/89/54/PDF/article.pdf
+http://totologic.blogspot.be/2013/03/tetris-ai-explained.html
+http://lgames.sourceforge.net/index.php?project=LTris
 
 tetris
 http://jetrix.sourceforge.net/dev-guide.php

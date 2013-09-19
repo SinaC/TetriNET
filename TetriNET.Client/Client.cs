@@ -241,7 +241,6 @@ namespace TetriNET.Client
         public ServerStates ServerState { get; private set; }
 
         private IProxy _proxy;
-        private GameOptions _options;
         private int _clientPlayerId;
         private DateTime _lastActionFromServer;
         private int _timeoutCount;
@@ -268,10 +267,10 @@ namespace TetriNET.Client
             _createBoardFunc = createBoardFunc;
 
             // default options
-            _options = new GameOptions();
+            Options = new GameOptions();
 
             _tetriminos = new TetriminoArray(64);
-            _inventory = new Inventory(_options.InventorySize);
+            _inventory = new Inventory(Options.InventorySize);
             _statistics = new Statistics();
 
             _gameTimer = new System.Timers.Timer
@@ -358,7 +357,7 @@ namespace TetriNET.Client
 
                     if (isGameStarted)
                     {
-                        player.Board.FillWithRandomCells(() => RangeRandom.Random(_options.TetriminoOccurancies));
+                        player.Board.FillWithRandomCells(() => RangeRandom.Random(Options.TetriminoOccurancies));
 
                         if (ClientOnRedraw != null)
                             ClientOnRedraw();
@@ -408,7 +407,7 @@ namespace TetriNET.Client
 
                 if (IsGameStarted)
                 {
-                    playerData.Board.FillWithRandomCells(() => RangeRandom.Random(_options.TetriminoOccurancies));
+                    playerData.Board.FillWithRandomCells(() => RangeRandom.Random(Options.TetriminoOccurancies));
 
                     if (ClientOnRedrawBoard != null)
                         ClientOnRedrawBoard(playerId, playerData.Board);
@@ -469,7 +468,7 @@ namespace TetriNET.Client
                 if (playerData != null && playerData.State == PlayerData.States.Playing)
                 {
                     playerData.State = PlayerData.States.Lost;
-                    playerData.Board.FillWithRandomCells(() => RangeRandom.Random(_options.TetriminoOccurancies));
+                    playerData.Board.FillWithRandomCells(() => RangeRandom.Random(Options.TetriminoOccurancies));
 
                     if (ClientOnRedrawBoard != null)
                         ClientOnRedrawBoard(playerId, playerData.Board);
@@ -511,7 +510,7 @@ namespace TetriNET.Client
             // Reset statistics
             _statistics.Reset();
             // Reset options
-            _options = options;
+            Options = options;
             // Reset tetriminos
             _tetriminos[0] = firstTetrimino;
             _tetriminos[1] = secondTetrimino;
@@ -523,10 +522,10 @@ namespace TetriNET.Client
             // Update statistics
             _statistics.TetriminoCount[firstTetrimino]++;
             // Reset inventory
-            _inventory.Reset(_options.InventorySize);
+            _inventory.Reset(Options.InventorySize);
             // Reset line and level
             LinesCleared = 0;
-            Level = _options.StartingLevel;
+            Level = Options.StartingLevel;
             // Reset gamer timer interval
             _gameTimer.Interval = ComputeGameTimerInterval(Level);
             // Reset boards
@@ -868,9 +867,9 @@ namespace TetriNET.Client
             }
 
             // Transform cell into special blocks
-            if (deletedRows >= _options.LinesToMakeForSpecials && _options.SpecialsAddedEachTime > 0)
+            if (deletedRows >= Options.LinesToMakeForSpecials && Options.SpecialsAddedEachTime > 0)
             {
-                Board.SpawnSpecialBlocks(deletedRows*_options.SpecialsAddedEachTime, () => RangeRandom.Random(_options.SpecialOccurancies));
+                Board.SpawnSpecialBlocks(deletedRows*Options.SpecialsAddedEachTime, () => RangeRandom.Random(Options.SpecialOccurancies));
                 //
                 if (ClientOnInventoryChanged != null)
                     ClientOnInventoryChanged();
@@ -880,7 +879,7 @@ namespace TetriNET.Client
             _proxy.PlaceTetrimino(this, _tetriminoIndex, CurrentTetrimino.Value, CurrentTetrimino.Orientation, CurrentTetrimino.PosX, CurrentTetrimino.PosY, Board.Cells);
 
             // Send lines if classic style
-            if (_options.ClassicStyleMultiplayerRules && deletedRows > 1)
+            if (Options.ClassicStyleMultiplayerRules && deletedRows > 1)
             {
                 int addLines = deletedRows - 1;
                 if (deletedRows >= 4) // special case for Tetris and above
@@ -975,13 +974,10 @@ namespace TetriNET.Client
 
         public int InventorySize
         {
-            get { return _options.InventorySize; }
+            get { return Options.InventorySize; }
         }
 
-        public GameOptions Options
-        {
-            get { return _options; }
-        }
+        public GameOptions Options { get; private set; }
 
         public bool IsServerMaster { get; private set; }
 
@@ -1718,7 +1714,7 @@ namespace TetriNET.Client
         {
             if (count <= 0)
                 return;
-            Board.AddLines(count, () => RangeRandom.Random(_options.TetriminoOccurancies));
+            Board.AddLines(count, () => RangeRandom.Random(Options.TetriminoOccurancies));
             _proxy.ModifyGrid(this, Player.Board.Cells);
 
             if (ClientOnRedraw != null)
@@ -1754,7 +1750,7 @@ namespace TetriNET.Client
 
         private void ClearSpecialBlocks()
         {
-            Board.ClearSpecialBlocks(() => RangeRandom.Random(_options.TetriminoOccurancies));
+            Board.ClearSpecialBlocks(() => RangeRandom.Random(Options.TetriminoOccurancies));
             _proxy.ModifyGrid(this, Player.Board.Cells);
 
             if (ClientOnRedraw != null)
