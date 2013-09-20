@@ -8,7 +8,7 @@ namespace TetriNET.Common.Helpers
 
         public static bool IsSpecial(byte cellValue)
         {
-            return cellValue > (byte)Pieces.PieceLast;
+            return cellValue > (byte)Pieces.MaxPieces;
         }
 
         public static byte SetSpecial(Specials special)
@@ -28,7 +28,7 @@ namespace TetriNET.Common.Helpers
 
         public static Pieces GetColor(byte cellValue)
         {
-            return (cellValue <= (byte)Pieces.PieceLast) ? (Pieces)cellValue : Pieces.Invalid;
+            return (cellValue <= (byte)Pieces.MaxPieces) ? (Pieces)cellValue : Pieces.Invalid;
         }
     }
 }

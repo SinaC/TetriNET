@@ -51,6 +51,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
             // Create client
             Client = new Client.Client(Piece.CreatePiece, () => new Board(Models.Options.Width, Models.Options.Height));
+            //Client = new Client.Client((piece, posX, posY, orientation, index) => new MutatedZ(posX, posY, orientation, index), () => new Board(Models.Options.Width, Models.Options.Height));
 
             /*// Default values
             Options.OptionsSingleton.Instance.KeySettings = new List<KeySetting>

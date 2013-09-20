@@ -70,7 +70,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             SmallPiecesBrushes = new Dictionary<Pieces, Brush>();
             if (Directory.Exists(folderPath))
             {
-                foreach (Specials special in EnumHelper.GetAvailableValues<Specials>())
+                foreach (Specials special in EnumHelper.GetAvailableValues<Specials>(Availabilities.Available))
                 {
                     string bigFilename = Path.Combine(folderPath, "big_" + special + ".bmp");
                     BigSpecialsBrushes.Add(special, ReadSpecialBrush(special, bigFilename, false));
@@ -78,26 +78,42 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                     SmallSpecialsBrushes.Add(special, ReadSpecialBrush(special, smallFilename, true));
                 }
 
-                foreach (Pieces piece in EnumHelper.GetAvailableValues<Pieces>())
+                foreach (Pieces piece in EnumHelper.GetAvailableValues<Pieces>(Availabilities.Available))
                 {
                     string bigFilename = Path.Combine(folderPath, "big_" + piece + ".bmp");
                     BigPiecesBrushes.Add(piece, ReadPieceBrush(piece, bigFilename, false));
                     string smallFilename = Path.Combine(folderPath, "small_" + piece + ".bmp");
                     SmallPiecesBrushes.Add(piece, ReadPieceBrush(piece, smallFilename, true));
                 }
+
+                foreach (Pieces mutatedPiece in EnumHelper.GetAvailableValues<Pieces>(Availabilities.Mutation))
+                {
+                    Pieces piece = EnumHelper.GetAttribute<AvailabilityAttribute>(mutatedPiece).Mutation;
+                    string bigFilename = Path.Combine(folderPath, "big_" + piece + ".bmp");
+                    BigPiecesBrushes.Add(mutatedPiece, ReadPieceBrush(piece, bigFilename, false));
+                    string smallFilename = Path.Combine(folderPath, "small_" + piece + ".bmp");
+                    SmallPiecesBrushes.Add(mutatedPiece, ReadPieceBrush(piece, smallFilename, true));
+                }
             }
             else
             {
-                foreach (Specials special in EnumHelper.GetAvailableValues<Specials>())
+                foreach (Specials special in EnumHelper.GetAvailableValues<Specials>(Availabilities.Available))
                 {
                     BigSpecialsBrushes.Add(special, CreateDummySpecialBrush(special, false));
                     SmallSpecialsBrushes.Add(special, CreateDummySpecialBrush(special, true));
                 }
 
-                foreach (Pieces piece in EnumHelper.GetAvailableValues<Pieces>())
+                foreach (Pieces piece in EnumHelper.GetAvailableValues<Pieces>(Availabilities.Available))
                 {
                     BigPiecesBrushes.Add(piece, CreateDummyPieceBrush(piece, false));
                     SmallPiecesBrushes.Add(piece, CreateDummyPieceBrush(piece, true));
+                }
+
+                foreach (Pieces mutatedPiece in EnumHelper.GetAvailableValues<Pieces>(Availabilities.Mutation))
+                {
+                    Pieces piece = EnumHelper.GetAttribute<AvailabilityAttribute>(mutatedPiece).Mutation;
+                    BigPiecesBrushes.Add(mutatedPiece, CreateDummyPieceBrush(piece, false));
+                    SmallPiecesBrushes.Add(mutatedPiece, CreateDummyPieceBrush(piece, true));
                 }
             }
         }
@@ -225,22 +241,34 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
         #region ITextureManager
         public Brush GetBigPiece(Pieces piece)
         {
-            return BigPiecesBrushes[piece];
+            Brush brush;
+            if (!BigPiecesBrushes.TryGetValue(piece, out brush))
+                brush = CreateDummyPieceBrush(piece, false);
+            return brush;
         }
 
         public Brush GetSmallPiece(Pieces piece)
         {
-            return SmallPiecesBrushes[piece];
+            Brush brush;
+            if (!SmallPiecesBrushes.TryGetValue(piece, out brush))
+                brush = CreateDummyPieceBrush(piece, true);
+            return brush;
         }
 
         public Brush GetBigSpecial(Specials special)
         {
-            return BigSpecialsBrushes[special];
+            Brush brush;
+            if (!BigSpecialsBrushes.TryGetValue(special, out brush))
+                brush = CreateDummySpecialBrush(special, false);
+            return brush;
         }
 
         public Brush GetSmallSpecial(Specials special)
         {
-            return SmallSpecialsBrushes[special];
+            Brush brush;
+            if (!SmallSpecialsBrushes.TryGetValue(special, out brush))
+                brush = CreateDummySpecialBrush(special, true);
+            return brush;
         }
 
         public Brush GetBigBackground()
@@ -364,18 +392,25 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             switch (piece)
             {
                 case Pieces.TetriminoI:
+                case Pieces.MutatedI:
                     return new SolidColorBrush(Colors.Blue);
                 case Pieces.TetriminoJ:
+                case Pieces.MutatedJ:
                     return new SolidColorBrush(Colors.Green);
                 case Pieces.TetriminoL:
+                case Pieces.MutatedL:
                     return new SolidColorBrush(Colors.Magenta);
                 case Pieces.TetriminoO:
+                case Pieces.MutatedO:
                     return new SolidColorBrush(Colors.Yellow);
                 case Pieces.TetriminoS:
+                case Pieces.MutatedS:
                     return new SolidColorBrush(Colors.Blue);
                 case Pieces.TetriminoT:
+                case Pieces.MutatedT:
                     return new SolidColorBrush(Colors.Yellow);
                 case Pieces.TetriminoZ:
+                case Pieces.MutatedZ:
                     return new SolidColorBrush(Colors.Red);
                 default:
                     return new SolidColorBrush(Colors.White);

@@ -16,7 +16,7 @@ namespace TetriNET.Common.Helpers
             return Enum.GetValues(enumT).Cast<T>();
         }
 
-        public static IEnumerable<T> GetAvailableValues<T>()
+        public static IEnumerable<T> GetAvailableValues<T>(Availabilities availabilities)
         {
             Type enumT = typeof(T);
             if (!enumT.IsEnum)
@@ -27,7 +27,7 @@ namespace TetriNET.Common.Helpers
                     enumValue = x,
                     attribute = GetAttribute<AvailabilityAttribute>(x)
                 })
-                .Where(x => x.attribute != null && x.attribute.Available)
+                .Where(x => x.attribute != null && x.attribute.Available == availabilities)
                 .Select(x => x.enumValue);
         }
 

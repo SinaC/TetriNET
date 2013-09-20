@@ -8,84 +8,82 @@ namespace TetriNET.Common.DataContracts
     public enum Pieces
     {
         [EnumMember]
-        [Availability(false)]
+        [Availability(Availabilities.NotAvailable)]
         Invalid = 0,
 
         //  * * * *
         [EnumMember]
-        [Availability(true, 'I', "Tetrimino I")]
+        [Availability(Availabilities.Available, 'I', "Tetrimino I")]
         TetriminoI = 1,
 
         //  * * *
         //      *
         [EnumMember]
-        [Availability(true, 'J', "Tetrimino J")]
+        [Availability(Availabilities.Available, 'J', "Tetrimino J")]
         TetriminoJ = 2,
 
         //  * * *
         //  *
         [EnumMember]
-        [Availability(true, 'L', "Tetrimino L")]
+        [Availability(Availabilities.Available, 'L', "Tetrimino L")]
         TetriminoL = 3,
 
         //  * *
         //  * *
         [EnumMember]
-        [Availability(true, 'O', "Tetrimino O")]
+        [Availability(Availabilities.Available, 'O', "Tetrimino O")]
         TetriminoO = 4,
 
         //   * *
         // * *
         [EnumMember]
-        [Availability(true, 'S', "Tetrimino S")]
+        [Availability(Availabilities.Available, 'S', "Tetrimino S")]
         TetriminoS = 5,
 
         //  * * *
         //    *
         [EnumMember]
-        [Availability(true, 'T', "Tetrimino T")]
+        [Availability(Availabilities.Available, 'T', "Tetrimino T")]
         TetriminoT = 6,
 
         //  * *
         //    * *
         [EnumMember]
-        [Availability(true, 'Z', "Tetrimino Z")]
+        [Availability(Availabilities.Available, 'Z', "Tetrimino Z")]
         TetriminoZ = 7,
         
+        // Mutated pieces
         [EnumMember]
-        [Availability(false)]
-        Reserved1 = 8,
+        [Availability(Availabilities.Mutation, TetriminoI)]
+        MutatedI = 8,
 
         [EnumMember]
-        [Availability(false)]
-        Reserved2 = 9,
+        [Availability(Availabilities.Mutation, TetriminoJ)]
+        MutatedJ = 9,
 
         [EnumMember]
-        [Availability(false)]
-        Reserved3 = 10,
+        [Availability(Availabilities.Mutation, TetriminoL)]
+        MutatedL = 10,
 
         [EnumMember]
-        [Availability(false)]
-        Reserved4 = 11,
+        [Availability(Availabilities.Mutation, TetriminoO)]
+        MutatedO = 11,
 
         [EnumMember]
-        [Availability(false)]
-        Reserved5 = 12,
+        [Availability(Availabilities.Mutation, TetriminoS)]
+        MutatedS = 12,
 
         [EnumMember]
-        [Availability(false)]
-        Reserved6 = 13,
+        [Availability(Availabilities.Mutation, TetriminoT)]
+        MutatedT = 13,
 
         [EnumMember]
-        [Availability(false)]
-        Reserved7 = 14,
+        [Availability(Availabilities.Mutation, TetriminoZ)]
+        MutatedZ = 14,
 
+        //
         [EnumMember]
-        [Availability(false)]
-        Reserved8 = 15,
-
-        [EnumMember]
-        [Availability(false)]
-        PieceLast = 15,
+        [Availability(Availabilities.NotAvailable)]
+        MaxPieces = 64,
     }
 }

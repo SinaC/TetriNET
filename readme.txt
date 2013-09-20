@@ -27,6 +27,7 @@ http://gafferongames.com/networking-for-game-programmers/udp-vs-tcp/
 http://msdn.microsoft.com/en-us/library/ms751494.aspx
 http://blog.the-blair.com/2010/04/02/wcf-tutorial.html
 http://www.codeproject.com/Articles/331599/What-s-new-in-WCF-4-5-UDP-transport-support
+http://webman.developpez.com/articles/dotnet/wcf-4-multicasting/
 
 discover
 http://msdn.microsoft.com/en-us/magazine/ee335779.aspx

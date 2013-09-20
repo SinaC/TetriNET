@@ -83,6 +83,7 @@
     <Compile Include="Helpers\EventToCommand.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Models\KeySetting.cs" />
+    <Compile Include="Models\MutatedPieces\MutatedZ.cs" />
     <Compile Include="ViewModels\ITabIndex.cs" />
     <Compile Include="TextureManager\ITextureManager.cs" />
     <Compile Include="ViewModels\Connection\ConnectionControlViewModel.cs" />

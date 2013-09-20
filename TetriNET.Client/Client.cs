@@ -33,9 +33,9 @@ namespace TetriNET.Client
             SpecialUsed = new Dictionary<Specials, int>();
             SpecialDiscarded = new Dictionary<Specials, int>();
 
-            foreach(Pieces piece in EnumHelper.GetAvailableValues<Pieces>())
+            foreach(Pieces piece in EnumHelper.GetAvailableValues<Pieces>(Availabilities.Available))
                 PieceCount.Add(piece, 0);
-            foreach (Specials special in EnumHelper.GetAvailableValues<Specials>())
+            foreach (Specials special in EnumHelper.GetAvailableValues<Specials>(Availabilities.Available))
             {
                 SpecialCount.Add(special, 0);
                 SpecialUsed.Add(special, 0);
@@ -45,9 +45,9 @@ namespace TetriNET.Client
 
         public void Reset()
         {
-            foreach (Pieces piece in EnumHelper.GetAvailableValues<Pieces>())
+            foreach (Pieces piece in EnumHelper.GetAvailableValues<Pieces>(Availabilities.Available))
                 PieceCount[piece] = 0;
-            foreach (Specials special in EnumHelper.GetAvailableValues<Specials>())
+            foreach (Specials special in EnumHelper.GetAvailableValues<Specials>(Availabilities.Available))
             {
                 SpecialCount[special] = 0;
                 SpecialUsed[special] = 0;
@@ -518,7 +518,8 @@ namespace TetriNET.Client
             //MoveDownUntilTotallyInBoard(CurrentPiece);
             NextPiece = _createPieceFunc(secondPiece, Board.PieceSpawnX, Board.PieceSpawnY, 1, 1);
             // Update statistics
-            _statistics.PieceCount[firstPiece]++;
+            if (_statistics.PieceCount.ContainsKey(firstPiece))
+                _statistics.PieceCount[firstPiece]++;
             // Reset inventory
             _inventory.Reset(Options.InventorySize);
             // Reset line and level
@@ -788,7 +789,8 @@ namespace TetriNET.Client
             // Set new current piece to next, increment piece index and create next piece
             CurrentPiece = NextPiece;
             // Update statistics
-            _statistics.PieceCount[CurrentPiece.Value]++;
+            if (_statistics.PieceCount.ContainsKey(CurrentPiece.Value))
+                _statistics.PieceCount[CurrentPiece.Value]++;
             //
             //MoveDownUntilTotallyInBoard(CurrentPiece);
             _pieceIndex++;
