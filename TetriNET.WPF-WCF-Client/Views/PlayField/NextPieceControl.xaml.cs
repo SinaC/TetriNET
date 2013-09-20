@@ -10,9 +10,9 @@ using TetriNET.WPF_WCF_Client.Helpers;
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
     /// <summary>
-    /// Interaction logic for NextTetriminoControl.xaml
+    /// Interaction logic for NextPieceControl.xaml
     /// </summary>
-    public partial class NextTetriminoControl : UserControl
+    public partial class NextPieceControl : UserControl
     {
         private const int CellWidth = 16;
         private const int CellHeight = 16;
@@ -21,7 +21,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
 
-        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("NextTetriminoClientProperty", typeof(IClient), typeof(NextTetriminoControl), new PropertyMetadata(Client_Changed));
+        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("NextPieceClientProperty", typeof(IClient), typeof(NextPieceControl), new PropertyMetadata(Client_Changed));
         public IClient Client
         {
             get { return (IClient)GetValue(ClientProperty); }
@@ -30,7 +30,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
-        public NextTetriminoControl()
+        public NextPieceControl()
         {
             InitializeComponent();
 
@@ -53,7 +53,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 }
         }
 
-        private void DrawNextTetrimino()
+        private void DrawNextPiece()
         {
             if (Client == null)
                 return;
@@ -66,14 +66,14 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 rect.Fill = TransparentColor;
 
             // Draw
-            ITetrimino temp = Client.NextTetrimino.Clone();
+            IPiece temp = Client.NextPiece.Clone();
             int minX, minY, maxX, maxY;
             temp.GetAbsoluteBoundingRectangle(out minX, out minY, out maxX, out maxY);
             // Move to top, left
             temp.Translate(-minX, 0);
             if (maxY > board.Height)
                 temp.Translate(0, board.Height - maxY);
-            Tetriminos cellTetrimino = temp.Value;
+            Pieces cellPiece = temp.Value;
             for (int i = 1; i <= temp.TotalCells; i++)
             {
                 int x, y;
@@ -82,7 +82,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 int cellX = x;
 
                 Rectangle uiPart = GetControl(cellX, cellY);
-                uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigTetrimino(cellTetrimino);
+                uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigPiece(cellPiece);
             }
         }
 
@@ -93,7 +93,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
-            NextTetriminoControl @this = sender as NextTetriminoControl;
+            NextPieceControl @this = sender as NextPieceControl;
 
             if (@this != null)
             {
@@ -119,12 +119,12 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         #region IClient events handler
         private void OnGameStarted()
         {
-            ExecuteOnUIThread.Invoke(DrawNextTetrimino);
+            ExecuteOnUIThread.Invoke(DrawNextPiece);
         }
 
         private void OnRoundStarted()
         {
-            ExecuteOnUIThread.Invoke(DrawNextTetrimino);
+            ExecuteOnUIThread.Invoke(DrawNextPiece);
         }
         #endregion
     }

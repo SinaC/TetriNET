@@ -4,16 +4,16 @@ namespace TetriNET.Strategy
 {
     public static class BoardHelper
     {
-        public static void GetAccessibleTranslationsForOrientation(IBoard board, ITetrimino tetrimino, out bool isMovePossible, out int minDeltaX, out int maxDeltaX)
+        public static void GetAccessibleTranslationsForOrientation(IBoard board, IPiece piece, out bool isMovePossible, out int minDeltaX, out int maxDeltaX)
         {
             isMovePossible = false;
             minDeltaX = 0;
             maxDeltaX = 0;
 
-            ITetrimino tempTetrimino = tetrimino.Clone();
+            IPiece tempPiece = piece.Clone();
 
             // Check if we can move
-            bool moveAcceptable = board.CheckNoConflict(tempTetrimino);
+            bool moveAcceptable = board.CheckNoConflict(tempPiece);
             if (!moveAcceptable)
                 return;
             isMovePossible = true;
@@ -21,12 +21,12 @@ namespace TetriNET.Strategy
             // Scan from center to left to find left limit.
             for (int trial = 0; trial >= -board.Width; trial--)
             {
-                // Copy tetrimino
-                tempTetrimino.CopyFrom(tetrimino);
+                // Copy piece
+                tempPiece.CopyFrom(piece);
                 // Translate
-                tempTetrimino.Translate(trial, 0);
+                tempPiece.Translate(trial, 0);
                 // Check if move is valid
-                moveAcceptable = board.CheckNoConflict(tempTetrimino);
+                moveAcceptable = board.CheckNoConflict(tempPiece);
                 if (moveAcceptable)
                     minDeltaX = trial;
                 else
@@ -36,12 +36,12 @@ namespace TetriNET.Strategy
             // Scan from center to right to find right limit.
             for (int trial = 0; trial <= board.Width; trial++)
             {
-                // Copy tetrimino
-                tempTetrimino.CopyFrom(tetrimino);
+                // Copy piece
+                tempPiece.CopyFrom(piece);
                 // Translate
-                tempTetrimino.Translate(trial, 0);
+                tempPiece.Translate(trial, 0);
                 // Check if move is valid
-                moveAcceptable = board.CheckNoConflict(tempTetrimino);
+                moveAcceptable = board.CheckNoConflict(tempPiece);
                 if (moveAcceptable)
                     maxDeltaX = trial;
                 else
@@ -91,22 +91,22 @@ namespace TetriNET.Strategy
             return totalCompletedRows;
         }
 
-        // The following counts the number of cells (0..4) of a tetrimino that would
-        // be eliminated by dropping the tetrimino.
-        public static int CountPieceCellsEliminated(IBoard board, ITetrimino tetrimino, bool alreadyDropped)
+        // The following counts the number of cells (0..4) of a piece that would
+        // be eliminated by dropping the piece.
+        public static int CountPieceCellsEliminated(IBoard board, IPiece piece, bool alreadyDropped)
         {
-            // Copy tetrimino and board so that this measurement is not destructive.
+            // Copy piece and board so that this measurement is not destructive.
             IBoard copyOfBoard = alreadyDropped ? board : board.Clone();
-            ITetrimino copyOfPiece = alreadyDropped ? tetrimino : tetrimino.Clone();
+            IPiece copyOfPiece = alreadyDropped ? piece : piece.Clone();
 
             if (!alreadyDropped)
-                // Drop copy of tetrimino on to the copy of the board
+                // Drop copy of piece on to the copy of the board
                 copyOfBoard.DropAndCommit(copyOfPiece);
 
             // Scan rows.  For each full row, check all board Y values for the
-            // tetrimino.  If any board Y of the tetrimino matches the full row Y,
+            // piece.  If any board Y of the piece matches the full row Y,
             // increment the total eliminated cells.
-            int tetriminoCellsEliminated = 0;
+            int countPieceCellsEliminated = 0;
             for (int y = 1; y <= copyOfBoard.Height; y++)
             {
 
@@ -123,19 +123,19 @@ namespace TetriNET.Strategy
 
                 if (fullRow)
                 {
-                    // Find any matching board-relative Y values in dropped copy of tetrimino.
-                    for (int cellIndex = 1; cellIndex <= tetrimino.TotalCells; cellIndex++)
+                    // Find any matching board-relative Y values in dropped copy of piece.
+                    for (int cellIndex = 1; cellIndex <= piece.TotalCells; cellIndex++)
                     {
                         int boardX;
                         int boardY;
                         copyOfPiece.GetCellAbsolutePosition(cellIndex, out boardX, out boardY);
                         if (boardY == y)
-                            tetriminoCellsEliminated++;  // Moohahahaaa!
+                            countPieceCellsEliminated++;  // Moohahahaaa!
                     }
                 }
             }
 
-            return tetriminoCellsEliminated;
+            return countPieceCellsEliminated;
         }
 
         // Number of full to empty or empty to full cell transitions

@@ -11,7 +11,7 @@ namespace TetriNET.Strategy
         // TODO: helpers should return IOpponent instead of int
         // TODO: when confusion is activated, bot doesn't do anything
 
-        public bool GetSpecialAdvice(IBoard board, ITetrimino current, ITetrimino next, List<Specials> inventory, int inventoryMaxSize, List<IOpponent> opponents, out List<SpecialAdvices> advices)
+        public bool GetSpecialAdvice(IBoard board, IPiece current, IPiece next, List<Specials> inventory, int inventoryMaxSize, List<IOpponent> opponents, out List<SpecialAdvices> advices)
         {
             // if solo, 
             //  drop everything except Nuke/Gravity/ClearLines

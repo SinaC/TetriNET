@@ -8,7 +8,7 @@ namespace TetriNET.Common.Helpers
 
         public static bool IsSpecial(byte cellValue)
         {
-            return cellValue > (byte)Tetriminos.TetriminoLast;
+            return cellValue > (byte)Pieces.PieceLast;
         }
 
         public static byte SetSpecial(Specials special)
@@ -21,14 +21,14 @@ namespace TetriNET.Common.Helpers
             return IsSpecial(cellValue) ? (Specials) cellValue : Specials.Invalid;
         }
 
-        public static byte SetColor(Tetriminos tetrimino)
+        public static byte SetColor(Pieces piece)
         {
-            return (byte) tetrimino;
+            return (byte) piece;
         }
 
-        public static Tetriminos GetColor(byte cellValue)
+        public static Pieces GetColor(byte cellValue)
         {
-            return (cellValue <= (byte)Tetriminos.TetriminoLast) ? (Tetriminos)cellValue : Tetriminos.Invalid;
+            return (cellValue <= (byte)Pieces.PieceLast) ? (Pieces)cellValue : Pieces.Invalid;
         }
     }
 }

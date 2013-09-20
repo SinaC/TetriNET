@@ -18,15 +18,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
     public class ClientStatisticsViewModel : ViewModelBase, ITabIndex
     {
-        public ObservableDictionary<Tetriminos, ValuePercentage> TetriminoCount
+        public ObservableDictionary<Pieces, ValuePercentage> PieceCount
         {
             get
             {
                 if (Client == null)
                     return null;
-                int sum = Client.Statistics.TetriminoCount.Values.Sum();
-                ObservableDictionary<Tetriminos, ValuePercentage> returnValue = new ObservableDictionary<Tetriminos, ValuePercentage>();
-                foreach (KeyValuePair<Tetriminos, int> kv in Client.Statistics.TetriminoCount)
+                int sum = Client.Statistics.PieceCount.Values.Sum();
+                ObservableDictionary<Pieces, ValuePercentage> returnValue = new ObservableDictionary<Pieces, ValuePercentage>();
+                foreach (KeyValuePair<Pieces, int> kv in Client.Statistics.PieceCount)
                 {
                     returnValue.Add(kv.Key, new ValuePercentage
                     {
@@ -98,9 +98,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             }
         }
 
-        public int TetriminosCountSum
+        public int PiecesCountSum
         {
-            get { return Client == null ? 0 : Client.Statistics.TetriminoCount.Values.Sum(); }
+            get { return Client == null ? 0 : Client.Statistics.PieceCount.Values.Sum(); }
         }
 
         public int SpecialCountSum
@@ -118,8 +118,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             get { return Client == null ? 0 : Client.Statistics.SpecialDiscarded.Values.Sum(); }
         }
 
-        public int EndOfTetriminoQueueReached { get { return Client == null ? 0 : Client.Statistics.EndOfTetriminoQueueReached; } }
-        public int NextTetriminoNotYetReceived { get { return Client == null ? 0 : Client.Statistics.NextTetriminoNotYetReceived; } }
+        public int EndOfPieceQueueReached { get { return Client == null ? 0 : Client.Statistics.EndOfPieceQueueReached; } }
+        public int NextPieceNotYetReceived { get { return Client == null ? 0 : Client.Statistics.NextPieceNotYetReceived; } }
 
         private DateTime _gameStartedDateTime;
         public double LinesPerSec
@@ -143,16 +143,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
         private void Refresh()
         {
-            OnPropertyChanged("TetriminoCount");
+            OnPropertyChanged("PieceCount");
             OnPropertyChanged("SpecialCount");
             OnPropertyChanged("SpecialUsed");
             OnPropertyChanged("SpecialDiscarded");
-            OnPropertyChanged("TetriminosCountSum");
+            OnPropertyChanged("PiecesCountSum");
             OnPropertyChanged("SpecialCountSum");
             OnPropertyChanged("SpecialUsedSum");
             OnPropertyChanged("SpecialDiscardedSum");
-            OnPropertyChanged("EndOfTetriminoQueueReached");
-            OnPropertyChanged("NextTetriminoNotYetReceived");
+            OnPropertyChanged("EndOfPieceQueueReached");
+            OnPropertyChanged("NextPieceNotYetReceived");
             OnPropertyChanged("LinesPerSec");
         }
 

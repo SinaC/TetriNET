@@ -143,9 +143,9 @@ namespace TetriNET.WCFProxy
             ExceptionFreeAction(() => _proxy.PublishMessage(msg), "PublishMessage");
         }
 
-        public void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid)
+        public void PlacePiece(ITetriNETCallback callback, int index, Pieces piece, int orientation, int posX, int posY, byte[] grid)
         {
-            ExceptionFreeAction(() => _proxy.PlaceTetrimino(index, tetrimino, orientation, posX, posY, grid), "PlaceTetrimino");
+            ExceptionFreeAction(() => _proxy.PlacePiece(index, piece, orientation, posX, posY, grid), "PlacePiece");
         }
 
         public void ModifyGrid(ITetriNETCallback callback, byte[] grid)

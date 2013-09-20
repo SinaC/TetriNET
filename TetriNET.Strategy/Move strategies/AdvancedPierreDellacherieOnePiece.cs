@@ -9,7 +9,7 @@ namespace TetriNET.Strategy.Move_strategies
     // http://hal.archives-ouvertes.fr/docs/00/41/89/54/PDF/article.pdf
     public class AdvancedPierreDellacherieOnePiece : IMoveStrategy
     {
-        public bool GetBestMove(IBoard board, ITetrimino current, ITetrimino next, out int bestRotationDelta, out int bestTranslationDelta, out bool rotationBeforeTranslation)
+        public bool GetBestMove(IBoard board, IPiece current, IPiece next, out int bestRotationDelta, out int bestTranslationDelta, out bool rotationBeforeTranslation)
         {
             int currentBestTranslationDelta = 0;
             int currentBestRotationDelta = 0;
@@ -19,28 +19,28 @@ namespace TetriNET.Strategy.Move_strategies
             current.Translate(0, -1);
 
             IBoard tempBoard = board.Clone();
-            ITetrimino tempTetrimino = current.Clone();
+            IPiece tempPiece = current.Clone();
 
             // Consider all possible rotations
             for (int trialRotationDelta = 0; trialRotationDelta < current.MaxOrientations; trialRotationDelta++)
             {
-                // Copy tetrimino
-                tempTetrimino.CopyFrom(current);
+                // Copy piece
+                tempPiece.CopyFrom(current);
                 // Rotate
-                tempTetrimino.Rotate(trialRotationDelta);
+                tempPiece.Rotate(trialRotationDelta);
 
                 // Get translation range
                 bool isMovePossible;
                 int minDeltaX;
                 int maxDeltaX;
-                BoardHelper.GetAccessibleTranslationsForOrientation(board, tempTetrimino, out isMovePossible, out minDeltaX, out maxDeltaX);
+                BoardHelper.GetAccessibleTranslationsForOrientation(board, tempPiece, out isMovePossible, out minDeltaX, out maxDeltaX);
 
                 StringBuilder sb = new StringBuilder();
-                for (int i = 1; i <= tempTetrimino.TotalCells; i++)
+                for (int i = 1; i <= tempPiece.TotalCells; i++)
                 {
                     int x, y;
-                    tempTetrimino.GetCellAbsolutePosition(i, out x, out y);
-                    sb.Append(String.Format("[{0}->{1},{2}]", i, x - tempTetrimino.PosX, y - tempTetrimino.PosY));
+                    tempPiece.GetCellAbsolutePosition(i, out x, out y);
+                    sb.Append(String.Format("[{0}->{1},{2}]", i, x - tempPiece.PosX, y - tempPiece.PosY));
                 }
                 //Log.Log.WriteLine("{0} {1} -> {2}  {3}", trialRotationDelta, minDeltaX, maxDeltaX, sb.ToString());
                 if (isMovePossible)
@@ -50,25 +50,25 @@ namespace TetriNET.Strategy.Move_strategies
                     {
                         // Evaluate this move
 
-                        // Copy tetrimino
-                        tempTetrimino.CopyFrom(current);
+                        // Copy piece
+                        tempPiece.CopyFrom(current);
                         // Rotate
-                        tempTetrimino.Rotate(trialRotationDelta);
+                        tempPiece.Rotate(trialRotationDelta);
                         // Translate
-                        tempTetrimino.Translate(trialTranslationDelta, 0);
+                        tempPiece.Translate(trialTranslationDelta, 0);
 
                         // Check if move is acceptable
-                        if (board.CheckNoConflict(tempTetrimino))
+                        if (board.CheckNoConflict(tempPiece))
                         {
                             // Copy board
                             tempBoard.CopyFrom(board);
-                            // Drop tetrimino
-                            tempBoard.DropAndCommit(tempTetrimino);
+                            // Drop piece
+                            tempBoard.DropAndCommit(tempPiece);
 
                             // Evaluate
                             double trialRating;
                             int trialPriority;
-                            EvaluteMove(tempBoard, tempTetrimino, out trialRating, out trialPriority);
+                            EvaluteMove(tempBoard, tempPiece, out trialRating, out trialPriority);
 
                             //Log.Log.WriteLine("R:{0:0.0000} P:{1} R:{2} T:{3}", trialRating, trialPriority, trialRotationDelta, trialTranslationDelta);
 
@@ -99,46 +99,46 @@ namespace TetriNET.Strategy.Move_strategies
         // The following evaluation function was adapted from Pascal code submitted by:
         // Pierre Dellacherie (France).  (E-mail : dellache@club-internet.fr)
         //
-        // This amazing one-tetrimino algorithm completes an average of roughly 600 000 
+        // This amazing one-piece algorithm completes an average of roughly 600 000 
         // rows, and often attains 2 000 000 or 2 500 000 rows.  However, the algorithm
         // sometimes completes as few as 15 000 rows.  I am fairly certain that this
-        // is NOT due to statistically abnormal patterns in the falling tetrimino sequence.
+        // is NOT due to statistically abnormal patterns in the falling piece sequence.
         //
         // Pierre Dellacherie corresponded with me via e-mail to help me with the 
         // conversion of his Pascal code to C++.
         //
         // WARNING:
-        //     If there is a single board and tetrimino combination with the highest
+        //     If there is a single board and piece combination with the highest
         //     'rating' value, it is the best combination.  However, among
-        //     board and tetrimino combinations with EQUAL 'rating' values,
+        //     board and piece combinations with EQUAL 'rating' values,
         //     the highest 'priority' value wins.
         //
         //     So, the complete rating is: { rating, priority }.
-        private static void EvaluteMove(IBoard board, ITetrimino tetrimino, out double rating, out int priority)
+        private static void EvaluteMove(IBoard board, IPiece piece, out double rating, out int priority)
         {
-            int tetriminoMinX;
-            int tetriminoMinY;
-            int tetriminoMaxX;
-            int tetriminoMaxY;
-            tetrimino.GetAbsoluteBoundingRectangle(out tetriminoMinX, out tetriminoMinY, out tetriminoMaxX, out tetriminoMaxY);
+            int pieceMinX;
+            int pieceMinY;
+            int pieceMaxX;
+            int pieceMaxY;
+            piece.GetAbsoluteBoundingRectangle(out pieceMinX, out pieceMinY, out pieceMaxX, out pieceMaxY);
 
             // Landing Height (vertical midpoint)
-            double landingHeight = 0.5 * (tetriminoMinY + tetriminoMaxY);
+            double landingHeight = 0.5 * (pieceMinY + pieceMaxY);
 
             //
             int completedRows = BoardHelper.GetTotalCompletedRows(board);
             int erodedPieceCellsMetric = 0;
             if (completedRows > 0)
             {
-                // Count tetrimino cells eroded by completed rows before doing collapse on pile.
-                int tetriminoCellsEliminated = BoardHelper.CountPieceCellsEliminated(board, tetrimino, true);
+                // Count piece cells eroded by completed rows before doing collapse on pile.
+                int countPieceCellsEliminated = BoardHelper.CountPieceCellsEliminated(board, piece, true);
 
                 // Now it's okay to collapse completed rows
                 List<Specials> specials;
                 board.CollapseCompletedRows(out specials);
 
                 // Weight eroded cells by completed rows
-                erodedPieceCellsMetric = (completedRows * tetriminoCellsEliminated);
+                erodedPieceCellsMetric = (completedRows * countPieceCellsEliminated);
             }
 
             //
@@ -173,7 +173,7 @@ namespace TetriNET.Strategy.Move_strategies
 
             // Final rating
             //   [1] Punish landing height
-            //   [2] Reward eroded tetrimino cells
+            //   [2] Reward eroded piece cells
             //   [3] Punish row    transitions
             //   [4] Punish column transitions
             //   [5] Punish buried holes (cellars)
@@ -195,7 +195,7 @@ namespace TetriNET.Strategy.Move_strategies
             //   Priority is further differentiation between possible moves.
             //   We further rate moves accoding to the following:
             //            * Reward deviation from center of board
-            //            * Reward tetriminos to the left of center of the board
+            //            * Reward pieces to the left of center of the board
             //            * Punish rotation
             //   Priority is less important than the rating, but among equal
             //   ratings we select the option with the greatest priority.
@@ -206,13 +206,13 @@ namespace TetriNET.Strategy.Move_strategies
             //   is too much to tolerate.  So, this priority is stored in a
             //   separate variable.
 
-            int absoluteDistanceX = Math.Abs(tetrimino.PosX - board.TetriminoSpawnX);
+            int absoluteDistanceX = Math.Abs(piece.PosX - board.PieceSpawnX);
 
             priority = 0;
             priority += (100 * absoluteDistanceX);
-            if (tetrimino.PosX < board.TetriminoSpawnX)
+            if (piece.PosX < board.PieceSpawnX)
                 priority += 10;
-            priority -= tetrimino.Orientation - 1;
+            priority -= piece.Orientation - 1;
         }
     }
 }

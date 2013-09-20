@@ -16,6 +16,10 @@
         xmlns:models="clr-namespace:TetriNET.WPF_WCF_Client.Models"
         mc:Ignorable="d"
         UseLayoutRounding="True"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True" 
+        Background="Transparent" 
         MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
         d:DataContext="{d:DesignInstance local:MainWindowViewModel, IsDesignTimeCreatable=False}"
         Icon="TetriNET.ico"
@@ -27,11 +31,11 @@
         Background="Transparent" 
 	    ResizeMode="NoResize"        
     -->
-    <!--<Window.CommandBindings>
+    <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Close"
                         Executed="CloseCommandHandler"/>
-    </Window.CommandBindings>-->
-<Window.Resources>
+    </Window.CommandBindings>
+    <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
@@ -41,7 +45,16 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <TabControl SelectedIndex="{Binding ActiveTabItemIndex}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TabControl Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="3" SelectedIndex="{Binding ActiveTabItemIndex}">
             <!--
             <TabControl.Template>
                 <ControlTemplate TargetType="TabControl">
@@ -109,5 +122,39 @@
             </TabItem>
 -->
         </TabControl>
+        <Button Grid.Row="0" Grid.Column="1" Content="_" Click="Minimize_Click" Width="18" BorderThickness="1">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                                <GradientStop Color="#FFEBEBEB" Offset="0.5"/>
+                                <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+                                <GradientStop Color="#FFCDCDCD" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="BorderBrush" Value="#FF8C8E94"/>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button Grid.Row="0" Grid.Column="2" Content="X" Width="18" Command="ApplicationCommands.Close" BorderThickness="1">
+            <Button.Style>
+                <Style TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                                <GradientStop Color="#FFEBEBEB" Offset="0.5"/>
+                                <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+                                <GradientStop Color="#FFCDCDCD" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="BorderBrush" Value="#FF8C8E94"/>
+                </Style>
+            </Button.Style>
+        </Button>
     </Grid>
 </Window>

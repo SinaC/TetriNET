@@ -1,9 +1,9 @@
 ﻿using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 
-namespace TetriNET.Client.DefaultBoardAndTetriminos
+namespace TetriNET.DefaultBoardAndPieces
 {
-    public abstract class Tetrimino : ITetrimino
+    public abstract class Piece : IPiece
     {
         public int PosX { get; protected set; } // coordinates in board
         public int PosY { get; protected set; } // coordinates in board
@@ -11,18 +11,18 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
 
         public int Index { get; protected set; }
 
-        public Tetriminos Value { get; protected set; }
+        public Pieces Value { get; protected set; }
         
         public abstract int MaxOrientations { get; }
         public abstract int TotalCells { get; }
         public abstract void GetCellAbsolutePosition(int cellIndex, out int x, out int y); // cell: 1->#cells
-        public abstract ITetrimino Clone();
+        public abstract IPiece Clone();
 
-        protected Tetrimino()
+        protected Piece()
         {
         }
 
-        protected Tetrimino(int spawnX, int spawnY, int spawnOrientation, int index)
+        protected Piece(int spawnX, int spawnY, int spawnOrientation, int index)
         {
             PosX = spawnX;
             PosY = spawnY;
@@ -30,13 +30,13 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             Index = index;
         }
 
-        public void CopyFrom(ITetrimino tetrimino)
+        public void CopyFrom(IPiece piece)
         {
-            // TODO: test if same type of tetrimino
-            PosX = tetrimino.PosX;
-            PosY = tetrimino.PosY;
-            Orientation = tetrimino.Orientation;
-            Value = tetrimino.Value;
+            // TODO: test if same type of cell
+            PosX = piece.PosX;
+            PosY = piece.PosY;
+            Orientation = piece.Orientation;
+            Value = piece.Value;
         }
 
         public void Translate(int dx, int dy)
@@ -97,27 +97,27 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             }
         }
 
-        public static ITetrimino CreateTetrimino(Tetriminos tetrimino, int spawnX, int spawnY, int spawnOrientation, int index)
+        public static IPiece CreatePiece(Pieces piece, int spawnX, int spawnY, int spawnOrientation, int index)
         {
-            switch (tetrimino)
+            switch (piece)
             {
-                case Tetriminos.TetriminoI:
+                case Pieces.TetriminoI:
                     return new TetriminoI(spawnX, spawnY, spawnOrientation, index);
-                case Tetriminos.TetriminoJ:
+                case Pieces.TetriminoJ:
                     return new TetriminoJ(spawnX, spawnY, spawnOrientation, index);
-                case Tetriminos.TetriminoL:
+                case Pieces.TetriminoL:
                     return new TetriminoL(spawnX, spawnY, spawnOrientation, index);
-                case Tetriminos.TetriminoO:
+                case Pieces.TetriminoO:
                     return new TetriminoO(spawnX, spawnY, spawnOrientation, index);
-                case Tetriminos.TetriminoS:
+                case Pieces.TetriminoS:
                     return new TetriminoS(spawnX, spawnY, spawnOrientation, index);
-                case Tetriminos.TetriminoT:
+                case Pieces.TetriminoT:
                     return new TetriminoT(spawnX, spawnY, spawnOrientation, index);
-                case Tetriminos.TetriminoZ:
+                case Pieces.TetriminoZ:
                     return new TetriminoZ(spawnX, spawnY, spawnOrientation, index);
             }
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Warning, "Create random Tetrimino because server didn't send next tetrimino");
-            return new TetriminoZ(spawnX, spawnY, spawnOrientation, index); // TODO: sometimes server takes time to send next tetrimino, it should send 2 or 3 next tetriminoes to ensure this never happens
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Warning, "Create random cell because server didn't send next cell");
+            return new TetriminoZ(spawnX, spawnY, spawnOrientation, index); // TODO: sometimes server takes time to send next cell, it should send 2 or 3 next pieces to ensure this never happens
         }
     }
 }

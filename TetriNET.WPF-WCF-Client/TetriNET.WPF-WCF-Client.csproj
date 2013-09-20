@@ -116,8 +116,8 @@
       <DependentUpon>GameInfoControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ListBoxExtenders.cs" />
-    <Compile Include="Views\PlayField\NextTetriminoControl.xaml.cs">
-      <DependentUpon>NextTetriminoControl.xaml</DependentUpon>
+    <Compile Include="Views\PlayField\NextPieceControl.xaml.cs">
+      <DependentUpon>NextPieceControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PlayField\OpponentGridControl.xaml.cs">
       <DependentUpon>OpponentGridControl.xaml</DependentUpon>
@@ -177,7 +177,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PlayField\NextTetriminoControl.xaml">
+    <Page Include="Views\PlayField\NextPieceControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -295,6 +295,10 @@
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TetriNET.DefaultBoardAndPieces\TetriNET.DefaultBoardAndPieces.csproj">
+      <Project>{2bd5936f-015d-473f-9161-6b837ef3a3ba}</Project>
+      <Name>TetriNET.DefaultBoardAndPieces</Name>
     </ProjectReference>
     <ProjectReference Include="..\TetriNET.Logger\TetriNET.Logger.csproj">
       <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>

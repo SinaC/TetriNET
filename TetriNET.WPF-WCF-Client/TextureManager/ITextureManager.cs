@@ -5,8 +5,8 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
 {
     public interface ITextureManager
     {
-        Brush GetBigTetrimino(Tetriminos tetrimino);
-        Brush GetSmallTetrimino(Tetriminos tetrimino);
+        Brush GetBigPiece(Pieces piece);
+        Brush GetSmallPiece(Pieces piece);
         Brush GetBigSpecial(Specials special);
         Brush GetSmallSpecial(Specials special);
         Brush GetBigBackground();

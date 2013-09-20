@@ -88,14 +88,14 @@ namespace TetriNET.ConsoleWCFClient.AI
         {
             _timer.Stop();
 
-            if (_client.IsRegistered && _client.Board == null || _client.CurrentTetrimino == null || _client.NextTetrimino == null)
+            if (_client.IsRegistered && _client.Board == null || _client.CurrentPiece == null || _client.NextPiece == null)
                 return;
 
             DateTime searchBestMoveStartTime = DateTime.Now;
 
             // Use specials
             List<SpecialAdvices> advices;
-            _specialStrategy.GetSpecialAdvice(_client.Board, _client.CurrentTetrimino, _client.NextTetrimino, _client.Inventory, _client.InventorySize, _client.Opponents.ToList(), out advices);
+            _specialStrategy.GetSpecialAdvice(_client.Board, _client.CurrentPiece, _client.NextPiece, _client.Inventory, _client.InventorySize, _client.Opponents.ToList(), out advices);
             foreach (SpecialAdvices advice in advices)
             {
                 bool continueLoop = true;
@@ -126,7 +126,7 @@ namespace TetriNET.ConsoleWCFClient.AI
             int bestRotationDelta;
             int bestTranslationDelta;
             bool rotationBeforeTranslation;
-            _moveStrategy.GetBestMove(_client.Board, _client.CurrentTetrimino, _client.NextTetrimino, out bestRotationDelta, out bestTranslationDelta, out rotationBeforeTranslation);
+            _moveStrategy.GetBestMove(_client.Board, _client.CurrentPiece, _client.NextPiece, out bestRotationDelta, out bestTranslationDelta, out rotationBeforeTranslation);
 
             DateTime searchBestModeEndTime = DateTime.Now;
 

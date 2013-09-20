@@ -30,7 +30,7 @@ namespace TetriNET.ConsoleWCFServer
         private readonly Func<ITetriNET> _getProxyFunc;
         private ITetriNET Proxy { get; set; }
         private byte[] PlayerGrid { get; set; }
-        private int TetriminoIndex { get; set; }
+        private int PieceIndex { get; set; }
         private DateTime _lastServerAction;
         private int _timeoutCount;
         private DateTime _lastHeartbeat;
@@ -50,7 +50,7 @@ namespace TetriNET.ConsoleWCFServer
                 PlayerGrid[i * Width] = 1;
 
             IsServerMaster = false;
-            TetriminoIndex = 0;
+            PieceIndex = 0;
 
             _lastHeartbeat = DateTime.Now.AddMilliseconds(-HeartbeatDelay);
             _lastServerAction = DateTime.Now;
@@ -108,8 +108,8 @@ namespace TetriNET.ConsoleWCFServer
                             Proxy.PublishMessage(this, "I'll kill you");
                             break;
                         case 1:
-                            Proxy.PlaceTetrimino(this, TetriminoIndex, Tetriminos.TetriminoI, 1, 5, 3, PlayerGrid);
-                            TetriminoIndex++;
+                            Proxy.PlacePiece(this, PieceIndex, Pieces.TetriminoI, 1, 5, 3, PlayerGrid);
+                            PieceIndex++;
                             break;
                         case 2:
                             Proxy.UseSpecial(this, PlayerId, Specials.NukeField);
@@ -217,14 +217,14 @@ namespace TetriNET.ConsoleWCFServer
             ResetTimeout();
         }
 
-        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, Tetriminos thirdTetrimino, GameOptions options)
+        public void OnGameStarted(Pieces firstPiece, Pieces secondPiece, Pieces thirdPiece, GameOptions options)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "OnGameStarted[{0}]:{1} {2} {3}", PlayerName, firstTetrimino, secondTetrimino, thirdTetrimino);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "OnGameStarted[{0}]:{1} {2} {3}", PlayerName, firstPiece, secondPiece, thirdPiece);
             ResetTimeout();
             if (State == States.WaitingStartGame)
             {
                 State = States.GameStarted;
-                TetriminoIndex = 0;
+                PieceIndex = 0;
             }
             else
                 Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Was not waiting start game");
@@ -236,7 +236,7 @@ namespace TetriNET.ConsoleWCFServer
             ResetTimeout();
             if (State == States.GameStarted)
             {
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Game finished: #tetrimino: {0}", TetriminoIndex);
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Game finished: #piece: {0}", PieceIndex);
                 State = States.GameFinished;
             }
             else
@@ -285,9 +285,9 @@ namespace TetriNET.ConsoleWCFServer
             ResetTimeout();
         }
 
-        public void OnNextTetrimino(int index, Tetriminos tetrimino)
+        public void OnNextPiece(int index, Pieces piece)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "OnNextTetrimino[{0}]:{1} {2}", PlayerName, index, tetrimino);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "OnNextPiece[{0}]:{1} {2}", PlayerName, index, piece);
             ResetTimeout();
         }
 

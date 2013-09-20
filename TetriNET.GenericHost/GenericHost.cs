@@ -36,7 +36,7 @@ namespace TetriNET.GenericHost
         public event HostRegisterPlayerHandler OnPlayerRegistered;
         public event HostUnregisterPlayerHandler OnPlayerUnregistered;
         public event HostPublishMessageHandler OnMessagePublished;
-        public event HostPlaceTetriminoHandler OnTetriminoPlaced;
+        public event HostPlacePieceHandler OnPiecePlaced;
         public event HostUseSpecialHandler OnUseSpecial;
         public event HostSendLinesHandler OnSendLines;
         public event HostModifyGridHandler OnGridModified;
@@ -168,21 +168,21 @@ namespace TetriNET.GenericHost
             }
         }
 
-        public virtual void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid)
+        public virtual void PlacePiece(ITetriNETCallback callback, int index, Pieces piece, int orientation, int posX, int posY, byte[] grid)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "PlaceTetrimino {0} {1} {2} {3},{4} {5}", index, tetrimino, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
+            Log.WriteLine(Log.LogLevels.Debug, "PlacePiece {0} {1} {2} {3},{4} {5}", index, piece, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
                 player.ResetTimeout(); // player alive
                 //
-                if (OnTetriminoPlaced != null)
-                    OnTetriminoPlaced(player, index, tetrimino, orientation, posX, posY, grid);
+                if (OnPiecePlaced != null)
+                    OnPiecePlaced(player, index, piece, orientation, posX, posY, grid);
             }
             else
             {
-                Log.WriteLine(Log.LogLevels.Warning, "PlaceTetrimino from unknown player");
+                Log.WriteLine(Log.LogLevels.Warning, "PlacePiece from unknown player");
             }
         }
 

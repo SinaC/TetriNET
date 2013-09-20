@@ -18,7 +18,7 @@
 //        {
 //            Name = name;
 //            Callback = callback;
-//            TetriminoIndex = 0;
+//            PieceIndex = 0;
 //            LastAction = DateTime.Now;
 //        }
 
@@ -42,7 +42,7 @@
 //        public event PlayerDisconnectedHandler OnDisconnected;
 
 //        public string Name { get; private set; }
-//        public int TetriminoIndex { get; set; }
+//        public int PieceIndex { get; set; }
 //        public DateTime LastAction { get; set; }
 //        public ITetriNETCallback Callback { get; private set; }
         
@@ -101,9 +101,9 @@
 //            ExceptionFreeAction(() => Callback.OnAttackMessageReceived(msg), "OnAttackMessageReceived");
 //        }
 
-//        public void OnNextTetrimino(int index, Tetriminos tetrimino)
+//        public void OnNextPiece(int index, Tetriminos tetrimino)
 //        {
-//            ExceptionFreeAction(() => Callback.OnNextTetrimino(index, tetrimino), "OnNextTetrimino");
+//            ExceptionFreeAction(() => Callback.OnNextPiece(index, tetrimino), "OnNextPiece");
 //        }
 
 //        #endregion
@@ -115,7 +115,7 @@
 //        {
 //            Name = name;
 //            Callback = callback;
-//            TetriminoIndex = 0;
+//            PieceIndex = 0;
 //            LastAction = DateTime.Now;
 //        }
 
@@ -130,7 +130,7 @@
 //        public event PlayerDisconnectedHandler OnDisconnected;
 
 //        public string Name { get; private set; }
-//        public int TetriminoIndex { get; set; }
+//        public int PieceIndex { get; set; }
 //        public DateTime LastAction { get; set; }
 //        public ITetriNETCallback Callback { get; private set; }
 
@@ -189,9 +189,9 @@
 //            UpdateTimerOnAction(() => Callback.OnAttackMessageReceived(msg));
 //        }
 
-//        public void OnNextTetrimino(int index, Tetriminos tetrimino)
+//        public void OnNextPiece(int index, Tetriminos tetrimino)
 //        {
-//            UpdateTimerOnAction(() => Callback.OnNextTetrimino(index, tetrimino));
+//            UpdateTimerOnAction(() => Callback.OnNextPiece(index, tetrimino));
 //        }
         
 //        #endregion
@@ -308,7 +308,7 @@
 //        public event RegisterPlayerHandler OnPlayerRegistered;
 //        public event UnregisterPlayerHandler OnPlayerUnregistered;
 //        public event PublishMessageHandler OnMessagePublished;
-//        public event PlaceTetriminoHandler OnTetriminoPlaced;
+//        public event PlaceTetriminoHandler OnPiecePlaced;
 //        public event SendAttackHandler OnAttackSent;
 
 //        public IPlayerManager PlayerManager { get; private set; }
@@ -449,22 +449,22 @@
 //            }
 //        }
 
-//        public void PlaceTetrimino(int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
+//        public void PlacePiece(int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
 //        {
-//            Log.WriteLine("PlaceTetrimino {0} {1} {2}", tetrimino, orientation, position);
+//            Log.WriteLine("PlacePiece {0} {1} {2}", tetrimino, orientation, position);
 
 //            IPlayer player = CallbackPlayer;
 //            if (player != null)
 //            {
 //                player.LastAction = DateTime.Now; // player alive
 //                //
-//                if (OnTetriminoPlaced != null)
-//                    OnTetriminoPlaced(player, index, tetrimino, orientation, position, grid);
+//                if (OnPiecePlaced != null)
+//                    OnPiecePlaced(player, index, tetrimino, orientation, position, grid);
 //            }
 //            else
 //            {
 //                string endpoint = CallbackEndpoint;
-//                Log.WriteLine("PlaceTetrimino from unknown player[" + endpoint + "]");
+//                Log.WriteLine("PlacePiece from unknown player[" + endpoint + "]");
 //            }
 //        }
 
@@ -560,7 +560,7 @@
 //            _host.OnPlayerRegistered += RegisterPlayerHandler;
 //            _host.OnPlayerUnregistered += UnregisterPlayerHandler;
 //            _host.OnMessagePublished += PublishMessageHandler;
-//            _host.OnTetriminoPlaced += PlaceTetriminoHandler;
+//            _host.OnPiecePlaced += PlaceTetriminoHandler;
 //            _host.OnAttackSent += SendAttackHandler;
 
 //            AttackId = 0;
@@ -627,7 +627,7 @@
 //            // Send start game to every connected player
 //            foreach (IPlayer p in _host.PlayerManager.Players)
 //            {
-//                p.TetriminoIndex = 0;
+//                p.PieceIndex = 0;
 //                p.OnGameStarted(firstTetrimino, secondTetrimino, players);
 //            }
 
@@ -680,7 +680,7 @@
 
 //        private void PlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
 //        {
-//            _actionQueue.Enqueue(() => PlaceTetrimino(player, index, tetrimino, orientation, position, grid));
+//            _actionQueue.Enqueue(() => PlacePiece(player, index, tetrimino, orientation, position, grid));
 //        }
 
 //        private void SendAttackHandler(IPlayer player, IPlayer target, Attacks attack)
@@ -778,18 +778,18 @@
 
 //        #region Actions
 
-//        private void PlaceTetrimino(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
+//        private void PlacePiece(IPlayer player, int index, Tetriminos tetrimino, Orientations orientation, Position position, PlayerGrid grid)
 //        {
-//            Log.WriteLine("PlaceTetrimino[{0}]{1}:{2} {3} at {4},{5}", player.Name, index, tetrimino, orientation, position.X, position.Y);
+//            Log.WriteLine("PlacePiece[{0}]{1}:{2} {3} at {4},{5}", player.Name, index, tetrimino, orientation, position.X, position.Y);
 //            Log.WriteLine("Grid non-empty cell count: {0}", grid.Data.Count(x => x > 0));
 
-//            // TODO: check if index is equal to player.TetriminoIndex
+//            // TODO: check if index is equal to player.PieceIndex
 
 //            // Get next piece
-//            player.TetriminoIndex++;
-//            Tetriminos nextTetrimino = _tetriminoQueue.Instance[player.TetriminoIndex];
+//            player.PieceIndex++;
+//            Tetriminos nextTetrimino = _tetriminoQueue.Instance[player.PieceIndex];
 //            // Send next piece
-//            player.OnNextTetrimino(player.TetriminoIndex, nextTetrimino);
+//            player.OnNextPiece(player.PieceIndex, nextTetrimino);
 //        }
 
 //        private void Attack(IPlayer player, IPlayer target, Attacks attack)

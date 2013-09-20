@@ -5,12 +5,12 @@ namespace TetriNET.Common.Interfaces
 {
     public interface IClientStatistics
     {
-        Dictionary<Tetriminos, int> TetriminoCount { get; }
+        Dictionary<Pieces, int> PieceCount { get; }
         Dictionary<Specials, int> SpecialCount { get; }
         Dictionary<Specials, int> SpecialUsed { get; }
         Dictionary<Specials, int> SpecialDiscarded { get; }
 
-        int EndOfTetriminoQueueReached { get; }
-        int NextTetriminoNotYetReceived { get; }
+        int EndOfPieceQueueReached { get; }
+        int NextPieceNotYetReceived { get; }
     }
 }

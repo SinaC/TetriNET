@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Configuration;
-using TetriNET.Client.DefaultBoardAndTetriminos;
+using TetriNET.DefaultBoardAndPieces;
 using TetriNET.Common.Interfaces;
 using TetriNET.ConsoleWCFClient.AI;
-using TetriNET.ConsoleWCFClient.GameController;
 using TetriNET.ConsoleWCFClient.UI;
 
 namespace TetriNET.ConsoleWCFClient
@@ -18,7 +17,7 @@ namespace TetriNET.ConsoleWCFClient
 
             //
             //string baseAddress = @"net.tcp://localhost:8765/TetriNET";
-            IClient client = new Client.Client(Tetrimino.CreateTetrimino, () => new Board(12,22));
+            IClient client = new Client.Client(Piece.CreatePiece, () => new Board(12,22));
 
             string baseAddress = ConfigurationManager.AppSettings["address"];
             client.Connect(callback => new WCFProxy.WCFProxy(callback, baseAddress));

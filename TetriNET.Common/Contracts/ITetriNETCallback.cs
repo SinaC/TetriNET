@@ -37,7 +37,7 @@ namespace TetriNET.Common.Contracts
         void OnPlayerWon(int playerId);
 
         [OperationContract(IsOneWay = true)] // New Game
-        void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, Tetriminos thirdTetrimino, GameOptions options);
+        void OnGameStarted(Pieces firstPiece, Pieces secondPiece, Pieces thirdPiece, GameOptions options);
 
         [OperationContract(IsOneWay = true)] // End Game
         void OnGameFinished();
@@ -58,7 +58,7 @@ namespace TetriNET.Common.Contracts
         void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special); // Special Used
 
         [OperationContract(IsOneWay = true)]
-        void OnNextTetrimino(int index, Tetriminos tetrimino); // TODO: send 3 next tetriminoes
+        void OnNextPiece(int index, Pieces piece); // TODO: send 3 next pieces
 
         [OperationContract(IsOneWay = true)] // Field Update
         void OnGridModified(int playerId, byte[] grid);

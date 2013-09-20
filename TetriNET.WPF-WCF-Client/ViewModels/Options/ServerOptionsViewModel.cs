@@ -45,9 +45,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             get { return Models.Options.OptionsSingleton.Instance; }
         }
 
-        public int TetriminosSum
+        public int PiecesSum
         {
-            get { return Common.Randomizer.RangeRandom.SumOccurancies(Options.ServerOptions.TetriminoOccurancies); }
+            get { return Common.Randomizer.RangeRandom.SumOccurancies(Options.ServerOptions.PieceOccurancies); }
         }
 
         public int SpecialsSum
@@ -55,9 +55,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             get { return Common.Randomizer.RangeRandom.SumOccurancies(Options.ServerOptions.SpecialOccurancies); }
         }
 
-        public bool IsTetriminosSumValid
+        public bool IsPiecesSumValid
         {
-            get { return TetriminosSum == 100; }
+            get { return PiecesSum == 100; }
         }
 
         public bool IsSpecialsSumValid
@@ -67,7 +67,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         public bool IsSendOptionsToServerEnabled
         {
-            get { return IsTetriminosSumValid && IsSpecialsSumValid; }
+            get { return IsPiecesSumValid && IsSpecialsSumValid; }
         }
 
         public ServerOptionsViewModel()
@@ -77,7 +77,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             SendOptionsToServerCommand = new RelayCommand(SendOptionsToServer);
             ResetOptionsCommand = new RelayCommand(ResetOptions);
             SpecialOccurancyChangedCommand = new RelayCommand(UpdateSpecialOccurancy);
-            TetriminoOccurancyChangedCommand = new RelayCommand(UpdateTetriminoOccurancy);
+            PieceOccurancyChangedCommand = new RelayCommand(UpdatePieceOccurancy);
         }
 
         private void SendOptionsToServer()
@@ -100,10 +100,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             OnPropertyChanged("IsSendOptionsToServerEnabled");
         }
 
-        private void UpdateTetriminoOccurancy()
+        private void UpdatePieceOccurancy()
         {
-            OnPropertyChanged("TetriminosSum");
-            OnPropertyChanged("IsTetriminosSumValid");
+            OnPropertyChanged("PiecesSum");
+            OnPropertyChanged("IsPiecesSumValid");
             OnPropertyChanged("IsSendOptionsToServerEnabled");
         }
 
@@ -167,7 +167,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         public ICommand SendOptionsToServerCommand { get; set; }
         public ICommand ResetOptionsCommand { get; set; }
         public ICommand SpecialOccurancyChangedCommand { get; set; }
-        public ICommand TetriminoOccurancyChangedCommand { get; set; }
+        public ICommand PieceOccurancyChangedCommand { get; set; }
 
         #endregion
     }

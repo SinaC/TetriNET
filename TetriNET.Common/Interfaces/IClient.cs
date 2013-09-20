@@ -23,8 +23,8 @@ namespace TetriNET.Common.Interfaces
     
     public delegate void ClientRedrawHandler();
     public delegate void ClientRedrawBoardHandler(int playerId, IBoard board);
-    public delegate void ClientTetriminoMovingHandler();
-    public delegate void ClientTetriminoMovedHandler();
+    public delegate void ClientPieceMovingHandler();
+    public delegate void ClientPieceMovedHandler();
     public delegate void ClientPlayerRegisteredHandler(RegistrationResults result, int playerId);
     public delegate void ClientPlayerUnregisteredHandler();
     public delegate void ClientWinListModifiedHandler(List<WinEntry> winList);
@@ -48,8 +48,8 @@ namespace TetriNET.Common.Interfaces
         string Name { get; }
         int PlayerId { get; }
         int MaxPlayersCount { get; }
-        ITetrimino CurrentTetrimino { get; }
-        ITetrimino NextTetrimino { get; }
+        IPiece CurrentPiece { get; }
+        IPiece NextPiece { get; }
         IBoard Board { get; }
         List<Specials> Inventory { get; }
         int LinesCleared { get; }
@@ -80,8 +80,8 @@ namespace TetriNET.Common.Interfaces
         // UI
         event ClientRedrawHandler OnRedraw;
         event ClientRedrawBoardHandler OnRedrawBoard;
-        event ClientTetriminoMovingHandler OnTetriminoMoving;
-        event ClientTetriminoMovedHandler OnTetriminoMoved;
+        event ClientPieceMovingHandler OnPieceMoving;
+        event ClientPieceMovedHandler OnPieceMoved;
         event ClientPlayerRegisteredHandler OnPlayerRegistered;
         event ClientPlayerUnregisteredHandler OnPlayerUnregistered;
         event ClientWinListModifiedHandler OnWinListModified;

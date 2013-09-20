@@ -1,9 +1,9 @@
 ﻿using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 
-namespace TetriNET.Client.DefaultBoardAndTetriminos
+namespace TetriNET.DefaultBoardAndPieces
 {
-    internal class TetriminoO : Tetrimino
+    internal class TetriminoO : Piece
     {
         protected TetriminoO()
         {
@@ -11,7 +11,7 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
 
         public TetriminoO(int spawnX, int spawnY, int spawnOrientation, int index) : base(spawnX, spawnY, spawnOrientation, index)
         {
-            Value = Tetriminos.TetriminoO;
+            Value = Pieces.TetriminoO;
         }
 
         public override int MaxOrientations
@@ -52,7 +52,7 @@ namespace TetriNET.Client.DefaultBoardAndTetriminos
             y += PosY;
         }
 
-        public override ITetrimino Clone()
+        public override IPiece Clone()
         {
             return new TetriminoO
             {

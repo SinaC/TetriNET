@@ -25,8 +25,8 @@ namespace TetriNET.ConsoleWCFClient.UI
             _client.OnGameFinished += OnGameFinished;
             _client.OnRedraw += OnRedraw;
             _client.OnRedrawBoard += OnRedrawBoard;
-            _client.OnTetriminoMoving += OnTetriminoMoving;
-            _client.OnTetriminoMoved += OnTetriminoMoved;
+            _client.OnPieceMoving += OnPieceMoving;
+            _client.OnPieceMoved += OnPieceMoved;
             _client.OnPlayerRegistered += OnPlayerRegistered;
             _client.OnWinListModified += OnWinListModified;
             _client.OnServerMasterModified += OnServerMasterModified;
@@ -91,12 +91,12 @@ namespace TetriNET.ConsoleWCFClient.UI
 
         private void OnRoundFinished()
         {
-            HideNextTetriminoColor();
+            HideNextPieceColor();
         }
 
         private void OnRoundStarted()
         {
-            DisplayNextTetriminoColor();
+            DisplayNextPieceColor();
         }
 
         private void OnInventoryChanged()
@@ -124,7 +124,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
 
             OnRedraw();
-            DisplayNextTetriminoColor();
+            DisplayNextPieceColor();
             OnLinesClearedChanged();
             OnLevelChanged();
         }
@@ -239,14 +239,14 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void OnTetriminoMoved()
+        private void OnPieceMoved()
         {
-            DisplayCurrentTetriminoColor();
+            DisplayCurrentPieceColor();
         }
 
-        private void OnTetriminoMoving()
+        private void OnPieceMoving()
         {
-            HideCurrentTetriminoColor();
+            HideCurrentPieceColor();
         }
 
         private void OnRedrawBoard(int playerId, IBoard board)
@@ -258,8 +258,8 @@ namespace TetriNET.ConsoleWCFClient.UI
         {
             // Board
             DisplayBoardColor();
-            // Tetrimino
-            DisplayCurrentTetriminoColor();
+            // Piece
+            DisplayCurrentPieceColor();
             // Inventory
             DisplayInventory();
         }
@@ -282,8 +282,8 @@ namespace TetriNET.ConsoleWCFClient.UI
                             Console.Write(".");
                         else
                         {
-                            Tetriminos cellTetrimino = CellHelper.GetColor(cellValue);
-                            Console.BackgroundColor = GetTetriminoColor(cellTetrimino);
+                            Pieces cellPiece = CellHelper.GetColor(cellValue);
+                            Console.BackgroundColor = GetPieceColor(cellPiece);
                             Specials cellSpecial = CellHelper.GetSpecial(cellValue);
                             if (cellSpecial == Specials.Invalid)
                                 Console.Write(" ");
@@ -303,19 +303,19 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void DisplayCurrentTetriminoColor()
+        private void DisplayCurrentPieceColor()
         {
             lock (_lock)
             {
-                // draw current tetrimino
-                if (_client.CurrentTetrimino != null)
+                // draw current piece
+                if (_client.CurrentPiece != null)
                 {
-                    Tetriminos cellTetrimino = _client.CurrentTetrimino.Value;
-                    Console.BackgroundColor = GetTetriminoColor(cellTetrimino);
-                    for (int i = 1; i <= _client.CurrentTetrimino.TotalCells; i++)
+                    Pieces cellPiece = _client.CurrentPiece.Value;
+                    Console.BackgroundColor = GetPieceColor(cellPiece);
+                    for (int i = 1; i <= _client.CurrentPiece.TotalCells; i++)
                     {
                         int x, y;
-                        _client.CurrentTetrimino.GetCellAbsolutePosition(i, out x, out y);
+                        _client.CurrentPiece.GetCellAbsolutePosition(i, out x, out y);
                         if (x >= 0 && x <= _client.Board.Width && y >= 0 && y <= _client.Board.Height)
                         {
                             Console.SetCursorPosition(x + BoardStartX, _client.Board.Height - y + BoardStartY);
@@ -326,18 +326,18 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void HideCurrentTetriminoColor()
+        private void HideCurrentPieceColor()
         {
             lock (_lock)
             {
-                // hide current tetrimino
-                if (_client.CurrentTetrimino != null)
+                // hide current piece
+                if (_client.CurrentPiece != null)
                 {
                     Console.ResetColor();
-                    for (int i = 1; i <= _client.CurrentTetrimino.TotalCells; i++)
+                    for (int i = 1; i <= _client.CurrentPiece.TotalCells; i++)
                     {
                         int x, y;
-                        _client.CurrentTetrimino.GetCellAbsolutePosition(i, out x, out y);
+                        _client.CurrentPiece.GetCellAbsolutePosition(i, out x, out y);
                         if (x >= 0 && x <= _client.Board.Width && y >= 0 && y <= _client.Board.Height)
                         {
                             Console.SetCursorPosition(x + BoardStartX, _client.Board.Height - y + BoardStartY);
@@ -348,23 +348,23 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void DisplayNextTetriminoColor()
+        private void DisplayNextPieceColor()
         {
             lock (_lock)
             {
-                // draw next tetrimino
-                if (_client.NextTetrimino != null)
+                // draw next piece
+                if (_client.NextPiece != null)
                 {
-                    ITetrimino temp = _client.NextTetrimino.Clone();
+                    IPiece temp = _client.NextPiece.Clone();
                     int minX, minY, maxX, maxY;
                     temp.GetAbsoluteBoundingRectangle(out minX, out minY, out maxX, out maxY);
                     // Move to top, left
                     temp.Translate(-minX, 0);
                     if (maxY > _client.Board.Height)
                         temp.Translate(0, _client.Board.Height - maxY);
-                    // Display tetrimino
-                    Tetriminos cellTetrimino = temp.Value;
-                    Console.BackgroundColor = GetTetriminoColor(cellTetrimino);
+                    // Display piece
+                    Pieces cellPiece = temp.Value;
+                    Console.BackgroundColor = GetPieceColor(cellPiece);
                     for (int i = 1; i <= temp.TotalCells; i++)
                     {
                         int x, y;
@@ -376,22 +376,22 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void HideNextTetriminoColor()
+        private void HideNextPieceColor()
         {
             lock (_lock)
             {
-                // hide next tetrimino
-                if (_client.NextTetrimino != null)
+                // hide next piece
+                if (_client.NextPiece != null)
                 {
                     Console.ResetColor();
-                    ITetrimino temp = _client.NextTetrimino.Clone();
+                    IPiece temp = _client.NextPiece.Clone();
                     int minX, minY, maxX, maxY;
                     temp.GetAbsoluteBoundingRectangle(out minX, out minY, out maxX, out maxY);
                     // Move to top, left
                     temp.Translate(-minX, 0);
                     if (maxY > _client.Board.Height)
                         temp.Translate(0, _client.Board.Height - maxY);
-                    // hide tetrimino
+                    // hide piece
                     for (int i = 1; i <= temp.TotalCells; i++)
                     {
                         int x, y;
@@ -416,10 +416,10 @@ namespace TetriNET.ConsoleWCFClient.UI
                         if (cellValue == CellHelper.EmptyCell)
                             sb.Append(".");
                         else {
-                            Tetriminos cellTetrimino = CellHelper.GetColor(cellValue);
+                            Pieces cellPiece = CellHelper.GetColor(cellValue);
                             Specials cellSpecial = CellHelper.GetSpecial(cellValue);
                             if (cellSpecial == Specials.Invalid)
-                                sb.Append((int) cellTetrimino);
+                                sb.Append((int) cellPiece);
                             else
                                 sb.Append(ConvertSpecial(cellSpecial));
                         }
@@ -433,38 +433,38 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void DisplayCurrentTetriminoNoColor()
+        private void DisplayCurrentPieceNoColor()
         {
             lock (_lock)
             {
-                // draw current tetrimino
-                if (_client.CurrentTetrimino != null)
+                // draw current piece
+                if (_client.CurrentPiece != null)
                 {
-                    for (int i = 1; i <= _client.CurrentTetrimino.TotalCells; i++)
+                    for (int i = 1; i <= _client.CurrentPiece.TotalCells; i++)
                     {
                         int x, y;
-                        _client.CurrentTetrimino.GetCellAbsolutePosition(i, out x, out y);
+                        _client.CurrentPiece.GetCellAbsolutePosition(i, out x, out y);
                         if (x >= 0 && x <= _client.Board.Width && y >= 0 && y <= _client.Board.Height)
                         {
                             Console.SetCursorPosition(x + BoardStartX, _client.Board.Height - y + BoardStartY);
-                            Console.Write(_client.CurrentTetrimino.Value);
+                            Console.Write(_client.CurrentPiece.Value);
                         }
                     }
                 }
             }
         }
 
-        private void HideCurrentTetriminoNoColor()
+        private void HideCurrentPieceNoColor()
         {
             lock (_lock)
             {
-                // draw current tetrimino
-                if (_client.CurrentTetrimino != null)
+                // draw current piece
+                if (_client.CurrentPiece != null)
                 {
-                    for (int i = 1; i <= _client.CurrentTetrimino.TotalCells; i++)
+                    for (int i = 1; i <= _client.CurrentPiece.TotalCells; i++)
                     {
                         int x, y;
-                        _client.CurrentTetrimino.GetCellAbsolutePosition(i, out x, out y);
+                        _client.CurrentPiece.GetCellAbsolutePosition(i, out x, out y);
                         if (x >= 0 && x <= _client.Board.Width && y >= 0 && y <= _client.Board.Height)
                         {
                             Console.SetCursorPosition(x + BoardStartX, _client.Board.Height - y + BoardStartY);
@@ -495,23 +495,23 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private ConsoleColor GetTetriminoColor(Tetriminos tetrimino)
+        private ConsoleColor GetPieceColor(Pieces piece)
         {
-            switch (tetrimino)
+            switch (piece)
             {
-                case Tetriminos.TetriminoI:
+                case Pieces.TetriminoI:
                     return ConsoleColor.Blue;
-                case Tetriminos.TetriminoJ:
+                case Pieces.TetriminoJ:
                     return ConsoleColor.Green;
-                case Tetriminos.TetriminoL:
+                case Pieces.TetriminoL:
                     return ConsoleColor.Magenta;
-                case Tetriminos.TetriminoO:
+                case Pieces.TetriminoO:
                     return ConsoleColor.Yellow;
-                case Tetriminos.TetriminoS:
+                case Pieces.TetriminoS:
                     return ConsoleColor.Blue;
-                case Tetriminos.TetriminoT:
+                case Pieces.TetriminoT:
                     return ConsoleColor.Yellow;
-                case Tetriminos.TetriminoZ:
+                case Pieces.TetriminoZ:
                     return ConsoleColor.Red;
             }
             return ConsoleColor.Gray;

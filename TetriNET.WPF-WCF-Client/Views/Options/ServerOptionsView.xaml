@@ -64,17 +64,17 @@
                     <DataTemplate>
                         <TextBlock>
                             <!--<TextBlock.Text>
-                                <MultiBinding StringFormat="{}Occurancy of Tetriminos (sum: {0}%)">
-                                    <Binding Path="DataContext.TetriminosSum" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}"/>
+                                <MultiBinding StringFormat="{}Occurancy of Pieces (sum: {0}%)">
+                                    <Binding Path="DataContext.PiecesSum" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}"/>
                                 </MultiBinding>
                             </TextBlock.Text>-->
-                            <Run Text="Occurancy of Tetriminos (sum: "/>
-                            <Run Text="{Binding Mode=OneWay, Path=DataContext.TetriminosSum, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}}">
+                            <Run Text="Occurancy of pieces (sum: "/>
+                            <Run Text="{Binding Mode=OneWay, Path=DataContext.PiecesSum, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}}">
                                 <Run.Style>
                                     <Style TargetType="Run">
                                         <Setter Property="Foreground" Value="Black"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Mode=OneWay, Path=DataContext.IsTetriminosSumValid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}}" Value="False">
+                                            <DataTrigger Binding="{Binding Mode=OneWay, Path=DataContext.IsPiecesSumValid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}}" Value="False">
                                                 <Setter Property="Foreground" Value="Red"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -86,7 +86,7 @@
                     </DataTemplate>
                 </GroupBox.HeaderTemplate>
                 <ItemsControl Grid.IsSharedSizeScope="True" MaxHeight="200"
-                    ItemsSource="{Binding Options.ServerOptions.TetriminoOccurancies}">
+                    ItemsSource="{Binding Options.ServerOptions.PieceOccurancies}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Vertical" />
@@ -96,14 +96,14 @@
                         <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" SharedSizeGroup="TetriminoValue" />
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="PieceValue" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding Value}" Margin="5,0,5,0"/>
                                 <TextBox Grid.Column="1" MaxWidth="40" Width="40">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="TextChanged">
-                                            <helpers:EventToCommand Command="{Binding Mode=OneWay, Path=DataContext.TetriminoOccurancyChangedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}}"/>
+                                            <helpers:EventToCommand Command="{Binding Mode=OneWay, Path=DataContext.PieceOccurancyChangedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                     <TextBox.Text>

@@ -1,4 +1,4 @@
-<TODO:
+TODO:
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
 Manage new connection and disconnection at one place -> ideally in Server because there can be many hosts and we can remove a player only once
 when Server calls BanPlayer on hosts, only one host must add it to ban manager:
@@ -13,7 +13,6 @@ AdvancedPierreDellacherieOnePiece: finish GetHoleDepthForColumn
 Connect+Register and Disconnect+Unregister should be merged into one method
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
 WPF Client: save win list locally if server master
-WPF Client: redefine controls in client options -> not yet saved/loaded in user config
 Confusion could be managed client-side
 
 wcf + jquery

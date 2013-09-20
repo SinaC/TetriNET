@@ -14,7 +14,7 @@ namespace TetriNET.WPF_WCF_Client.AI
         private readonly ISpecialStrategy _specialStrategy;
         private readonly IMoveStrategy _moveStrategy;
         private readonly IClient _client;
-        private readonly ManualResetEvent _handleNextTetriminoEvent;
+        private readonly ManualResetEvent _handleNextPieceEvent;
         private readonly ManualResetEvent _stopEvent;
 
         private bool _isConfusionActive;
@@ -28,7 +28,7 @@ namespace TetriNET.WPF_WCF_Client.AI
                 _activated = value;
                 if (_activated)
                 {
-                    _handleNextTetriminoEvent.Set();
+                    _handleNextPieceEvent.Set();
                     _botTask = Task.Factory.StartNew(BotTask);
                 }
                 else
@@ -60,7 +60,7 @@ namespace TetriNET.WPF_WCF_Client.AI
             _client.OnConfusionToggled += _client_OnConfusionToggled;
 
             _stopEvent = new ManualResetEvent(false);
-            _handleNextTetriminoEvent = new ManualResetEvent(false);
+            _handleNextPieceEvent = new ManualResetEvent(false);
 
             SleepTime = 75;
             Activated = false;
@@ -83,13 +83,13 @@ namespace TetriNET.WPF_WCF_Client.AI
         private void _client_OnRoundStarted()
         {
             if (Activated)
-                _handleNextTetriminoEvent.Set();
+                _handleNextPieceEvent.Set();
         }
 
         private void client_OnGameStarted()
         {
             if (Activated)
-                _handleNextTetriminoEvent.Set();
+                _handleNextPieceEvent.Set();
         }
 
         private void _client_OnGameFinished()
@@ -106,21 +106,21 @@ namespace TetriNET.WPF_WCF_Client.AI
         {
             WaitHandle[] waitHandles =
             {
-                _handleNextTetriminoEvent,
+                _handleNextPieceEvent,
                 _stopEvent
             };
             while (true)
             {
                 int handle = WaitHandle.WaitAny(waitHandles, SleepTime);
-                _handleNextTetriminoEvent.Reset();
+                _handleNextPieceEvent.Reset();
                 _stopEvent.Reset();
 
                 if (handle == 1) // stop event
                     break;
-                if (handle == 0 /*next tetrimino event*/ && _client.IsPlaying && _client.Board != null && _client.CurrentTetrimino != null && _client.NextTetrimino != null)
+                if (handle == 0 /*next piece event*/ && _client.IsPlaying && _client.Board != null && _client.CurrentPiece != null && _client.NextPiece != null)
                 {
-                    int currentTetriminoIndex = _client.CurrentTetrimino.Index;
-                    //Log.WriteLine(Log.LogLevels.Debug, "Searching best move for Tetrimino {0} {1}", _client.CurrentTetrimino.Value, _client.CurrentTetrimino.Index);
+                    int currentPieceIndex = _client.CurrentPiece.Index;
+                    //Log.WriteLine(Log.LogLevels.Debug, "Searching best move for Piece {0} {1}", _client.CurrentPiece.Value, _client.CurrentPiece.Index);
 
                     DateTime searchBestMoveStartTime = DateTime.Now;
 
@@ -128,7 +128,7 @@ namespace TetriNET.WPF_WCF_Client.AI
                     if (_specialStrategy != null)
                     {
                         List<SpecialAdvices> advices;
-                        _specialStrategy.GetSpecialAdvice(_client.Board, _client.CurrentTetrimino, _client.NextTetrimino, _client.Inventory, _client.InventorySize, _client.Opponents.ToList(), out advices);
+                        _specialStrategy.GetSpecialAdvice(_client.Board, _client.CurrentPiece, _client.NextPiece, _client.Inventory, _client.InventorySize, _client.Opponents.ToList(), out advices);
                         foreach (SpecialAdvices advice in advices)
                         {
                             bool continueLoop = true;
@@ -169,12 +169,12 @@ namespace TetriNET.WPF_WCF_Client.AI
                         int bestRotationDelta;
                         int bestTranslationDelta;
                         bool rotationBeforeTranslation;
-                        _moveStrategy.GetBestMove(_client.Board, _client.CurrentTetrimino, _client.NextTetrimino, out bestRotationDelta, out bestTranslationDelta, out rotationBeforeTranslation);
+                        _moveStrategy.GetBestMove(_client.Board, _client.CurrentPiece, _client.NextPiece, out bestRotationDelta, out bestTranslationDelta, out rotationBeforeTranslation);
 
                         // TODO: could use an event linked to Client.OnRoundFinished
-                        if (_client.CurrentTetrimino.Index != currentTetriminoIndex)
+                        if (_client.CurrentPiece.Index != currentPieceIndex)
                         {
-                            Log.WriteLine(Log.LogLevels.Warning, "BOT IS TOO SLOW COMPARED TO AUTOMATIC DROP, skipping to next tetrimino {0} != {1}", _client.CurrentTetrimino.Index, currentTetriminoIndex);
+                            Log.WriteLine(Log.LogLevels.Warning, "BOT IS TOO SLOW COMPARED TO AUTOMATIC DROP, skipping to next piece {0} != {1}", _client.CurrentPiece.Index, currentPieceIndex);
                             continue;
                         }
 
@@ -213,16 +213,16 @@ namespace TetriNET.WPF_WCF_Client.AI
                             break;
                         }
                         // TODO: could use an event linked to Client.OnRoundFinished
-                        if (_client.CurrentTetrimino.Index != currentTetriminoIndex)
+                        if (_client.CurrentPiece.Index != currentPieceIndex)
                         {
-                            Log.WriteLine(Log.LogLevels.Warning, "BOT IS TOO SLOW COMPARED TO AUTOMATIC DROP, skipping to next tetrimino {0} != {1}", _client.CurrentTetrimino.Index, currentTetriminoIndex);
+                            Log.WriteLine(Log.LogLevels.Warning, "BOT IS TOO SLOW COMPARED TO AUTOMATIC DROP, skipping to next piece {0} != {1}", _client.CurrentPiece.Index, currentPieceIndex);
                             continue;
                         }
                         // Drop
                         Drop();
                     }
                     //
-                    //Log.WriteLine(Log.LogLevels.Debug, "BEST MOVE found in {0} ms and special in {1} ms  {2} {3}", (searchBestModeEndTime - specialManaged).TotalMilliseconds, (specialManaged - searchBestMoveStartTime).TotalMilliseconds, _client.CurrentTetrimino.Value, _client.CurrentTetrimino.Index);
+                    //Log.WriteLine(Log.LogLevels.Debug, "BEST MOVE found in {0} ms and special in {1} ms  {2} {3}", (searchBestModeEndTime - specialManaged).TotalMilliseconds, (specialManaged - searchBestMoveStartTime).TotalMilliseconds, _client.CurrentPiece.Value, _client.CurrentPiece.Index);
                 }
             }
         }

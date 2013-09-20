@@ -32,7 +32,7 @@ namespace TetriNET.Server
         private const int MaxTimeoutCountBeforeDisconnection = 3;
         private const bool IsTimeoutDetectionActive = false;
 
-        private readonly TetriminoQueue _tetriminoQueue;
+        private readonly PieceQueue _pieceQueue;
         private readonly ManualResetEvent _stopBackgroundTaskEvent = new ManualResetEvent(false);
         private readonly IPlayerManager _playerManager;
         private readonly List<IHost> _hosts;
@@ -55,7 +55,7 @@ namespace TetriNET.Server
                 throw new ArgumentNullException("hosts");
             _options = new GameOptions(); // TODO: get options from save file
 
-            _tetriminoQueue = new TetriminoQueue(() => RangeRandom.Random(_options.TetriminoOccurancies));
+            _pieceQueue = new PieceQueue(() => RangeRandom.Random(_options.PieceOccurancies));
             _playerManager = playerManager;
             _hosts = hosts.ToList();
             
@@ -66,7 +66,7 @@ namespace TetriNET.Server
                 host.OnPlayerRegistered += RegisterPlayerHandler;
                 host.OnPlayerUnregistered += UnregisterPlayerHandler;
                 host.OnMessagePublished += PublishMessageHandler;
-                host.OnTetriminoPlaced += PlaceTetriminoHandler;
+                host.OnPiecePlaced += PlacePieceHandler;
                 host.OnUseSpecial += UseSpecialHandler;
                 host.OnSendLines += SendLinesHandler;
                 host.OnGridModified += ModifyGridHandler;
@@ -143,13 +143,13 @@ namespace TetriNET.Server
                 // Reset special id
                 SpecialId = 0;
 
-                // Reset Tetrimino Queue
-                _tetriminoQueue.Reset(); // TODO: random seed
-                Tetriminos firstTetrimino = _tetriminoQueue[0];
-                Tetriminos secondTetrimino = _tetriminoQueue[1];
-                Tetriminos thirdTetrimino = _tetriminoQueue[2];
+                // Reset Piece Queue
+                _pieceQueue.Reset(); // TODO: random seed
+                Pieces firstPiece = _pieceQueue[0];
+                Pieces secondPiece = _pieceQueue[1];
+                Pieces thirdPiece = _pieceQueue[2];
 
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Starting game with {0} {1} {2}", firstTetrimino, secondTetrimino, thirdTetrimino);
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Starting game with {0} {1} {2}", firstPiece, secondPiece, thirdPiece);
 
                 // Reset sudden death
                 _isSuddenDeathActive = false;
@@ -163,10 +163,10 @@ namespace TetriNET.Server
                 // Send start game to every connected player
                 foreach (IPlayer p in _playerManager.Players)
                 {
-                    p.TetriminoIndex = 0;
+                    p.PieceIndex = 0;
                     p.State = PlayerStates.Playing;
                     p.LossTime = DateTime.MaxValue;
-                    p.OnGameStarted(firstTetrimino, secondTetrimino, thirdTetrimino, _options);
+                    p.OnGameStarted(firstPiece, secondPiece, thirdPiece, _options);
                 }
                 State = States.GameStarted;
 
@@ -338,9 +338,9 @@ namespace TetriNET.Server
                 p.OnPublishPlayerMessage(player.Name, msg);
         }
 
-        private void PlaceTetriminoHandler(IPlayer player, int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid)
+        private void PlacePieceHandler(IPlayer player, int index, Pieces piece, int orientation, int posX, int posY, byte[] grid)
         {
-            EnqueueAction(() => PlaceTetrimino(player, index, tetrimino, orientation, posX, posY, grid));
+            EnqueueAction(() => PlacePiece(player, index, piece, orientation, posX, posY, grid));
         }
 
         private void UseSpecialHandler(IPlayer player, IPlayer target, Specials special)
@@ -416,7 +416,7 @@ namespace TetriNET.Server
             {
                 // Check options before accepting them
                 bool accepted =
-                    RangeRandom.SumOccurancies(options.TetriminoOccurancies) == 100 &&
+                    RangeRandom.SumOccurancies(options.PieceOccurancies) == 100 &&
                     RangeRandom.SumOccurancies(options.SpecialOccurancies) == 100 &&
                     options.InventorySize >= 1 && options.InventorySize <= 15 &&
                     options.LinesToMakeForSpecials >= 1 && options.LinesToMakeForSpecials <= 4 &&
@@ -536,16 +536,16 @@ namespace TetriNET.Server
 
         #endregion
 
-        #region Tetrimino queue
+        #region Piece queue
 
-        private class TetriminoQueue
+        private class PieceQueue
         {
             private readonly object _lock = new object();
-            private readonly Func<Tetriminos> _randomFunc;
+            private readonly Func<Pieces> _randomFunc;
             private int _size;
-            private Tetriminos[] _array;
+            private Pieces[] _array;
 
-            public TetriminoQueue(Func<Tetriminos> randomFunc, int seed = 0)
+            public PieceQueue(Func<Pieces> randomFunc, int seed = 0)
             {
                 _randomFunc = randomFunc;
                 Grow(64);
@@ -559,25 +559,25 @@ namespace TetriNET.Server
                 }
             }
 
-            public Tetriminos this[int index]
+            public Pieces this[int index]
             {
                 get
                 {
-                    Tetriminos tetrimino;
+                    Pieces piece;
                     lock (_lock)
                     {
                         if (index >= _size)
                             Grow(128);
-                        tetrimino = _array[index];
+                        piece = _array[index];
                     }
-                    return tetrimino;
+                    return piece;
                 }
             }
 
             private void Grow(int increment)
             {
                 int newSize = _size + increment;
-                Tetriminos[] newArray = new Tetriminos[newSize];
+                Pieces[] newArray = new Pieces[newSize];
                 if (_size > 0)
                     Array.Copy(_array, newArray, _size);
                 _array = newArray;
@@ -647,20 +647,20 @@ namespace TetriNET.Server
 
         #region Game actions
 
-        private void PlaceTetrimino(IPlayer player, int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid)
+        private void PlacePiece(IPlayer player, int index, Pieces piece, int orientation, int posX, int posY, byte[] grid)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "PlaceTetrimino[{0}]{1}:{2} {3} at {4},{5} {6}", player.Name, index, tetrimino, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "PlacePiece[{0}]{1}:{2} {3} at {4},{5} {6}", player.Name, index, piece, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
 
-            // TODO: check if index is equal to player.TetriminoIndex
-            if (index != player.TetriminoIndex)
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Error, "!!!! tetrimino index different for player {0} local {1} remote {2}", player.Name, player.TetriminoIndex, index);
+            // TODO: check if index is equal to player.PieceIndex
+            if (index != player.PieceIndex)
+                Logger.Log.WriteLine(Logger.Log.LogLevels.Error, "!!!! piece index different for player {0} local {1} remote {2}", player.Name, player.PieceIndex, index);
 
             // Set grid
             player.Grid = grid;
-            // Get next tetrimino
-            player.TetriminoIndex++;
-            int indexToSend = player.TetriminoIndex + 2; // indices 0, 1 and 2 have been sent when starting game
-            Tetriminos nextTetriminoToSend = _tetriminoQueue[indexToSend];
+            // Get next piece
+            player.PieceIndex++;
+            int indexToSend = player.PieceIndex + 2; // indices 0, 1 and 2 have been sent when starting game
+            Pieces nextPieceToSend = _pieceQueue[indexToSend];
 
             // Send grid to other playing players
             int playerId = _playerManager.GetId(player);
@@ -668,9 +668,9 @@ namespace TetriNET.Server
             foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
                 p.OnGridModified(playerId, grid);
 
-            //Logger.Log.WriteLine("Send next tetrimino {0} {1} to {2}", nextTetriminoToSend, indexToSend, player.Name);
-            // Send next tetrimino
-            player.OnNextTetrimino(indexToSend, nextTetriminoToSend);
+            //Logger.Log.WriteLine("Send next piece {0} {1} to {2}", nextPieceToSend, indexToSend, player.Name);
+            // Send next piece
+            player.OnNextPiece(indexToSend, nextPieceToSend);
         }
 
         private void Special(IPlayer player, IPlayer target, Specials special)

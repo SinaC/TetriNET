@@ -33,7 +33,7 @@
         <playField:InventoryControl x:Name="Inventory" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <playField:InGameChatControl Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,4,0,0" DataContext="{Binding InGameChatViewModel}"/>
         <!--<playField:InGameChatControl x:Name="InGameMessages" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,4,0,0"/>-->
-        <playField:NextTetriminoControl x:Name="NextTetrimino" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="16,0,16,0"/>
+        <playField:NextPieceControl x:Name="NextPiece" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="16,0,16,0"/>
         <playField:GameInfoControl Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16,0,0,16" DataContext="{Binding GameInfoViewModel}"/>
         <!--<playField:GameInfoControl x:Name="GameInfo"  Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16,0,0,16"/>-->
     </Grid>

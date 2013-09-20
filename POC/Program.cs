@@ -173,9 +173,9 @@ namespace POC
             UpdateTimerOnAction(() => _callback.OnAttackMessageReceived(msg));
         }
 
-        public void OnNextTetrimino(int index, Tetriminos tetrimino)
+        public void OnNextPiece(int index, Tetriminos tetrimino)
         {
-            UpdateTimerOnAction(() => _callback.OnNextTetrimino(index, tetrimino));
+            UpdateTimerOnAction(() => _callback.OnNextPiece(index, tetrimino));
         }
     }
 

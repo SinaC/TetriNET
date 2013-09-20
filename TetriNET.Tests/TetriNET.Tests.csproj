@@ -34,11 +34,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -48,17 +43,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TetriNET.Client\TetriNET.Client.csproj">
-      <Project>{fd867b2e-a1c2-4052-af79-ef69aed92597}</Project>
-      <Name>TetriNET.Client</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Logger\TetriNET.Logger.csproj">
-      <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
-      <Name>TetriNET.Logger</Name>
+    <ProjectReference Include="..\TetriNET.DefaultBoardAndPieces\TetriNET.DefaultBoardAndPieces.csproj">
+      <Project>{2bd5936f-015d-473f-9161-6b837ef3a3ba}</Project>
+      <Name>TetriNET.DefaultBoardAndPieces</Name>
     </ProjectReference>
     <ProjectReference Include="..\TetriNET.Strategy\TetriNET.Strategy.csproj">
       <Project>{b77d651e-658c-45d4-972a-3c0d569d689e}</Project>

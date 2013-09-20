@@ -107,9 +107,9 @@
 //            ExceptionFreeAction(() => _proxy.PublishMessage(msg), "PublishMessage");
 //        }
 
-//        public void PlaceTetrimino(ITetriNETCallback callback, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
+//        public void PlacePiece(ITetriNETCallback callback, int index, Tetriminos tetrimino, Orientations orientation, Position position, byte[] grid)
 //        {
-//            ExceptionFreeAction(() => _proxy.PlaceTetrimino(index, tetrimino, orientation, position, grid), "PlaceTetrimino");
+//            ExceptionFreeAction(() => _proxy.PlacePiece(index, tetrimino, orientation, position, grid), "PlacePiece");
 //        }
 
 //        public void ModifyGrid(ITetriNETCallback callback, byte[] grid)
@@ -365,7 +365,7 @@
 //            // TODO: if targetId == own id, perform attack + display in-game msg
 //        }
 
-//        public void OnNextTetrimino(int index, Tetriminos tetrimino)
+//        public void OnNextPiece(int index, Tetriminos tetrimino)
 //        {
 //            Log.WriteLine("Tetrimino {0}: {1}", index, tetrimino);
 

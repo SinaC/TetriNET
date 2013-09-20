@@ -13,7 +13,7 @@ namespace TetriNET.ConsoleWCFServer.Player
         {
             Name = name;
             Callback = callback;
-            TetriminoIndex = 0;
+            PieceIndex = 0;
             LastActionToClient = DateTime.Now;
             LastActionFromClient = DateTime.Now;
             TimeoutCount = 0;
@@ -45,7 +45,7 @@ namespace TetriNET.ConsoleWCFServer.Player
         public event PlayerConnectionLostHandler OnConnectionLost;
 
         public string Name { get; private set; }
-        public int TetriminoIndex { get; set; }
+        public int PieceIndex { get; set; }
         public byte[] Grid { get; set; }
         //
         public ITetriNETCallback Callback { get; private set; }
@@ -110,9 +110,9 @@ namespace TetriNET.ConsoleWCFServer.Player
             ExceptionFreeAction(() => Callback.OnPlayerWon(playerId), "OnPlayerWon");
         }
 
-        public void OnGameStarted(Tetriminos firstTetrimino, Tetriminos secondTetrimino, Tetriminos thirdTetrimino, GameOptions options)
+        public void OnGameStarted(Pieces firstPiece, Pieces secondPiece, Pieces thirdPiece, GameOptions options)
         {
-            ExceptionFreeAction(() => Callback.OnGameStarted(firstTetrimino, secondTetrimino, thirdTetrimino, options), "OnGameStarted");
+            ExceptionFreeAction(() => Callback.OnGameStarted(firstPiece, secondPiece, thirdPiece, options), "OnGameStarted");
         }
 
         public void OnGameFinished()
@@ -155,9 +155,9 @@ namespace TetriNET.ConsoleWCFServer.Player
             ExceptionFreeAction(() => Callback.OnSpecialUsed(specialId, playerId, targetId, special), "OnSpecialUsed");
         }
 
-        public void OnNextTetrimino(int index, Tetriminos tetrimino)
+        public void OnNextPiece(int index, Pieces piece)
         {
-            ExceptionFreeAction(() => Callback.OnNextTetrimino(index, tetrimino), "OnNextTetrimino");
+            ExceptionFreeAction(() => Callback.OnNextPiece(index, piece), "OnNextPiece");
         }
 
         public void OnGridModified(int playerId, byte[] grid)

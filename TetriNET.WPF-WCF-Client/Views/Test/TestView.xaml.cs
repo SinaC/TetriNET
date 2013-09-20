@@ -53,10 +53,10 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                 }
 
                 i = 0;
-                foreach (Tetriminos tetrimino in EnumHelper.GetAvailableValues<Tetriminos>())
+                foreach (Pieces piece in EnumHelper.GetAvailableValues<Pieces>())
                 {
                     //
-                    Brush bigBrush = textures.GetBigTetrimino(tetrimino);
+                    Brush bigBrush = textures.GetBigPiece(piece);
                     Rectangle bigRectangle = new Rectangle
                     {
                         Width = 16,
@@ -68,7 +68,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                     Canvas.SetTop(bigRectangle, 50);
 
                     //
-                    Brush smallBrush = textures.GetSmallTetrimino(tetrimino);
+                    Brush smallBrush = textures.GetSmallPiece(piece);
                     Rectangle smallRectangle = new Rectangle
                     {
                         Width = 8,

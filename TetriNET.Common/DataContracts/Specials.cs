@@ -4,7 +4,7 @@ using TetriNET.Common.Helpers;
 namespace TetriNET.Common.DataContracts
 {
     [DataContract]
-    public enum Specials // Specials index start after last tetrimino
+    public enum Specials // Specials index start after last piece
     {
         [EnumMember]
         [Availability(false)]
@@ -13,7 +13,7 @@ namespace TetriNET.Common.DataContracts
         // TetriNET (http://en.wikipedia.org/wiki/TetriNET)
         [EnumMember]
         [Availability(true, 'A', "Add Line")]
-        AddLines = Tetriminos.TetriminoLast+1,
+        AddLines = Pieces.PieceLast+1,
         [EnumMember]
         [Availability(true, 'C', "Clear Line")]
         ClearLines,

@@ -4,10 +4,10 @@ using TetriNET.Common.Randomizer;
 namespace TetriNET.Common.DataContracts
 {
     [DataContract]
-    public class TetriminoOccurancy : IOccurancy<Tetriminos>
+    public class PieceOccurancy : IOccurancy<Pieces>
     {
         [DataMember]
-        public Tetriminos Value { get; set; }
+        public Pieces Value { get; set; }
 
         [DataMember]
         public int Occurancy { get; set; }

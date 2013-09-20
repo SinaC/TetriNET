@@ -2,21 +2,21 @@
 
 namespace TetriNET.Common.Interfaces
 {
-    public interface ITetrimino
+    public interface IPiece
     {
         int PosX { get; } // coordinates in board
         int PosY { get; } // coordinates in board
         int Orientation { get; } // 1 -> 4
         int Index { get; } // index in sequence
 
-        Tetriminos Value { get; }
+        Pieces Value { get; }
 
         int MaxOrientations { get; }
         int TotalCells { get; }
-        void GetCellAbsolutePosition(int cellIndex, out int x, out int y); // cell: 1->#cells
+        void GetCellAbsolutePosition(int cellIndex, out int x, out int y); // piece: 1->#cells
 
-        ITetrimino Clone();
-        void CopyFrom(ITetrimino tetrimino);
+        IPiece Clone();
+        void CopyFrom(IPiece piece);
 
         void Translate(int dx, int dy);
         void RotateClockwise();

@@ -5,7 +5,7 @@ namespace TetriNET.Strategy.Move_strategies
 {
     public class LuckyToiletOnePiece : IMoveStrategy
     {
-        public bool GetBestMove(IBoard board, ITetrimino current, ITetrimino next, out int bestRotationDelta, out int bestTranslationDelta, out bool rotationBeforeTranslation)
+        public bool GetBestMove(IBoard board, IPiece current, IPiece next, out int bestRotationDelta, out int bestTranslationDelta, out bool rotationBeforeTranslation)
         {
             int currentBestTranslationDelta = 0;
             int currentBestRotationDelta = 0;
@@ -15,32 +15,32 @@ namespace TetriNET.Strategy.Move_strategies
                 current.Translate(0, -1);
 
             IBoard tempBoard = board.Clone();
-            ITetrimino tempTetrimino = current.Clone();
+            IPiece tempPiece = current.Clone();
 
-            //Log.WriteLine(Log.LogLevels.Debug, "Get Best Move for Tetrimino {0} {1}", tempTetrimino.Value, tempTetrimino.Index);
+            //Log.WriteLine(Log.LogLevels.Debug, "Get Best Move for Piece {0} {1}", tempPiece.Value, tempPiece.Index);
 
             // Consider all possible rotations
             for (int trialRotationDelta = 0; trialRotationDelta < current.MaxOrientations; trialRotationDelta++)
             {
-                // Copy tetrimino
-                tempTetrimino.CopyFrom(current);
+                // Copy piece
+                tempPiece.CopyFrom(current);
                 // Rotate
-                tempTetrimino.Rotate(trialRotationDelta);
+                tempPiece.Rotate(trialRotationDelta);
 
                 // Get translation range
                 bool isMovePossible;
                 int minDeltaX;
                 int maxDeltaX;
-                BoardHelper.GetAccessibleTranslationsForOrientation(board, tempTetrimino, out isMovePossible, out minDeltaX, out maxDeltaX);
+                BoardHelper.GetAccessibleTranslationsForOrientation(board, tempPiece, out isMovePossible, out minDeltaX, out maxDeltaX);
 
-                //Log.WriteLine(Log.LogLevels.Debug, "Accessible translation {0} {1} {2} {3} {4}  {5} {6}", minDeltaX, maxDeltaX, trialRotationDelta, current.PosX, current.PosY, tempTetrimino.Value, tempTetrimino.Index);
+                //Log.WriteLine(Log.LogLevels.Debug, "Accessible translation {0} {1} {2} {3} {4}  {5} {6}", minDeltaX, maxDeltaX, trialRotationDelta, current.PosX, current.PosY, tempPiece.Value, tempPiece.Index);
 
                 //StringBuilder sb = new StringBuilder();
-                //for (int i = 1; i <= tempTetrimino.TotalCells; i++)
+                //for (int i = 1; i <= tempPiece.TotalCells; i++)
                 //{
                 //    int x, y;
-                //    tempTetrimino.GetCellAbsolutePosition(i, out x, out y);
-                //    sb.Append(String.Format("[{0}->{1},{2}]", i, x - tempTetrimino.PosX, y - tempTetrimino.PosY));
+                //    tempPiece.GetCellAbsolutePosition(i, out x, out y);
+                //    sb.Append(String.Format("[{0}->{1},{2}]", i, x - tempPiece.PosX, y - tempPiece.PosY));
                 //}
                 //Log.Log.WriteLine("{0} {1} -> {2}  {3}", trialRotationDelta, minDeltaX, maxDeltaX, sb.ToString());
                 if (isMovePossible)
@@ -50,23 +50,23 @@ namespace TetriNET.Strategy.Move_strategies
                     {
                         // Evaluate this move
 
-                        // Copy tetrimino
-                        tempTetrimino.CopyFrom(current);
+                        // Copy piece
+                        tempPiece.CopyFrom(current);
                         // Rotate
-                        tempTetrimino.Rotate(trialRotationDelta);
+                        tempPiece.Rotate(trialRotationDelta);
                         // Translate
-                        tempTetrimino.Translate(trialTranslationDelta, 0);
+                        tempPiece.Translate(trialTranslationDelta, 0);
 
                         // Check if move is acceptable
-                        if (board.CheckNoConflict(tempTetrimino))
+                        if (board.CheckNoConflict(tempPiece))
                         {
                             // Copy board
                             tempBoard.CopyFrom(board);
-                            // Drop tetrimino
-                            tempBoard.DropAndCommit(tempTetrimino);
+                            // Drop piece
+                            tempBoard.DropAndCommit(tempPiece);
 
                             // Evaluate
-                            double trialRating = EvaluteMove(tempBoard, tempTetrimino);
+                            double trialRating = EvaluteMove(tempBoard, tempPiece);
 
                             //Log.Log.WriteLine("R:{0:0.0000} P:{1} R:{2} T:{3}", trialRating, trialRotationDelta, trialTranslationDelta);
 
@@ -92,13 +92,13 @@ namespace TetriNET.Strategy.Move_strategies
             return true;
         }
 
-        private static double EvaluteMove(IBoard board, ITetrimino tetrimino)
+        private static double EvaluteMove(IBoard board, IPiece piece)
         {
-            int tetriminoMinX;
-            int tetriminoMinY;
-            int tetriminoMaxX;
-            int tetriminoMaxY;
-            tetrimino.GetAbsoluteBoundingRectangle(out tetriminoMinX, out tetriminoMinY, out tetriminoMaxX, out tetriminoMaxY);
+            int pieceMinX;
+            int pieceMinY;
+            int pieceMaxX;
+            int pieceMaxY;
+            piece.GetAbsoluteBoundingRectangle(out pieceMinX, out pieceMinY, out pieceMaxX, out pieceMaxY);
 
             int totalHeight = BoardHelper.GetTotalCellHeight(board);
             int completedRows = BoardHelper.GetTotalCompletedRows(board);

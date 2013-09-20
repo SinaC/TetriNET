@@ -76,7 +76,7 @@
 //                throw new NotImplementedException();
 //            }
 
-//            public void OnNextTetrimino(int index, Tetriminos tetrimino)
+//            public void OnNextPiece(int index, Pieces piece)
 //            {
 //                throw new NotImplementedException();
 //            }

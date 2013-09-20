@@ -1,6 +1,5 @@
 ﻿using System.Linq;
-using TetriNET.Client;
-using TetriNET.Client.DefaultBoardAndTetriminos;
+using TetriNET.DefaultBoardAndPieces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Properties;
@@ -51,7 +50,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             ClientChanged += OnClientChanged;
 
             // Create client
-            Client = new Client.Client(Tetrimino.CreateTetrimino, () => new Board(Models.Options.Width, Models.Options.Height));
+            Client = new Client.Client(Piece.CreatePiece, () => new Board(Models.Options.Width, Models.Options.Height));
 
             /*// Default values
             Options.OptionsSingleton.Instance.KeySettings = new List<KeySetting>
@@ -77,7 +76,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             Models.Options.OptionsSingleton.Instance.ServerOptions = Settings.Default.GameOptions ?? Client.Options;
             // TODO: fix this bug  ---- Workaround: remove duplicate key
             Models.Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies = Models.Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();
-            Models.Options.OptionsSingleton.Instance.ServerOptions.TetriminoOccurancies = Models.Options.OptionsSingleton.Instance.ServerOptions.TetriminoOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();
+            Models.Options.OptionsSingleton.Instance.ServerOptions.PieceOccurancies = Models.Options.OptionsSingleton.Instance.ServerOptions.PieceOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();
         }
 
         #region ViewModelBase

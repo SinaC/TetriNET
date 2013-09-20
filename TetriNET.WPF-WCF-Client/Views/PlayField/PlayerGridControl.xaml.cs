@@ -68,7 +68,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private bool _isDarknessActive;
         private bool _isHintActivated;
         private IMoveStrategy _moveStrategy;
-        private ITetrimino _tetriminoHint;
+        private IPiece _pieceHint;
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
         public PlayerGridControl()
@@ -110,7 +110,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 _moveStrategy = _moveStrategy ?? new PierreDellacherieOnePiece();
         }
 
-        private void DrawTetrimino(IBoard board, ITetrimino tetrimono, Brush brush)
+        private void DrawPiece(IBoard board, IPiece tetrimono, Brush brush)
         {
             for (int i = 1; i <= tetrimono.TotalCells; i++)
             {
@@ -129,49 +129,49 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         {
             if(_isHintActivated)
             {
-                if (_tetriminoHint == null)
+                if (_pieceHint == null)
                 {
                     // Clone board, current and next
                     IBoard board = Client.Board.Clone();
-                    _tetriminoHint = Client.CurrentTetrimino.Clone();
-                    ITetrimino next = Client.NextTetrimino.Clone();
+                    _pieceHint = Client.CurrentPiece.Clone();
+                    IPiece next = Client.NextPiece.Clone();
 
                     // Get hint
                     int bestRotationDelta, bestTranslationDelta;
                     bool rotationBeforeTranslation;
-                    _moveStrategy.GetBestMove(board, _tetriminoHint, next, out bestRotationDelta, out bestTranslationDelta, out rotationBeforeTranslation);
+                    _moveStrategy.GetBestMove(board, _pieceHint, next, out bestRotationDelta, out bestTranslationDelta, out rotationBeforeTranslation);
 
                     // Perform move
                     if (rotationBeforeTranslation)
                     {
-                        _tetriminoHint.Rotate(bestRotationDelta);
-                        _tetriminoHint.Translate(bestTranslationDelta, 0);
+                        _pieceHint.Rotate(bestRotationDelta);
+                        _pieceHint.Translate(bestTranslationDelta, 0);
                     }
                     else
                     {
-                        _tetriminoHint.Translate(bestTranslationDelta, 0);
-                        _tetriminoHint.Rotate(bestRotationDelta);
+                        _pieceHint.Translate(bestTranslationDelta, 0);
+                        _pieceHint.Rotate(bestRotationDelta);
                     }
-                    board.Drop(_tetriminoHint);
+                    board.Drop(_pieceHint);
                 }
-                // Draw tetrimino
-                DrawTetrimino(Client.Board, _tetriminoHint, HintColor); // FF, C0, CB
+                // Draw piece
+                DrawPiece(Client.Board, _pieceHint, HintColor); // FF, C0, CB
             }
         }
 
-        private void DrawCurrentTetrimino()
+        private void DrawCurrentPiece()
         {
             if (Client == null)
                 return;
             IBoard board = Client.Board;
             if (board == null)
                 return;
-            ITetrimino currentTetrimino = Client.CurrentTetrimino;
-            if (currentTetrimino == null)
+            IPiece currentPiece = Client.CurrentPiece;
+            if (currentPiece == null)
                 return;
-            Tetriminos cellTetrimino = Client.CurrentTetrimino.Value;
-            Brush brush = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigTetrimino(cellTetrimino);
-            DrawTetrimino(board, currentTetrimino, brush);
+            Pieces cellPiece = Client.CurrentPiece.Value;
+            Brush brush = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigPiece(cellPiece);
+            DrawPiece(board, currentPiece, brush);
         }
 
         private void DrawGrid()
@@ -196,10 +196,10 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                             else
                             {
                                 Specials special = CellHelper.GetSpecial(cellValue);
-                                Tetriminos color = CellHelper.GetColor(cellValue);
+                                Pieces color = CellHelper.GetColor(cellValue);
 
                                 if (special == Specials.Invalid)
-                                    uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigTetrimino(color);
+                                    uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigPiece(color);
                                 else
                                     uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigSpecial(special);
                             }
@@ -219,12 +219,12 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             {
                 DrawGrid();
                 DrawHint();
-                DrawCurrentTetrimino();
+                DrawCurrentPiece();
             }
             else
             {
                 ClearGrid();
-                DrawCurrentTetrimino();
+                DrawCurrentPiece();
             }
         }
 
@@ -250,7 +250,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     oldClient.OnConnectionLost -= @this.OnConnectionLost;
                     oldClient.OnGameStarted -= @this.OnGameStarted;
                     oldClient.OnRoundStarted -= @this.OnRoundStarted;
-                    oldClient.OnTetriminoMoved -= @this.OnTetriminoMoved;
+                    oldClient.OnPieceMoved -= @this.OnPieceMoved;
                     oldClient.OnRedraw -= @this.OnRedraw;
                     oldClient.OnDarknessToggled -= @this.OnDarknessToggled;
                 }
@@ -265,7 +265,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     newClient.OnConnectionLost += @this.OnConnectionLost;
                     newClient.OnGameStarted += @this.OnGameStarted;
                     newClient.OnRoundStarted += @this.OnRoundStarted;
-                    newClient.OnTetriminoMoved += @this.OnTetriminoMoved;
+                    newClient.OnPieceMoved += @this.OnPieceMoved;
                     newClient.OnRedraw += @this.OnRedraw;
                     newClient.OnDarknessToggled += @this.OnDarknessToggled;
                 }
@@ -281,7 +281,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 ExecuteOnUIThread.Invoke(() =>
                     {
                         ClearGrid();
-                        DrawCurrentTetrimino();
+                        DrawCurrentPiece();
                     });
             }
             else
@@ -290,28 +290,28 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnRedraw()
         {
-            _tetriminoHint = null; // reset hint
+            _pieceHint = null; // reset hint
             ExecuteOnUIThread.Invoke(DrawEverything);
         }
 
-        private void OnTetriminoMoved()
+        private void OnPieceMoved()
         {
             ExecuteOnUIThread.Invoke(DrawEverything);
         }
 
         private void OnRoundStarted()
         {
-            _tetriminoHint = null; // reset hint
+            _pieceHint = null; // reset hint
             ExecuteOnUIThread.Invoke(DrawEverything);
         }
 
         private void OnGameStarted()
         {
-            _tetriminoHint = null; // reset hint>
+            _pieceHint = null; // reset hint>
             ExecuteOnUIThread.Invoke(() =>
             {
                 ClearGrid();
-                DrawCurrentTetrimino();
+                DrawCurrentPiece();
             });
         }
 

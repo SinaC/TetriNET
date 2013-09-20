@@ -17,7 +17,7 @@ namespace TetriNET.Common.Interfaces
         event PlayerConnectionLostHandler OnConnectionLost;
 
         string Name { get; }
-        int TetriminoIndex { get; set; }
+        int PieceIndex { get; set; }
         byte[] Grid { get; set; }
         //
         ITetriNETCallback Callback { get; } // Should never be used by anything else then IPlayerManager and IPlayer

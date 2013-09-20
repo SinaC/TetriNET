@@ -12,7 +12,7 @@
 //        event PlayerDisconnectedHandler OnDisconnected;
 
 //        string Name { get; }
-//        int TetriminoIndex { get; set; }
+//        int PieceIndex { get; set; }
 //        DateTime LastAction { get; set; }
 //        ITetriNETCallback Callback { get; } // Should never be used by anything else then IPlayerManager and IPlayer
 //    }
@@ -45,7 +45,7 @@
 //        event RegisterPlayerHandler OnPlayerRegistered;
 //        event UnregisterPlayerHandler OnPlayerUnregistered;
 //        event PublishMessageHandler OnMessagePublished;
-//        event PlaceTetriminoHandler OnTetriminoPlaced;
+//        event PlaceTetriminoHandler OnPiecePlaced;
 //        event SendAttackHandler OnAttackSent;
 
 //        IPlayerManager PlayerManager { get; }

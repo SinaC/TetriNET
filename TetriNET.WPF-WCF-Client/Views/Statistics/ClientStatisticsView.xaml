@@ -25,20 +25,20 @@
                 <DataTemplate>
                     <TextBlock>
                         <TextBlock.Text>
-                            <MultiBinding StringFormat="{}Tetriminos (sum: {0})">
-                                <Binding Path="DataContext.TetriminosCountSum" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}"/>
+                            <MultiBinding StringFormat="{}Pieces (sum: {0})">
+                                <Binding Path="DataContext.PiecesCountSum" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}"/>
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
                 </DataTemplate>
             </GroupBox.HeaderTemplate>
             <ItemsControl Grid.IsSharedSizeScope="True" 
-                          ItemsSource="{Binding TetriminoCount, Mode=OneWay}">
+                          ItemsSource="{Binding PieceCount, Mode=OneWay}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" SharedSizeGroup="TetriminoCountKey" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="PieceCountKey" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{Binding Key}" Margin="5,0,5,0"/>
@@ -187,9 +187,9 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Queue problem:" Margin="0,0,4,0"/>
-                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding EndOfTetriminoQueueReached}"/>
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Invalid tetrimono:" Margin="0,0,4,0"/>
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding NextTetriminoNotYetReceived}"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding EndOfPieceQueueReached}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Invalid Piece:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding NextPieceNotYetReceived}"/>
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Lines/sec:" Margin="0,0,4,0"/>
                 <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LinesPerSec, StringFormat={}{0:0.00}}"/>
             </Grid>

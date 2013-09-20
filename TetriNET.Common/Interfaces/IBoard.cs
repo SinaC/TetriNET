@@ -15,7 +15,7 @@ namespace TetriNET.Common.Interfaces
         IBoard Clone();
         bool CopyFrom(IBoard board);
         void Clear();
-        void FillWithRandomCells(Func<Tetriminos> randomFunc);
+        void FillWithRandomCells(Func<Pieces> randomFunc);
 
         bool SetCells(byte[] cells);
         int TotalCells { get; }
@@ -23,31 +23,31 @@ namespace TetriNET.Common.Interfaces
         int GetCellIndex(int x, int y);
         int NonEmptyCellsCount { get; }
 
-        int TetriminoSpawnX { get; }
-        int TetriminoSpawnY { get; }
+        int PieceSpawnX { get; }
+        int PieceSpawnY { get; }
 
-        bool CheckNoConflict(ITetrimino tetrimino);
-        bool CheckNoConflictWithBoard(ITetrimino tetrimino);
+        bool CheckNoConflict(IPiece piece, bool checkTop = false);
+        bool CheckNoConflictWithBoard(IPiece piece, bool checkTop = false);
         int CollapseCompletedRows(out List<Specials> specials);
-        void CommitTetrimino(ITetrimino tetrimino);
-        void DropAndCommit(ITetrimino tetrimino);
+        void CommitPiece(IPiece piece);
+        void DropAndCommit(IPiece piece);
 
-        void Drop(ITetrimino tetrimino);
-        bool MoveLeft(ITetrimino tetrimino);
-        bool MoveRight(ITetrimino tetrimino);
-        bool MoveDown(ITetrimino tetrimino);
-        bool RotateClockwise(ITetrimino tetrimino);
-        bool RotateCounterClockwise(ITetrimino tetrimino);
+        void Drop(IPiece piece);
+        bool MoveLeft(IPiece piece);
+        bool MoveRight(IPiece piece);
+        bool MoveDown(IPiece piece);
+        bool RotateClockwise(IPiece piece);
+        bool RotateCounterClockwise(IPiece piece);
 
         #region Specials
 
         // TetriNET 1
-        void AddLines(int count, Func<Tetriminos> randomFunc);
+        void AddLines(int count, Func<Pieces> randomFunc);
         void ClearLine();
         void NukeField();
         void RandomBlocksClear(int count);
         void SwitchFields(byte[] cells);
-        void ClearSpecialBlocks(Func<Tetriminos> randomFunc);
+        void ClearSpecialBlocks(Func<Pieces> randomFunc);
         void BlockGravity();
         void BlockQuake();
         void BlockBomb();

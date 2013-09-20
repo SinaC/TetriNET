@@ -5,7 +5,7 @@ using TetriNET.Common.Helpers;
 namespace TetriNET.Common.DataContracts
 {
     [DataContract]
-    public enum Tetriminos
+    public enum Pieces
     {
         [EnumMember]
         [Availability(false)]
@@ -54,38 +54,38 @@ namespace TetriNET.Common.DataContracts
         
         [EnumMember]
         [Availability(false)]
-        TetriminoReserved1 = 8,
+        Reserved1 = 8,
 
         [EnumMember]
         [Availability(false)]
-        TetriminoReserved2 = 9,
+        Reserved2 = 9,
 
         [EnumMember]
         [Availability(false)]
-        TetriminoReserved3 = 10,
+        Reserved3 = 10,
 
         [EnumMember]
         [Availability(false)]
-        TetriminoReserved4 = 11,
+        Reserved4 = 11,
 
         [EnumMember]
         [Availability(false)]
-        TetriminoReserved5 = 12,
+        Reserved5 = 12,
 
         [EnumMember]
         [Availability(false)]
-        TetriminoReserved6 = 13,
+        Reserved6 = 13,
 
         [EnumMember]
         [Availability(false)]
-        TetriminoReserved7 = 14,
+        Reserved7 = 14,
 
         [EnumMember]
         [Availability(false)]
-        TetriminoReserved8 = 15,
+        Reserved8 = 15,
 
         [EnumMember]
         [Availability(false)]
-        TetriminoLast = 15,
+        PieceLast = 15,
     }
 }

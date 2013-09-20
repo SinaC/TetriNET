@@ -119,10 +119,10 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     else
                     {
                         Specials special = CellHelper.GetSpecial(cellValue);
-                        Tetriminos color = CellHelper.GetColor(cellValue);
+                        Pieces color = CellHelper.GetColor(cellValue);
 
                         if (special == Specials.Invalid)
-                            uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetSmallTetrimino(color);
+                            uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetSmallPiece(color);
                         else
                             uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetSmallSpecial(special);
                     }

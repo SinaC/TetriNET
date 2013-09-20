@@ -7,7 +7,7 @@ namespace TetriNET.Common.DataContracts
     public class GameOptions
     {
         [DataMember]
-        public List<TetriminoOccurancy> TetriminoOccurancies { get; set; } // in %, number of entries must match Tetriminos enum length
+        public List<PieceOccurancy> PieceOccurancies { get; set; } // in %, number of entries must match Pieces enum length
 
         [DataMember]
         public List<SpecialOccurancy> SpecialOccurancies { get; set; } // in %, number of entries must match Specials enum length
@@ -36,41 +36,41 @@ namespace TetriNET.Common.DataContracts
         public GameOptions()
         {
             // Default options
-            TetriminoOccurancies = new List<TetriminoOccurancy>
+            PieceOccurancies = new List<PieceOccurancy>
             {
-                new TetriminoOccurancy
+                new PieceOccurancy
                 {
-                    Value = Tetriminos.TetriminoJ,
+                    Value = Pieces.TetriminoJ,
                     Occurancy = 14
                 },
-                new TetriminoOccurancy
+                new PieceOccurancy
                 {
-                    Value = Tetriminos.TetriminoZ,
+                    Value = Pieces.TetriminoZ,
                     Occurancy = 14
                 },
-                new TetriminoOccurancy
+                new PieceOccurancy
                 {
-                    Value = Tetriminos.TetriminoO,
+                    Value = Pieces.TetriminoO,
                     Occurancy = 15
                 },
-                new TetriminoOccurancy
+                new PieceOccurancy
                 {
-                    Value = Tetriminos.TetriminoL,
+                    Value = Pieces.TetriminoL,
                     Occurancy = 14
                 },
-                new TetriminoOccurancy
+                new PieceOccurancy
                 {
-                    Value = Tetriminos.TetriminoS,
+                    Value = Pieces.TetriminoS,
                     Occurancy = 14
                 },
-                new TetriminoOccurancy
+                new PieceOccurancy
                 {
-                    Value = Tetriminos.TetriminoT,
+                    Value = Pieces.TetriminoT,
                     Occurancy = 14
                 },
-                new TetriminoOccurancy
+                new PieceOccurancy
                 {
-                    Value = Tetriminos.TetriminoI,
+                    Value = Pieces.TetriminoI,
                     Occurancy = 15
                 },
             };

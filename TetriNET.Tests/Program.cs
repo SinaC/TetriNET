@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using TetriNET.DefaultBoardAndPieces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
@@ -16,7 +17,7 @@ namespace TetriNET.Tests
 
         public void Test()
         {
-            IBoard board = new Client.DefaultBoardAndTetriminos.Board(4, 12);
+            IBoard board = new Board(4, 12);
             byte[] cells = new byte[board.Width*board.Height];
             for (int i = 0; i < board.Height; i += 3)
                 cells[0 + i * board.Width] = 1;
@@ -44,10 +45,10 @@ namespace TetriNET.Tests
                         sb.Append(".");
                     else
                     {
-                        Tetriminos cellTetrimino = CellHelper.GetColor(cellValue);
+                        Pieces cellPiece = CellHelper.GetColor(cellValue);
                         Specials cellSpecial = CellHelper.GetSpecial(cellValue);
                         if (cellSpecial == Specials.Invalid)
-                            sb.Append((int)cellTetrimino);
+                            sb.Append((int)cellPiece);
                         else
                             sb.Append(ConvertSpecial(cellSpecial));
                     }

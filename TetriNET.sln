@@ -41,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{C9AD63
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Tests", "TetriNET.Tests\TetriNET.Tests.csproj", "{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.DefaultBoardAndPieces", "TetriNET.DefaultBoardAndPieces\TetriNET.DefaultBoardAndPieces.csproj", "{2BD5936F-015D-473F-9161-6B837EF3A3BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -191,6 +193,16 @@ Global
 		{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}.Release|x86.ActiveCfg = Release|Any CPU
+		{2BD5936F-015D-473F-9161-6B837EF3A3BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BD5936F-015D-473F-9161-6B837EF3A3BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BD5936F-015D-473F-9161-6B837EF3A3BA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2BD5936F-015D-473F-9161-6B837EF3A3BA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2BD5936F-015D-473F-9161-6B837EF3A3BA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2BD5936F-015D-473F-9161-6B837EF3A3BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BD5936F-015D-473F-9161-6B837EF3A3BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BD5936F-015D-473F-9161-6B837EF3A3BA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2BD5936F-015D-473F-9161-6B837EF3A3BA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2BD5936F-015D-473F-9161-6B837EF3A3BA}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

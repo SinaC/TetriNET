@@ -74,9 +74,9 @@ namespace TetriNET.WCFHost
                 _host.PublishMessage(Callback, msg);
             }
 
-            public void PlaceTetrimino(int index, Tetriminos tetrimino, int orientation, int posX, int posY, byte[] grid)
+            public void PlacePiece(int index, Pieces piece, int orientation, int posX, int posY, byte[] grid)
             {
-                _host.PlaceTetrimino(Callback, index, tetrimino, orientation, posX, posY, grid);
+                _host.PlacePiece(Callback, index, piece, orientation, posX, posY, grid);
             }
 
             public void UseSpecial(int targetId, Specials special)

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using TetriNET.WPF_WCF_Client.ViewModels;
 
@@ -29,6 +30,13 @@ namespace TetriNET.WPF_WCF_Client
         private void CloseCommandHandler(object sender, ExecutedRoutedEventArgs e)
         {
             this.Close();
+        }
+        #endregion
+
+        #region UI Events
+        private void Minimize_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
         }
         #endregion
     }

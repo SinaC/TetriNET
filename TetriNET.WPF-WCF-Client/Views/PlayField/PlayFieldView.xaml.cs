@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
+using TetriNET.Strategy;
 using TetriNET.Strategy.Move_strategies;
 using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.Models;
@@ -228,7 +229,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
             // Set new client
             Inventory.Client = newClient;
-            NextTetrimino.Client = newClient;
+            NextPiece.Client = newClient;
             PlayerGrid.Client = newClient;
             OpponentGrid1.Client = newClient;
             OpponentGrid2.Client = newClient;
@@ -245,7 +246,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
                 // And create controller + bot
                 _controller = new GameController.GameController(newClient);
-                _bot = new GenericBot(newClient, new LuckyToiletOnePiece(), null);
+                //_bot = new GenericBot(newClient, new LuckyToiletOnePiece(), null);
+                _bot = new GenericBot(newClient, new PierreDellacherieOnePiece(), null);
             }
             else
             {
