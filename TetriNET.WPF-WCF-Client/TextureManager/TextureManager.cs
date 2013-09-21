@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using TetriNET.Common.Attributes;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Logger;
@@ -70,7 +71,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             SmallPiecesBrushes = new Dictionary<Pieces, Brush>();
             if (Directory.Exists(folderPath))
             {
-                foreach (Specials special in EnumHelper.GetAvailableValues<Specials>(Availabilities.Available))
+                foreach (Specials special in EnumHelper.GetSpecials(available => true))
                 {
                     string bigFilename = Path.Combine(folderPath, "big_" + special + ".bmp");
                     BigSpecialsBrushes.Add(special, ReadSpecialBrush(special, bigFilename, false));
@@ -78,42 +79,26 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                     SmallSpecialsBrushes.Add(special, ReadSpecialBrush(special, smallFilename, true));
                 }
 
-                foreach (Pieces piece in EnumHelper.GetAvailableValues<Pieces>(Availabilities.Available))
+                foreach (Pieces piece in EnumHelper.GetPieces(availability => (availability & Availabilities.Displayable) == Availabilities.Displayable))
                 {
                     string bigFilename = Path.Combine(folderPath, "big_" + piece + ".bmp");
                     BigPiecesBrushes.Add(piece, ReadPieceBrush(piece, bigFilename, false));
                     string smallFilename = Path.Combine(folderPath, "small_" + piece + ".bmp");
                     SmallPiecesBrushes.Add(piece, ReadPieceBrush(piece, smallFilename, true));
                 }
-
-                foreach (Pieces mutatedPiece in EnumHelper.GetAvailableValues<Pieces>(Availabilities.Mutation))
-                {
-                    Pieces piece = EnumHelper.GetAttribute<AvailabilityAttribute>(mutatedPiece).Mutation;
-                    string bigFilename = Path.Combine(folderPath, "big_" + piece + ".bmp");
-                    BigPiecesBrushes.Add(mutatedPiece, ReadPieceBrush(piece, bigFilename, false));
-                    string smallFilename = Path.Combine(folderPath, "small_" + piece + ".bmp");
-                    SmallPiecesBrushes.Add(mutatedPiece, ReadPieceBrush(piece, smallFilename, true));
-                }
             }
             else
             {
-                foreach (Specials special in EnumHelper.GetAvailableValues<Specials>(Availabilities.Available))
+                foreach (Specials special in EnumHelper.GetSpecials(available => true))
                 {
                     BigSpecialsBrushes.Add(special, CreateDummySpecialBrush(special, false));
                     SmallSpecialsBrushes.Add(special, CreateDummySpecialBrush(special, true));
                 }
 
-                foreach (Pieces piece in EnumHelper.GetAvailableValues<Pieces>(Availabilities.Available))
+                foreach (Pieces piece in EnumHelper.GetPieces(availability => (availability & Availabilities.Displayable) == Availabilities.Displayable))
                 {
                     BigPiecesBrushes.Add(piece, CreateDummyPieceBrush(piece, false));
                     SmallPiecesBrushes.Add(piece, CreateDummyPieceBrush(piece, true));
-                }
-
-                foreach (Pieces mutatedPiece in EnumHelper.GetAvailableValues<Pieces>(Availabilities.Mutation))
-                {
-                    Pieces piece = EnumHelper.GetAttribute<AvailabilityAttribute>(mutatedPiece).Mutation;
-                    BigPiecesBrushes.Add(mutatedPiece, CreateDummyPieceBrush(piece, false));
-                    SmallPiecesBrushes.Add(mutatedPiece, CreateDummyPieceBrush(piece, true));
                 }
             }
         }
@@ -152,9 +137,10 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                 BigSpecialsBrushes.Add(Specials.BlockQuake, ExtractSpecialBrush(Specials.BlockQuake, image, 192, 0, 16, 16, false));
                 BigSpecialsBrushes.Add(Specials.BlockBomb, ExtractSpecialBrush(Specials.BlockBomb, image, 208, 0, 16, 16, false));
                 BigSpecialsBrushes.Add(Specials.ClearColumn, ExtractSpecialBrush(Specials.ClearColumn, image, 224, 0, 16, 16, false));
-                //  in tetrinet2 bitmap, Immunity is between ClearColumn & Darkness
+                BigSpecialsBrushes.Add(Specials.Immunity, ExtractSpecialBrush(Specials.ClearColumn, image, 240, 0, 16, 16, false));
                 BigSpecialsBrushes.Add(Specials.Darkness, ExtractSpecialBrush(Specials.Darkness, image, 256, 0, 16, 16, false));
                 BigSpecialsBrushes.Add(Specials.Confusion, ExtractSpecialBrush(Specials.Darkness, image, 272, 0, 16, 16, false));
+                BigSpecialsBrushes.Add(Specials.Mutation, ExtractSpecialBrush(Specials.Darkness, image, 288, 0, 16, 16, false));
                 //BigSpecialsBrushes.Add(Specials.ZebraField, CreateDummySpecialBrush(Specials.ZebraField, false)); // will be available when Left Gravity is implemented
 
                 #endregion

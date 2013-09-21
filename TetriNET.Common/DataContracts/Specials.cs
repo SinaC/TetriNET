@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using TetriNET.Common.Attributes;
 using TetriNET.Common.Helpers;
 
 namespace TetriNET.Common.DataContracts
@@ -7,59 +8,62 @@ namespace TetriNET.Common.DataContracts
     public enum Specials // Specials index start after last piece
     {
         [EnumMember]
-        [Availability(Availabilities.NotAvailable)]
+        [Special(false)]
         Invalid = 0,
 
         // TetriNET (http://en.wikipedia.org/wiki/TetriNET)
         [EnumMember]
-        [Availability(Availabilities.Available, 'A', "Add Line")]
+        [Special(true, 'A', "Add Line")]
         AddLines = Pieces.MaxPieces + 1,
         [EnumMember]
-        [Availability(Availabilities.Available, 'C', "Clear Line")]
+        [Special(true, 'C', "Clear Line")]
         ClearLines,
         [EnumMember]
-        [Availability(Availabilities.Available, 'N', "Nuke Field")]
+        [Special(true, 'N', "Nuke Field")]
         NukeField,
         [EnumMember]
-        [Availability(Availabilities.Available, 'R', "Random Blocks Clear")]
+        [Special(true, 'R', "Random Blocks Clear")]
         RandomBlocksClear,
         [EnumMember]
-        [Availability(Availabilities.Available, 'S', "Switch Fields")]
+        [Special(true, 'S', "Switch Fields")]
         SwitchFields,
         [EnumMember]
-        [Availability(Availabilities.Available, 'B', "Clear Special Blocks")]
+        [Special(true, 'B', "Clear Special Blocks")]
         ClearSpecialBlocks,
         [EnumMember]
-        [Availability(Availabilities.Available, 'G', "Block Gravity")]
+        [Special(true, 'G', "Block Gravity")]
         BlockGravity,
         [EnumMember]
-        [Availability(Availabilities.Available, 'Q', "Block Quake")]
+        [Special(true, 'Q', "Block Quake")]
         BlockQuake,
         [EnumMember]
-        [Availability(Availabilities.Available, 'O', "Block Bomb")]
+        [Special(true, 'O', "Block Bomb")]
         BlockBomb,
 
         // TetriNET 2 (http://harddrop.com/wiki/Tetrinet2 or http://en.wikipedia.org/wiki/TetriNET or http://web.archive.org/web/20070623140748/www.tetrinet2.com/?page=overview_specials)
         [EnumMember]
-        [Availability(Availabilities.Available, 'V', "Clear Column")]
+        [Special(true, 'V', "Clear Column")]
         ClearColumn,
         [EnumMember]
-        [Availability(Availabilities.Available, 'D', "Darkness")]
+        [Special(false)]
+        Immunity, // TODO: implement
+        [EnumMember]
+        [Special(true, 'D', "Darkness")]
         Darkness,
         [EnumMember]
-        [Availability(Availabilities.Available, 'F', "Confusion")]
+        [Special(true, 'F', "Confusion")]
         Confusion,
-        // NOT IMPLEMENTED Immunity
-        // NOT IMPLEMENTED Mutate Pieces
+        [Special(false)]
+        Mutation, // TODO: implement
 
         // Blocktrix (http://en.wikipedia.org/wiki/TetriNET)
         [EnumMember]
-        [Availability(Availabilities.NotAvailable)]
+        [Special(false)]
         ZebraField, // will be available when Left Gravity is implemented
         // NOT IMPLEMENTED Piece Change
         [EnumMember]
-        [Availability(Availabilities.NotAvailable)]
-        LeftGravity, // not yet implemented
+        [Special(false)]
+        LeftGravity, // TODO: implement
 
         // BlockBattle (http://blockbattle.net/tutorial)
         // NOT IMPLEMENTED Multiplier

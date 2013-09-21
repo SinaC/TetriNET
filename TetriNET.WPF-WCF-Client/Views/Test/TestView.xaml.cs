@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using TetriNET.Common.Attributes;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.WPF_WCF_Client.TextureManager;
@@ -23,7 +24,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                 ITextureManager textures = TextureManager.TextureManager.TexturesSingleton.Instance;
 
                 int i = 0;
-                foreach (Specials special in EnumHelper.GetAvailableValues<Specials>(Availabilities.Available))
+                foreach (Specials special in EnumHelper.GetSpecials(available => true))
                 {
                     //
                     Brush bigBrush = textures.GetBigSpecial(special);
@@ -53,7 +54,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                 }
 
                 i = 0;
-                foreach (Pieces piece in EnumHelper.GetAvailableValues<Pieces>(Availabilities.Available))
+                foreach (Pieces piece in EnumHelper.GetPieces())
                 {
                     //
                     Brush bigBrush = textures.GetBigPiece(piece);

@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\SpecialAttribute.cs" />
     <Compile Include="Contracts\ITetriNET.cs" />
     <Compile Include="Contracts\ITetriNETCallback.cs" />
     <Compile Include="Contracts\IWCFTetriNET.cs" />
@@ -52,7 +53,7 @@
     <Compile Include="DataContracts\PieceOccurancy.cs" />
     <Compile Include="DataContracts\Pieces.cs" />
     <Compile Include="DataContracts\WinEntry.cs" />
-    <Compile Include="Helpers\AvailabilityAttribute.cs" />
+    <Compile Include="Attributes\PieceAttribute.cs" />
     <Compile Include="Helpers\CellHelper.cs" />
     <Compile Include="Helpers\Check.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />

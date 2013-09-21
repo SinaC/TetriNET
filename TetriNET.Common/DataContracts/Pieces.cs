@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using TetriNET.Common.Attributes;
 using TetriNET.Common.Helpers;
 
 
@@ -8,82 +9,82 @@ namespace TetriNET.Common.DataContracts
     public enum Pieces
     {
         [EnumMember]
-        [Availability(Availabilities.NotAvailable)]
+        [Piece(Availabilities.NotAvailable)]
         Invalid = 0,
 
         //  * * * *
         [EnumMember]
-        [Availability(Availabilities.Available, 'I', "Tetrimino I")]
+        [Piece(Availabilities.Available, "Tetrimino I")]
         TetriminoI = 1,
 
         //  * * *
         //      *
         [EnumMember]
-        [Availability(Availabilities.Available, 'J', "Tetrimino J")]
+        [Piece(Availabilities.Available, "Tetrimino J")]
         TetriminoJ = 2,
 
         //  * * *
         //  *
         [EnumMember]
-        [Availability(Availabilities.Available, 'L', "Tetrimino L")]
+        [Piece(Availabilities.Available, "Tetrimino L")]
         TetriminoL = 3,
 
         //  * *
         //  * *
         [EnumMember]
-        [Availability(Availabilities.Available, 'O', "Tetrimino O")]
+        [Piece(Availabilities.Available, "Tetrimino O")]
         TetriminoO = 4,
 
         //   * *
         // * *
         [EnumMember]
-        [Availability(Availabilities.Available, 'S', "Tetrimino S")]
+        [Piece(Availabilities.Available, "Tetrimino S")]
         TetriminoS = 5,
 
         //  * * *
         //    *
         [EnumMember]
-        [Availability(Availabilities.Available, 'T', "Tetrimino T")]
+        [Piece(Availabilities.Available, "Tetrimino T")]
         TetriminoT = 6,
 
         //  * *
         //    * *
         [EnumMember]
-        [Availability(Availabilities.Available, 'Z', "Tetrimino Z")]
+        [Piece(Availabilities.Available, "Tetrimino Z")]
         TetriminoZ = 7,
         
         // Mutated pieces
         [EnumMember]
-        [Availability(Availabilities.Mutation, TetriminoI)]
+        [Piece(Availabilities.Displayable)]
         MutatedI = 8,
 
         [EnumMember]
-        [Availability(Availabilities.Mutation, TetriminoJ)]
+        [Piece(Availabilities.Displayable)]
         MutatedJ = 9,
 
         [EnumMember]
-        [Availability(Availabilities.Mutation, TetriminoL)]
+        [Piece(Availabilities.Displayable)]
         MutatedL = 10,
 
         [EnumMember]
-        [Availability(Availabilities.Mutation, TetriminoO)]
+        [Piece(Availabilities.Displayable)]
         MutatedO = 11,
 
         [EnumMember]
-        [Availability(Availabilities.Mutation, TetriminoS)]
+        [Piece(Availabilities.Displayable)]
         MutatedS = 12,
 
         [EnumMember]
-        [Availability(Availabilities.Mutation, TetriminoT)]
+        [Piece(Availabilities.Displayable)]
         MutatedT = 13,
 
         [EnumMember]
-        [Availability(Availabilities.Mutation, TetriminoZ)]
+        [Piece(Availabilities.Displayable)]
         MutatedZ = 14,
 
         //
         [EnumMember]
-        [Availability(Availabilities.NotAvailable)]
+        [Piece(Availabilities.NotAvailable)]
         MaxPieces = 64,
     }
 }

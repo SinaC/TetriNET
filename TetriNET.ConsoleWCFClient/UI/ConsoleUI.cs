@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TetriNET.Common.Attributes;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
@@ -526,13 +527,13 @@ namespace TetriNET.ConsoleWCFClient.UI
 
         private static char ConvertSpecial(Specials special)
         {
-            AvailabilityAttribute attribute = EnumHelper.GetAttribute<AvailabilityAttribute>(special);
+            SpecialAttribute attribute = EnumHelper.GetAttribute<SpecialAttribute>(special);
             return attribute == null ? '?' : attribute.ShortName;
         }
 
         private static string GetSpecialString(Specials special)
         {
-            AvailabilityAttribute attribute = EnumHelper.GetAttribute<AvailabilityAttribute>(special);
+            SpecialAttribute attribute = EnumHelper.GetAttribute<SpecialAttribute>(special);
             return attribute == null ? special.ToString() : attribute.LongName;
         }
     }

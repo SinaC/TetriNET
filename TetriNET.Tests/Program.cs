@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using TetriNET.Common.Attributes;
 using TetriNET.DefaultBoardAndPieces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
@@ -63,7 +64,7 @@ namespace TetriNET.Tests
 
         private static char ConvertSpecial(Specials special)
         {
-            AvailabilityAttribute attribute = EnumHelper.GetAttribute<AvailabilityAttribute>(special);
+            SpecialAttribute attribute = EnumHelper.GetAttribute<SpecialAttribute>(special);
             return attribute == null ? '?' : attribute.ShortName;
         }
     }

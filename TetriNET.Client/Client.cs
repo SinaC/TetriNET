@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using TetriNET.Common.Attributes;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
@@ -33,9 +34,9 @@ namespace TetriNET.Client
             SpecialUsed = new Dictionary<Specials, int>();
             SpecialDiscarded = new Dictionary<Specials, int>();
 
-            foreach(Pieces piece in EnumHelper.GetAvailableValues<Pieces>(Availabilities.Available))
+            foreach(Pieces piece in EnumHelper.GetPieces())
                 PieceCount.Add(piece, 0);
-            foreach (Specials special in EnumHelper.GetAvailableValues<Specials>(Availabilities.Available))
+            foreach (Specials special in EnumHelper.GetSpecials(available => true))
             {
                 SpecialCount.Add(special, 0);
                 SpecialUsed.Add(special, 0);
@@ -45,9 +46,9 @@ namespace TetriNET.Client
 
         public void Reset()
         {
-            foreach (Pieces piece in EnumHelper.GetAvailableValues<Pieces>(Availabilities.Available))
+            foreach (Pieces piece in EnumHelper.GetPieces())
                 PieceCount[piece] = 0;
-            foreach (Specials special in EnumHelper.GetAvailableValues<Specials>(Availabilities.Available))
+            foreach (Specials special in EnumHelper.GetSpecials(available => true))
             {
                 SpecialCount[special] = 0;
                 SpecialUsed[special] = 0;
@@ -1450,15 +1451,15 @@ namespace TetriNET.Client
 
         #endregion
 
-        private void MoveDownUntilTotallyInBoard(IPiece piece)
-        {
-            while (!Board.CheckNoConflictWithBoard(piece, true))
-                piece.Translate(0, -1);
-        }
+        //private void MoveDownUntilTotallyInBoard(IPiece piece)
+        //{
+        //    while (!Board.CheckNoConflictWithBoard(piece, true))
+        //        piece.Translate(0, -1);
+        //}
 
         private static char ConvertSpecial(Specials special)
         {
-            AvailabilityAttribute attribute = EnumHelper.GetAttribute<AvailabilityAttribute>(special);
+            SpecialAttribute attribute = EnumHelper.GetAttribute<SpecialAttribute>(special);
             return attribute == null ? '?' : attribute.ShortName;
         }
 
@@ -1605,9 +1606,12 @@ namespace TetriNET.Client
                 case Specials.Confusion:
                     Confusion(5);
                     break;
-                //case Specials.ZebraField: // will be available when Left Gravity is implemented
-                //    ZebraField();
-                //    break;
+                case Specials.ZebraField:
+                    ZebraField();
+                    break;
+                case Specials.LeftGravity:
+                    LeftGravity();
+                    break;
             }
         }
 
@@ -1832,6 +1836,12 @@ namespace TetriNET.Client
             if (ClientOnRedraw != null)
                 ClientOnRedraw();
         }
+
+        private void LeftGravity()
+        {
+            // TODO
+        }
+
         #endregion
 
         #endregion

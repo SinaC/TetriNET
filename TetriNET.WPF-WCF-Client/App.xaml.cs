@@ -31,6 +31,8 @@ namespace TetriNET.WPF_WCF_Client
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
             Log.WriteLine(Log.LogLevels.Info, "Local user config path: {0}", config.FilePath);
 
+            //ExtractTetrinetTextures();
+
             // Get textures
             string textureFilepath = ConfigurationManager.AppSettings["texture"];
             bool isDirectory = false;
@@ -52,6 +54,12 @@ namespace TetriNET.WPF_WCF_Client
 
             //
             base.OnStartup(e);
+        }
+
+        private void ExtractTetrinetTextures()
+        {
+            TextureManager.TextureManager.TexturesSingleton.Instance.ReadFromFile(@"d:\github\TetriNET\Images\tetrinet2.bmp");
+            TextureManager.TextureManager.TexturesSingleton.Instance.SaveToPath(@"d:\temp\tetrinet2tex\");
         }
     }
 }
