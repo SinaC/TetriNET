@@ -115,9 +115,12 @@ namespace TetriNET.DefaultBoardAndPieces
                     return new TetriminoT(spawnX, spawnY, spawnOrientation, index);
                 case Pieces.TetriminoZ:
                     return new TetriminoZ(spawnX, spawnY, spawnOrientation, index);
+                case Pieces.Invalid:
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Warning, "Create random cell because server didn't send next cell");
+                    return new TetriminoZ(spawnX, spawnY, spawnOrientation, index); // TODO: sometimes server takes time to send next cell, it should send 2 or 3 next pieces to ensure this never happens
             }
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Warning, "Create random cell because server didn't send next cell");
-            return new TetriminoZ(spawnX, spawnY, spawnOrientation, index); // TODO: sometimes server takes time to send next cell, it should send 2 or 3 next pieces to ensure this never happens
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Warning, "Unknown piece {0}", piece);
+            return new TetriminoZ(spawnX, spawnY, spawnOrientation, index);
         }
     }
 }

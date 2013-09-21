@@ -4,7 +4,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Common.Interfaces
 {
-    //  x-axis: 1 -> Width
+    //  x-axis: 1(Left) -> Width(Right)
     //  y-axis: 1(Bottom) -> Height(Top)
     public interface IBoard
     {

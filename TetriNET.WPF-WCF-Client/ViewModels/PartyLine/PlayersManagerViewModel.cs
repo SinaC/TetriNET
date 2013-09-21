@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using TetriNET.Client;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.Logger;

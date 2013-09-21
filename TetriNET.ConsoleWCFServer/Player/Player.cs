@@ -17,6 +17,7 @@ namespace TetriNET.ConsoleWCFServer.Player
             LastActionToClient = DateTime.Now;
             LastActionFromClient = DateTime.Now;
             TimeoutCount = 0;
+            MutationCount = 0;
             State = PlayerStates.Registered;
         }
 
@@ -52,6 +53,7 @@ namespace TetriNET.ConsoleWCFServer.Player
         //
         public PlayerStates State { get; set; }
         public DateTime LossTime { get; set; }
+        public int MutationCount { get; set; }
 
         // Heartbeat management
         public DateTime LastActionToClient { get; private set; } // used to check if heartbeat is needed

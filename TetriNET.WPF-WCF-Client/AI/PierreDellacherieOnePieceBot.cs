@@ -7,7 +7,6 @@ using TetriNET.Common.Interfaces;
 using TetriNET.Logger;
 using TetriNET.Strategy;
 using TetriNET.Strategy.Move_strategies;
-using TetriNET.WPF_WCF_Client.GameController;
 
 namespace TetriNET.WPF_WCF_Client.AI
 {

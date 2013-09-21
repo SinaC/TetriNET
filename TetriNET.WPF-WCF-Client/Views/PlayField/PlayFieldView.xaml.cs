@@ -5,7 +5,6 @@ using System.Windows.Input;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.Strategy;
-using TetriNET.Strategy.Move_strategies;
 using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.Models;
 using TetriNET.WPF_WCF_Client.ViewModels.PlayField;

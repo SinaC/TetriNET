@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Configuration;
-using TetriNET.Common.DataContracts;
 using TetriNET.DefaultBoardAndPieces;
 using TetriNET.Common.Interfaces;
 using TetriNET.ConsoleWCFClient.AI;

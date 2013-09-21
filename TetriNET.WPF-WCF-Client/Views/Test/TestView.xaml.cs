@@ -24,7 +24,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                 ITextureManager textures = TextureManager.TextureManager.TexturesSingleton.Instance;
 
                 int i = 0;
-                foreach (Specials special in EnumHelper.GetSpecials(available => true))
+                foreach (Specials special in EnumHelper.GetSpecials(available => available))
                 {
                     //
                     Brush bigBrush = textures.GetBigSpecial(special);
@@ -54,7 +54,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                 }
 
                 i = 0;
-                foreach (Pieces piece in EnumHelper.GetPieces())
+                foreach (Pieces piece in EnumHelper.GetPieces(availabilities => (availabilities & Availabilities.Displayable)==Availabilities.Displayable))
                 {
                     //
                     Brush bigBrush = textures.GetBigPiece(piece);

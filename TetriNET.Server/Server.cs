@@ -31,6 +31,7 @@ namespace TetriNET.Server
         private const int TimeoutDelay = 500; // in ms
         private const int MaxTimeoutCountBeforeDisconnection = 3;
         private const bool IsTimeoutDetectionActive = false;
+        private const int MutationPieceCount = 5;
 
         private readonly PieceQueue _pieceQueue;
         private readonly ManualResetEvent _stopBackgroundTaskEvent = new ManualResetEvent(false);
@@ -536,64 +537,6 @@ namespace TetriNET.Server
 
         #endregion
 
-        #region Piece queue
-
-        private class PieceQueue
-        {
-            private readonly object _lock = new object();
-            private readonly Func<Pieces> _randomFunc;
-            private int _size;
-            private Pieces[] _array;
-
-            public PieceQueue(Func<Pieces> randomFunc, int seed = 0)
-            {
-                _randomFunc = randomFunc;
-                Grow(64);
-            }
-
-            public void Reset()
-            {
-                lock (_lock)
-                {
-                    Fill(0, _size);
-                }
-            }
-
-            public Pieces this[int index]
-            {
-                get
-                {
-                    Pieces piece;
-                    lock (_lock)
-                    {
-                        if (index >= _size)
-                            Grow(128);
-                        piece = _array[index];
-                    }
-                    return piece;
-                }
-            }
-
-            private void Grow(int increment)
-            {
-                int newSize = _size + increment;
-                Pieces[] newArray = new Pieces[newSize];
-                if (_size > 0)
-                    Array.Copy(_array, newArray, _size);
-                _array = newArray;
-                Fill(_size, increment);
-                _size = newSize;
-            }
-
-            private void Fill(int from, int count)
-            {
-                for (int i = from; i < from + count; i++)
-                    _array[i] = _randomFunc();
-            }
-        }
-
-        #endregion
-
         #region Game action queue
         private readonly ManualResetEvent _actionEnqueuedEvent = new ManualResetEvent(false);
         private readonly ConcurrentQueue<Action> _gameActionQueue = new ConcurrentQueue<Action>();
@@ -668,6 +611,12 @@ namespace TetriNET.Server
             foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
                 p.OnGridModified(playerId, grid);
 
+            if (player.MutationCount > 0)
+            {
+                nextPieceToSend = MutatePiece(nextPieceToSend);
+                player.MutationCount--;
+            }
+
             //Logger.Log.WriteLine("Send next piece {0} {1} to {2}", nextPieceToSend, indexToSend, player.Name);
             // Send next piece
             player.OnNextPiece(indexToSend, nextPieceToSend);
@@ -697,6 +646,11 @@ namespace TetriNET.Server
                 // Send new grid to player and target
                 target.OnGridModified(playerId, player.Grid);
                 player.OnGridModified(targetId, target.Grid);
+            }
+            else if (special == Specials.Mutation)
+            {
+                // Add x to mutation count
+                target.MutationCount += MutationPieceCount;
             }
             // Inform about special use
             foreach (IPlayer p in _playerManager.Players)
@@ -850,6 +804,28 @@ namespace TetriNET.Server
                 if (_stopBackgroundTaskEvent.WaitOne(10))
                     break;
             }
+        }
+
+        private static Pieces MutatePiece(Pieces piece)
+        {
+            switch (piece)
+            {
+                case Pieces.TetriminoI:
+                    return Pieces.MutatedI;
+                case Pieces.TetriminoJ:
+                    return Pieces.MutatedJ;
+                case Pieces.TetriminoL:
+                    return Pieces.MutatedL;
+                case Pieces.TetriminoO:
+                    return Pieces.MutatedO;
+                case Pieces.TetriminoS:
+                    return Pieces.MutatedS;
+                case Pieces.TetriminoT:
+                    return Pieces.MutatedT;
+                case Pieces.TetriminoZ:
+                    return Pieces.MutatedZ;
+            }
+            return piece;
         }
     }
 }

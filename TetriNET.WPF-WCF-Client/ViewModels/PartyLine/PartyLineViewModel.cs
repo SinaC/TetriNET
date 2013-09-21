@@ -1,5 +1,4 @@
 ﻿using System.Windows.Input;
-using TetriNET.Client;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;

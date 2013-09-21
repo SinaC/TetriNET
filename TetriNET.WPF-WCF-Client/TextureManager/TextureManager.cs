@@ -36,8 +36,8 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
         {
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
-            SaveBrushToFile(BigBackground, 192, 352, Path.Combine(folderPath, "bigbackground.bmp"));
-            SaveBrushToFile(SmallBackground, 96, 176, Path.Combine(folderPath, "smallbackground.bmp"));
+            SaveBrushToFile(BigBackground, 192, 352, Path.Combine(folderPath, "big_background.bmp"));
+            SaveBrushToFile(SmallBackground, 96, 176, Path.Combine(folderPath, "small_background.bmp"));
             foreach (KeyValuePair<Specials, Brush> special in BigSpecialsBrushes)
             {
                 string filePath = Path.Combine(folderPath, "big_" + special.Key + ".bmp");
@@ -53,7 +53,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                 string filePath = Path.Combine(folderPath, "big_" + piece.Key + ".bmp");
                 SaveBrushToFile(piece.Value, 16, 16, filePath);
             }
-            foreach (KeyValuePair<Pieces, Brush> piece in BigPiecesBrushes)
+            foreach (KeyValuePair<Pieces, Brush> piece in SmallPiecesBrushes)
             {
                 string filePath = Path.Combine(folderPath, "small_" + piece.Key + ".bmp");
                 SaveBrushToFile(piece.Value, 8, 8, filePath);
@@ -62,8 +62,8 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
 
         public void ReadFromPath(string folderPath)
         {
-            BigBackground = ReadBackground(Path.Combine(folderPath, "bigbackground.bmp"), false);
-            SmallBackground = ReadBackground(Path.Combine(folderPath, "smallbackground.bmp"), true);
+            BigBackground = ReadBackground(Path.Combine(folderPath, "big_background.bmp"), false);
+            SmallBackground = ReadBackground(Path.Combine(folderPath, "small_background.bmp"), true);
 
             BigSpecialsBrushes = new Dictionary<Specials, Brush>();
             SmallSpecialsBrushes = new Dictionary<Specials, Brush>();
@@ -71,7 +71,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             SmallPiecesBrushes = new Dictionary<Pieces, Brush>();
             if (Directory.Exists(folderPath))
             {
-                foreach (Specials special in EnumHelper.GetSpecials(available => true))
+                foreach (Specials special in EnumHelper.GetSpecials(available => available))
                 {
                     string bigFilename = Path.Combine(folderPath, "big_" + special + ".bmp");
                     BigSpecialsBrushes.Add(special, ReadSpecialBrush(special, bigFilename, false));
@@ -89,7 +89,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             }
             else
             {
-                foreach (Specials special in EnumHelper.GetSpecials(available => true))
+                foreach (Specials special in EnumHelper.GetSpecials(available => available))
                 {
                     BigSpecialsBrushes.Add(special, CreateDummySpecialBrush(special, false));
                     SmallSpecialsBrushes.Add(special, CreateDummySpecialBrush(special, true));
@@ -126,6 +126,13 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                 BigPiecesBrushes.Add(Pieces.TetriminoS, ExtractPieceBrush(Pieces.TetriminoS, image, 0, 0, 16, 16, false));
                 BigPiecesBrushes.Add(Pieces.TetriminoT, ExtractPieceBrush(Pieces.TetriminoT, image, 16, 0, 16, 16, false));
                 BigPiecesBrushes.Add(Pieces.TetriminoZ, ExtractPieceBrush(Pieces.TetriminoZ, image, 64, 0, 16, 16, false));
+                BigPiecesBrushes.Add(Pieces.MutatedI, ExtractPieceBrush(Pieces.TetriminoI, image, 0, 0, 16, 16, false));
+                BigPiecesBrushes.Add(Pieces.MutatedJ, ExtractPieceBrush(Pieces.TetriminoJ, image, 32, 0, 16, 16, false));
+                BigPiecesBrushes.Add(Pieces.MutatedL, ExtractPieceBrush(Pieces.TetriminoL, image, 48, 0, 16, 16, false));
+                BigPiecesBrushes.Add(Pieces.MutatedO, ExtractPieceBrush(Pieces.TetriminoO, image, 16, 0, 16, 16, false));
+                BigPiecesBrushes.Add(Pieces.MutatedS, ExtractPieceBrush(Pieces.TetriminoS, image, 0, 0, 16, 16, false));
+                BigPiecesBrushes.Add(Pieces.MutatedT, ExtractPieceBrush(Pieces.TetriminoT, image, 16, 0, 16, 16, false));
+                BigPiecesBrushes.Add(Pieces.MutatedZ, ExtractPieceBrush(Pieces.TetriminoZ, image, 64, 0, 16, 16, false));
                 // Specials
                 BigSpecialsBrushes.Add(Specials.AddLines, ExtractSpecialBrush(Specials.AddLines, image, 80, 0, 16, 16, false));
                 BigSpecialsBrushes.Add(Specials.ClearLines, ExtractSpecialBrush(Specials.ClearLines, image, 96, 0, 16, 16, false));
@@ -157,6 +164,13 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                 SmallPiecesBrushes.Add(Pieces.TetriminoS, ExtractPieceBrush(Pieces.TetriminoS, image, 0, 16, 8, 8, true));
                 SmallPiecesBrushes.Add(Pieces.TetriminoT, ExtractPieceBrush(Pieces.TetriminoT, image, 8, 16, 8, 8, true));
                 SmallPiecesBrushes.Add(Pieces.TetriminoZ, ExtractPieceBrush(Pieces.TetriminoZ, image, 32, 16, 8, 8, true));
+                SmallPiecesBrushes.Add(Pieces.MutatedI, ExtractPieceBrush(Pieces.TetriminoI, image, 0, 16, 8, 8, true));
+                SmallPiecesBrushes.Add(Pieces.MutatedJ, ExtractPieceBrush(Pieces.TetriminoJ, image, 16, 16, 8, 8, true));
+                SmallPiecesBrushes.Add(Pieces.MutatedL, ExtractPieceBrush(Pieces.TetriminoL, image, 24, 16, 8, 8, true));
+                SmallPiecesBrushes.Add(Pieces.MutatedO, ExtractPieceBrush(Pieces.TetriminoO, image, 8, 16, 8, 8, true));
+                SmallPiecesBrushes.Add(Pieces.MutatedS, ExtractPieceBrush(Pieces.TetriminoS, image, 0, 16, 8, 8, true));
+                SmallPiecesBrushes.Add(Pieces.MutatedT, ExtractPieceBrush(Pieces.TetriminoT, image, 8, 16, 8, 8, true));
+                SmallPiecesBrushes.Add(Pieces.MutatedZ, ExtractPieceBrush(Pieces.TetriminoZ, image, 32, 16, 8, 8, true));
                 // Specials
                 SmallSpecialsBrushes.Add(Specials.AddLines, ExtractSpecialBrush(Specials.AddLines, image, 40, 16, 8, 8, true));
                 SmallSpecialsBrushes.Add(Specials.ClearLines, ExtractSpecialBrush(Specials.ClearLines, image, 48, 16, 8, 8, true));
@@ -168,9 +182,10 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                 SmallSpecialsBrushes.Add(Specials.BlockQuake, ExtractSpecialBrush(Specials.BlockQuake, image, 96, 16, 8, 8, true));
                 SmallSpecialsBrushes.Add(Specials.BlockBomb, ExtractSpecialBrush(Specials.BlockBomb, image, 104, 16, 8, 8, true));
                 SmallSpecialsBrushes.Add(Specials.ClearColumn, ExtractSpecialBrush(Specials.ClearColumn, image, 112, 16, 8, 8, true));
-                //  in tetrinet2 bitmap, Immunity is between ClearColumn & Darkness
+                SmallSpecialsBrushes.Add(Specials.Immunity, ExtractSpecialBrush(Specials.ClearColumn, image, 120, 16, 8, 8, true));
                 SmallSpecialsBrushes.Add(Specials.Darkness, ExtractSpecialBrush(Specials.Darkness, image, 128, 16, 8, 8, true));
                 SmallSpecialsBrushes.Add(Specials.Confusion, ExtractSpecialBrush(Specials.Confusion, image, 136, 16, 8, 8, true));
+                SmallSpecialsBrushes.Add(Specials.Mutation, ExtractSpecialBrush(Specials.Mutation, image, 144, 16, 8, 8, true));
                 //SmallSpecialsBrushes.Add(Specials.ZebraField, CreateDummySpecialBrush(Specials.ZebraField, true)); // will be available when Left Gravity is implemented
 
                 #endregion
@@ -188,6 +203,13 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                 BigPiecesBrushes.Add(Pieces.TetriminoS, new SolidColorBrush(Colors.Blue));
                 BigPiecesBrushes.Add(Pieces.TetriminoT, new SolidColorBrush(Colors.Yellow));
                 BigPiecesBrushes.Add(Pieces.TetriminoZ, new SolidColorBrush(Colors.Red));
+                BigPiecesBrushes.Add(Pieces.MutatedI, new SolidColorBrush(Colors.Blue));
+                BigPiecesBrushes.Add(Pieces.MutatedJ, new SolidColorBrush(Colors.Green));
+                BigPiecesBrushes.Add(Pieces.MutatedL, new SolidColorBrush(Colors.Magenta));
+                BigPiecesBrushes.Add(Pieces.MutatedO, new SolidColorBrush(Colors.Yellow));
+                BigPiecesBrushes.Add(Pieces.MutatedS, new SolidColorBrush(Colors.Blue));
+                BigPiecesBrushes.Add(Pieces.MutatedT, new SolidColorBrush(Colors.Yellow));
+                BigPiecesBrushes.Add(Pieces.MutatedZ, new SolidColorBrush(Colors.Red));
                 BigSpecialsBrushes.Add(Specials.AddLines, CreateDummySpecialBrush(Specials.AddLines, false));
                 BigSpecialsBrushes.Add(Specials.ClearLines, CreateDummySpecialBrush(Specials.ClearLines, false));
                 BigSpecialsBrushes.Add(Specials.NukeField, CreateDummySpecialBrush(Specials.NukeField, false));
@@ -208,6 +230,13 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                 SmallPiecesBrushes.Add(Pieces.TetriminoS, new SolidColorBrush(Colors.Blue));
                 SmallPiecesBrushes.Add(Pieces.TetriminoT, new SolidColorBrush(Colors.Yellow));
                 SmallPiecesBrushes.Add(Pieces.TetriminoZ, new SolidColorBrush(Colors.Red));
+                SmallPiecesBrushes.Add(Pieces.MutatedI, new SolidColorBrush(Colors.Blue));
+                SmallPiecesBrushes.Add(Pieces.MutatedJ, new SolidColorBrush(Colors.Green));
+                SmallPiecesBrushes.Add(Pieces.MutatedL, new SolidColorBrush(Colors.Magenta));
+                SmallPiecesBrushes.Add(Pieces.MutatedO, new SolidColorBrush(Colors.Yellow));
+                SmallPiecesBrushes.Add(Pieces.MutatedS, new SolidColorBrush(Colors.Blue));
+                SmallPiecesBrushes.Add(Pieces.MutatedT, new SolidColorBrush(Colors.Yellow));
+                SmallPiecesBrushes.Add(Pieces.MutatedZ, new SolidColorBrush(Colors.Red));
                 SmallSpecialsBrushes.Add(Specials.AddLines, CreateDummySpecialBrush(Specials.AddLines, true));
                 SmallSpecialsBrushes.Add(Specials.ClearLines, CreateDummySpecialBrush(Specials.ClearLines, true));
                 SmallSpecialsBrushes.Add(Specials.NukeField, CreateDummySpecialBrush(Specials.NukeField, true));

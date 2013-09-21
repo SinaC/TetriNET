@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Windows.Input;
 using System.Windows.Media;
-using TetriNET.Client;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;

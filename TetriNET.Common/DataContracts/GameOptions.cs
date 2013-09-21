@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
+using TetriNET.Common.Attributes;
+using TetriNET.Common.Helpers;
 
 namespace TetriNET.Common.DataContracts
 {
@@ -128,6 +131,11 @@ namespace TetriNET.Common.DataContracts
                 },
                 new SpecialOccurancy
                 {
+                    Value = Specials.Immunity,
+                    Occurancy = 0
+                },
+                new SpecialOccurancy
+                {
                     Value = Specials.Darkness,
                     Occurancy = 0
                 },
@@ -136,9 +144,19 @@ namespace TetriNET.Common.DataContracts
                     Value = Specials.Confusion,
                     Occurancy = 0
                 },
+                new SpecialOccurancy
+                {
+                    Value = Specials.Mutation,
+                    Occurancy = 0
+                },
                 //new SpecialOccurancy // will be available when Left Gravity is implemented
                 //{
                 //    Value = Specials.ZebraField,
+                //    Occurancy = 0
+                //},
+                //new SpecialOccurancy // will be available when Left Gravity is implemented
+                //{
+                //    Value = Specials.LeftGravity,
                 //    Occurancy = 0
                 //},
             };
@@ -149,6 +167,19 @@ namespace TetriNET.Common.DataContracts
             StartingLevel = 0;
             DelayBeforeSuddenDeath = 0;
             SuddenDeathTick = 1;
+
+            foreach (Pieces piece in EnumHelper.GetPieces(availabilities => (availabilities & Availabilities.Randomizable) == Availabilities.Randomizable))
+                PieceOccurancies.Add(new PieceOccurancy
+                {
+                    Value = piece,
+                    Occurancy = 0
+                });
+            foreach (Specials special in EnumHelper.GetSpecials(available => available).Where(special => SpecialOccurancies.All(x => x.Value != special)))
+                SpecialOccurancies.Add(new SpecialOccurancy // will be available when Left Gravity is implemented
+                {
+                    Value = special,
+                    Occurancy = 0
+                });
         }
     }
 

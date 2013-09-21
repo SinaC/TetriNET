@@ -1,5 +1,4 @@
-﻿using System;
-//using POC.Client_POC;
+﻿//using POC.Client_POC;
 
 namespace POC
 {

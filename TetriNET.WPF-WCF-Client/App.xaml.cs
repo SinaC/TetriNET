@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Windows;
-using System.Windows.Input;
-using TetriNET.Common.Interfaces;
 using TetriNET.Logger;
 using TetriNET.WPF_WCF_Client.Helpers;
-using TetriNET.WPF_WCF_Client.Models;
-using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client
 {
@@ -56,7 +51,7 @@ namespace TetriNET.WPF_WCF_Client
             base.OnStartup(e);
         }
 
-        private void ExtractTetrinetTextures()
+        private static void ExtractTetrinetTextures()
         {
             TextureManager.TextureManager.TexturesSingleton.Instance.ReadFromFile(@"d:\github\TetriNET\Images\tetrinet2.bmp");
             TextureManager.TextureManager.TexturesSingleton.Instance.SaveToPath(@"d:\temp\tetrinet2tex\");

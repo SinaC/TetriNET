@@ -24,6 +24,7 @@ namespace TetriNET.Common.Interfaces
         //
         PlayerStates State { get; set; }
         DateTime LossTime { get; set; }
+        int MutationCount { get; set; }
 
         // Heartbeat management
         DateTime LastActionToClient { get; } // used to check if heartbeat is needed

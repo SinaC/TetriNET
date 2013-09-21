@@ -1,6 +1,5 @@
 ﻿using System.Runtime.Serialization;
 using TetriNET.Common.Attributes;
-using TetriNET.Common.Helpers;
 
 namespace TetriNET.Common.DataContracts
 {
@@ -53,8 +52,9 @@ namespace TetriNET.Common.DataContracts
         [EnumMember]
         [Special(true, 'F', "Confusion")]
         Confusion,
-        [Special(false)]
-        Mutation, // TODO: implement
+        [EnumMember]
+        [Special(true, 'M', "Mutation")]
+        Mutation,
 
         // Blocktrix (http://en.wikipedia.org/wiki/TetriNET)
         [EnumMember]

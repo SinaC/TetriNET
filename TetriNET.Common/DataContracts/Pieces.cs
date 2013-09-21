@@ -1,6 +1,5 @@
 ﻿using System.Runtime.Serialization;
 using TetriNET.Common.Attributes;
-using TetriNET.Common.Helpers;
 
 
 namespace TetriNET.Common.DataContracts
