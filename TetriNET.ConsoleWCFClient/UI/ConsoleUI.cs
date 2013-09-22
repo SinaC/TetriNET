@@ -501,25 +501,18 @@ namespace TetriNET.ConsoleWCFClient.UI
             switch (piece)
             {
                 case Pieces.TetriminoI:
-                case Pieces.MutatedI:
                     return ConsoleColor.Blue;
                 case Pieces.TetriminoJ:
-                case Pieces.MutatedJ:
                     return ConsoleColor.Green;
                 case Pieces.TetriminoL:
-                case Pieces.MutatedL:
                     return ConsoleColor.Magenta;
                 case Pieces.TetriminoO:
-                case Pieces.MutatedO:
                     return ConsoleColor.Yellow;
                 case Pieces.TetriminoS:
-                case Pieces.MutatedS:
                     return ConsoleColor.Blue;
                 case Pieces.TetriminoT:
-                case Pieces.MutatedT:
                     return ConsoleColor.Yellow;
                 case Pieces.TetriminoZ:
-                case Pieces.MutatedZ:
                     return ConsoleColor.Red;
             }
             return ConsoleColor.Gray;

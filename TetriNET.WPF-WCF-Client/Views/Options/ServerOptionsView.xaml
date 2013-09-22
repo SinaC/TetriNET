@@ -184,7 +184,7 @@
                 Command="{Binding SendOptionsToServerCommand}">
             <TextBlock Text="Send options to server"/>
         </Button>
-        <Button Grid.Row="2" Width="150" HorizontalAlignment="Right" IsEnabled="{Binding IsSendOptionsToServerEnabled}"
+        <Button Grid.Row="2" Width="150" HorizontalAlignment="Right"
                 Command="{Binding ResetOptionsCommand}">
             <TextBlock Text="Reset to default"/>
         </Button>

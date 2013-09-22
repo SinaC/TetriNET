@@ -1,7 +1,7 @@
 ﻿using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 
-namespace TetriNET.DefaultBoardAndPieces
+namespace TetriNET.DefaultBoardAndPieces.Normal
 {
     internal class TetriminoL : Piece
     {

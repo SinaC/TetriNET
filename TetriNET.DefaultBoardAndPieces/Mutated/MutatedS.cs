@@ -1,15 +1,16 @@
 ﻿using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 
-namespace TetriNET.DefaultBoardAndPieces
+namespace TetriNET.DefaultBoardAndPieces.Mutated
 {
-    internal class TetriminoS : Piece
+    public class MutatedS : Piece
     {
-        protected TetriminoS()
+        protected MutatedS()
         {
         }
 
-        public TetriminoS(int spawnX, int spawnY, int spawnOrientation, int index) : base(spawnX, spawnY, spawnOrientation, index)
+        public MutatedS(int posX, int posY, int orientation, int index)
+            : base(posX, posY, orientation, index)
         {
             Value = Pieces.TetriminoS;
         }
@@ -21,14 +22,14 @@ namespace TetriNET.DefaultBoardAndPieces
 
         public override int TotalCells
         {
-            get { return 4; }
+            get { return 5; }
         }
 
         public override void GetCellAbsolutePosition(int cellIndex, out int x, out int y)
         {
             x = y = 0;
-            // orientation 1,3: (-1, -1),  ( 0, -1),  ( 0,  0),  ( 1,  0)
-            // orientation 2,4: ( 1, -1),  ( 0,  0),  ( 1,  0),  ( 0,  1)
+            // orientation 1,3: (-1, -1),  ( 0, -1),  ( 0,  0),  ( 0,  1),  ( 1,  1)
+            // orientation 2,4: ( 1, -1),  ( 0,  0),  ( 1,  0),  ( -1, 0),  (-1,  1)
             if (Orientation == 1 || Orientation == 3)
             {
                 switch (cellIndex)
@@ -46,8 +47,12 @@ namespace TetriNET.DefaultBoardAndPieces
                         y = 0;
                         break;
                     case 4:
+                        x = 0;
+                        y = 1;
+                        break;
+                    case 5:
                         x = 1;
-                        y = 0;
+                        y = 1;
                         break;
                 }
             }
@@ -68,7 +73,11 @@ namespace TetriNET.DefaultBoardAndPieces
                         y = 0;
                         break;
                     case 4:
-                        x = 0;
+                        x = -1;
+                        y = 0;
+                        break;
+                    case 5:
+                        x = -1;
                         y = 1;
                         break;
                 }
@@ -80,7 +89,7 @@ namespace TetriNET.DefaultBoardAndPieces
 
         public override IPiece Clone()
         {
-            return new TetriminoS
+            return new MutatedS
             {
                 PosX = PosX,
                 PosY = PosY,

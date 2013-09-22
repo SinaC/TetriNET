@@ -8,82 +8,53 @@ namespace TetriNET.Common.DataContracts
     public enum Pieces
     {
         [EnumMember]
-        [Piece(Availabilities.NotAvailable)]
+        [Piece(false)]
         Invalid = 0,
 
         //  * * * *
         [EnumMember]
-        [Piece(Availabilities.Available, "Tetrimino I")]
+        [Piece(true, "Tetrimino I")]
         TetriminoI = 1,
 
         //  * * *
         //      *
         [EnumMember]
-        [Piece(Availabilities.Available, "Tetrimino J")]
+        [Piece(true, "Tetrimino J")]
         TetriminoJ = 2,
 
         //  * * *
         //  *
         [EnumMember]
-        [Piece(Availabilities.Available, "Tetrimino L")]
+        [Piece(true, "Tetrimino L")]
         TetriminoL = 3,
 
         //  * *
         //  * *
         [EnumMember]
-        [Piece(Availabilities.Available, "Tetrimino O")]
+        [Piece(true, "Tetrimino O")]
         TetriminoO = 4,
 
         //   * *
         // * *
         [EnumMember]
-        [Piece(Availabilities.Available, "Tetrimino S")]
+        [Piece(true, "Tetrimino S")]
         TetriminoS = 5,
 
         //  * * *
         //    *
         [EnumMember]
-        [Piece(Availabilities.Available, "Tetrimino T")]
+        [Piece(true, "Tetrimino T")]
         TetriminoT = 6,
 
         //  * *
         //    * *
         [EnumMember]
-        [Piece(Availabilities.Available, "Tetrimino Z")]
+        [Piece(true, "Tetrimino Z")]
         TetriminoZ = 7,
-        
-        // Mutated pieces
-        [EnumMember]
-        [Piece(Availabilities.Displayable)]
-        MutatedI = 8,
-
-        [EnumMember]
-        [Piece(Availabilities.Displayable)]
-        MutatedJ = 9,
-
-        [EnumMember]
-        [Piece(Availabilities.Displayable)]
-        MutatedL = 10,
-
-        [EnumMember]
-        [Piece(Availabilities.Displayable)]
-        MutatedO = 11,
-
-        [EnumMember]
-        [Piece(Availabilities.Displayable)]
-        MutatedS = 12,
-
-        [EnumMember]
-        [Piece(Availabilities.Displayable)]
-        MutatedT = 13,
-
-        [EnumMember]
-        [Piece(Availabilities.Displayable)]
-        MutatedZ = 14,
 
         //
         [EnumMember]
-        [Piece(Availabilities.NotAvailable)]
+        [Piece(false)]
         MaxPieces = 64,
     }
 }

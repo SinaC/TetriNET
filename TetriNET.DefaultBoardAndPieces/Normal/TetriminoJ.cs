@@ -1,17 +1,17 @@
 ﻿using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 
-namespace TetriNET.DefaultBoardAndPieces
+namespace TetriNET.DefaultBoardAndPieces.Normal
 {
-    internal class TetriminoT : Piece
+    internal class TetriminoJ : Piece
     {
-        protected TetriminoT()
+        protected TetriminoJ()
         {
         }
 
-        public TetriminoT(int spawnX, int spawnY, int spawnOrientation, int index) : base(spawnX, spawnY, spawnOrientation, index)
+        public TetriminoJ(int spawnX, int spawnY, int spawnOrientation, int index) : base(spawnX, spawnY, spawnOrientation, index)
         {
-            Value = Pieces.TetriminoT;
+            Value = Pieces.TetriminoJ;
         }
 
         public override int MaxOrientations
@@ -27,17 +27,17 @@ namespace TetriNET.DefaultBoardAndPieces
         public override void GetCellAbsolutePosition(int cellIndex, out int x, out int y)
         {
             x = y = 0;
-            // orientation 1: ( 0, -1),  (-1,  0),  ( 0,  0),  ( 1,  0)
-            // orientation 2: ( 0, -1),  ( 0,  0),  ( 1,  0),  ( 0,  1)
-            // orientation 3: (-1,  0),  ( 0,  0),  ( 1,  0),  ( 0,  1)
-            // orientation 4: ( 0, -1),  (-1,  0),  ( 0,  0),  ( 0,  1)
+            // orientation 1: ( 1, -1),  (-1,  0),  ( 0,  0),  ( 1,  0)
+            // orientation 2: ( 0, -1),  ( 0,  0),  ( 0,  1),  ( 1,  1)
+            // orientation 3: (-1,  0),  ( 0,  0),  ( 1,  0),  (-1,  1)
+            // orientation 4: (-1, -1),  ( 0, -1),  ( 0,  0),  ( 0,  1)
             switch (Orientation)
             {
                 case 1:
                     switch (cellIndex)
                     {
                         case 1:
-                            x = 0;
+                            x = 1;
                             y = -1;
                             break;
                         case 2:
@@ -66,11 +66,11 @@ namespace TetriNET.DefaultBoardAndPieces
                             y = 0;
                             break;
                         case 3:
-                            x = 1;
-                            y = 0;
+                            x = 0;
+                            y = 1;
                             break;
                         case 4:
-                            x = 0;
+                            x = 1;
                             y = 1;
                             break;
                     }
@@ -91,21 +91,21 @@ namespace TetriNET.DefaultBoardAndPieces
                             y = 0;
                             break;
                         case 4:
-                            x = 0;
+                            x = -1;
                             y = 1;
                             break;
                     }
                     break;
-                default:
+                case 4:
                     switch (cellIndex)
                     {
                         case 1:
-                            x = 0;
+                            x = -1;
                             y = -1;
                             break;
                         case 2:
-                            x = -1;
-                            y = 0;
+                            x = 0;
+                            y = -1;
                             break;
                         case 3:
                             x = 0;
@@ -125,7 +125,7 @@ namespace TetriNET.DefaultBoardAndPieces
 
         public override IPiece Clone()
         {
-            return new TetriminoT
+            return new TetriminoJ
             {
                 PosX = PosX,
                 PosY = PosY,

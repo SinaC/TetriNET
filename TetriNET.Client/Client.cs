@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -43,7 +42,7 @@ namespace TetriNET.Client
             Paused
         }
 
-        private readonly Func<Pieces, int, int, int, int, IPiece> _createPieceFunc;
+        private readonly Func<Pieces, int, int, int, int, bool, IPiece> _createPieceFunc;
         private readonly Func<IBoard> _createBoardFunc;
         private readonly PlayerData[] _playersData = new PlayerData[MaxPlayers];
         private readonly ManualResetEvent _stopBackgroundTaskEvent = new ManualResetEvent(false);
@@ -65,13 +64,14 @@ namespace TetriNET.Client
         private bool _isConfusionActive;
         private DateTime _darknessEndTime;
         private DateTime _confusionEndTime;
+        private int _mutationCount;
 
         private PlayerData Player
         {
             get { return _playersData[_clientPlayerId]; }
         }
 
-        public Client(Func<Pieces, int, int, int, int, IPiece> createPieceFunc, Func<IBoard> createBoardFunc)
+        public Client(Func<Pieces, int, int, int, int, bool, IPiece> createPieceFunc, Func<IBoard> createBoardFunc)
         {
             if (createPieceFunc == null)
                 throw new ArgumentNullException("createPieceFunc");
@@ -105,6 +105,7 @@ namespace TetriNET.Client
             _isDarknessActive = false;
             _isConfusionActive = false;
             _pauseStartTime = DateTime.Now;
+            _mutationCount = 0;
 
             Task.Factory.StartNew(TimeoutTask);
             Task.Factory.StartNew(BoardActionTask);
@@ -145,7 +146,7 @@ namespace TetriNET.Client
             ConnectionLostHandler();
         }
 
-        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool isGameStarted)
+        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool isGameStarted, GameOptions options)
         {
             ResetTimeout();
             if (result == RegistrationResults.RegistrationSuccessful && State == States.Registering)
@@ -166,6 +167,8 @@ namespace TetriNET.Client
 
                     State = States.Registered;
                     ServerState = isGameStarted ? ServerStates.Playing : ServerStates.Waiting;// TODO: handle server paused
+
+                    Options = options;
 
                     if (ClientOnPlayerRegistered != null)
                         ClientOnPlayerRegistered(RegistrationResults.RegistrationSuccessful, playerId);
@@ -331,9 +334,9 @@ namespace TetriNET.Client
             _pieces[1] = secondPiece;
             _pieces[2] = thirdPiece;
             _pieceIndex = 0;
-            CurrentPiece = _createPieceFunc(firstPiece, Board.PieceSpawnX, Board.PieceSpawnY, 1, 0);
+            CurrentPiece = _createPieceFunc(firstPiece, Board.PieceSpawnX, Board.PieceSpawnY, 1, 0, false);
             //MoveDownUntilTotallyInBoard(CurrentPiece);
-            NextPiece = _createPieceFunc(secondPiece, Board.PieceSpawnX, Board.PieceSpawnY, 1, 1);
+            NextPiece = _createPieceFunc(secondPiece, Board.PieceSpawnX, Board.PieceSpawnY, 1, 1, false);
             // Update statistics
             if (_statistics.PieceCount.ContainsKey(firstPiece))
                 _statistics.PieceCount[firstPiece]++;
@@ -344,6 +347,10 @@ namespace TetriNET.Client
             Level = Options.StartingLevel;
             // Reset gamer timer interval
             _gameTimer.Interval = ComputeGameTimerInterval(Level);
+            // Reset specials
+            _isConfusionActive = false;
+            _isDarknessActive = false;
+            _mutationCount = 0;
             // Reset boards
             for (int i = 0; i < MaxPlayers; i++)
             {
@@ -604,7 +611,13 @@ namespace TetriNET.Client
         private void StartRound()
         {
             // Set new current piece to next, increment piece index and create next piece
-            CurrentPiece = NextPiece;
+            if (_mutationCount > 0)
+            {
+                CurrentPiece = _createPieceFunc(NextPiece.Value, Board.PieceSpawnX, Board.PieceSpawnY, 1, NextPiece.Index + 1, true);
+                _mutationCount--;
+            }
+            else
+                CurrentPiece = NextPiece;
             // Update statistics
             if (_statistics.PieceCount.ContainsKey(CurrentPiece.Value))
                 _statistics.PieceCount[CurrentPiece.Value]++;
@@ -624,7 +637,7 @@ namespace TetriNET.Client
                 Log.WriteLine(Log.LogLevels.Warning, "Next piece not yet received from server, server is definitively too slow or we are too fast");
                 _statistics.NextPieceNotYetReceived++;
             }
-            NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, 1, _pieceIndex + 1);
+            NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, 1, _pieceIndex + 1, false); // mutation is handled while updating CurrentPiece
 
             //if (ClientOnPieceMoved != null)
             //    ClientOnPieceMoved();
@@ -1422,6 +1435,9 @@ namespace TetriNET.Client
                 case Specials.Confusion:
                     Confusion(5);
                     break;
+                case Specials.Mutation:
+                    Mutation(5);
+                    break;
                 case Specials.ZebraField:
                     ZebraField();
                     break;
@@ -1612,6 +1628,11 @@ namespace TetriNET.Client
 
             if (ClientOnRedraw != null)
                 ClientOnRedraw();
+        }
+
+        private void Mutation(int count)
+        {
+            _mutationCount += count;
         }
 
         private void Darkness(int delayInSeconds)

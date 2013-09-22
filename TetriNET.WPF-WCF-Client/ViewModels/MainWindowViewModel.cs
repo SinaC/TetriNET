@@ -4,7 +4,6 @@ using TetriNET.Common.Helpers;
 using TetriNET.DefaultBoardAndPieces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
-using TetriNET.WPF_WCF_Client.Models.MutatedPieces;
 using TetriNET.WPF_WCF_Client.Properties;
 using TetriNET.WPF_WCF_Client.ViewModels.Connection;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
@@ -53,27 +52,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             ClientChanged += OnClientChanged;
 
             // Create client
-            //Client = new Client.Client(Piece.CreatePiece, () => new Board(Models.Options.Width, Models.Options.Height));
-            Client = new Client.Client(MutatedPieceGenerator.Generate, () => new Board(Models.Options.Width, Models.Options.Height));
+            Client = new Client.Client(Piece.CreatePiece, () => new Board(Models.Options.Width, Models.Options.Height));
 
-            /*// Default values
-            Options.OptionsSingleton.Instance.KeySettings = new List<KeySetting>
-                {
-                    new KeySetting(Key.Space, Commands.Drop),
-                    new KeySetting(Key.Down, Commands.Down),
-                    new KeySetting(Key.Up, Commands.RotateCounterclockwise),
-                    new KeySetting(Key.PageUp, Commands.RotateClockwise),
-                    new KeySetting(Key.Left, Commands.Left),
-                    new KeySetting(Key.Right, Commands.Right),
-                    new KeySetting(Key.D, Commands.DiscardFirstSpecial),
-                    new KeySetting(Key.D1, Commands.UseSpecialOn1),
-                    new KeySetting(Key.D1, Commands.UseSpecialOn2),
-                    new KeySetting(Key.D3, Commands.UseSpecialOn3),
-                    new KeySetting(Key.D4, Commands.UseSpecialOn4),
-                    new KeySetting(Key.D5, Commands.UseSpecialOn5),
-                    new KeySetting(Key.D6, Commands.UseSpecialOn6),
-                };
-             * */
             // Get saved options
             Models.Options.OptionsSingleton.Instance.GetSavedOptions();
             // Get saved or default server options
@@ -83,22 +63,22 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             Models.Options.OptionsSingleton.Instance.ServerOptions.PieceOccurancies = Models.Options.OptionsSingleton.Instance.ServerOptions.PieceOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();
 
             // Add defaut values if needed
-            foreach (Pieces piece in EnumHelper.GetPieces(availabilities => (availabilities & Availabilities.Randomizable) == Availabilities.Randomizable).Where(piece => Models.Options.OptionsSingleton.Instance.ServerOptions.PieceOccurancies.All(x => x.Value != piece)))
+            foreach (Pieces piece in EnumHelper.GetPieces(available => available).Where(piece => Models.Options.OptionsSingleton.Instance.ServerOptions.PieceOccurancies.All(x => x.Value != piece)))
                 Models.Options.OptionsSingleton.Instance.ServerOptions.PieceOccurancies.Add(new PieceOccurancy
                 {
                     Value = piece,
                     Occurancy = 0
                 });
             foreach (Specials special in EnumHelper.GetSpecials(available => available).Where(special => Models.Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies.All(x => x.Value != special)))
-                Models.Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies.Add(new SpecialOccurancy // will be available when Left Gravity is implemented
+                Models.Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies.Add(new SpecialOccurancy
                 {
                     Value = special,
                     Occurancy = 0
                 });
             // Remove invalid values
             // TODO: crash
-            //Models.Options.OptionsSingleton.Instance.ServerOptions.PieceOccurancies = Models.Options.OptionsSingleton.Instance.ServerOptions.PieceOccurancies.Where(x => EnumHelper.GetAttribute<PieceAttribute>(x) != null && (EnumHelper.GetAttribute<PieceAttribute>(x).Availability & Availabilities.Randomizable) == Availabilities.Randomizable).ToList();
-            //Models.Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies = Models.Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies.Where(x => EnumHelper.GetAttribute<SpecialAttribute>(x) != null && EnumHelper.GetAttribute<SpecialAttribute>(x).Available).ToList();
+            Models.Options.OptionsSingleton.Instance.ServerOptions.PieceOccurancies = Models.Options.OptionsSingleton.Instance.ServerOptions.PieceOccurancies.Where(x => EnumHelper.GetAttribute<PieceAttribute>(x.Value) != null && EnumHelper.GetAttribute<PieceAttribute>(x.Value).Available).ToList();
+            Models.Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies = Models.Options.OptionsSingleton.Instance.ServerOptions.SpecialOccurancies.Where(x => EnumHelper.GetAttribute<SpecialAttribute>(x.Value) != null && EnumHelper.GetAttribute<SpecialAttribute>(x.Value).Available).ToList();
         }
 
         #region ViewModelBase

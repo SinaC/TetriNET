@@ -246,7 +246,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 // And create controller + bot
                 _controller = new GameController.GameController(newClient);
                 //_bot = new GenericBot(newClient, new LuckyToiletOnePiece(), null);
-                _bot = new GenericBot(newClient, new PierreDellacherieOnePiece(), null);
+                _bot = new GenericBot(newClient, new PierreDellacherieOnePiece(), new SinaCSpecials());
             }
             else
             {

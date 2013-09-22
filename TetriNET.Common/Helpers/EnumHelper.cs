@@ -18,7 +18,7 @@ namespace TetriNET.Common.Helpers
             return Enum.GetValues(enumT).Cast<T>();
         }
 
-        public static IEnumerable<Pieces> GetPieces(Func<Availabilities, bool> filter = null)
+        public static IEnumerable<Pieces> GetPieces(Func<bool, bool> filter = null)
         {
             return Enum.GetValues(typeof(Pieces)).Cast<Pieces>()
                 .Select(x => new
@@ -26,7 +26,7 @@ namespace TetriNET.Common.Helpers
                     enumValue = x,
                     attribute = GetAttribute<PieceAttribute>(x)
                 })
-                .Where(x => x.attribute != null && (filter == null || filter(x.attribute.Availability)))
+                .Where(x => x.attribute != null && (filter == null || filter(x.attribute.Available)))
                 .Select(x => x.enumValue);
         }
 

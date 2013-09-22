@@ -1,19 +1,17 @@
 ﻿using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
-using TetriNET.DefaultBoardAndPieces;
 
-namespace TetriNET.WPF_WCF_Client.Models.MutatedPieces
+namespace TetriNET.DefaultBoardAndPieces.Normal
 {
-    public class MutatedI : Piece
+    internal class TetriminoI : Piece
     {
-        protected MutatedI()
+        protected TetriminoI()
         {
         }
 
-        public MutatedI(int posX, int posY, int orientation, int index)
-            : base(posX, posY, orientation, index)
+        public TetriminoI(int spawnX, int spawnY, int spawnOrientation, int index) : base(spawnX, spawnY, spawnOrientation, index)
         {
-            Value = Pieces.MutatedI;
+            Value = Pieces.TetriminoI;
         }
 
         public override int MaxOrientations
@@ -23,14 +21,14 @@ namespace TetriNET.WPF_WCF_Client.Models.MutatedPieces
 
         public override int TotalCells
         {
-            get { return 10; }
+            get { return 4; }
         }
 
         public override void GetCellAbsolutePosition(int cellIndex, out int x, out int y)
         {
             x = y = 0;
-            // orientation 1,3: (-2,  0),  (-1,  0),  ( 0,  0),  ( 1,  0),  (-2, -1),  (-1, -1),  ( 0, -1),  ( 1, -1)
-            // orientation 2,4: ( 0, -2),  ( 0, -1),  ( 0,  0),  ( 0,  1),  ( 1, -2),  ( 1, -1),  ( 1,  0),  ( 1,  1)
+            // orientation 1,3: (-2,  0),  (-1,  0),  ( 0,  0),  ( 1,  0)
+            // orientation 2,4: ( 0, -2),  ( 0, -1),  ( 0,  0),  ( 0,  1)
             if (Orientation == 1 || Orientation == 3)
             {
                 switch (cellIndex)
@@ -50,22 +48,6 @@ namespace TetriNET.WPF_WCF_Client.Models.MutatedPieces
                     case 4:
                         x = 1;
                         y = 0;
-                        break;
-                    case 5:
-                        x = -2;
-                        y = -1;
-                        break;
-                    case 6:
-                        x = -1;
-                        y = -1;
-                        break;
-                    case 7:
-                        x = 0;
-                        y = -1;
-                        break;
-                    case 8:
-                        x = 1;
-                        y = -1;
                         break;
                 }
             }
@@ -89,22 +71,6 @@ namespace TetriNET.WPF_WCF_Client.Models.MutatedPieces
                         x = 0;
                         y = 1;
                         break;
-                    case 5:
-                        x = 1;
-                        y = -2;
-                        break;
-                    case 6:
-                        x = 1;
-                        y = -1;
-                        break;
-                    case 7:
-                        x = 1;
-                        y = 0;
-                        break;
-                    case 8:
-                        x = 1;
-                        y = 1;
-                        break;
                 }
             }
             // Translate to board coordinates
@@ -114,7 +80,7 @@ namespace TetriNET.WPF_WCF_Client.Models.MutatedPieces
 
         public override IPiece Clone()
         {
-            return new MutatedI
+            return new TetriminoI
             {
                 PosX = PosX,
                 PosY = PosY,

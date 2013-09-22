@@ -79,7 +79,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                     SmallSpecialsBrushes.Add(special, ReadSpecialBrush(special, smallFilename, true));
                 }
 
-                foreach (Pieces piece in EnumHelper.GetPieces(availability => (availability & Availabilities.Displayable) == Availabilities.Displayable))
+                foreach (Pieces piece in EnumHelper.GetPieces(available => available))
                 {
                     string bigFilename = Path.Combine(folderPath, "big_" + piece + ".bmp");
                     BigPiecesBrushes.Add(piece, ReadPieceBrush(piece, bigFilename, false));
@@ -95,7 +95,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                     SmallSpecialsBrushes.Add(special, CreateDummySpecialBrush(special, true));
                 }
 
-                foreach (Pieces piece in EnumHelper.GetPieces(availability => (availability & Availabilities.Displayable) == Availabilities.Displayable))
+                foreach (Pieces piece in EnumHelper.GetPieces(available => available))
                 {
                     BigPiecesBrushes.Add(piece, CreateDummyPieceBrush(piece, false));
                     SmallPiecesBrushes.Add(piece, CreateDummyPieceBrush(piece, true));
@@ -126,13 +126,6 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                 BigPiecesBrushes.Add(Pieces.TetriminoS, ExtractPieceBrush(Pieces.TetriminoS, image, 0, 0, 16, 16, false));
                 BigPiecesBrushes.Add(Pieces.TetriminoT, ExtractPieceBrush(Pieces.TetriminoT, image, 16, 0, 16, 16, false));
                 BigPiecesBrushes.Add(Pieces.TetriminoZ, ExtractPieceBrush(Pieces.TetriminoZ, image, 64, 0, 16, 16, false));
-                BigPiecesBrushes.Add(Pieces.MutatedI, ExtractPieceBrush(Pieces.TetriminoI, image, 0, 0, 16, 16, false));
-                BigPiecesBrushes.Add(Pieces.MutatedJ, ExtractPieceBrush(Pieces.TetriminoJ, image, 32, 0, 16, 16, false));
-                BigPiecesBrushes.Add(Pieces.MutatedL, ExtractPieceBrush(Pieces.TetriminoL, image, 48, 0, 16, 16, false));
-                BigPiecesBrushes.Add(Pieces.MutatedO, ExtractPieceBrush(Pieces.TetriminoO, image, 16, 0, 16, 16, false));
-                BigPiecesBrushes.Add(Pieces.MutatedS, ExtractPieceBrush(Pieces.TetriminoS, image, 0, 0, 16, 16, false));
-                BigPiecesBrushes.Add(Pieces.MutatedT, ExtractPieceBrush(Pieces.TetriminoT, image, 16, 0, 16, 16, false));
-                BigPiecesBrushes.Add(Pieces.MutatedZ, ExtractPieceBrush(Pieces.TetriminoZ, image, 64, 0, 16, 16, false));
                 // Specials
                 BigSpecialsBrushes.Add(Specials.AddLines, ExtractSpecialBrush(Specials.AddLines, image, 80, 0, 16, 16, false));
                 BigSpecialsBrushes.Add(Specials.ClearLines, ExtractSpecialBrush(Specials.ClearLines, image, 96, 0, 16, 16, false));
@@ -164,13 +157,6 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                 SmallPiecesBrushes.Add(Pieces.TetriminoS, ExtractPieceBrush(Pieces.TetriminoS, image, 0, 16, 8, 8, true));
                 SmallPiecesBrushes.Add(Pieces.TetriminoT, ExtractPieceBrush(Pieces.TetriminoT, image, 8, 16, 8, 8, true));
                 SmallPiecesBrushes.Add(Pieces.TetriminoZ, ExtractPieceBrush(Pieces.TetriminoZ, image, 32, 16, 8, 8, true));
-                SmallPiecesBrushes.Add(Pieces.MutatedI, ExtractPieceBrush(Pieces.TetriminoI, image, 0, 16, 8, 8, true));
-                SmallPiecesBrushes.Add(Pieces.MutatedJ, ExtractPieceBrush(Pieces.TetriminoJ, image, 16, 16, 8, 8, true));
-                SmallPiecesBrushes.Add(Pieces.MutatedL, ExtractPieceBrush(Pieces.TetriminoL, image, 24, 16, 8, 8, true));
-                SmallPiecesBrushes.Add(Pieces.MutatedO, ExtractPieceBrush(Pieces.TetriminoO, image, 8, 16, 8, 8, true));
-                SmallPiecesBrushes.Add(Pieces.MutatedS, ExtractPieceBrush(Pieces.TetriminoS, image, 0, 16, 8, 8, true));
-                SmallPiecesBrushes.Add(Pieces.MutatedT, ExtractPieceBrush(Pieces.TetriminoT, image, 8, 16, 8, 8, true));
-                SmallPiecesBrushes.Add(Pieces.MutatedZ, ExtractPieceBrush(Pieces.TetriminoZ, image, 32, 16, 8, 8, true));
                 // Specials
                 SmallSpecialsBrushes.Add(Specials.AddLines, ExtractSpecialBrush(Specials.AddLines, image, 40, 16, 8, 8, true));
                 SmallSpecialsBrushes.Add(Specials.ClearLines, ExtractSpecialBrush(Specials.ClearLines, image, 48, 16, 8, 8, true));
@@ -203,13 +189,6 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                 BigPiecesBrushes.Add(Pieces.TetriminoS, new SolidColorBrush(Colors.Blue));
                 BigPiecesBrushes.Add(Pieces.TetriminoT, new SolidColorBrush(Colors.Yellow));
                 BigPiecesBrushes.Add(Pieces.TetriminoZ, new SolidColorBrush(Colors.Red));
-                BigPiecesBrushes.Add(Pieces.MutatedI, new SolidColorBrush(Colors.Blue));
-                BigPiecesBrushes.Add(Pieces.MutatedJ, new SolidColorBrush(Colors.Green));
-                BigPiecesBrushes.Add(Pieces.MutatedL, new SolidColorBrush(Colors.Magenta));
-                BigPiecesBrushes.Add(Pieces.MutatedO, new SolidColorBrush(Colors.Yellow));
-                BigPiecesBrushes.Add(Pieces.MutatedS, new SolidColorBrush(Colors.Blue));
-                BigPiecesBrushes.Add(Pieces.MutatedT, new SolidColorBrush(Colors.Yellow));
-                BigPiecesBrushes.Add(Pieces.MutatedZ, new SolidColorBrush(Colors.Red));
                 BigSpecialsBrushes.Add(Specials.AddLines, CreateDummySpecialBrush(Specials.AddLines, false));
                 BigSpecialsBrushes.Add(Specials.ClearLines, CreateDummySpecialBrush(Specials.ClearLines, false));
                 BigSpecialsBrushes.Add(Specials.NukeField, CreateDummySpecialBrush(Specials.NukeField, false));
@@ -230,13 +209,6 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
                 SmallPiecesBrushes.Add(Pieces.TetriminoS, new SolidColorBrush(Colors.Blue));
                 SmallPiecesBrushes.Add(Pieces.TetriminoT, new SolidColorBrush(Colors.Yellow));
                 SmallPiecesBrushes.Add(Pieces.TetriminoZ, new SolidColorBrush(Colors.Red));
-                SmallPiecesBrushes.Add(Pieces.MutatedI, new SolidColorBrush(Colors.Blue));
-                SmallPiecesBrushes.Add(Pieces.MutatedJ, new SolidColorBrush(Colors.Green));
-                SmallPiecesBrushes.Add(Pieces.MutatedL, new SolidColorBrush(Colors.Magenta));
-                SmallPiecesBrushes.Add(Pieces.MutatedO, new SolidColorBrush(Colors.Yellow));
-                SmallPiecesBrushes.Add(Pieces.MutatedS, new SolidColorBrush(Colors.Blue));
-                SmallPiecesBrushes.Add(Pieces.MutatedT, new SolidColorBrush(Colors.Yellow));
-                SmallPiecesBrushes.Add(Pieces.MutatedZ, new SolidColorBrush(Colors.Red));
                 SmallSpecialsBrushes.Add(Specials.AddLines, CreateDummySpecialBrush(Specials.AddLines, true));
                 SmallSpecialsBrushes.Add(Specials.ClearLines, CreateDummySpecialBrush(Specials.ClearLines, true));
                 SmallSpecialsBrushes.Add(Specials.NukeField, CreateDummySpecialBrush(Specials.NukeField, true));
@@ -407,25 +379,18 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             switch (piece)
             {
                 case Pieces.TetriminoI:
-                case Pieces.MutatedI:
                     return new SolidColorBrush(Colors.Blue);
                 case Pieces.TetriminoJ:
-                case Pieces.MutatedJ:
                     return new SolidColorBrush(Colors.Green);
                 case Pieces.TetriminoL:
-                case Pieces.MutatedL:
                     return new SolidColorBrush(Colors.Magenta);
                 case Pieces.TetriminoO:
-                case Pieces.MutatedO:
                     return new SolidColorBrush(Colors.Yellow);
                 case Pieces.TetriminoS:
-                case Pieces.MutatedS:
                     return new SolidColorBrush(Colors.Blue);
                 case Pieces.TetriminoT:
-                case Pieces.MutatedT:
                     return new SolidColorBrush(Colors.Yellow);
                 case Pieces.TetriminoZ:
-                case Pieces.MutatedZ:
                     return new SolidColorBrush(Colors.Red);
                 default:
                     return new SolidColorBrush(Colors.White);

@@ -26,6 +26,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         public ClientOptionsViewModel()
         {
             IsGameNotStarted = true;
+            Options.IsDeveloperModeActivated = false;
         }
 
         #region ViewModelBase

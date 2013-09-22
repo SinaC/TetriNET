@@ -54,7 +54,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                 }
 
                 i = 0;
-                foreach (Pieces piece in EnumHelper.GetPieces(availabilities => (availabilities & Availabilities.Displayable)==Availabilities.Displayable))
+                foreach (Pieces piece in EnumHelper.GetPieces(available => available))
                 {
                     //
                     Brush bigBrush = textures.GetBigPiece(piece);

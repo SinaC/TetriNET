@@ -83,14 +83,6 @@
     <Compile Include="Helpers\EventToCommand.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Models\KeySetting.cs" />
-    <Compile Include="Models\MutatedPieces\MutatedI.cs" />
-    <Compile Include="Models\MutatedPieces\MutatedJ.cs" />
-    <Compile Include="Models\MutatedPieces\MutatedL.cs" />
-    <Compile Include="Models\MutatedPieces\MutatedO.cs" />
-    <Compile Include="Models\MutatedPieces\MutatedPieceGenerator.cs" />
-    <Compile Include="Models\MutatedPieces\MutatedS.cs" />
-    <Compile Include="Models\MutatedPieces\MutatedT.cs" />
-    <Compile Include="Models\MutatedPieces\MutatedZ.cs" />
     <Compile Include="ViewModels\ITabIndex.cs" />
     <Compile Include="TextureManager\ITextureManager.cs" />
     <Compile Include="ViewModels\Connection\ConnectionControlViewModel.cs" />
@@ -378,27 +370,6 @@
     <Content Include="Textures\big_LeftGravity.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\big_MutatedI.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Textures\big_MutatedJ.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Textures\big_MutatedL.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Textures\big_MutatedO.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Textures\big_MutatedS.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Textures\big_MutatedT.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Textures\big_MutatedZ.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Textures\big_Mutation.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -469,27 +440,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\small_LeftGravity.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Textures\small_MutatedI.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Textures\small_MutatedJ.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Textures\small_MutatedL.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Textures\small_MutatedO.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Textures\small_MutatedS.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Textures\small_MutatedT.bmp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Textures\small_MutatedZ.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\small_Mutation.bmp">

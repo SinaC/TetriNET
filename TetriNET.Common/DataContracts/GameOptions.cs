@@ -129,11 +129,11 @@ namespace TetriNET.Common.DataContracts
                     Value = Specials.ClearColumn,
                     Occurancy = 0
                 },
-                new SpecialOccurancy
-                {
-                    Value = Specials.Immunity,
-                    Occurancy = 0
-                },
+                //new SpecialOccurancy
+                //{
+                //    Value = Specials.Immunity,
+                //    Occurancy = 0
+                //},
                 new SpecialOccurancy
                 {
                     Value = Specials.Darkness,
@@ -168,7 +168,7 @@ namespace TetriNET.Common.DataContracts
             DelayBeforeSuddenDeath = 0;
             SuddenDeathTick = 1;
 
-            foreach (Pieces piece in EnumHelper.GetPieces(availabilities => (availabilities & Availabilities.Randomizable) == Availabilities.Randomizable))
+            foreach (Pieces piece in EnumHelper.GetPieces(available => available))
                 PieceOccurancies.Add(new PieceOccurancy
                 {
                     Value = piece,

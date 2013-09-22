@@ -1,19 +1,20 @@
 ﻿using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 
-namespace TetriNET.DefaultBoardAndPieces
+namespace TetriNET.DefaultBoardAndPieces.Mutated
 {
-    internal class TetriminoO : Piece
+    public class MutatedT : Piece
     {
-        protected TetriminoO()
+        protected MutatedT()
         {
         }
 
-        public TetriminoO(int spawnX, int spawnY, int spawnOrientation, int index) : base(spawnX, spawnY, spawnOrientation, index)
+        public MutatedT(int posX, int posY, int orientation, int index)
+            : base(posX, posY, orientation, index)
         {
-            Value = Pieces.TetriminoO;
+            Value = Pieces.TetriminoT;
         }
-
+        
         public override int MaxOrientations
         {
             get { return 1; }
@@ -21,30 +22,34 @@ namespace TetriNET.DefaultBoardAndPieces
 
         public override int TotalCells
         {
-            get { return 4; }
+            get { return 5; }
         }
 
         public override void GetCellAbsolutePosition(int cellIndex, out int x, out int y)
         {
             x = y = 0;
-            // orientation 1,2,3,4 : (-1, -1),  ( 0, -1),  ( 0,  0),  (-1,  0)
+            // orientation 1, 2, 3, 4: ( 0, -1),  (-1,  0),  ( 0,  0),  ( 1,  0),  ( 0,  1)
             switch (cellIndex)
             {
                 case 1:
-                    x = -1;
+                    x = 0;
                     y = -1;
                     break;
                 case 2:
-                    x = 0;
-                    y = -1;
+                    x = -1;
+                    y = 0;
                     break;
                 case 3:
                     x = 0;
                     y = 0;
                     break;
                 case 4:
-                    x = -1;
+                    x = 1;
                     y = 0;
+                    break;
+                case 5:
+                    x = 0;
+                    y = 1;
                     break;
             }
             // Translate to board coordinates
@@ -54,7 +59,7 @@ namespace TetriNET.DefaultBoardAndPieces
 
         public override IPiece Clone()
         {
-            return new TetriminoO
+            return new MutatedT
             {
                 PosX = PosX,
                 PosY = PosY,

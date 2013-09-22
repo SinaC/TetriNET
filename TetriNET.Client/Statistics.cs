@@ -23,7 +23,7 @@ namespace TetriNET.Client
             SpecialUsed = new Dictionary<Specials, int>();
             SpecialDiscarded = new Dictionary<Specials, int>();
 
-            foreach (Pieces piece in EnumHelper.GetPieces(availabilities => availabilities == Availabilities.Available))
+            foreach (Pieces piece in EnumHelper.GetPieces(available => available))
                 PieceCount.Add(piece, 0);
             foreach (Specials special in EnumHelper.GetSpecials(available => available))
             {
@@ -35,7 +35,7 @@ namespace TetriNET.Client
 
         public void Reset()
         {
-            foreach (Pieces piece in EnumHelper.GetPieces(availabilities => availabilities == Availabilities.Available))
+            foreach (Pieces piece in EnumHelper.GetPieces(available => available))
                 PieceCount[piece] = 0;
             foreach (Specials special in EnumHelper.GetSpecials(available => available))
             {

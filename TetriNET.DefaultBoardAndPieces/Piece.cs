@@ -1,5 +1,7 @@
 ﻿using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
+using TetriNET.DefaultBoardAndPieces.Normal;
+using TetriNET.DefaultBoardAndPieces.Mutated;
 
 namespace TetriNET.DefaultBoardAndPieces
 {
@@ -121,6 +123,38 @@ namespace TetriNET.DefaultBoardAndPieces
             }
             Logger.Log.WriteLine(Logger.Log.LogLevels.Warning, "Unknown piece {0}", piece);
             return new TetriminoZ(spawnX, spawnY, spawnOrientation, index);
+        }
+
+        public static IPiece CreatePiece(Pieces piece, int spawnX, int spawnY, int spawnOrientation, int index, bool isMutationActive)
+        {
+            if (isMutationActive)
+            {
+                switch (piece)
+                {
+                    case Pieces.TetriminoI:
+                        return new MutatedI(spawnX, spawnY, spawnOrientation, index);
+                    case Pieces.TetriminoJ:
+                        return new MutatedJ(spawnX, spawnY, spawnOrientation, index);
+                    case Pieces.TetriminoL:
+                        return new MutatedL(spawnX, spawnY, spawnOrientation, index);
+                    case Pieces.TetriminoO:
+                        return new MutatedO(spawnX, spawnY, spawnOrientation, index);
+                    case Pieces.TetriminoS:
+                        return new MutatedS(spawnX, spawnY, spawnOrientation, index);
+                    case Pieces.TetriminoT:
+                        return new MutatedT(spawnX, spawnY, spawnOrientation, index);
+                    case Pieces.TetriminoZ:
+                        return new MutatedZ(spawnX, spawnY, spawnOrientation, index);
+                    //
+                    case Pieces.Invalid:
+                        Logger.Log.WriteLine(Logger.Log.LogLevels.Warning, "Create random cell because server didn't send next cell");
+                        return CreatePiece(Pieces.TetriminoZ, spawnX, spawnY, spawnOrientation, index); // TODO: sometimes server takes time to send next cell, it should send 2 or 3 next pieces to ensure this never happens
+                }
+            }
+            else
+                return CreatePiece(piece, spawnX, spawnY, spawnOrientation, index);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Warning, "Unknow piece {0}", piece);
+            return CreatePiece(Pieces.TetriminoZ, spawnX, spawnY, spawnOrientation, index);
         }
     }
 }

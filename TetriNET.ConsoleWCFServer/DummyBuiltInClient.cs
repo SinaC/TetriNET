@@ -180,7 +180,7 @@ namespace TetriNET.ConsoleWCFServer
             ResetTimeout();
         }
 
-        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted)
+        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, GameOptions options)
         {
             Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "OnPlayerRegistered[{0}]:{1} => {2} {3}", PlayerName, result, playerId, gameStarted);
             ResetTimeout();
