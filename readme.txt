@@ -13,10 +13,10 @@ Connect+Register and Disconnect+Unregister should be merged into one method
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
 WPF Client: save win list locally if server master
 Confusion could be managed client-side
-Special Immunity not yet implemented (an immune player is not affected by specials -> every player must know if a player is immuned to forbid special on them)
-	started but how can we inform other player that immunity is finished ???
 Add Pentaminos (http://en.wikipedia.org/wiki/Pentomino)
 Missing OnPropertyChanged in options when reading them frop user settings
+New options: random blocks clear count, mutation count, darkness time, confusion time, immunity time
+Finish mutated piece orientations: I, Z and T are ok  other need to be tested (set _mutationCount to 1000 in OnGameStarted in client to test)
 
 
 wcf + jquery

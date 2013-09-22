@@ -17,20 +17,22 @@ namespace TetriNET.DefaultBoardAndPieces.Mutated
 
         public override int MaxOrientations
         {
-            get { return 2; }
+            get { return 4; }
         }
 
         public override int TotalCells
         {
-            get { return 10; }
+            get { return 5; }
         }
 
         public override void GetCellAbsolutePosition(int cellIndex, out int x, out int y)
         {
             x = y = 0;
-            // orientation 1,3: (-2,  0),  (-1,  0),  ( 0,  0),  ( 1,  0),  (-2, -1),  (-1, -1),  ( 0, -1),  ( 1, -1)
-            // orientation 2,4: ( 0, -2),  ( 0, -1),  ( 0,  0),  ( 0,  1),  ( 1, -2),  ( 1, -1),  ( 1,  0),  ( 1,  1)
-            if (Orientation == 1 || Orientation == 3)
+            // orientation 1: (-2,  0),  (-1,  0),  ( 0,  0),  ( 1,  0),  (-1,  1)
+            // orientation 2: ( 0, -2),  ( 0, -1),  ( 0,  0),  ( 0,  1),  (-1, -1)
+            // orientation 3: (-1,  0),  ( 0,  0),  ( 1,  0),  ( 2,  0),  ( 1, -1)
+            // orientation 4: ( 0, -1),  ( 0,  0),  ( 0,  1),  ( 0,  2),  ( 1,  1)
+            if (Orientation == 1)
             {
                 switch (cellIndex)
                 {
@@ -51,24 +53,12 @@ namespace TetriNET.DefaultBoardAndPieces.Mutated
                         y = 0;
                         break;
                     case 5:
-                        x = -2;
-                        y = -1;
-                        break;
-                    case 6:
                         x = -1;
-                        y = -1;
-                        break;
-                    case 7:
-                        x = 0;
-                        y = -1;
-                        break;
-                    case 8:
-                        x = 1;
-                        y = -1;
+                        y = 1;
                         break;
                 }
             }
-            else // 2 or 4
+            else if (Orientation == 2) // 2
             {
                 switch (cellIndex)
                 {
@@ -89,18 +79,58 @@ namespace TetriNET.DefaultBoardAndPieces.Mutated
                         y = 1;
                         break;
                     case 5:
-                        x = 1;
-                        y = -2;
-                        break;
-                    case 6:
-                        x = 1;
+                        x = -1;
                         y = -1;
                         break;
-                    case 7:
+                }
+            }
+            else if (Orientation == 3) // 3
+            {
+                switch (cellIndex)
+                {
+                    case 1:
+                        x = -1;
+                        y = 0;
+                        break;
+                    case 2:
+                        x = 0;
+                        y = 0;
+                        break;
+                    case 3:
                         x = 1;
                         y = 0;
                         break;
-                    case 8:
+                    case 4:
+                        x = 2;
+                        y = 0;
+                        break;
+                    case 5:
+                        x = 1;
+                        y = -1;
+                        break;
+                }
+            }
+            else // 4
+            {
+                switch (cellIndex)
+                {
+                    case 1:
+                        x = 0;
+                        y = -1;
+                        break;
+                    case 2:
+                        x = 0;
+                        y = 0;
+                        break;
+                    case 3:
+                        x = 0;
+                        y = 1;
+                        break;
+                    case 4:
+                        x = 0;
+                        y = 2;
+                        break;
+                    case 5:
                         x = 1;
                         y = 1;
                         break;

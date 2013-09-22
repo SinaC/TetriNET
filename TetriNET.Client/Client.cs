@@ -674,7 +674,10 @@ namespace TetriNET.Client
                 Log.WriteLine(Log.LogLevels.Warning, "Next piece not yet received from server, server is definitively too slow or we are too fast");
                 _statistics.NextPieceNotYetReceived++;
             }
-            NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, 1, _pieceIndex + 1, false); // mutation is handled while updating CurrentPiece
+            if (_mutationCount > 0)
+                NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, 1, _pieceIndex + 1, true); // need to display next piece
+            else
+                NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, 1, _pieceIndex + 1, false);
 
             //if (ClientOnPieceMoved != null)
             //    ClientOnPieceMoved();
@@ -1497,16 +1500,16 @@ namespace TetriNET.Client
                     ClearColumn();
                     break;
                 case Specials.Immunity:
-                    Immunity(5);
+                    Immunity(15);
                     break;
                 case Specials.Darkness:
-                    Darkness(5);
+                    Darkness(10);
                     break;
                 case Specials.Confusion:
-                    Confusion(5);
+                    Confusion(10);
                     break;
                 case Specials.Mutation:
-                    Mutation(5);
+                    Mutation(3);
                     break;
                 case Specials.ZebraField:
                     ZebraField();
