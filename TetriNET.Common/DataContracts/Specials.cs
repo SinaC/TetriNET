@@ -44,8 +44,9 @@ namespace TetriNET.Common.DataContracts
         [Special(true, 'V', "Clear Column")]
         ClearColumn,
         [EnumMember]
+        //[Special(true, 'I', "Immunity")]
         [Special(false)]
-        Immunity, // TODO: implement
+        Immunity,
         [EnumMember]
         [Special(true, 'D', "Darkness")]
         Darkness,

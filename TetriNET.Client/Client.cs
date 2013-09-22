@@ -216,6 +216,7 @@ namespace TetriNET.Client
                     Name = name,
                     PlayerId = playerId,
                     Board = _createBoardFunc(),
+                    IsImmune = false,
                     State = PlayerData.States.Joined
                 };
                 _playersData[playerId] = playerData;
@@ -286,6 +287,7 @@ namespace TetriNET.Client
                 if (playerData != null && playerData.State == PlayerData.States.Playing)
                 {
                     playerData.State = PlayerData.States.Lost;
+                    playerData.IsImmune = false;
                     playerData.Board.FillWithRandomCells(() => RangeRandom.Random(Options.PieceOccurancies));
 
                     if (ClientOnRedrawBoard != null)
@@ -360,6 +362,7 @@ namespace TetriNET.Client
                     if (playerData.Board != null)
                         playerData.Board.Clear();
                     playerData.State = PlayerData.States.Playing;
+                    playerData.IsImmune = false;
                 }
             }
             // Restart timer
@@ -384,7 +387,10 @@ namespace TetriNET.Client
             {
                 PlayerData playerData = _playersData[i];
                 if (playerData != null)
+                {
                     playerData.State = PlayerData.States.Joined;
+                    playerData.IsImmune = false;
+                }
             }
 
             // Reset board action list
@@ -477,21 +483,28 @@ namespace TetriNET.Client
             ResetTimeout();
             //if (State == States.Playing)
             //{
-                if (targetId == _clientPlayerId && State == States.Playing)
-                {
-                    EnqueueBoardAction(() => SpecialUsed(special));
-                }
-                // Messages are displayed immediately, only board action is enqueued
-                if (ClientOnSpecialUsed != null)
-                {
-                    PlayerData playerData = GetPlayer(playerId);
-                    PlayerData target = GetPlayer(targetId);
+            if (targetId == _clientPlayerId && State == States.Playing)
+            {
+                EnqueueBoardAction(() => SpecialUsed(special));
+            }
 
-                    string playerName = playerData == null ? "???" : playerData.Name;
-                    string targetName = target == null ? "???" : target.Name;
+            if (targetId != _clientPlayerId && special == Specials.Immunity)
+            {
+                PlayerData target = GetPlayer(targetId);
+                if (target != null && target.State == PlayerData.States.Playing)
+                    target.IsImmune = true;
+            }
+            // Messages are displayed immediately, only board action is enqueued
+            if (ClientOnSpecialUsed != null)
+            {
+                PlayerData playerData = GetPlayer(playerId);
+                PlayerData target = GetPlayer(targetId);
 
-                    ClientOnSpecialUsed(playerName, targetName, specialId, special);
-                }
+                string playerName = playerData == null ? "???" : playerData.Name;
+                string targetName = target == null ? "???" : target.Name;
+
+                ClientOnSpecialUsed(playerName, targetName, specialId, special);
+            }
             //}
         }
 
@@ -1260,6 +1273,9 @@ namespace TetriNET.Client
             PlayerData target = GetPlayer(targetId);
             if (Player.State == PlayerData.States.Playing && target != null && target.State == PlayerData.States.Playing)
             {
+                if (target.IsImmune) // Cannot target a player with immunity
+                    return false;
+
                 // Get first special and send it
                 Specials special;
                 if (_inventory.Dequeue(out special))

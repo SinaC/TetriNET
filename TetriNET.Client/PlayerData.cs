@@ -11,9 +11,13 @@ namespace TetriNET.Client
             Lost,
         }
 
+#region IOpponent
         public int PlayerId { get; set; }
-        public string Name { get; set; }
+        public bool IsImmune { get; set; }
         public IBoard Board { get; set; }
+#endregion
+
+        public string Name { get; set; }
         public States State { get; set; }
     }
 }

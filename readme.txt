@@ -14,6 +14,7 @@ WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
 WPF Client: save win list locally if server master
 Confusion could be managed client-side
 Special Immunity not yet implemented (an immune player is not affected by specials -> every player must know if a player is immuned to forbid special on them)
+	started but how can we inform other player that immunity is finished ???
 Add Pentaminos (http://en.wikipedia.org/wiki/Pentomino)
 Missing OnPropertyChanged in options when reading them frop user settings
 
