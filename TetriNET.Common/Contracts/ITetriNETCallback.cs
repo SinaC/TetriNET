@@ -63,11 +63,13 @@ namespace TetriNET.Common.Contracts
         [OperationContract(IsOneWay = true)] // Field Update
         void OnGridModified(int playerId, byte[] grid);
 
-        // Server master command
         [OperationContract(IsOneWay = true)]
         void OnServerMasterChanged(int playerId);
 
         [OperationContract(IsOneWay = true)] // Win list
         void OnWinListModified(List<WinEntry> winList);
+
+        [OperationContract(IsOneWay = true)]
+        void OnContinuousSpecialFinished(int playerId, Specials special);
     }
 }

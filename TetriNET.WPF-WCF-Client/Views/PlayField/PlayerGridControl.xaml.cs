@@ -23,6 +23,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private const int MarginWidth = 0;
         private const int MarginHeight = 0;
 
+        private static readonly SolidColorBrush DarknessColor = new SolidColorBrush(Colors.Black);
+        private static readonly SolidColorBrush ImmunityBorderColor = new SolidColorBrush(Colors.Green);
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
         private static readonly SolidColorBrush HintColor = new SolidColorBrush(Color.FromArgb( 128, 77, 115, 141)); // Some kind of gray/blue
 
@@ -31,6 +33,28 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         {
             get { return (IClient) GetValue(ClientProperty); }
             set { SetValue(ClientProperty, value); }
+        }
+
+        private Brush _canvasBackground;
+        public Brush CanvasBackground
+        {
+            get { return _canvasBackground; }
+            set
+            {
+                _canvasBackground = value;
+                OnPropertyChanged();
+            }
+        }
+        
+        private Brush _borderColor;
+        public Brush BorderColor
+        {
+            get { return _borderColor; }
+            set
+            {
+                _borderColor = value;
+                OnPropertyChanged();
+            }
         }
 
         public bool IsPlayerIdVisible
@@ -81,8 +105,10 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
-                Canvas.Background = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
+                CanvasBackground = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
             }
+            else
+                CanvasBackground = new SolidColorBrush(Colors.Black);
 
             for(int y = 0; y < Models.Options.Height; y++)
                 for (int x = 0; x < Models.Options.Width; x++)
@@ -101,6 +127,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     Canvas.SetLeft(rect, canvasLeft);
                     Canvas.SetTop(rect, canvasTop);
                 }
+            BorderColor = TransparentColor;
         }
 
         public void ToggleHint()
@@ -253,6 +280,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     oldClient.OnPieceMoved -= @this.OnPieceMoved;
                     oldClient.OnRedraw -= @this.OnRedraw;
                     oldClient.OnDarknessToggled -= @this.OnDarknessToggled;
+                    oldClient.OnImmunityToggled -= @this.OnImmunityToggled;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
@@ -268,14 +296,22 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     newClient.OnPieceMoved += @this.OnPieceMoved;
                     newClient.OnRedraw += @this.OnRedraw;
                     newClient.OnDarknessToggled += @this.OnDarknessToggled;
+                    newClient.OnImmunityToggled += @this.OnImmunityToggled;
                 }
             }
         }
 
         #region IClient events handler
+
+        private void OnImmunityToggled(bool active)
+        {
+            BorderColor = active ? ImmunityBorderColor : TransparentColor;
+        }
+
         private void OnDarknessToggled(bool active)
         {
             _isDarknessActive = active;
+            CanvasBackground = active ? DarknessColor : TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
             if (active)
             {
                 ExecuteOnUIThread.Invoke(() =>
@@ -318,6 +354,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
             PlayerId = -1;
+            BorderColor = TransparentColor;
         }
 
         private void OnPlayerRegistered(RegistrationResults result, int playerId)
@@ -331,6 +368,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private void OnPlayerUnregistered()
         {
             PlayerId = -1;
+            BorderColor = TransparentColor;
         }
 
         #endregion

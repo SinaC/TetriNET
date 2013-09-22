@@ -9,6 +9,7 @@ using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.Randomizer;
+using TetriNET.Logger;
 
 namespace TetriNET.Server
 {
@@ -79,6 +80,7 @@ namespace TetriNET.Server
                 host.OnKickPlayer += KickPlayerHandler;
                 host.OnBanPlayer += BanPlayerHandler;
                 host.OnResetWinList += ResetWinListHandler;
+                host.OnFinishContinuousSpecial += FinishContinuousSpecialHandler;
 
                 host.OnPlayerLeft += PlayerLeftHandler;
 
@@ -95,7 +97,7 @@ namespace TetriNET.Server
 
         public void StartServer()
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Starting server");
+            Log.WriteLine(Log.LogLevels.Info, "Starting server");
 
             State = States.StartingServer;
 
@@ -105,12 +107,12 @@ namespace TetriNET.Server
 
             State = States.WaitingStartGame;
 
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Server started");
+            Log.WriteLine(Log.LogLevels.Info, "Server started");
         }
 
         public void StopServer()
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Stopping server");
+            Log.WriteLine(Log.LogLevels.Info, "Stopping server");
             State = States.StoppingServer;
 
             // Inform players
@@ -126,12 +128,12 @@ namespace TetriNET.Server
 
             State = States.WaitingStartServer;
 
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Server stopped");
+            Log.WriteLine(Log.LogLevels.Info, "Server stopped");
         }
 
         public void StartGame()
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Starting game");
+            Log.WriteLine(Log.LogLevels.Info, "Starting game");
 
             if (State == States.WaitingStartGame)
             {
@@ -149,7 +151,7 @@ namespace TetriNET.Server
                 Pieces secondPiece = _pieceQueue[1];
                 Pieces thirdPiece = _pieceQueue[2];
 
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Starting game with {0} {1} {2}", firstPiece, secondPiece, thirdPiece);
+                Log.WriteLine(Log.LogLevels.Info, "Starting game with {0} {1} {2}", firstPiece, secondPiece, thirdPiece);
 
                 // Reset sudden death
                 _isSuddenDeathActive = false;
@@ -157,7 +159,7 @@ namespace TetriNET.Server
                 {
                     _suddenDeathStartTime = DateTime.Now.AddMinutes(_options.DelayBeforeSuddenDeath);
                     _isSuddenDeathActive = true;
-                    Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Sudden death will be activated after {0} minutes and send lines every {1} seconds", _options.DelayBeforeSuddenDeath, _options.SuddenDeathTick);
+                    Log.WriteLine(Log.LogLevels.Info, "Sudden death will be activated after {0} minutes and send lines every {1} seconds", _options.DelayBeforeSuddenDeath, _options.SuddenDeathTick);
                 }
 
                 // Send start game to every connected player
@@ -170,15 +172,15 @@ namespace TetriNET.Server
                 }
                 State = States.GameStarted;
 
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Game started");
+                Log.WriteLine(Log.LogLevels.Info, "Game started");
             }
             else
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Cannot start game");
+                Log.WriteLine(Log.LogLevels.Info, "Cannot start game");
         }
 
         public void StopGame()
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Stopping game");
+            Log.WriteLine(Log.LogLevels.Info, "Stopping game");
 
             if (State == States.GameStarted || State == States.GamePaused)
             {
@@ -190,15 +192,15 @@ namespace TetriNET.Server
 
                 State = States.WaitingStartGame;
 
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Game stopped");
+                Log.WriteLine(Log.LogLevels.Info, "Game stopped");
             }
             else
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Cannot stop game");
+                Log.WriteLine(Log.LogLevels.Info, "Cannot stop game");
         }
 
         public void PauseGame()
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Pausing game");
+            Log.WriteLine(Log.LogLevels.Info, "Pausing game");
 
             if (State == States.GameStarted)
             {
@@ -208,15 +210,15 @@ namespace TetriNET.Server
                 foreach (IPlayer p in _playerManager.Players)
                     p.OnGamePaused();
 
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Game paused");
+                Log.WriteLine(Log.LogLevels.Info, "Game paused");
             }
             else
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Cannot pause game");
+                Log.WriteLine(Log.LogLevels.Info, "Cannot pause game");
         }
 
         public void ResumeGame()
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Resuming game");
+            Log.WriteLine(Log.LogLevels.Info, "Resuming game");
             if (State == States.GamePaused)
             {
                 State = States.GameStarted;
@@ -228,15 +230,15 @@ namespace TetriNET.Server
                 foreach (IPlayer p in _playerManager.Players)
                     p.OnGameResumed();
 
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Game resumed");
+                Log.WriteLine(Log.LogLevels.Info, "Game resumed");
             }
             else
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Cannot resume game");
+                Log.WriteLine(Log.LogLevels.Info, "Cannot resume game");
         }
 
         public void ResetWinList()
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Resetting win list");
+            Log.WriteLine(Log.LogLevels.Info, "Resetting win list");
 
             if (State == States.WaitingStartGame)
             {
@@ -250,17 +252,17 @@ namespace TetriNET.Server
                     p.OnPublishServerMessage(String.Format("Win list resetted by {0}", serverMaster == null ? "SERVER" : serverMaster.Name));
                     p.OnWinListModified(WinList);
                 }
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Win list resetted");
+                Log.WriteLine(Log.LogLevels.Info, "Win list resetted");
             }
             else
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Cannot reset win list");
+                Log.WriteLine(Log.LogLevels.Info, "Cannot reset win list");
         }
 
         public void ToggleSuddenDeath()
         {
             if (_options.DelayBeforeSuddenDeath == 0)
             {
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Activating SUDDEN DEATH");
+                Log.WriteLine(Log.LogLevels.Info, "Activating SUDDEN DEATH");
                 _isSuddenDeathActive = true;
                 _options.DelayBeforeSuddenDeath = 1;
                 _options.SuddenDeathTick = 1;
@@ -268,7 +270,7 @@ namespace TetriNET.Server
             }
             else
             {
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Disabling SUDDEN DEATH");
+                Log.WriteLine(Log.LogLevels.Info, "Disabling SUDDEN DEATH");
                 _isSuddenDeathActive = false;
                 _options.DelayBeforeSuddenDeath = 0;
                 _options.SuddenDeathTick = 0;
@@ -294,7 +296,7 @@ namespace TetriNET.Server
 
         private void RegisterPlayerHandler(IPlayer player, int playerId)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "New player:[{0}]{1}", playerId, player.Name);
+            Log.WriteLine(Log.LogLevels.Info, "New player:[{0}]{1}", playerId, player.Name);
 
             // Send player id back to player
             player.OnPlayerRegistered(RegistrationResults.RegistrationSuccessful, playerId, State == States.GameStarted || State == States.GamePaused, _options);
@@ -323,14 +325,14 @@ namespace TetriNET.Server
 
         private void UnregisterPlayerHandler(IPlayer player)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Unregister player:{0}", player.Name);
+            Log.WriteLine(Log.LogLevels.Info, "Unregister player:{0}", player.Name);
 
             PlayerLeftHandler(player, LeaveReasons.Disconnected);
         }
 
         private void PublishMessageHandler(IPlayer player, string msg)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "PublishMessage:{0}:{1}", player.Name, msg);
+            Log.WriteLine(Log.LogLevels.Info, "PublishMessage:{0}:{1}", player.Name, msg);
 
             // Send message to players
             //foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
@@ -360,7 +362,7 @@ namespace TetriNET.Server
 
         private void StartGameHandler(IPlayer player)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "StartGame:{0}", player.Name);
+            Log.WriteLine(Log.LogLevels.Info, "StartGame:{0}", player.Name);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
             if (masterPlayer == player)
@@ -371,7 +373,7 @@ namespace TetriNET.Server
 
         private void StopGameHandler(IPlayer player)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "StopGame:{0}", player.Name);
+            Log.WriteLine(Log.LogLevels.Info, "StopGame:{0}", player.Name);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
             if (masterPlayer == player)
@@ -382,7 +384,7 @@ namespace TetriNET.Server
 
         private void PauseGameHandler(IPlayer player)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "PauseGame:{0}", player.Name);
+            Log.WriteLine(Log.LogLevels.Info, "PauseGame:{0}", player.Name);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
             if (masterPlayer == player)
@@ -393,7 +395,7 @@ namespace TetriNET.Server
 
         private void ResumeGameHandler(IPlayer player)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "ResumeGame:{0}", player.Name);
+            Log.WriteLine(Log.LogLevels.Info, "ResumeGame:{0}", player.Name);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
             if (masterPlayer == player)
@@ -409,7 +411,7 @@ namespace TetriNET.Server
 
         private void ChangeOptionsHandler(IPlayer player, GameOptions options)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "ChangeOptionsHandler:{0} {1}", player.Name, options);
+            Log.WriteLine(Log.LogLevels.Info, "ChangeOptionsHandler:{0} {1}", player.Name, options);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
             if (masterPlayer == player && State == States.WaitingStartGame)
@@ -431,15 +433,15 @@ namespace TetriNET.Server
                 if (accepted)
                     _options = options; // Options will be sent to players when starting a new game
                 else
-                    Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Invalid options");
+                    Log.WriteLine(Log.LogLevels.Info, "Invalid options");
             }
             else
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Cannot change options");
+                Log.WriteLine(Log.LogLevels.Info, "Cannot change options");
         }
 
         private void KickPlayerHandler(IPlayer player, int playerId)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "KickPlayer:{0} [{1}]", player.Name, playerId);
+            Log.WriteLine(Log.LogLevels.Info, "KickPlayer:{0} [{1}]", player.Name, playerId);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
             IPlayer kickedPlayer = _playerManager[playerId];
@@ -451,12 +453,12 @@ namespace TetriNET.Server
                 PlayerLeftHandler(kickedPlayer, LeaveReasons.Kick);
             }
             else
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Cannot kick player");
+                Log.WriteLine(Log.LogLevels.Info, "Cannot kick player");
         }
 
         private void BanPlayerHandler(IPlayer player, int playerId)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "BanPlayer:{0} [{1}]", player.Name, playerId);
+            Log.WriteLine(Log.LogLevels.Info, "BanPlayer:{0} [{1}]", player.Name, playerId);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
             IPlayer bannedPlayer = _playerManager[playerId];
@@ -469,12 +471,12 @@ namespace TetriNET.Server
                 // TODO: add to ban list
             }
             else
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Cannot ban player");
+                Log.WriteLine(Log.LogLevels.Info, "Cannot ban player");
         }
 
         private void ResetWinListHandler(IPlayer player)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "ResetWinLost:{0}", player.Name);
+            Log.WriteLine(Log.LogLevels.Info, "ResetWinLost:{0}", player.Name);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
             if (masterPlayer == player)
@@ -482,12 +484,17 @@ namespace TetriNET.Server
                 ResetWinList();
             }
             else
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Cannot reset win list");
+                Log.WriteLine(Log.LogLevels.Info, "Cannot reset win list");
+        }
+
+        private void FinishContinuousSpecialHandler(IPlayer player, Specials special)
+        {
+            EnqueueAction(() => FinishContinuousSpecial(player, special));
         }
 
         private void PlayerLeftHandler(IPlayer player, LeaveReasons reason)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Player left:{0} {1}", player.Name, reason);
+            Log.WriteLine(Log.LogLevels.Info, "Player left:{0} {1}", player.Name, reason);
 
             bool wasServerMaster = false;
             // Remove from player manager
@@ -512,7 +519,7 @@ namespace TetriNET.Server
                 int playingCount = _playerManager.Players.Count(p => p.State == PlayerStates.Playing);
                 if (playingCount == 0 || playingCount == 1)
                 {
-                    Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Game finished by forfeit no winner");
+                    Log.WriteLine(Log.LogLevels.Info, "Game finished by forfeit no winner");
                     State = States.GameFinished;
                     // Send game finished (no winner)
                     foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
@@ -581,7 +588,7 @@ namespace TetriNET.Server
                             }
                             catch (Exception ex)
                             {
-                                Logger.Log.WriteLine(Logger.Log.LogLevels.Error, "Exception raised in TaskResolveGameActions. Exception:{0}", ex);
+                                Log.WriteLine(Log.LogLevels.Error, "Exception raised in TaskResolveGameActions. Exception:{0}", ex);
                             }
                         }
                     }
@@ -595,11 +602,11 @@ namespace TetriNET.Server
 
         private void PlacePiece(IPlayer player, int index, Pieces piece, int orientation, int posX, int posY, byte[] grid)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "PlacePiece[{0}]{1}:{2} {3} at {4},{5} {6}", player.Name, index, piece, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
+            Log.WriteLine(Log.LogLevels.Info, "PlacePiece[{0}]{1}:{2} {3} at {4},{5} {6}", player.Name, index, piece, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
 
             // TODO: check if index is equal to player.PieceIndex
             if (index != player.PieceIndex)
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Error, "!!!! piece index different for player {0} local {1} remote {2}", player.Name, player.PieceIndex, index);
+                Log.WriteLine(Log.LogLevels.Error, "!!!! piece index different for player {0} local {1} remote {2}", player.Name, player.PieceIndex, index);
 
             // Set grid
             player.Grid = grid;
@@ -621,7 +628,7 @@ namespace TetriNET.Server
 
         private void Special(IPlayer player, IPlayer target, Specials special)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "UseSpecial[{0}][{1}]{2}", player.Name, target.Name, special);
+            Log.WriteLine(Log.LogLevels.Info, "UseSpecial[{0}][{1}]{2}", player.Name, target.Name, special);
 
             //
             int playerId = _playerManager.GetId(player);
@@ -651,7 +658,7 @@ namespace TetriNET.Server
 
         private void SendLines(IPlayer player, int count)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "SendLines[{0}]:{1}", player.Name, count);
+            Log.WriteLine(Log.LogLevels.Info, "SendLines[{0}]:{1}", player.Name, count);
 
             //
             int playerId = _playerManager.GetId(player);
@@ -666,7 +673,7 @@ namespace TetriNET.Server
 
         private void ModifyGrid(IPlayer player, byte[] grid)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "ModifyGrid[{0}]", player.Name);
+            Log.WriteLine(Log.LogLevels.Info, "ModifyGrid[{0}]", player.Name);
 
             // Set grid
             player.Grid = grid;
@@ -679,7 +686,7 @@ namespace TetriNET.Server
 
         private void GameLost(IPlayer player)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "GameLost[{0}]  {1}", player.Name, State);
+            Log.WriteLine(Log.LogLevels.Info, "GameLost[{0}]  {1}", player.Name, State);
 
             if (player.State == PlayerStates.Playing)
             {
@@ -696,7 +703,7 @@ namespace TetriNET.Server
                 int playingCount = _playerManager.Players.Count(p => p.State == PlayerStates.Playing);
                 if (playingCount == 0) // there were only one playing player
                 {
-                    Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Game finished with only one player playing, no winner");
+                    Log.WriteLine(Log.LogLevels.Info, "Game finished with only one player playing, no winner");
                     State = States.GameFinished;
                     // Send game finished (no winner)
                     foreach (IPlayer p in _playerManager.Players)
@@ -705,13 +712,13 @@ namespace TetriNET.Server
                 }
                 else if (playingCount == 1) // only one playing left
                 {
-                    Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Game finished checking winner");
+                    Log.WriteLine(Log.LogLevels.Info, "Game finished checking winner");
                     State = States.GameFinished;
                     // Game won
                     IPlayer winner = _playerManager.Players.Single(p => p.State == PlayerStates.Playing);
                     int winnerId = _playerManager.GetId(winner);
                     winner.State = PlayerStates.Registered;
-                    Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Winner: {0}[{1}]", winner.Name, winnerId);
+                    Log.WriteLine(Log.LogLevels.Info, "Winner: {0}[{1}]", winner.Name, winnerId);
 
                     // Update win list
                     UpdateWinList(winner.Name, 3);
@@ -735,7 +742,18 @@ namespace TetriNET.Server
                 }
             }
             else
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Game lost from non-playing player {0} {1}", player.Name, player.State);
+                Log.WriteLine(Log.LogLevels.Info, "Game lost from non-playing player {0} {1}", player.Name, player.State);
+        }
+
+        private void FinishContinuousSpecial(IPlayer player, Specials special)
+        {
+            Log.WriteLine(Log.LogLevels.Info, "FinishContinuousSpecial[{0}]: {1}", player.Name, special);
+
+            // Get id
+            int id = _playerManager.GetId(player);
+            // Send to everyone except sender
+            foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
+                p.OnContinuousSpecialFinished(id, special);
         }
 
         #endregion
@@ -752,7 +770,7 @@ namespace TetriNET.Server
                         TimeSpan timespan = DateTime.Now - _lastSuddenDeathAddLines;
                         if (timespan.TotalSeconds >= _options.SuddenDeathTick)
                         {
-                            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Sudden death tick");
+                            Log.WriteLine(Log.LogLevels.Info, "Sudden death tick");
                             // Delay elapsed, send lines
                             foreach (IPlayer p in _playerManager.Players.Where(p => p.State == PlayerStates.Playing))
                                 p.OnServerAddLines(1);
@@ -766,7 +784,7 @@ namespace TetriNET.Server
                 {
                     if (_playerManager.Players.Count(x => x.State == PlayerStates.Playing) == 0)
                     {
-                        Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Game finished because no more playing players");
+                        Log.WriteLine(Log.LogLevels.Info, "Game finished because no more playing players");
                         // Stop game
                         StopGame();
                     }
@@ -779,7 +797,7 @@ namespace TetriNET.Server
                     TimeSpan timespan = DateTime.Now - p.LastActionFromClient;
                     if (timespan.TotalMilliseconds > TimeoutDelay && IsTimeoutDetectionActive)
                     {
-                        Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "Timeout++ for player {0}", p.Name);
+                        Log.WriteLine(Log.LogLevels.Info, "Timeout++ for player {0}", p.Name);
                         // Update timeout count
                         p.SetTimeout();
                         if (p.TimeoutCount >= MaxTimeoutCountBeforeDisconnection)

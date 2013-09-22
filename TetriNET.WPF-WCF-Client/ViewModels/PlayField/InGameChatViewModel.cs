@@ -75,7 +75,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             AddEntry(specialId + 1, String.Format("{0} line{1} added to All", count, (count > 1) ? "s" : ""), playerName);
         }
 
-        private void OnSpecialUsed(string playerName, string targetName, int specialId, Specials special)
+        private void OnSpecialUsed(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special)
         {
             AddEntry(specialId + 1, Mapper.MapSpecialToString(special), playerName, targetName);
         }

@@ -163,6 +163,16 @@ namespace TetriNET.WCFProxy
             ExceptionFreeAction(() => _proxy.SendLines(count), "SendLines");
         }
 
+        public void GameLost(ITetriNETCallback callback)
+        {
+            ExceptionFreeAction(_proxy.GameLost, "ResumeGame");
+        }
+
+        public void FinishContinuousSpecial(ITetriNETCallback callback, Specials special)
+        {
+            ExceptionFreeAction(() => _proxy.FinishContinuousSpecial(special), "FinishContinuousSpecial");
+        }
+
         public void StartGame(ITetriNETCallback callback)
         {
             ExceptionFreeAction(_proxy.StartGame, "StartGame");
@@ -181,11 +191,6 @@ namespace TetriNET.WCFProxy
         public void ResumeGame(ITetriNETCallback callback)
         {
             ExceptionFreeAction(_proxy.ResumeGame, "ResumeGame");
-        }
-
-        public void GameLost(ITetriNETCallback callback)
-        {
-            ExceptionFreeAction(_proxy.GameLost, "ResumeGame");
         }
 
         public void ChangeOptions(ITetriNETCallback callback, GameOptions options)

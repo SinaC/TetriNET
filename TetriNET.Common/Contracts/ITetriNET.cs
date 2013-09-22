@@ -18,6 +18,7 @@ namespace TetriNET.Common.Contracts
         void UseSpecial(ITetriNETCallback callback, int targetId, Specials special);
         void SendLines(ITetriNETCallback callback, int count);
         void GameLost(ITetriNETCallback callback);
+        void FinishContinuousSpecial(ITetriNETCallback callback, Specials special);
 
         // Server management
         void StartGame(ITetriNETCallback callback);

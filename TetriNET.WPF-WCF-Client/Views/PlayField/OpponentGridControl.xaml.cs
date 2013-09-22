@@ -22,6 +22,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private const int MarginWidth = 0;
         private const int MarginHeight = 0;
 
+        private static readonly SolidColorBrush ImmunityBorderColor = new SolidColorBrush(Colors.Red);
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
 
         public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("OpponentGridCanvasClientProperty", typeof(IClient), typeof(OpponentGridControl), new PropertyMetadata(Client_Changed));
@@ -29,6 +30,17 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         {
             get { return (IClient)GetValue(ClientProperty); }
             set { SetValue(ClientProperty, value); }
+        }
+
+        private Brush _borderColor;
+        public Brush BorderColor
+        {
+            get { return _borderColor; }
+            set
+            {
+                _borderColor = value;
+                OnPropertyChanged();
+            }
         }
 
         public bool IsPlayerIdVisible
@@ -100,6 +112,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     Canvas.SetLeft(rect, canvasLeft);
                     Canvas.SetTop(rect, canvasTop);
                 }
+            BorderColor = TransparentColor;
         }
 
         private void DrawGrid(IBoard board)
@@ -156,6 +169,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     oldClient.OnConnectionLost -= @this.OnConnectionLost;
                     oldClient.OnGameStarted -= @this.OnGameStarted;
                     oldClient.OnRedrawBoard -= @this.OnRedrawBoard;
+                    oldClient.OnSpecialUsed -= @this.OnSpecialUsed;
+                    oldClient.OnContinuousSpecialFinished -= @this.OnContinuousSpecialFinished;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
@@ -167,6 +182,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     newClient.OnConnectionLost += @this.OnConnectionLost;
                     newClient.OnGameStarted += @this.OnGameStarted;
                     newClient.OnRedrawBoard += @this.OnRedrawBoard;
+                    newClient.OnSpecialUsed += @this.OnSpecialUsed;
+                    newClient.OnContinuousSpecialFinished += @this.OnContinuousSpecialFinished;
                 }
                 else
                 {
@@ -177,8 +194,10 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         }
 
         #region IClient events handler
+
         private void OnGameStarted()
         {
+            BorderColor = TransparentColor;
             ExecuteOnUIThread.Invoke(ClearGrid);
         }
 
@@ -192,12 +211,26 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         {
             PlayerId = -1;
             PlayerName = "Not playing";
+            BorderColor = TransparentColor;
         }
 
         private void OnPlayerUnregistered()
         {
             PlayerId = -1;
             PlayerName = "Not playing";
+            BorderColor = TransparentColor;
+        }
+
+        private void OnSpecialUsed(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special)
+        {
+            if (targetId == PlayerId && special == Specials.Immunity)
+                BorderColor = ImmunityBorderColor;
+        }
+
+        private void OnContinuousSpecialFinished(int playerId, Specials special)
+        {
+            if (playerId == PlayerId && special == Specials.Immunity)
+                BorderColor = TransparentColor;
         }
 
         #endregion

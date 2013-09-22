@@ -37,6 +37,9 @@ namespace TetriNET.Common.Contracts
         [OperationContract(IsOneWay = true)] // Player Lost
         void GameLost();
 
+        [OperationContract(IsOneWay = true)]
+        void FinishContinuousSpecial(Specials special);
+
         // Server management
         [OperationContract(IsOneWay = true)] // Start Game
         void StartGame();

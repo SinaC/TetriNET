@@ -7,7 +7,6 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.ConsoleWCFServer
 {
-    // TODO: dissociate LastAction from server than LastAction to server
     public sealed class DummyBuiltInClient : ITetriNETCallback
     {
         private const int HeartbeatDelay = 300; // in ms
@@ -308,6 +307,12 @@ namespace TetriNET.ConsoleWCFServer
         {
             Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "OnWinListModified:{0}", winList.Any() ? winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i) : "");
             ResetTimeout();
+        }
+
+        public void OnContinuousSpecialFinished(int playerId, Specials special)
+        {
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "OnContinuousSpecialFinished:{0} {1}", playerId, special);
+            ResetTimeout();    
         }
 
         #endregion

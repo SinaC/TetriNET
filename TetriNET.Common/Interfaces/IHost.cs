@@ -19,6 +19,7 @@ namespace TetriNET.Common.Interfaces
     public delegate void HostKickPlayerHandler(IPlayer player, int playerId);
     public delegate void HostBanPlayerHandler(IPlayer player, int playerId);
     public delegate void HostResetWinListHandler(IPlayer player);
+    public delegate void HostFinishContinuousSpecial(IPlayer player, Specials special);
 
     public delegate void PlayerLeftHandler(IPlayer player, LeaveReasons reason);
 
@@ -40,6 +41,7 @@ namespace TetriNET.Common.Interfaces
         event HostKickPlayerHandler OnKickPlayer;
         event HostBanPlayerHandler OnBanPlayer;
         event HostResetWinListHandler OnResetWinList;
+        event HostFinishContinuousSpecial OnFinishContinuousSpecial;
 
         event PlayerLeftHandler OnPlayerLeft;
 

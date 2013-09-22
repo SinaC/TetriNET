@@ -27,7 +27,7 @@
             </TextBlock>
             <Run Text="{Binding PlayerName}"/>
         </TextBlock>-->
-        <Border Grid.Row="1" Background="Green">
+        <Border Grid.Row="1" Background="Green" BorderBrush="{Binding BorderColor}" BorderThickness="2">
             <Canvas Background="Black" x:Name="Canvas" VerticalAlignment="Top" HorizontalAlignment="Left" Width="96" Height="176">
                 <!-- will be filled with controls in ctor -->
             </Canvas>

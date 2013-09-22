@@ -44,17 +44,16 @@ namespace TetriNET.Common.DataContracts
         [Special(true, 'V', "Clear Column")]
         ClearColumn,
         [EnumMember]
-        //[Special(true, 'I', "Immunity")]
-        [Special(false)]
+        [Special(true, 'I', "Immunity", true)] // 5 seconds
         Immunity,
         [EnumMember]
-        [Special(true, 'D', "Darkness")]
+        [Special(true, 'D', "Darkness", true)] // 5 seconds
         Darkness,
         [EnumMember]
-        [Special(true, 'F', "Confusion")]
+        [Special(true, 'F', "Confusion", true)] // 5 seconds
         Confusion,
         [EnumMember]
-        [Special(true, 'M', "Mutation")]
+        [Special(true, 'M', "Mutation", true)] // 5 pieces
         Mutation,
 
         // Blocktrix (http://en.wikipedia.org/wiki/TetriNET)

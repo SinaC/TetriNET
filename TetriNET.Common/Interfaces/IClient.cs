@@ -38,10 +38,12 @@ namespace TetriNET.Common.Interfaces
     public delegate void ClientInventoryChangedHandler();
     public delegate void ClientLinesClearedChangedHandler();
     public delegate void ClientLevelChangedHandler();
-    public delegate void ClientSpecialUsedHandler(string playerName, string targetName, int specialId, Specials special);
+    public delegate void ClientSpecialUsedHandler(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special);
     public delegate void ClientPlayerAddLines(string playerName, int specialId, int count);
     public delegate void ClientToggleDarkness(bool active);
     public delegate void ClientToggleConfusion(bool active);
+    public delegate void ClientToggleImmunity(bool active);
+    public delegate void ClientContinuousSpecialFinishedHandler(int playerId, Specials special);
 
     public interface IClient
     {
@@ -76,8 +78,6 @@ namespace TetriNET.Common.Interfaces
         event ClientPauseGameHandler OnGamePaused;
         event ClientResumeGameHandler OnGameResumed;
         event ClientGameOverHandler OnGameOver;
-
-        // UI
         event ClientRedrawHandler OnRedraw;
         event ClientRedrawBoardHandler OnRedrawBoard;
         event ClientPieceMovingHandler OnPieceMoving;
@@ -99,6 +99,8 @@ namespace TetriNET.Common.Interfaces
         event ClientPlayerAddLines OnPlayerAddLines;
         event ClientToggleDarkness OnDarknessToggled;
         event ClientToggleConfusion OnConfusionToggled;
+        event ClientToggleImmunity OnImmunityToggled;
+        event ClientContinuousSpecialFinishedHandler OnContinuousSpecialFinished;
 
         bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc);
         bool Disconnect();

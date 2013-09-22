@@ -49,6 +49,7 @@ namespace TetriNET.GenericHost
         public event HostKickPlayerHandler OnKickPlayer;
         public event HostBanPlayerHandler OnBanPlayer;
         public event HostResetWinListHandler OnResetWinList;
+        public event HostFinishContinuousSpecial OnFinishContinuousSpecial;
 
         public event PlayerLeftHandler OnPlayerLeft;
 
@@ -342,6 +343,25 @@ namespace TetriNET.GenericHost
             else
             {
                 Log.WriteLine(Log.LogLevels.Warning, "GameLost from unknown player");
+            }
+        }
+
+        public virtual void FinishContinuousSpecial(ITetriNETCallback callback, Specials special)
+        {
+            Log.WriteLine(Log.LogLevels.Debug, "FinishContinuousSpecial {0}", special);
+
+            IPlayer player = PlayerManager[callback];
+            if (player != null)
+            {
+                //
+                player.ResetTimeout(); // player alive
+                //
+                if (OnFinishContinuousSpecial != null)
+                    OnFinishContinuousSpecial(player, special);
+            }
+            else
+            {
+                Log.WriteLine(Log.LogLevels.Warning, "FinishContinuousSpecial from unknown player");
             }
         }
 

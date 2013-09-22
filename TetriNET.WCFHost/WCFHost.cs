@@ -94,6 +94,16 @@ namespace TetriNET.WCFHost
                 _host.SendLines(Callback, count);
             }
 
+            public void GameLost()
+            {
+                _host.GameLost(Callback);
+            }
+
+            public void FinishContinuousSpecial(Specials special)
+            {
+                _host.FinishContinuousSpecial(Callback, special);
+            }
+
             public void StartGame()
             {
                 _host.StartGame(Callback);
@@ -112,11 +122,6 @@ namespace TetriNET.WCFHost
             public void ResumeGame()
             {
                 _host.ResumeGame(Callback);
-            }
-
-            public void GameLost()
-            {
-                _host.GameLost(Callback);
             }
 
             public void ChangeOptions(GameOptions options)

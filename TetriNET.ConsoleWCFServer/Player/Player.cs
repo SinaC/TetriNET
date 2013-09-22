@@ -177,6 +177,11 @@ namespace TetriNET.ConsoleWCFServer.Player
             ExceptionFreeAction(() => Callback.OnWinListModified(winList), "OnWinListModified");
         }
 
+        public void OnContinuousSpecialFinished(int playerId, Specials special)
+        {
+            ExceptionFreeAction(() => Callback.OnContinuousSpecialFinished(playerId, special), "OnContinuousSpecialFinished");
+        }
+
         #endregion
     }
 }

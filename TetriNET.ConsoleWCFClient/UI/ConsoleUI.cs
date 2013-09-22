@@ -60,7 +60,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void OnSpecialUsed(string playerName, string targetName, int specialId, Specials special)
+        private void OnSpecialUsed(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special)
         {
             lock (_lock)
             {

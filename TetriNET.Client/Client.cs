@@ -62,8 +62,10 @@ namespace TetriNET.Client
         private DateTime _pauseStartTime;
         private bool _isDarknessActive;
         private bool _isConfusionActive;
+        private bool _isImmunityActive;
         private DateTime _darknessEndTime;
         private DateTime _confusionEndTime;
+        private DateTime _immunityEndTime;
         private int _mutationCount;
 
         private PlayerData Player
@@ -104,6 +106,7 @@ namespace TetriNET.Client
             IsServerMaster = false;
             _isDarknessActive = false;
             _isConfusionActive = false;
+            _isImmunityActive = false;
             _pauseStartTime = DateTime.Now;
             _mutationCount = 0;
 
@@ -352,6 +355,7 @@ namespace TetriNET.Client
             // Reset specials
             _isConfusionActive = false;
             _isDarknessActive = false;
+            _isImmunityActive = false;
             _mutationCount = 0;
             // Reset boards
             for (int i = 0; i < MaxPlayers; i++)
@@ -432,6 +436,8 @@ namespace TetriNET.Client
                 _confusionEndTime = _confusionEndTime.Add(pauseTime);
             if (_isDarknessActive)
                 _darknessEndTime = _darknessEndTime.Add(pauseTime);
+            if (_isImmunityActive)
+                _immunityEndTime = _immunityEndTime.Add(pauseTime);
 
             if (State == States.Paused)
                 State = States.Playing;
@@ -503,7 +509,7 @@ namespace TetriNET.Client
                 string playerName = playerData == null ? "???" : playerData.Name;
                 string targetName = target == null ? "???" : target.Name;
 
-                ClientOnSpecialUsed(playerName, targetName, specialId, special);
+                ClientOnSpecialUsed(playerId, playerName, targetId, targetName, specialId, special);
             }
             //}
         }
@@ -564,6 +570,24 @@ namespace TetriNET.Client
 
             if (ClientOnWinListModified != null)
                 ClientOnWinListModified(winList);
+        }
+
+        public void OnContinuousSpecialFinished(int playerId, Specials special)
+        {
+            Log.WriteLine(Log.LogLevels.Debug, "Continous special {0} finished on {1}", special, playerId);
+
+            ResetTimeout();
+            if (playerId != _clientPlayerId)
+            {
+                if (special == Specials.Immunity)
+                {
+                    PlayerData target = GetPlayer(playerId);
+                    if (target != null)
+                        target.IsImmune = false;
+                }
+                if (ClientOnContinuousSpecialFinished != null)
+                    ClientOnContinuousSpecialFinished(playerId, special);
+            }
         }
 
         #endregion
@@ -1078,6 +1102,20 @@ namespace TetriNET.Client
             remove { ClientOnConfusionToggled -= value; }
         }
 
+        private event ClientToggleImmunity ClientOnImmunityToggled;
+        event ClientToggleImmunity IClient.OnImmunityToggled
+        {
+            add { ClientOnImmunityToggled += value; }
+            remove { ClientOnImmunityToggled -= value; }
+        }
+
+        private event ClientContinuousSpecialFinishedHandler ClientOnContinuousSpecialFinished;
+        event ClientContinuousSpecialFinishedHandler IClient.OnContinuousSpecialFinished
+        {
+            add { ClientOnContinuousSpecialFinished += value; }
+            remove { ClientOnContinuousSpecialFinished -= value; }
+        }
+
         public void Dump()
         {
             // Players
@@ -1273,7 +1311,7 @@ namespace TetriNET.Client
             PlayerData target = GetPlayer(targetId);
             if (Player.State == PlayerData.States.Playing && target != null && target.State == PlayerData.States.Playing)
             {
-                if (target.IsImmune) // Cannot target a player with immunity
+                if (target.IsImmune || (targetId == _clientPlayerId && _isImmunityActive)) // Cannot target a player with immunity
                     return false;
 
                 // Get first special and send it
@@ -1341,6 +1379,7 @@ namespace TetriNET.Client
                         _isConfusionActive = false;
                         if (ClientOnConfusionToggled != null)
                             ClientOnConfusionToggled(false);
+                        _proxy.FinishContinuousSpecial(this, Specials.Confusion);
                     }
                 }
 
@@ -1351,6 +1390,18 @@ namespace TetriNET.Client
                         _isDarknessActive = false;
                         if (ClientOnDarknessToggled != null)
                             ClientOnDarknessToggled(false);
+                        _proxy.FinishContinuousSpecial(this, Specials.Darkness);
+                    }
+                }
+
+                if (_isImmunityActive)
+                {
+                    if (DateTime.Now > _immunityEndTime)
+                    {
+                        _isImmunityActive = false;
+                        if (ClientOnImmunityToggled != null)
+                            ClientOnImmunityToggled(false);
+                        _proxy.FinishContinuousSpecial(this, Specials.Immunity);
                     }
                 }
 
@@ -1444,6 +1495,9 @@ namespace TetriNET.Client
                     break;
                 case Specials.ClearColumn:
                     ClearColumn();
+                    break;
+                case Specials.Immunity:
+                    Immunity(5);
                     break;
                 case Specials.Darkness:
                     Darkness(5);
@@ -1678,6 +1732,21 @@ namespace TetriNET.Client
                 _confusionEndTime = DateTime.Now.AddSeconds(delayInSeconds);
                 if (ClientOnConfusionToggled != null)
                     ClientOnConfusionToggled(true);
+            }
+        }
+
+        private void Immunity(int delayInSeconds)
+        {
+            // If already active, add delay to remaining
+            if (_isImmunityActive)
+                _immunityEndTime = _immunityEndTime.AddSeconds(delayInSeconds); // should never happen
+            // Else, raise event
+            else
+            {
+                _isImmunityActive = true;
+                _immunityEndTime = DateTime.Now.AddSeconds(delayInSeconds);
+                if (ClientOnImmunityToggled != null)
+                    ClientOnImmunityToggled(true);
             }
         }
 
