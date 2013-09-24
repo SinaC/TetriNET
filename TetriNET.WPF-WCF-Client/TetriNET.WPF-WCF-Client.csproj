@@ -105,6 +105,9 @@
     <Compile Include="ViewModels\PartyLine\PartyLineViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\WinList\WinListViewModel.cs" />
+    <Compile Include="Views\CircularProgressBarControl.xaml.cs">
+      <DependentUpon>CircularProgressBarControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Connection\ConnectionControl.xaml.cs">
       <DependentUpon>ConnectionControl.xaml</DependentUpon>
     </Compile>
@@ -159,6 +162,10 @@
     <Compile Include="Views\WinList\WinListView.xaml.cs">
       <DependentUpon>WinListView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\CircularProgressBarControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Options\ClientOptionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

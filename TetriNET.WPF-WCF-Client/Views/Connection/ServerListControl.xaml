@@ -4,9 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:connection="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
+             xmlns:views="clr-namespace:TetriNET.WPF_WCF_Client.Views"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance connection:ServerListViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -23,5 +29,10 @@
                 Command="{Binding ScanForServerCommand}">
             <TextBlock Text="Scan for servers"/>
         </Button>
+        <Viewbox Grid.Row="0" Width="200" Height="200" HorizontalAlignment="Center" VerticalAlignment="Center"
+                 Visibility="{Binding IsProgressBarVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <views:CircularProgressBarControl />
+        </Viewbox>
+        
     </Grid>
 </UserControl>

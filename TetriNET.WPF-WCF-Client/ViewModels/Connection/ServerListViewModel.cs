@@ -1,19 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 {
-    public class ServerListViewModel
+    public class ServerListViewModel : INotifyPropertyChanged
     {
         private readonly ObservableCollection<string> _servers = new ObservableCollection<string>();
         public ObservableCollection<string> Servers
         {
             get { return _servers; }
+        }
+
+        private bool _isProgressBarVisible;
+
+        public bool IsProgressBarVisible
+        {
+            get { return _isProgressBarVisible; }
+            set
+            {
+                if (_isProgressBarVisible != value)
+                {
+                    _isProgressBarVisible = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public string SelectedServer { get; set; }
@@ -31,6 +47,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             //Mouse.OverrideCursor = Cursors.Wait;
             try
             {
+                IsProgressBarVisible = true;
                 List<string> servers = WCFProxy.WCFProxy.DiscoverHosts();
                 ExecuteOnUIThread.Invoke(() =>
                     {
@@ -48,6 +65,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             }
             finally
             {
+                IsProgressBarVisible = false;
                 //Mouse.OverrideCursor = null;
             }
         }
@@ -64,5 +82,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         public ICommand SelectServerCommand { get; set; }
 
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
