@@ -22,10 +22,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         public ServerListViewModel()
         {
-            ScanForServerCommand = new AsyncRelayCommand(async _ =>
-                {
-                    await Task.Run(() => ScanForServer());
-                });
+            ScanForServerCommand = new AsyncRelayCommand(ScanForServer);
             SelectServerCommand = new RelayCommand(SelectServer);
         }
 
