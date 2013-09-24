@@ -18,7 +18,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         }
 
         private bool _isProgressBarVisible;
-
         public bool IsProgressBarVisible
         {
             get { return _isProgressBarVisible; }
@@ -38,6 +37,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         public ServerListViewModel()
         {
+            IsProgressBarVisible = false;
+
             ScanForServerCommand = new AsyncRelayCommand(ScanForServer);
             SelectServerCommand = new RelayCommand(SelectServer);
         }

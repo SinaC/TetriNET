@@ -80,12 +80,28 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             }
         }
 
+        private bool _isProgressBarVisible;
+        public bool IsProgressBarVisible
+        {
+            get { return _isProgressBarVisible; }
+            set
+            {
+                if (_isProgressBarVisible != value)
+                {
+                    _isProgressBarVisible = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public ConnectionControlViewModel()
         {
+            ConnectionResultColor = ChatColor.Black;
+            IsProgressBarVisible = false;
             Username = Settings.Default.Username;
             ServerAddress = Settings.Default.Server;
 
-            ConnectDisconnectCommand = new RelayCommand(ConnectDisconnect);
+            ConnectDisconnectCommand = new AsyncRelayCommand(ConnectDisconnect);
         }
 
         private void SetConnectionResultMessage(string msg, ChatColor color)
@@ -99,9 +115,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         private void ConnectDisconnect()
         {
-            Mouse.OverrideCursor = Cursors.Wait;
+            //Mouse.OverrideCursor = Cursors.Wait;
             try
             {
+                IsProgressBarVisible = true;
                 if (!Client.IsRegistered)
                 {
                     if (String.IsNullOrEmpty(ServerAddress))
@@ -134,7 +151,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             }
             finally
             {
-                Mouse.OverrideCursor = null;
+                IsProgressBarVisible = false;
+                //Mouse.OverrideCursor = null;
             }
         }
 

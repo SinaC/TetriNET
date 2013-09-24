@@ -4,13 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:connection="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
-             xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters" mc:Ignorable="d" 
+             xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
+             xmlns:views="clr-namespace:TetriNET.WPF_WCF_Client.Views"
+             xmlns:userControls="clr-namespace:TetriNET.WPF_WCF_Client.UserControls"
+             mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance connection:ConnectionControlViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
                     <converters:ChatColorBrushConverter x:Key="ChatColorBrushConverter"/>
+                </ResourceDictionary>
+                <ResourceDictionary>
+                    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -35,5 +41,9 @@
             <TextBlock Text="{Binding ConnectDisconnectLabel}"/>
         </Button>
         <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding ConnectionResult}" Foreground="{Binding ConnectionResultColor, Converter={StaticResource ChatColorBrushConverter}}"/>
+        <userControls:CircularProgressBar 
+            ToolTip="Connecting..." 
+            Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center"
+            Visibility="{Binding IsProgressBarVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
     </Grid>
 </UserControl>

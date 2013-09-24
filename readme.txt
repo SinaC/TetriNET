@@ -21,6 +21,8 @@ receiving an add line when commiting a piece, line and piece are merged
 wall kick http://tetris.wikia.com/wiki/Wall_kick  http://tetris.wikia.com/wiki/Floor_kick
 display tetrimino instead of text in server options
 
+use http://blogs.u2u.be/diederik/post/2010/02/26/Yet-another-Circular-ProgressBar-control-for-WPF.aspx
+
 
 wcf + jquery
 http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-with-nettcpbinding

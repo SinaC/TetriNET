@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace TetriNET.WPF_WCF_Client.Views
+//http://blogs.u2u.be/diederik/post/2010/02/26/Yet-another-Circular-ProgressBar-control-for-WPF.aspx
+//http://sachabarbs.wordpress.com/2009/12/29/better-wpf-circular-progress-bar/
+namespace TetriNET.WPF_WCF_Client.UserControls
 {
-    public partial class CircularProgressBarControl
+    public partial class CircularProgressBar
     {
         private readonly DispatcherTimer _animationTimer;
 
-        public CircularProgressBarControl()
+        public CircularProgressBar()
         {
             InitializeComponent();
 
@@ -22,7 +23,6 @@ namespace TetriNET.WPF_WCF_Client.Views
 
         private void Start()
         {
-            //Mouse.OverrideCursor = Cursors.Wait;
             _animationTimer.Tick += HandleAnimationTick;
             _animationTimer.Start();
         }
@@ -30,13 +30,22 @@ namespace TetriNET.WPF_WCF_Client.Views
         private void Stop()
         {
             _animationTimer.Stop();
-            //Mouse.OverrideCursor = Cursors.Arrow;
             _animationTimer.Tick -= HandleAnimationTick;
         }
 
         private void HandleAnimationTick(object sender, EventArgs e)
         {
-            SpinnerRotate.Angle = (SpinnerRotate.Angle + 36) % 360;
+            double i = C0.Opacity;
+            C0.Opacity = C1.Opacity;
+            C1.Opacity = C2.Opacity;
+            C2.Opacity = C3.Opacity;
+            C3.Opacity = C4.Opacity;
+            C4.Opacity = C5.Opacity;
+            C5.Opacity = C6.Opacity;
+            C6.Opacity = C7.Opacity;
+            C7.Opacity = C8.Opacity;
+            C7.Opacity = C9.Opacity;
+            C9.Opacity = i;
         }
 
         private void HandleLoaded(object sender, RoutedEventArgs e)
@@ -71,6 +80,9 @@ namespace TetriNET.WPF_WCF_Client.Views
 
             C8.SetValue(Canvas.LeftProperty, length + Math.Sin(offset + 8.0 * step) * length);
             C8.SetValue(Canvas.TopProperty, length + Math.Cos(offset + 8.0 * step) * length);
+
+            C9.SetValue(Canvas.LeftProperty, length + Math.Sin(offset + 9.0 * step) * length);
+            C9.SetValue(Canvas.TopProperty, length + Math.Cos(offset + 9.0 * step) * length);
         }
 
         private void HandleUnloaded(object sender, RoutedEventArgs e)
