@@ -14,9 +14,8 @@ WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
 WPF Client: save win list locally if server master
 Confusion could be managed client-side
 Add Pentaminos (http://en.wikipedia.org/wiki/Pentomino)
-Missing OnPropertyChanged in options when reading them frop user settings
+Missing OnPropertyChanged in options when reading them from user settings -> remove client options from model and add them in view model
 New options: random blocks clear count, mutation count, darkness time, confusion time, immunity time
-Finish mutated piece orientations: I, Z and T are ok  other need to be tested (set _mutationCount to 1000 in OnGameStarted in client to test)
 
 
 wcf + jquery

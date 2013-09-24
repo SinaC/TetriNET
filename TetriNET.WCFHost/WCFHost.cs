@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net;
 using System.ServiceModel;
+using System.ServiceModel.Channels;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
@@ -150,6 +152,12 @@ namespace TetriNET.WCFHost
             {
                 get
                 {
+                    //MessageProperties messageProperties = OperationContext.Current.IncomingMessageProperties;
+                    //RemoteEndpointMessageProperty endpointProperty = messageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
+                    //if (endpointProperty != null)
+                    //{
+                    //    IPAddress address = IPAddress.Parse(endpointProperty.Address);
+                    //}
                     return OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
                 }
             }

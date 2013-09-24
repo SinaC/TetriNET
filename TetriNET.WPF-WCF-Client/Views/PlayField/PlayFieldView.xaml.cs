@@ -104,6 +104,10 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             {
                 PlayerGrid.ToggleHint();
             }
+            else if (e.Key == Key.D && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
+            {
+                PlayerGrid.ToggleDropLocation();
+            }
             else if (e.Key == Key.Add)
             {
                 _bot.SleepTime += 100;

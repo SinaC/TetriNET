@@ -89,5 +89,8 @@
     <Setting Name="UseSpecialOn6" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">40</Value>
     </Setting>
+    <Setting Name="DisplayDropLocation" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

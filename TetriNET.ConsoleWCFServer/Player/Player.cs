@@ -17,7 +17,6 @@ namespace TetriNET.ConsoleWCFServer.Player
             LastActionToClient = DateTime.Now;
             LastActionFromClient = DateTime.Now;
             TimeoutCount = 0;
-            MutationCount = 0;
             State = PlayerStates.Registered;
         }
 

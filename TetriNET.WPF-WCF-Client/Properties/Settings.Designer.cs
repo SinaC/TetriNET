@@ -369,5 +369,17 @@ namespace TetriNET.WPF_WCF_Client.Properties {
                 this["UseSpecialOn6"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DisplayDropLocation {
+            get {
+                return ((bool)(this["DisplayDropLocation"]));
+            }
+            set {
+                this["DisplayDropLocation"] = value;
+            }
+        }
     }
 }

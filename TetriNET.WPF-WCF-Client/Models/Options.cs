@@ -76,6 +76,21 @@ namespace TetriNET.WPF_WCF_Client.Models
             }
         }
 
+        private bool _displayDropLocation;
+        public bool DisplayDropLocation
+        {
+            get { return _displayDropLocation; }
+            set
+            {
+                if (_displayDropLocation != value)
+                {
+                    _displayDropLocation = value;
+                    Settings.Default.DisplayDropLocation = _displayDropLocation;
+                    Settings.Default.Save();
+                }
+            }
+        }
+
         #region Key settings
 
         public ObservableCollection<KeySetting> KeySettings { get; set; }
@@ -224,6 +239,7 @@ namespace TetriNET.WPF_WCF_Client.Models
             AutomaticallySwitchToPlayFieldOnGameStarted = Settings.Default.AutomaticallySwitchToPlayFieldOnGameStarted;
             DisplayOpponentsFieldEvenWhenNotPlaying = Settings.Default.DisplayOpponentsFieldEvenWhenNotPlaying;
             IsDeveloperModeActivated = Settings.Default.IsDeveloperModeActivated;
+            DisplayDropLocation = Settings.Default.DisplayDropLocation;
             DropSensibilityActivated = Settings.Default.DropSensibilityActivated;
             DropSensibility = Settings.Default.DropSensibility;
             DownSensibilityActivated = Settings.Default.DownSensibilityActivated;

@@ -25,6 +25,7 @@ namespace TetriNET.Client
         private const int TimeoutDelay = 500; // in ms
         private const int MaxTimeoutCountBeforeDisconnection = 3;
         private const bool IsTimeoutDetectionActive = false;
+        private const int SpawnOrientation = 1;
 
         public enum States
         {
@@ -339,9 +340,9 @@ namespace TetriNET.Client
             _pieces[1] = secondPiece;
             _pieces[2] = thirdPiece;
             _pieceIndex = 0;
-            CurrentPiece = _createPieceFunc(firstPiece, Board.PieceSpawnX, Board.PieceSpawnY, 1, 0, false);
+            CurrentPiece = _createPieceFunc(firstPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, 0, false);
             //MoveDownUntilTotallyInBoard(CurrentPiece);
-            NextPiece = _createPieceFunc(secondPiece, Board.PieceSpawnX, Board.PieceSpawnY, 1, 1, false);
+            NextPiece = _createPieceFunc(secondPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, 1, false);
             // Update statistics
             if (_statistics.PieceCount.ContainsKey(firstPiece))
                 _statistics.PieceCount[firstPiece]++;
@@ -650,7 +651,7 @@ namespace TetriNET.Client
             // Set new current piece to next, increment piece index and create next piece
             if (_mutationCount > 0)
             {
-                CurrentPiece = _createPieceFunc(NextPiece.Value, Board.PieceSpawnX, Board.PieceSpawnY, 1, NextPiece.Index + 1, true);
+                CurrentPiece = _createPieceFunc(NextPiece.Value, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, NextPiece.Index + 1, true);
                 _mutationCount--;
             }
             else
@@ -675,9 +676,9 @@ namespace TetriNET.Client
                 _statistics.NextPieceNotYetReceived++;
             }
             if (_mutationCount > 0)
-                NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, 1, _pieceIndex + 1, true); // need to display next piece
+                NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, _pieceIndex + 1, true); // need to display next piece
             else
-                NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, 1, _pieceIndex + 1, false);
+                NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, _pieceIndex + 1, false);
 
             //if (ClientOnPieceMoved != null)
             //    ClientOnPieceMoved();
@@ -1367,8 +1368,8 @@ namespace TetriNET.Client
                     }
 
                     // Send heartbeat if needed
-                    TimeSpan delayFromPreviousHeartbeat = DateTime.Now - _proxy.LastActionToServer;
-                    if (delayFromPreviousHeartbeat.TotalMilliseconds > HeartbeatDelay)
+                    TimeSpan delaySinceLastActionToServer = DateTime.Now - _proxy.LastActionToServer;
+                    if (delaySinceLastActionToServer.TotalMilliseconds > HeartbeatDelay)
                     {
                         _proxy.Heartbeat(this);
                     }

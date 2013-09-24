@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using TetriNET.Common.Attributes;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
+using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.TextureManager;
 
 namespace TetriNET.WPF_WCF_Client.Views.Test
@@ -20,10 +22,12 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
 
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
+                int i;
                 // Add textures to Canvas
                 ITextureManager textures = TextureManager.TextureManager.TexturesSingleton.Instance;
 
-                int i = 0;
+                // Special
+                i = 0;
                 foreach (Specials special in EnumHelper.GetSpecials(available => available))
                 {
                     //
@@ -53,6 +57,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                     i++;
                 }
 
+                // Pieces
                 i = 0;
                 foreach (Pieces piece in EnumHelper.GetPieces(available => available))
                 {
@@ -82,6 +87,53 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                     // 
                     i++;
                 }
+
+                // Draw pieces
+                i = 0;
+                foreach (IPiece piece in EnumHelper.GetPieces(available => available).Select(piece => DefaultBoardAndPieces.Piece.CreatePiece(piece, 0, 0, 1, 0, false)))
+                {
+                    for (int r = 1; r <= piece.MaxOrientations; r++)
+                    {
+                        DrawPiece(piece, 8, 5 + r * (8 * 4), 120 + i * (8 * 4));
+                        piece.RotateCounterClockwise();
+                    }
+                    //
+                    i++;
+                }
+
+                // Draw mutated pieces
+                i = 0;
+                foreach (IPiece piece in EnumHelper.GetPieces(available => available).Select(piece => DefaultBoardAndPieces.Piece.CreatePiece(piece, 0, 0, 1, 0, true)))
+                {
+                    for (int r = 1; r <= piece.MaxOrientations; r++)
+                    {
+                        DrawPiece(piece, 8, 200 + r * (8 * 4), 120 + i * (8 * 4));
+                        piece.RotateCounterClockwise();
+                    }
+                    //
+                    i++;
+                }
+            }
+        }
+
+        private void DrawPiece(IPiece piece, int size, int topX, int topY)
+        {
+            IPiece temp = piece.Clone();
+            Pieces cellPiece = temp.Value;
+            for (int i = 1; i <= temp.TotalCells; i++)
+            {
+                int x, y;
+                temp.GetCellAbsolutePosition(i, out x, out y); // 1->Width x 1->Height
+
+                Rectangle rectangle = new Rectangle
+                    {
+                        Width = size,
+                        Height = size,
+                        Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigPiece(cellPiece)
+                    };
+                Canvas.Children.Add(rectangle);
+                Canvas.SetLeft(rectangle, topX + x * size);
+                Canvas.SetTop(rectangle, topY + y * size);
             }
         }
     }

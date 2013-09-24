@@ -26,7 +26,10 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private static readonly SolidColorBrush DarknessColor = new SolidColorBrush(Colors.Black);
         private static readonly SolidColorBrush ImmunityBorderColor = new SolidColorBrush(Colors.Green);
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
-        private static readonly SolidColorBrush HintColor = new SolidColorBrush(Color.FromArgb( 128, 77, 115, 141)); // Some kind of gray/blue
+        //private static readonly SolidColorBrush HintColor = new SolidColorBrush(Color.FromArgb( 128, 77, 115, 141)); // Some kind of gray/blue
+
+        private readonly VisualBrush _hintBrush;
+        private readonly VisualBrush _dropBrush;
 
         public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("PlayerGridCanvasClientProperty", typeof(IClient), typeof(PlayerGridControl), new PropertyMetadata(Client_Changed));
         public IClient Client
@@ -91,6 +94,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private bool _isDarknessActive;
         private bool _isHintActivated;
+        private bool _displayDropLocation;
         private IMoveStrategy _moveStrategy;
         private IPiece _pieceHint;
         private readonly List<Rectangle> _grid = new List<Rectangle>();
@@ -100,13 +104,12 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             InitializeComponent();
 
             _isHintActivated = false;
+            _displayDropLocation = false;
 
             PlayerId = -1;
 
             if (!DesignerProperties.GetIsInDesignMode(this))
-            {
                 CanvasBackground = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
-            }
             else
                 CanvasBackground = new SolidColorBrush(Colors.Black);
 
@@ -128,13 +131,29 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     Canvas.SetTop(rect, canvasTop);
                 }
             BorderColor = TransparentColor;
+
+            // Create hint brush
+            _hintBrush = CreateDoubleRectangleBrush(Colors.GreenYellow);//Color.FromArgb(128, 77, 115, 141));
+
+            // Create drop brush
+            _dropBrush = CreateDoubleRectangleBrush(Colors.White);
         }
 
         public void ToggleHint()
         {
             _isHintActivated = !_isHintActivated;
             if (_isHintActivated)
+            {
                 _moveStrategy = _moveStrategy ?? new PierreDellacherieOnePiece();
+                DrawHint();
+            }
+        }
+
+        public void ToggleDropLocation()
+        {
+            _displayDropLocation = !_displayDropLocation;
+            if (_displayDropLocation)
+                DrawDropLocation();
         }
 
         private void DrawPiece(IBoard board, IPiece tetrimono, Brush brush)
@@ -182,7 +201,21 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     board.Drop(_pieceHint);
                 }
                 // Draw piece
-                DrawPiece(Client.Board, _pieceHint, HintColor); // FF, C0, CB
+                //DrawPiece(Client.Board, _pieceHint, HintColor);
+                DrawPiece(Client.Board, _pieceHint, _hintBrush);
+            }
+        }
+
+        private void DrawDropLocation()
+        {
+            if (_displayDropLocation)
+            {
+                IBoard board = Client.Board.Clone();
+                IPiece piece = Client.CurrentPiece.Clone();
+
+                board.Drop(piece);
+
+                DrawPiece(Client.Board, piece, _dropBrush);
             }
         }
 
@@ -246,6 +279,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             {
                 DrawGrid();
                 DrawHint();
+                DrawDropLocation();
                 DrawCurrentPiece();
             }
             else
@@ -312,16 +346,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         {
             _isDarknessActive = active;
             CanvasBackground = active ? DarknessColor : TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
-            if (active)
-            {
-                ExecuteOnUIThread.Invoke(() =>
-                    {
-                        ClearGrid();
-                        DrawCurrentPiece();
-                    });
-            }
-            else
-                ExecuteOnUIThread.Invoke(DrawEverything);
+            ExecuteOnUIThread.Invoke(DrawEverything);
         }
 
         private void OnRedraw()
@@ -343,12 +368,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnGameStarted()
         {
+            _displayDropLocation = Models.Options.OptionsSingleton.Instance.DisplayDropLocation;
             _pieceHint = null; // reset hint>
-            ExecuteOnUIThread.Invoke(() =>
-            {
-                ClearGrid();
-                DrawCurrentPiece();
-            });
+            ExecuteOnUIThread.Invoke(DrawEverything);
         }
 
         private void OnConnectionLost(ConnectionLostReasons reason)
@@ -372,6 +394,43 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         }
 
         #endregion
+
+        private static VisualBrush CreateDoubleRectangleBrush(Color color)
+        {
+            Canvas hintCanvas = new Canvas
+            {
+                Width = 16,
+                Height = 16,
+            };
+            Rectangle outer = new Rectangle
+            {
+                Width = 16,
+                Height = 16,
+                Fill = TransparentColor,
+                Stroke = new SolidColorBrush(color),
+                StrokeThickness = 1,
+
+            };
+            Rectangle inner = new Rectangle
+            {
+                Width = 12,
+                Height = 12,
+                Fill = TransparentColor,
+                Stroke = new SolidColorBrush(color),
+                StrokeThickness = 1,
+            };
+            hintCanvas.Children.Add(outer);
+            Canvas.SetLeft(outer, 0);
+            Canvas.SetTop(outer, 0);
+            hintCanvas.Children.Add(inner);
+            Canvas.SetLeft(inner, 2);
+            Canvas.SetTop(inner, 2);
+
+            return new VisualBrush
+            {
+                Visual = hintCanvas
+            };
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

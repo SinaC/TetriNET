@@ -604,7 +604,6 @@ namespace TetriNET.Server
         {
             Log.WriteLine(Log.LogLevels.Info, "PlacePiece[{0}]{1}:{2} {3} at {4},{5} {6}", player.Name, index, piece, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
 
-            // TODO: check if index is equal to player.PieceIndex
             if (index != player.PieceIndex)
                 Log.WriteLine(Log.LogLevels.Error, "!!!! piece index different for player {0} local {1} remote {2}", player.Name, player.PieceIndex, index);
 

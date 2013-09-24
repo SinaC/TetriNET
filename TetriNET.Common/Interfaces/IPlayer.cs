@@ -20,11 +20,10 @@ namespace TetriNET.Common.Interfaces
         int PieceIndex { get; set; }
         byte[] Grid { get; set; }
         //
-        ITetriNETCallback Callback { get; } // Should never be used by anything else then IPlayerManager and IPlayer
+        ITetriNETCallback Callback { get; } // should never be used by anything else then IPlayerManager and IPlayer
         //
         PlayerStates State { get; set; }
         DateTime LossTime { get; set; }
-        int MutationCount { get; set; }
 
         // Heartbeat management
         DateTime LastActionToClient { get; } // used to check if heartbeat is needed

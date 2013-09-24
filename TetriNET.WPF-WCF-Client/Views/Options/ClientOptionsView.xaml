@@ -15,6 +15,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -24,7 +25,8 @@
         <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding Options.AutomaticallySwitchToPlayFieldOnGameStarted, Mode=TwoWay}">Switch on start/stop game</CheckBox>
         <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding Options.DisplayOpponentsFieldEvenWhenNotPlaying, Mode=TwoWay}">Always show opponents field</CheckBox>
         <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding Options.IsDeveloperModeActivated, Mode=TwoWay}">Developer mode</CheckBox>
-        <GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="Controls">
+        <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding Options.DisplayDropLocation, Mode=TwoWay}">Display drop location</CheckBox>
+        <GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Header="Controls">
             <ItemsControl
                 Grid.IsSharedSizeScope="True" MaxHeight="160"
                 ItemsSource="{Binding Options.KeySettings}">
@@ -48,7 +50,7 @@
             </ItemsControl>
         </GroupBox>
         
-        <GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Header="Sensibility">
+        <GroupBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Header="Sensibility">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
