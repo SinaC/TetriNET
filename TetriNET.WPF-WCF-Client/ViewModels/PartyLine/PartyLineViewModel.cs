@@ -77,10 +77,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         }
 
         #region ITabIndex
-        public int TabIndex { get { return 3; } }
+
+        public int TabIndex
+        {
+            get { return 3; }
+        }
+
         #endregion
 
         #region ViewModelBase
+
         private void OnClientChanged(IClient oldClient, IClient newClient)
         {
             ChatViewModel.Client = newClient;
@@ -110,9 +116,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             newClient.OnGamePaused += OnGamePaused;
             newClient.OnGameResumed += OnGameResumed;
         }
+
         #endregion
 
         #region IClient events handler
+
         private void OnGameResumed()
         {
             _isGamePaused = false;
@@ -143,7 +151,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             UpdateEnabilityAndLabel();
         }
 
-        private void OnPlayerRegistered(RegistrationResults result, int playerId)
+        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
         {
             _isRegistered = Client.IsRegistered;
             _isGameStarted = Client.IsGameStarted;
@@ -167,11 +175,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             _isServerMaster = false;
             UpdateEnabilityAndLabel();
         }
+
         #endregion
 
         #region Commands
+
         public ICommand StartStopCommand { get; set; }
         public ICommand PauseResumeCommand { get; set; }
+
         #endregion
     }
 }

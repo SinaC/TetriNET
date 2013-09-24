@@ -14,10 +14,14 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Lines :"/>
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Level :"/>
-        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding LinesCleared}" FontWeight="Bold" Margin="16,0,0,0" />
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Level}" FontWeight="Bold" Margin="16,0,0,0" />
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Time :"/>
+        <!--<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ElapsedTime, StringFormat=hh\\:mm\\:ss\\.fff}" FontWeight="Bold" Margin="16,0,0,0" />-->
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ElapsedTime, StringFormat=hh\\:mm\\:ss}" FontWeight="Bold" Margin="16,0,0,0" />
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Lines :"/>
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LinesCleared}" FontWeight="Bold" Margin="16,0,0,0" />
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Level :"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Level}" FontWeight="Bold" Margin="16,0,0,0" />
     </Grid>
 </UserControl>

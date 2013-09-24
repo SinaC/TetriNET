@@ -27,7 +27,7 @@ namespace TetriNET.Common.Interfaces
         int PieceSpawnY { get; }
 
         bool CheckNoConflict(IPiece piece, bool checkTop = false);
-        bool CheckNoConflictWithBoard(IPiece piece, bool checkTop = false);
+        //bool CheckNoConflictWithBoard(IPiece piece, bool checkTop = false);
         int CollapseCompletedRows(out List<Specials> specials);
         void CommitPiece(IPiece piece);
         void DropAndCommit(IPiece piece);
@@ -57,6 +57,7 @@ namespace TetriNET.Common.Interfaces
 
         // Blocktrix
         void ZebraField();
+        void LeftGravity();
 
         //
         void SpawnSpecialBlocks(int count, Func<Specials> randomFunc);

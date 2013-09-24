@@ -86,9 +86,9 @@ namespace TetriNET.ConsoleWCFServer.Player
             ExceptionFreeAction(() => Callback.OnServerStopped(), "OnServerStopped");
         }
 
-        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, GameOptions options)
+        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
         {
-            ExceptionFreeAction(() => Callback.OnPlayerRegistered(result, playerId, gameStarted, options), "OnPlayerRegistered");
+            ExceptionFreeAction(() => Callback.OnPlayerRegistered(result, playerId, gameStarted, isServerMaster, options), "OnPlayerRegistered");
         }
 
         public void OnPlayerJoined(int playerId, string name)

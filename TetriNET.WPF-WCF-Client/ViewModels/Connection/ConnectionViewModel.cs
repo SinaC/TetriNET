@@ -22,15 +22,21 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         }
 
         #region ITabIndex
-        public int TabIndex { get { return 0; } }
+
+        public int TabIndex
+        {
+            get { return 0; }
+        }
+
         #endregion
 
         #region ViewModelBase
+
         private void OnClientChanged(IClient oldClient, IClient newClient)
         {
             ConnectionControlViewModel.Client = newClient;
         }
-        
+
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             // NOP
@@ -40,6 +46,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         {
             // NOP
         }
+
         #endregion
     }
 }

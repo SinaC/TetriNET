@@ -25,7 +25,7 @@ namespace TetriNET.Common.Interfaces
     public delegate void ClientRedrawBoardHandler(int playerId, IBoard board);
     public delegate void ClientPieceMovingHandler();
     public delegate void ClientPieceMovedHandler();
-    public delegate void ClientPlayerRegisteredHandler(RegistrationResults result, int playerId);
+    public delegate void ClientPlayerRegisteredHandler(RegistrationResults result, int playerId, bool isServerMaster);
     public delegate void ClientPlayerUnregisteredHandler();
     public delegate void ClientWinListModifiedHandler(List<WinEntry> winList);
     public delegate void ClientServerMasterModifiedHandler(int serverMasterId);

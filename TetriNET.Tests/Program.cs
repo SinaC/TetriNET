@@ -21,8 +21,14 @@ namespace TetriNET.Tests
             IBoard board = new Board(4, 12);
             byte[] cells = new byte[board.Width*board.Height];
             for (int i = 0; i < board.Height; i += 3)
-                cells[0 + i * board.Width] = 1;
+                cells[2 + i * board.Width] = 1;
             board.SetCells(cells);
+
+            DisplayBoard(board);
+
+            Console.ReadLine();
+
+            board.LeftGravity();
             DisplayBoard(board);
 
             int buriedHoles = Strategy.BoardHelper.GetBuriedHolesForColumn(board, 1);

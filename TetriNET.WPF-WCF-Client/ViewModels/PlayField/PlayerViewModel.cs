@@ -47,6 +47,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         }
 
         #region ViewModelBase
+
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnPlayerRegistered -= OnPlayerRegistered;
@@ -60,6 +61,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             newClient.OnPlayerUnregistered += OnPlayerUnregistered;
             newClient.OnConnectionLost += OnConnectionLost;
         }
+
         #endregion
 
         #region IClient events handler
@@ -70,7 +72,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             PlayerName = "Not registered";
         }
 
-        private void OnPlayerRegistered(RegistrationResults result, int playerId)
+        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
         {
             if (result == RegistrationResults.RegistrationSuccessful)
             {
@@ -84,6 +86,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             PlayerId = -1;
             PlayerName = "Not registered";
         }
+
         #endregion
     }
 }

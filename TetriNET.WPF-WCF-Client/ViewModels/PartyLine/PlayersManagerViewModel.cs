@@ -46,7 +46,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
     public class PlayersManagerViewModel : ViewModelBase
     {
         private readonly ObservableCollection<PlayerData> _playerList = new ObservableCollection<PlayerData>();
-        public ObservableCollection<PlayerData> PlayerList { get { return _playerList; } }
+        public ObservableCollection<PlayerData> PlayerList
+        {
+            get { return _playerList; }
+        }
 
         public PlayerData SelectedPlayer { get; set; }
 
@@ -73,12 +76,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         private void SetServerMaster(int serverMasterId)
         {
             ExecuteOnUIThread.Invoke(() =>
-            {
-                // TODO: how could we update visibility in UI ??? OnPropertyChanged doesn't work
-                foreach (PlayerData p in PlayerList)
-                    p.IsServerMaster = p.RealPlayerId == serverMasterId;
-                //OnPropertyChanged("PlayerList");
-            });
+                {
+                    foreach (PlayerData p in PlayerList)
+                        p.IsServerMaster = p.RealPlayerId == serverMasterId;
+                });
         }
 
         private void ClearEntries()
@@ -90,23 +91,23 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         {
             // TODO: sort: http://msdn.microsoft.com/en-us/library/ms742542.aspx
             ExecuteOnUIThread.Invoke(() => PlayerList.Add(new PlayerData
-            {
-                RealPlayerId = playerId,
-                PlayerName = playerName,
-                IsServerMaster = false,
-            }));
+                {
+                    RealPlayerId = playerId,
+                    PlayerName = playerName,
+                    IsServerMaster = false,
+                }));
         }
 
         private void DeleteEntry(int playerId, string playerName)
         {
             ExecuteOnUIThread.Invoke(() =>
-            {
-                PlayerData p = PlayerList.FirstOrDefault(x => x.RealPlayerId == playerId);
-                if (p != null)
-                    PlayerList.Remove(p);
-                else
-                    Log.WriteLine(Log.LogLevels.Warning, "Trying to delete unknown player {0}[{1}] from player list", playerId, playerName);
-            });
+                {
+                    PlayerData p = PlayerList.FirstOrDefault(x => x.RealPlayerId == playerId);
+                    if (p != null)
+                        PlayerList.Remove(p);
+                    else
+                        Log.WriteLine(Log.LogLevels.Warning, "Trying to delete unknown player {0}[{1}] from player list", playerId, playerName);
+                });
         }
 
         private void KickPlayer()
@@ -122,6 +123,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         }
 
         #region ViewModelBase
+
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnServerMasterModified -= OnServerMasterModified;
@@ -141,9 +143,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             newClient.OnPlayerUnregistered += OnPlayerUnregistered;
             newClient.OnConnectionLost += OnConnectionLost;
         }
+
         #endregion
 
         #region IClient events handler
+
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
             ClearEntries();
@@ -172,17 +176,20 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             IsServerMaster = Client.IsServerMaster;
         }
 
-        private void OnPlayerRegistered(RegistrationResults result, int playerId)
+        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
         {
             ClearEntries();
             AddEntry(playerId, Client.Name);
             IsServerMaster = Client.IsServerMaster;
         }
+
         #endregion
 
         #region Commands
+
         public ICommand KickPlayerCommand { get; set; }
         public ICommand BanPlayerCommand { get; set; }
+
         #endregion
     }
 }

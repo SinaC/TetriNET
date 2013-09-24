@@ -3,6 +3,7 @@ using TetriNET.Common.Interfaces;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
+    // PlayerViewModel not used
     public class PlayFieldViewModel : ViewModelBase, ITabIndex
     {
         public int OpponentCount = 5;
@@ -18,7 +19,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             InGameChatViewModel = new InGameChatViewModel();
             PlayerViewModel = new PlayerViewModel();
             Opponents = new PlayerViewModel[OpponentCount];
-            for (int i = 0; i < OpponentCount; i++ )
+            for (int i = 0; i < OpponentCount; i++)
                 Opponents[i] = new PlayerViewModel();
 
             ClientChanged += OnClientChanged;
@@ -41,19 +42,25 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         }
 
         #region ITabIndex
-        public int TabIndex { get { return 4; } }
+
+        public int TabIndex
+        {
+            get { return 4; }
+        }
+
         #endregion
 
         #region ViewModelBase
+
         private void OnClientChanged(IClient oldClient, IClient newClient)
         {
             GameInfoViewModel.Client = newClient;
             InGameChatViewModel.Client = newClient;
             PlayerViewModel.Client = newClient;
-            foreach(PlayerViewModel opponent in Opponents)
+            foreach (PlayerViewModel opponent in Opponents)
                 opponent.Client = newClient;
         }
-        
+
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnPlayerJoined -= OnPlayerJoined;
@@ -65,6 +72,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             newClient.OnPlayerJoined += OnPlayerJoined;
             newClient.OnPlayerLeft += OnPlayerLeft;
         }
+
         #endregion
 
         #region IClient events handler

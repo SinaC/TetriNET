@@ -204,9 +204,9 @@ namespace TetriNET.WPF_WCF_Client.AI
                     //System.Threading.Thread.Sleep((int) sleepTime); // delay drop instead of animating
                     //Drop();
 
-                    // Perform move
-                    //  Down 1 time
-                    DownController(1);
+                    //// Perform move
+                    ////  Down 1 time
+                    //DownController(1);
 
                     if (rotationBeforeTranslation)
                     {

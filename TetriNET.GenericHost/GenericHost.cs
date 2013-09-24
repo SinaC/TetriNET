@@ -111,7 +111,7 @@ namespace TetriNET.GenericHost
             {
                 Log.WriteLine(Log.LogLevels.Info, "Register failed for player {0}", playerName);
                 //
-                callback.OnPlayerRegistered(result, -1, false, null);
+                callback.OnPlayerRegistered(result, -1, false, false, null);
             }
         }
 

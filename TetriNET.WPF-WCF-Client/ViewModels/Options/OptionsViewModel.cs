@@ -16,6 +16,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         }
 
         #region ViewModelBase
+
         private void OnClientChanged(IClient oldClient, IClient newClient)
         {
             ClientOptionsViewModel.Client = newClient;
@@ -31,10 +32,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         {
             // NOP
         }
+
         #endregion
 
         #region ITabIndex
-        public int TabIndex { get { return 1; } }
+
+        public int TabIndex
+        {
+            get { return 1; }
+        }
+
         #endregion
     }
 }

@@ -7,15 +7,19 @@ when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 	-> this object is stored in IPlayer and created by createPlayerFunc in host so server or host can ban a player using IPlayer info
 client/server version used when registering
 add room notion in server (server can handle multiple rooms and client register on a room)
-SinaCSpecials: use gravity when board has enough holes or when to high + zebra + clear column + confusion + darkness
+SinaCSpecials: use gravity when board has enough holes or when to high + zebra + clear column + confusion + darkness + immunity + left gravity + mutation
 AdvancedPierreDellacherieOnePiece: finish GetHoleDepthForColumn
 Connect+Register and Disconnect+Unregister should be merged into one method
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
 WPF Client: save win list locally if server master
 Confusion could be managed client-side
 Add Pentaminos (http://en.wikipedia.org/wiki/Pentomino)
-Missing OnPropertyChanged in options when reading them from user settings -> remove client options from model and add them in view model
-New options: random blocks clear count, mutation count, darkness time, confusion time, immunity time
+New options: random blocks clear count, mutation count, darkness time, confusion time, immunity time, random spawn orientation
+Solo mode
+Server integrated in WPF client
+receiving an add line when commiting a piece, line and piece are merged
+wall kick http://tetris.wikia.com/wiki/Wall_kick  http://tetris.wikia.com/wiki/Floor_kick
+display tetrimino instead of text in server options
 
 
 wcf + jquery
@@ -108,3 +112,6 @@ http://tetris.wikia.com/wiki/TetriNet_Rotation_System
 http://tetrisconcept.net/wiki/TetriNet_Rotation_System
 http://harddrop.com/wiki/Tetrinet2
 http://blockbattle.net/tutorial
+
+async relay command
+http://stackoverflow.com/questions/16848562/async-await-in-mvvm-without-void-methods

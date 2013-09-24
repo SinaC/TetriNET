@@ -54,13 +54,14 @@ namespace TetriNET.Server
                 throw new ArgumentNullException("playerManager");
             if (hosts == null)
                 throw new ArgumentNullException("hosts");
-            _options = new GameOptions(); // TODO: get options from save file
+            _options = new GameOptions();
+            _options.ResetToDefault();
 
             _pieceQueue = new PieceQueue(() => RangeRandom.Random(_options.PieceOccurancies));
             _playerManager = playerManager;
             _hosts = hosts.ToList();
             
-            WinList = new List<WinEntry>(); // TODO: get win list from save file
+            WinList = new List<WinEntry>();
 
             foreach (IHost host in _hosts)
             {
@@ -277,6 +278,11 @@ namespace TetriNET.Server
             }
         }
 
+        public GameOptions GetOptions()
+        {
+            return _options;
+        }
+
         private void UpdateWinList(string playerName, int score)
         {
             WinEntry entry = WinList.SingleOrDefault(x => x.PlayerName == playerName);
@@ -299,7 +305,7 @@ namespace TetriNET.Server
             Log.WriteLine(Log.LogLevels.Info, "New player:[{0}]{1}", playerId, player.Name);
 
             // Send player id back to player
-            player.OnPlayerRegistered(RegistrationResults.RegistrationSuccessful, playerId, State == States.GameStarted || State == States.GamePaused, _options);
+            player.OnPlayerRegistered(RegistrationResults.RegistrationSuccessful, playerId, State == States.GameStarted || State == States.GamePaused, _playerManager.ServerMaster == player, _options);
 
             // Inform new player about other players
             foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
@@ -666,7 +672,8 @@ namespace TetriNET.Server
             // Increment special id
             SpecialId++;
             // Send lines to everyone including sender (so attack msg can be displayed)
-            foreach (IPlayer p in _playerManager.Players.Where(x => x.State == PlayerStates.Playing))
+            //foreach (IPlayer p in _playerManager.Players.Where(x => x.State == PlayerStates.Playing))
+            foreach (IPlayer p in _playerManager.Players)
                 p.OnPlayerAddLines(specialId, playerId, count);
         }
 

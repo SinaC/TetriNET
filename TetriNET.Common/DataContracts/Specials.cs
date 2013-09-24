@@ -58,12 +58,12 @@ namespace TetriNET.Common.DataContracts
 
         // Blocktrix (http://en.wikipedia.org/wiki/TetriNET)
         [EnumMember]
-        [Special(false)]
-        ZebraField, // will be available when Left Gravity is implemented
+        [Special(true, 'Z', "Zebra Field")]
+        ZebraField,
         // NOT IMPLEMENTED Piece Change
         [EnumMember]
-        [Special(false)]
-        LeftGravity, // TODO: implement
+        [Special(true, 'L', "Left Gravity")]
+        LeftGravity,
 
         // BlockBattle (http://blockbattle.net/tutorial)
         // NOT IMPLEMENTED Multiplier

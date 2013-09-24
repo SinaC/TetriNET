@@ -3,19 +3,10 @@ using System.Collections.ObjectModel;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.Models;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 {
-    public enum ChatColor
-    {
-        Red,
-        Green,
-        Orange,
-        Blue,
-        Black,
-        Yellow
-    }
-
     public class ChatEntry
     {
         public string PlayerName { get; set; }
@@ -37,10 +28,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         private string _inputChat;
         public string InputChat
         {
-            get
-            {
-                return _inputChat;
-            }
+            get { return _inputChat; }
             set
             {
                 if (value != null)
@@ -70,20 +58,21 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         private void AddEntry(string msg, ChatColor color, string playerName = null)
         {
             ExecuteOnUIThread.Invoke(() =>
-            {
-                ChatEntries.Add(new ChatEntry
                 {
-                    PlayerName = playerName,
-                    Msg = msg,
-                    IsPlayerVisible = !String.IsNullOrEmpty(playerName),
-                    Color = color,
+                    ChatEntries.Add(new ChatEntry
+                        {
+                            PlayerName = playerName,
+                            Msg = msg,
+                            IsPlayerVisible = !String.IsNullOrEmpty(playerName),
+                            Color = color,
+                        });
+                    if (ChatEntries.Count > MaxEntries)
+                        ChatEntries.RemoveAt(0);
                 });
-                if (ChatEntries.Count > MaxEntries)
-                    ChatEntries.RemoveAt(0);
-            });
         }
 
         #region ViewModelBase
+
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnPlayerPublishMessage -= OnPlayerPublishMessage;
@@ -119,6 +108,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             newClient.OnConnectionLost += OnConnectionLost;
             newClient.OnPlayerUnregistered += OnPlayerUnregistered;
         }
+
         #endregion
 
         #region IClient events handler
@@ -175,7 +165,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             AddEntry(String.Format("*** {0} has joined", playerName), ChatColor.Green);
         }
 
-        private void OnPlayerRegistered(RegistrationResults result, int playerId)
+        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
         {
             if (result == RegistrationResults.RegistrationSuccessful)
             {

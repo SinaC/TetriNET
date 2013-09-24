@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using TetriNET.Common.Attributes;
 using TetriNET.Common.Helpers;
 
 namespace TetriNET.Common.DataContracts
@@ -36,7 +35,7 @@ namespace TetriNET.Common.DataContracts
         [DataMember]
         public int SuddenDeathTick { get; set; } // 1 -> 30, in seconds
 
-        public GameOptions()
+        public void ResetToDefault()
         {
             // Default options
             PieceOccurancies = new List<PieceOccurancy>
@@ -129,11 +128,11 @@ namespace TetriNET.Common.DataContracts
                     Value = Specials.ClearColumn,
                     Occurancy = 0
                 },
-                //new SpecialOccurancy
-                //{
-                //    Value = Specials.Immunity,
-                //    Occurancy = 0
-                //},
+                new SpecialOccurancy
+                {
+                    Value = Specials.Immunity,
+                    Occurancy = 0
+                },
                 new SpecialOccurancy
                 {
                     Value = Specials.Darkness,
@@ -149,16 +148,16 @@ namespace TetriNET.Common.DataContracts
                     Value = Specials.Mutation,
                     Occurancy = 0
                 },
-                //new SpecialOccurancy // will be available when Left Gravity is implemented
-                //{
-                //    Value = Specials.ZebraField,
-                //    Occurancy = 0
-                //},
-                //new SpecialOccurancy // will be available when Left Gravity is implemented
-                //{
-                //    Value = Specials.LeftGravity,
-                //    Occurancy = 0
-                //},
+                new SpecialOccurancy // will be available when Left Gravity is implemented
+                {
+                    Value = Specials.ZebraField,
+                    Occurancy = 0
+                },
+                new SpecialOccurancy // will be available when Left Gravity is implemented
+                {
+                    Value = Specials.LeftGravity,
+                    Occurancy = 0
+                },
             };
             ClassicStyleMultiplayerRules = true;
             InventorySize = 10;
@@ -168,12 +167,12 @@ namespace TetriNET.Common.DataContracts
             DelayBeforeSuddenDeath = 0;
             SuddenDeathTick = 1;
 
-            foreach (Pieces piece in EnumHelper.GetPieces(available => available))
+            foreach (Pieces piece in EnumHelper.GetPieces(available => available).Where(piece => PieceOccurancies.All(x => x.Value != piece)))
                 PieceOccurancies.Add(new PieceOccurancy
-                {
-                    Value = piece,
-                    Occurancy = 0
-                });
+                    {
+                        Value = piece,
+                        Occurancy = 0
+                    });
             foreach (Specials special in EnumHelper.GetSpecials(available => available).Where(special => SpecialOccurancies.All(x => x.Value != special)))
                 SpecialOccurancies.Add(new SpecialOccurancy // will be available when Left Gravity is implemented
                 {

@@ -6,7 +6,7 @@ using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.Strategy;
 using TetriNET.WPF_WCF_Client.AI;
-using TetriNET.WPF_WCF_Client.Models;
+using TetriNET.WPF_WCF_Client.ViewModels.Options;
 using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
 
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
@@ -51,7 +51,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
         }
 
-        private void OnPlayerRegistered(RegistrationResults result, int playerId)
+        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
         {
             if (result == RegistrationResults.RegistrationSuccessful)
                 _playerId = playerId;
@@ -61,22 +61,22 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnGameStarted()
         {
-            if (Models.Options.OptionsSingleton.Instance.DropSensibilityActivated)
+            if (ClientOptionsViewModel.Instance.DropSensibilityActivated)
                 _controller.RemoveSensibility(Commands.Drop);
             else
-                _controller.AddSensibility(Commands.Drop, Models.Options.OptionsSingleton.Instance.DropSensibility);
-            if (Models.Options.OptionsSingleton.Instance.DownSensibilityActivated)
+                _controller.AddSensibility(Commands.Drop, ClientOptionsViewModel.Instance.DropSensibility);
+            if (ClientOptionsViewModel.Instance.DownSensibilityActivated)
                 _controller.RemoveSensibility(Commands.Down);
             else
-                _controller.AddSensibility(Commands.Down, Models.Options.OptionsSingleton.Instance.DownSensibility);
-            if (Models.Options.OptionsSingleton.Instance.LeftSensibilityActivated)
+                _controller.AddSensibility(Commands.Down, ClientOptionsViewModel.Instance.DownSensibility);
+            if (ClientOptionsViewModel.Instance.LeftSensibilityActivated)
                 _controller.RemoveSensibility(Commands.Left);
             else
-                _controller.AddSensibility(Commands.Left, Models.Options.OptionsSingleton.Instance.LeftSensibility);
-            if (Models.Options.OptionsSingleton.Instance.RightSensibilityActivated)
+                _controller.AddSensibility(Commands.Left, ClientOptionsViewModel.Instance.LeftSensibility);
+            if (ClientOptionsViewModel.Instance.RightSensibilityActivated)
                 _controller.RemoveSensibility(Commands.Right);
             else
-                _controller.AddSensibility(Commands.Down, Models.Options.OptionsSingleton.Instance.RightSensibility);
+                _controller.AddSensibility(Commands.Down, ClientOptionsViewModel.Instance.RightSensibility);
         }
 
         #endregion
@@ -133,9 +133,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         
         #endregion
 
-        private static Commands MapKeyToCommand(Key key)
+        private Commands MapKeyToCommand(Key key)
         {
-            KeySetting keySetting = Models.Options.OptionsSingleton.Instance.KeySettings.FirstOrDefault(x => x.Key == key);
+            KeySetting keySetting = ClientOptionsViewModel.Instance.KeySettings.FirstOrDefault(x => x.Key == key);
             if (keySetting != null)
                 return keySetting.Command;
             switch (key)

@@ -179,9 +179,9 @@ namespace TetriNET.ConsoleWCFServer
             ResetTimeout();
         }
 
-        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, GameOptions options)
+        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
         {
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "OnPlayerRegistered[{0}]:{1} => {2} {3}", PlayerName, result, playerId, gameStarted);
+            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "OnPlayerRegistered[{0}]:{1} => {2} {3} {4}", PlayerName, result, playerId, gameStarted, isServerMaster);
             ResetTimeout();
             if (result == RegistrationResults.RegistrationSuccessful)
             {

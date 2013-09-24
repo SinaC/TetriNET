@@ -13,7 +13,6 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers"
         xmlns:test="clr-namespace:TetriNET.WPF_WCF_Client.Views.Test"
-        xmlns:models="clr-namespace:TetriNET.WPF_WCF_Client.Models"
         mc:Ignorable="d"
         UseLayoutRounding="True"
         WindowStyle="None"
@@ -90,10 +89,10 @@
             <TabItem Header="Play fields">
                 <playField:PlayFieldView DataContext="{Binding Path=PlayFieldViewModel}"/>
             </TabItem>
-            <TabItem Header="Client statistics" Visibility="{Binding Source={x:Static models:Options.OptionsSingleton}, Path=Instance.IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TabItem Header="Client statistics" Visibility="{Binding Path=OptionsViewModel.ClientOptionsViewModel.IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <statistics:ClientStatisticsView DataContext="{Binding Path=ClientStatisticsViewModel}"/>
             </TabItem>
-            <TabItem Header="Textures test" Visibility="{Binding Source={x:Static models:Options.OptionsSingleton}, Path=Instance.IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TabItem Header="Textures test" Visibility="{Binding Path=OptionsViewModel.ClientOptionsViewModel.IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <test:TestView />
             </TabItem>
 <!--

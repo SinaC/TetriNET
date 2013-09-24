@@ -10,6 +10,7 @@ using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.Strategy;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.ViewModels.Options;
 
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
@@ -92,6 +93,20 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
         }
 
+        private bool _hasLost;
+        public bool HasLost
+        {
+            get { return _hasLost; }
+            set
+            {
+                if (_hasLost != value)
+                {
+                    _hasLost = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private bool _isDarknessActive;
         private bool _isHintActivated;
         private bool _displayDropLocation;
@@ -107,14 +122,15 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             _displayDropLocation = false;
 
             PlayerId = -1;
+            HasLost = false;
 
             if (!DesignerProperties.GetIsInDesignMode(this))
                 CanvasBackground = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
             else
                 CanvasBackground = new SolidColorBrush(Colors.Black);
 
-            for(int y = 0; y < Models.Options.Height; y++)
-                for (int x = 0; x < Models.Options.Width; x++)
+            for (int y = 0; y < ClientOptionsViewModel.Height; y++)
+                for (int x = 0; x < ClientOptionsViewModel.Width; x++)
                 {
                     int canvasLeft = x * (CellWidth + MarginWidth);
                     int canvasTop = y * (CellHeight + MarginHeight);
@@ -291,9 +307,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private Rectangle GetControl(int cellX, int cellY)
         {
-            if (cellX < 0 || cellX >= Models.Options.Width || cellY < 0 || cellY >= Models.Options.Height)
+            if (cellX < 0 || cellX >= ClientOptionsViewModel.Width || cellY < 0 || cellY >= ClientOptionsViewModel.Height)
                 return null;
-            return _grid[cellX + cellY * Models.Options.Width];
+            return _grid[cellX + cellY * ClientOptionsViewModel.Width];
         }
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -309,6 +325,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     oldClient.OnPlayerRegistered -= @this.OnPlayerRegistered;
                     oldClient.OnPlayerUnregistered -= @this.OnPlayerUnregistered;
                     oldClient.OnConnectionLost -= @this.OnConnectionLost;
+                    oldClient.OnGameOver -= @this.OnGameOver;
                     oldClient.OnGameStarted -= @this.OnGameStarted;
                     oldClient.OnRoundStarted -= @this.OnRoundStarted;
                     oldClient.OnPieceMoved -= @this.OnPieceMoved;
@@ -325,6 +342,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     newClient.OnPlayerRegistered += @this.OnPlayerRegistered;
                     newClient.OnPlayerUnregistered += @this.OnPlayerUnregistered;
                     newClient.OnConnectionLost += @this.OnConnectionLost;
+                    newClient.OnGameOver += @this.OnGameOver;
                     newClient.OnGameStarted += @this.OnGameStarted;
                     newClient.OnRoundStarted += @this.OnRoundStarted;
                     newClient.OnPieceMoved += @this.OnPieceMoved;
@@ -368,28 +386,36 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnGameStarted()
         {
-            _displayDropLocation = Models.Options.OptionsSingleton.Instance.DisplayDropLocation;
+            _displayDropLocation = ClientOptionsViewModel.Instance.DisplayDropLocation;
             _pieceHint = null; // reset hint>
             ExecuteOnUIThread.Invoke(DrawEverything);
+        }
+
+        private void OnGameOver()
+        {
+            HasLost = true;
         }
 
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
             PlayerId = -1;
+            HasLost = false;
             BorderColor = TransparentColor;
         }
 
-        private void OnPlayerRegistered(RegistrationResults result, int playerId)
+        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
         {
             if (result == RegistrationResults.RegistrationSuccessful)
                 PlayerId = playerId;
             else
                 PlayerId = -1;
+            HasLost = false;
         }
 
         private void OnPlayerUnregistered()
         {
             PlayerId = -1;
+            HasLost = false;
             BorderColor = TransparentColor;
         }
 

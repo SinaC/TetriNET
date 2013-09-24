@@ -16,7 +16,7 @@ namespace TetriNET.Strategy.Move_strategies
             double currentBestRating = -1.0e+20; // Really bad!
             int currentBestPriority = 0;
 
-            current.Translate(0, -1);
+            //current.Translate(0, -1);
 
             IBoard tempBoard = board.Clone();
             IPiece tempPiece = current.Clone();

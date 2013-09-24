@@ -17,7 +17,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
     public class InGameChatViewModel : ViewModelBase
     {
-        private const int MaxEntries = 15;
+        private const int MaxEntries = 12;
 
         private readonly ObservableCollection<InGameChatEntry> _entries = new ObservableCollection<InGameChatEntry>();
         public ObservableCollection<InGameChatEntry> Entries
@@ -29,18 +29,18 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         private void AddEntry(int id, string special, string source, string target = null)
         {
             ExecuteOnUIThread.Invoke(() =>
-            {
-                Entries.Add(new InGameChatEntry
                 {
-                    Id = id,
-                    Special = special,
-                    Source = source,
-                    Target = target,
-                    IsTargetVisible = !String.IsNullOrEmpty(target)
+                    Entries.Add(new InGameChatEntry
+                        {
+                            Id = id,
+                            Special = special,
+                            Source = source,
+                            Target = target,
+                            IsTargetVisible = !String.IsNullOrEmpty(target)
+                        });
+                    if (Entries.Count > MaxEntries)
+                        Entries.RemoveAt(0);
                 });
-                if (Entries.Count > MaxEntries)
-                    Entries.RemoveAt(0);
-            });
         }
 
         private void ClearEntries()
@@ -49,6 +49,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         }
 
         #region ViewModelBase
+
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnGameStarted -= OnGameStarted;
@@ -62,9 +63,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             newClient.OnPlayerAddLines += OnPlayerAddLines;
             newClient.OnSpecialUsed += OnSpecialUsed;
         }
+
         #endregion
 
         #region IClient events handler
+
         private void OnGameStarted()
         {
             ClearEntries();
@@ -79,6 +82,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         {
             AddEntry(specialId + 1, Mapper.MapSpecialToString(special), playerName, targetName);
         }
+
         #endregion
     }
 }

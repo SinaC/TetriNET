@@ -1,5 +1,8 @@
-﻿using System.Windows.Input;
+﻿using System.Linq;
+using System.Windows.Input;
+using TetriNET.Common.Attributes;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.Properties;
@@ -8,7 +11,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 {
     public class ServerOptionsViewModel : ViewModelBase
     {
-        public bool IsEnabled { get { return IsGameNotStarted && IsServerMaster; } }
+        public static ServerOptionsViewModel Instance { get; private set; }
+
+        public bool IsEnabled
+        {
+            get { return IsGameNotStarted && IsServerMaster; }
+        }
 
         private bool _isGameNotStarted;
         public bool IsGameNotStarted
@@ -40,19 +48,28 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             }
         }
 
-        public Models.Options Options
+        private GameOptions _options;
+        public GameOptions Options
         {
-            get { return Models.Options.OptionsSingleton.Instance; }
+            get { return _options; }
+            set
+            {
+                if (_options != value)
+                {
+                    _options = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         public int PiecesSum
         {
-            get { return Common.Randomizer.RangeRandom.SumOccurancies(Options.ServerOptions.PieceOccurancies); }
+            get { return Common.Randomizer.RangeRandom.SumOccurancies(Options.PieceOccurancies); }
         }
 
         public int SpecialsSum
         {
-            get { return Common.Randomizer.RangeRandom.SumOccurancies(Options.ServerOptions.SpecialOccurancies); }
+            get { return Common.Randomizer.RangeRandom.SumOccurancies(Options.SpecialOccurancies); }
         }
 
         public bool IsPiecesSumValid
@@ -72,7 +89,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         public ServerOptionsViewModel()
         {
+            Instance = this;
+
             IsGameNotStarted = true;
+
+            ClientChanged += OnClientChanged;
 
             SendOptionsToServerCommand = new RelayCommand(SendOptionsToServer);
             ResetOptionsCommand = new RelayCommand(ResetOptions);
@@ -82,15 +103,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         private void SendOptionsToServer()
         {
-            Client.ChangeOptions(Models.Options.OptionsSingleton.Instance.ServerOptions);
-            Settings.Default.GameOptions = Models.Options.OptionsSingleton.Instance.ServerOptions;
+            Client.ChangeOptions(Options);
+            Settings.Default.GameOptions = Options;
             Settings.Default.Save();
         }
 
         private void ResetOptions()
         {
-            Models.Options.OptionsSingleton.Instance.ServerOptions = new GameOptions();
-            OnPropertyChanged("Options");
+            Options.ResetToDefault();
         }
 
         private void UpdateSpecialOccurancy()
@@ -109,6 +129,27 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #region ViewModelBase
 
+        private void OnClientChanged(IClient oldClient, IClient newClient)
+        {
+            Options = Settings.Default.GameOptions ?? Client.Options;
+            // Add defaut values if needed
+            foreach (Pieces piece in EnumHelper.GetPieces(available => available).Where(piece => Options.PieceOccurancies.All(x => x.Value != piece)))
+                Options.PieceOccurancies.Add(new PieceOccurancy
+                    {
+                        Value = piece,
+                        Occurancy = 0
+                    });
+            foreach (Specials special in EnumHelper.GetSpecials(available => available).Where(special => Options.SpecialOccurancies.All(x => x.Value != special)))
+                Options.SpecialOccurancies.Add(new SpecialOccurancy
+                    {
+                        Value = special,
+                        Occurancy = 0
+                    });
+            // Remove invalid values
+            Options.PieceOccurancies = Options.PieceOccurancies.Where(x => EnumHelper.GetAttribute<PieceAttribute>(x.Value) != null && EnumHelper.GetAttribute<PieceAttribute>(x.Value).Available).ToList();
+            Options.SpecialOccurancies = Options.SpecialOccurancies.Where(x => EnumHelper.GetAttribute<SpecialAttribute>(x.Value) != null && EnumHelper.GetAttribute<SpecialAttribute>(x.Value).Available).ToList();
+        }
+
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnGameFinished -= OnGameFinished;
@@ -116,6 +157,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             oldClient.OnServerMasterModified -= OnServerMasterModified;
             oldClient.OnConnectionLost -= OnConnectionLost;
             oldClient.OnPlayerUnregistered -= OnPlayerUnregister;
+            oldClient.OnPlayerRegistered -= OnPlayerRegistered;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
@@ -125,11 +167,24 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             newClient.OnServerMasterModified += OnServerMasterModified;
             newClient.OnConnectionLost += OnConnectionLost;
             newClient.OnPlayerUnregistered += OnPlayerUnregister;
+            newClient.OnPlayerRegistered += OnPlayerRegistered;
         }
 
         #endregion
 
         #region IClient events handler
+
+        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
+        {
+            if (result == RegistrationResults.RegistrationSuccessful)
+            {
+                if (Client.IsServerMaster)
+                    Client.ChangeOptions(Options);
+                else
+                    Options = Client.Options;
+                IsGameNotStarted = !Client.IsGameStarted;
+            }
+        }
 
         private void OnPlayerUnregister()
         {
@@ -151,8 +206,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         private void OnGameStarted()
         {
             IsGameNotStarted = false;
-            Models.Options.OptionsSingleton.Instance.ServerOptions = Client.Options;
-            OnPropertyChanged("Options");
+            Options = Client.Options;
         }
 
         private void OnGameFinished()

@@ -16,6 +16,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" MaxWidth="192">
+            <TextBlock Text="[L]" Visibility="{Binding HasLost, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,2,0"/>
             <TextBlock Text="{Binding DisplayPlayerId}" Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             <TextBlock Text="." Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,2,0"/>
             <TextBlock Text="{Binding PlayerName}" />

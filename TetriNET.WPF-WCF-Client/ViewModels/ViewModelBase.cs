@@ -11,11 +11,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         public event ClientChangedEventHandler ClientChanged;
 
         private IClient _client;
-        public IClient Client {
-            get
-            {
-                return _client;
-            }
+        public IClient Client
+        {
+            get { return _client; }
             set
             {
                 if (_client != value)

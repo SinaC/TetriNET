@@ -29,10 +29,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
                 foreach (KeyValuePair<Pieces, int> kv in Client.Statistics.PieceCount)
                 {
                     returnValue.Add(kv.Key, new ValuePercentage
-                    {
-                        Value = kv.Value,
-                        Percentage = sum == 0 ? 0 : (100 * kv.Value) / sum
-                    });
+                        {
+                            Value = kv.Value,
+                            Percentage = sum == 0 ? 0 : (100*kv.Value)/sum
+                        });
                 }
                 return returnValue;
             }
@@ -49,10 +49,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
                 foreach (KeyValuePair<Specials, int> kv in Client.Statistics.SpecialCount)
                 {
                     returnValue.Add(kv.Key, new ValuePercentage
-                    {
-                        Value = kv.Value,
-                        Percentage = sum == 0 ? 0 : (100 * kv.Value) / sum
-                    });
+                        {
+                            Value = kv.Value,
+                            Percentage = sum == 0 ? 0 : (100*kv.Value)/sum
+                        });
                 }
                 return returnValue;
             }
@@ -69,10 +69,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
                 foreach (KeyValuePair<Specials, int> kv in Client.Statistics.SpecialUsed)
                 {
                     returnValue.Add(kv.Key, new ValuePercentage
-                    {
-                        Value = kv.Value,
-                        Percentage = sum == 0 ? 0 : (100 * kv.Value) / sum
-                    });
+                        {
+                            Value = kv.Value,
+                            Percentage = sum == 0 ? 0 : (100*kv.Value)/sum
+                        });
                 }
                 return returnValue;
             }
@@ -89,10 +89,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
                 foreach (KeyValuePair<Specials, int> kv in Client.Statistics.SpecialDiscarded)
                 {
                     returnValue.Add(kv.Key, new ValuePercentage
-                    {
-                        Value = kv.Value,
-                        Percentage = sum == 0 ? 0 : (100 * kv.Value) / sum
-                    });
+                        {
+                            Value = kv.Value,
+                            Percentage = sum == 0 ? 0 : (100*kv.Value)/sum
+                        });
                 }
                 return returnValue;
             }
@@ -118,8 +118,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             get { return Client == null ? 0 : Client.Statistics.SpecialDiscarded.Values.Sum(); }
         }
 
-        public int EndOfPieceQueueReached { get { return Client == null ? 0 : Client.Statistics.EndOfPieceQueueReached; } }
-        public int NextPieceNotYetReceived { get { return Client == null ? 0 : Client.Statistics.NextPieceNotYetReceived; } }
+        public int EndOfPieceQueueReached
+        {
+            get { return Client == null ? 0 : Client.Statistics.EndOfPieceQueueReached; }
+        }
+        public int NextPieceNotYetReceived
+        {
+            get { return Client == null ? 0 : Client.Statistics.NextPieceNotYetReceived; }
+        }
 
         private DateTime _gameStartedDateTime;
         public double LinesPerSec
@@ -132,7 +138,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
                 double totalSeconds = timeSpan.TotalSeconds;
                 if (totalSeconds < 0.0001)
                     return 0;
-                return Client.LinesCleared / totalSeconds;
+                return Client.LinesCleared/totalSeconds;
             }
         }
 
@@ -157,10 +163,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         }
 
         #region ITabIndex
-        public int TabIndex { get { return 5; } }
+
+        public int TabIndex
+        {
+            get { return 5; }
+        }
+
         #endregion
 
         #region ViewModelBase
+
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnGameStarted -= OnGameStarted;
@@ -174,6 +186,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             newClient.OnGameFinished += OnGameFinished;
             newClient.OnGameOver += OnGameOver;
         }
+
         #endregion
 
         #region IClient events handler
@@ -196,7 +209,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         #endregion
 
         #region Commands
+
         public ICommand RefreshStatisticsCommand { get; set; }
+
         #endregion
     }
 }

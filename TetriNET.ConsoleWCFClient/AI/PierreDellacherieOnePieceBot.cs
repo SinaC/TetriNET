@@ -26,7 +26,7 @@ namespace TetriNET.ConsoleWCFClient.AI
             _moveStrategy = new PierreDellacherieOnePiece();
 
             _activated = false;
-            SleepTime = 100;
+            SleepTime = 50;
 
             _client.OnRoundStarted += _client_OnRoundStarted;
             _client.OnGameStarted += client_OnGameStarted;

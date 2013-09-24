@@ -11,8 +11,8 @@ namespace TetriNET.Strategy.Move_strategies
             int currentBestRotationDelta = 0;
             double currentBestRating = -1.0e+20; // Really bad!
 
-            if (current.PosY == board.Height) // TODO: put current totally in board before trying to get best move
-                current.Translate(0, -1);
+            //if (current.PosY == board.Height) // TODO: put current totally in board before trying to get best move
+            //    current.Translate(0, -1);
 
             IBoard tempBoard = board.Clone();
             IPiece tempPiece = current.Clone();

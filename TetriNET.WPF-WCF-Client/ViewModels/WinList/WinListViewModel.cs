@@ -43,26 +43,34 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
         }
 
         #region ITabIndex
-        public int TabIndex { get { return 2; } }
+
+        public int TabIndex
+        {
+            get { return 2; }
+        }
+
         #endregion
 
         #region ViewModelBase
+
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnServerMasterModified -= OnServerMasterModified;
             oldClient.OnWinListModified -= OnWinListModified;
             oldClient.OnConnectionLost -= OnConnectionLost;
         }
-        
+
         public override void SubscribeToClientEvents(IClient newClient)
         {
             newClient.OnServerMasterModified += OnServerMasterModified;
             newClient.OnWinListModified += OnWinListModified;
             newClient.OnConnectionLost += OnConnectionLost;
         }
+
         #endregion
 
         #region IClient events handler
+
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
             IsServerMaster = false;
@@ -77,6 +85,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
         {
             IsServerMaster = Client.IsServerMaster;
         }
+
         #endregion
 
         #region Commands

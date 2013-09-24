@@ -9,6 +9,7 @@ using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.ViewModels.Options;
 
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
@@ -81,6 +82,20 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
         }
 
+        private bool _hasLost;
+        public bool HasLost
+        {
+            get { return _hasLost; }
+            set
+            {
+                if (_hasLost != value)
+                {
+                    _hasLost = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
         public OpponentGridControl()
@@ -89,14 +104,15 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
             PlayerId = -1;
             PlayerName = "Not playing";
+            HasLost = false;
             
             if (!DesignerProperties.GetIsInDesignMode(this))
             {
                 Canvas.Background = TextureManager.TextureManager.TexturesSingleton.Instance.GetSmallBackground();
             }
 
-            for (int y = 0; y < Models.Options.Height; y++)
-                for (int x = 0; x < Models.Options.Width; x++)
+            for (int y = 0; y < ClientOptionsViewModel.Height; y++)
+                for (int x = 0; x < ClientOptionsViewModel.Width; x++)
                 {
                     int canvasLeft = x * (CellWidth + MarginWidth);
                     int canvasTop = y * (CellHeight + MarginHeight);
@@ -150,9 +166,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private Rectangle GetControl(int cellX, int cellY)
         {
-            if (cellX < 0 || cellX >= Models.Options.Width || cellY < 0 || cellY >= Models.Options.Height)
+            if (cellX < 0 || cellX >= ClientOptionsViewModel.Width || cellY < 0 || cellY >= ClientOptionsViewModel.Height)
                 return null;
-            return _grid[cellX + cellY * Models.Options.Width];
+            return _grid[cellX + cellY * ClientOptionsViewModel.Width];
         }
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -167,6 +183,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 {
                     oldClient.OnPlayerUnregistered -= @this.OnPlayerUnregistered;
                     oldClient.OnConnectionLost -= @this.OnConnectionLost;
+                    oldClient.OnPlayerLost -= @this.OnPlayerLost;
                     oldClient.OnGameStarted -= @this.OnGameStarted;
                     oldClient.OnRedrawBoard -= @this.OnRedrawBoard;
                     oldClient.OnSpecialUsed -= @this.OnSpecialUsed;
@@ -180,6 +197,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 {
                     newClient.OnPlayerUnregistered += @this.OnPlayerUnregistered;
                     newClient.OnConnectionLost += @this.OnConnectionLost;
+                    newClient.OnPlayerLost += @this.OnPlayerLost;
                     newClient.OnGameStarted += @this.OnGameStarted;
                     newClient.OnRedrawBoard += @this.OnRedrawBoard;
                     newClient.OnSpecialUsed += @this.OnSpecialUsed;
@@ -197,20 +215,28 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnGameStarted()
         {
+            HasLost = false;
             BorderColor = TransparentColor;
             ExecuteOnUIThread.Invoke(ClearGrid);
         }
 
         private void OnRedrawBoard(int playerId, IBoard board)
         {
-            if (playerId == PlayerId && (Client.IsPlaying || Models.Options.OptionsSingleton.Instance.DisplayOpponentsFieldEvenWhenNotPlaying))
+            if (playerId == PlayerId && (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying))
                 ExecuteOnUIThread.Invoke(() => DrawGrid(board));
+        }
+
+        private void OnPlayerLost(int playerId, string playerName)
+        {
+            if (playerId == PlayerId)
+                HasLost = true;
         }
 
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
             PlayerId = -1;
             PlayerName = "Not playing";
+            HasLost = false;
             BorderColor = TransparentColor;
         }
 
@@ -218,6 +244,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         {
             PlayerId = -1;
             PlayerName = "Not playing";
+            HasLost = false;
             BorderColor = TransparentColor;
         }
 

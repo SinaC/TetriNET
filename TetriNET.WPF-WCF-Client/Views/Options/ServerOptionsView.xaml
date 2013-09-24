@@ -7,9 +7,20 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:validators="clr-namespace:TetriNET.WPF_WCF_Client.Validators"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers" mc:Ignorable="d" 
+             xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers"
+             xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
+             mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640"
              d:DataContext="{d:DesignInstance options:ServerOptionsViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <converters:SpecialToStringConverter x:Key="SpecialToStringConverter"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid IsEnabled="{Binding IsEnabled}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -31,21 +42,21 @@
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Classic Style Multiplayer Rules"/>
-                <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding Options.ServerOptions.ClassicStyleMultiplayerRules}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding Options.ClassicStyleMultiplayerRules}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Lines to Make For Special Block:"/>
-                <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Options.ServerOptions.LinesToMakeForSpecials}" Minimum="1" Maximum="4" />
+                <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Options.LinesToMakeForSpecials}" Minimum="1" Maximum="4" />
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Number of Special Blocks Added Each Time:"/>
-                <xctk:IntegerUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Options.ServerOptions.SpecialsAddedEachTime}" Minimum="1" Maximum="4" />
+                <xctk:IntegerUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Options.SpecialsAddedEachTime}" Minimum="1" Maximum="4" />
                 <TextBlock Grid.Row="0" Grid.Column="2" Text="Capacity of Special Block Inventory:" Margin="4,0,0,0"/>
-                <xctk:IntegerUpDown Grid.Row="0" Grid.Column="3" Value="{Binding Options.ServerOptions.InventorySize}" Minimum="1" Maximum="15" />
+                <xctk:IntegerUpDown Grid.Row="0" Grid.Column="3" Value="{Binding Options.InventorySize}" Minimum="1" Maximum="15" />
                 <TextBlock Grid.Row="1" Grid.Column="2" Text="Minutes Before Lines Start Being Added:" Margin="4,0,0,0"/>
-                <xctk:IntegerUpDown Grid.Row="1" Grid.Column="3" Value="{Binding Options.ServerOptions.DelayBeforeSuddenDeath}" Minimum="0" Maximum="15" />
+                <xctk:IntegerUpDown Grid.Row="1" Grid.Column="3" Value="{Binding Options.DelayBeforeSuddenDeath}" Minimum="0" Maximum="15" />
                 <TextBlock Grid.Row="2" Grid.Column="2" Text="Seconds Between Lines Being Added:" Margin="4,0,0,0"/>
-                <xctk:IntegerUpDown Grid.Row="2" Grid.Column="3" Value="{Binding Options.ServerOptions.SuddenDeathTick}" Minimum="1" Maximum="30" />
+                <xctk:IntegerUpDown Grid.Row="2" Grid.Column="3" Value="{Binding Options.SuddenDeathTick}" Minimum="1" Maximum="30" />
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Starting level:" Margin="0,0,5,0"/>
                 <TextBox Grid.Row="3" Grid.Column="1" MaxWidth="40" Width="40" Height="20">
                     <TextBox.Text>
-                        <Binding Path="Options.ServerOptions.StartingLevel" UpdateSourceTrigger="PropertyChanged">
+                        <Binding Path="Options.StartingLevel" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
                                 <validators:NumericValidationRule Minimum="0" Maximum="100"/>
                             </Binding.ValidationRules>
@@ -86,7 +97,7 @@
                     </DataTemplate>
                 </GroupBox.HeaderTemplate>
                 <ItemsControl Grid.IsSharedSizeScope="True" MaxHeight="200"
-                    ItemsSource="{Binding Options.ServerOptions.PieceOccurancies}">
+                    ItemsSource="{Binding Options.PieceOccurancies}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Vertical" />
@@ -146,7 +157,7 @@
                     </DataTemplate>
                 </GroupBox.HeaderTemplate>
                 <ItemsControl Grid.IsSharedSizeScope="True" MaxHeight="200"
-                    ItemsSource="{Binding Options.ServerOptions.SpecialOccurancies}">
+                    ItemsSource="{Binding Options.SpecialOccurancies}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Vertical" />
@@ -159,7 +170,7 @@
                                     <ColumnDefinition Width="Auto" SharedSizeGroup="SpecialValue" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Value}" Margin="5,0,5,0" />
+                                <TextBlock Text="{Binding Value, Converter={StaticResource SpecialToStringConverter}}" Margin="5,0,5,0" />
                                 <TextBox Grid.Column="1" MaxWidth="40" Width="40">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="TextChanged">

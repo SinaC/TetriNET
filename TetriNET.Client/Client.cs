@@ -86,6 +86,7 @@ namespace TetriNET.Client
 
             // default options
             Options = new GameOptions();
+            Options.ResetToDefault();
 
             _pieces = new PieceArray(64);
             _inventory = new Inventory(Options.InventorySize);
@@ -150,7 +151,7 @@ namespace TetriNET.Client
             ConnectionLostHandler();
         }
 
-        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool isGameStarted, GameOptions options)
+        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool isGameStarted, bool isServerMaster, GameOptions options)
         {
             ResetTimeout();
             if (result == RegistrationResults.RegistrationSuccessful && State == States.Registering)
@@ -171,11 +172,11 @@ namespace TetriNET.Client
 
                     State = States.Registered;
                     ServerState = isGameStarted ? ServerStates.Playing : ServerStates.Waiting;// TODO: handle server paused
-
+                    IsServerMaster = isServerMaster;
                     Options = options;
 
                     if (ClientOnPlayerRegistered != null)
-                        ClientOnPlayerRegistered(RegistrationResults.RegistrationSuccessful, playerId);
+                        ClientOnPlayerRegistered(RegistrationResults.RegistrationSuccessful, playerId, isServerMaster);
 
                     if (isGameStarted)
                     {
@@ -192,7 +193,7 @@ namespace TetriNET.Client
                     Log.WriteLine(Log.LogLevels.Warning, "Wrong id {0}", playerId);
 
                     if (ClientOnPlayerRegistered != null)
-                        ClientOnPlayerRegistered(RegistrationResults.RegistrationFailedInvalidId, -1);
+                        ClientOnPlayerRegistered(RegistrationResults.RegistrationFailedInvalidId, -1, false);
                 }
             }
             else
@@ -201,7 +202,7 @@ namespace TetriNET.Client
                 IsServerMaster = false;
 
                 if (ClientOnPlayerRegistered != null)
-                    ClientOnPlayerRegistered(result, -1);
+                    ClientOnPlayerRegistered(result, -1, false);
 
                 Log.WriteLine(Log.LogLevels.Info, "Registration failed {0}", result);
             }
@@ -675,11 +676,7 @@ namespace TetriNET.Client
                 Log.WriteLine(Log.LogLevels.Warning, "Next piece not yet received from server, server is definitively too slow or we are too fast");
                 _statistics.NextPieceNotYetReceived++;
             }
-            if (_mutationCount > 0)
-                NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, _pieceIndex + 1, true); // need to display next piece
-            else
-                NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, _pieceIndex + 1, false);
-
+            NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, _pieceIndex + 1, _mutationCount > 0);
             //if (ClientOnPieceMoved != null)
             //    ClientOnPieceMoved();
             // Inform UI
@@ -1765,7 +1762,11 @@ namespace TetriNET.Client
 
         private void LeftGravity()
         {
-            // TODO
+            Board.LeftGravity();
+            _proxy.ModifyGrid(this, Player.Board.Cells);
+
+            if (ClientOnRedraw != null)
+                ClientOnRedraw();
         }
 
         #endregion

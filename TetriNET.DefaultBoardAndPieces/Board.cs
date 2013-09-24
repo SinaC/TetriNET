@@ -152,33 +152,33 @@ namespace TetriNET.DefaultBoardAndPieces
             return true;
         }
 
-        public bool CheckNoConflictWithBoard(IPiece piece, bool checkTop = false)
-        {
-            if (piece.PosX < 1)
-                return false;
-            if (piece.PosX > Width)
-                return false;
-            if (piece.PosY < 1)
-                return false;
-            if (checkTop && piece.PosY > Height)
-                return false;
-            for (int i = 1; i <= piece.TotalCells; i++)
-            {
-                // Get piece position in board
-                int x, y;
-                piece.GetCellAbsolutePosition(i, out x, out y);
-                // Check out of board
-                if (x < 1)
-                    return false;
-                if (x > Width)
-                    return false;
-                if (y < 1)
-                    return false;
-                if (checkTop && y > Height)
-                    return false;
-            }
-            return true;
-        }
+        //public bool CheckNoConflictWithBoard(IPiece piece, bool checkTop = false)
+        //{
+        //    if (piece.PosX < 1)
+        //        return false;
+        //    if (piece.PosX > Width)
+        //        return false;
+        //    if (piece.PosY < 1)
+        //        return false;
+        //    if (checkTop && piece.PosY > Height)
+        //        return false;
+        //    for (int i = 1; i <= piece.TotalCells; i++)
+        //    {
+        //        // Get piece position in board
+        //        int x, y;
+        //        piece.GetCellAbsolutePosition(i, out x, out y);
+        //        // Check out of board
+        //        if (x < 1)
+        //            return false;
+        //        if (x > Width)
+        //            return false;
+        //        if (y < 1)
+        //            return false;
+        //        if (checkTop && y > Height)
+        //            return false;
+        //    }
+        //    return true;
+        //}
 
         public int CollapseCompletedRows(out List<Specials> specials)
         {
@@ -573,6 +573,44 @@ namespace TetriNET.DefaultBoardAndPieces
             for (int x = 2; x <= Width; x += 2)
                 for (int y = 1; y <= Height; y++)
                     this[x, y] = CellHelper.EmptyCell;
+        }
+
+        /// <summary>
+        /// Take all the cells on the field and pulls them all towards the left of the field eliminating any gaps in the blockstack
+        /// </summary>
+        public void LeftGravity()
+        {
+            // For each row
+            //  Get pile max
+            //  For each column from left to pile max, if piece is hole, find first non-empty piece on the right and move it
+            for (int y = 1; y <= Height; y++)
+            {
+                int pileWidth = 0;
+                for (int x = Width; x >= 1; x--)
+                    if (this[x, y] != CellHelper.EmptyCell)
+                    {
+                        pileWidth = x;
+                        break;
+                    }
+                for (int x = 1; x < pileWidth; x++)
+                    if (this[x, y] == CellHelper.EmptyCell) // hole
+                    {
+                        bool foundNonEmptyCell = false;
+                        for (int xi = 1; xi <= pileWidth; xi++) // get first non-empty piece on the right
+                        {
+                            byte cellValue = this[x + xi, y];
+                            if (cellValue != CellHelper.EmptyCell) // found one, move it
+                            {
+                                this[x, y] = cellValue;
+                                this[x + xi, y] = CellHelper.EmptyCell;
+                                foundNonEmptyCell = true;
+                                break;
+                            }
+                        }
+                        if (!foundNonEmptyCell) // no more piece above
+                            break;
+                    }
+            }
         }
 
         // Associated with Specials

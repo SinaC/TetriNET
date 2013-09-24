@@ -23,11 +23,12 @@ namespace TetriNET.ConsoleWCFServer
             Console.WriteLine("r: Resume game");
             Console.WriteLine("+: add dummy player");
             Console.WriteLine("-: remove dummy player");
-            Console.WriteLine("o: dummy player lose");
-            Console.WriteLine("l: dump player list");
+            Console.WriteLine("l: dummy player lose");
+            Console.WriteLine("d: dump player list");
             Console.WriteLine("w: dump win list");
             Console.WriteLine("q: reset win list");
             Console.WriteLine("*: toggle sudden death");
+            Console.WriteLine("o: dump options");
         }
 
         static void Main(string[] args)
@@ -110,14 +111,14 @@ namespace TetriNET.ConsoleWCFServer
                             }
                             break;
                         }
-                        case ConsoleKey.O:
+                        case ConsoleKey.L:
                         {
                             DummyBuiltInClient client = clients.LastOrDefault();
                             if (client != null)
                                 client.Lose();
                             break;
                         }
-                        case ConsoleKey.L:
+                        case ConsoleKey.D:
                             foreach (IPlayer p in playerManager.Players)
                                 Console.WriteLine("{0}) {1} {2} {3} {4:HH:mm:ss.fff} {5:HH:mm:ss.fff}", playerManager.GetId(p), p.Name, p.State, p.PieceIndex, p.LastActionFromClient, p.LastActionToClient);
                             break;
@@ -129,7 +130,16 @@ namespace TetriNET.ConsoleWCFServer
                             server.ResetWinList();
                             break;
                         case ConsoleKey.Multiply:
-                            server.ToggleSuddenDeath();
+                                server.ToggleSuddenDeath();
+                                break;
+                        case ConsoleKey.O:
+                            {
+                                GameOptions options = server.GetOptions();
+                                foreach(PieceOccurancy occurancy in options.PieceOccurancies)
+                                    Console.WriteLine("{0}:{1}", occurancy.Value, occurancy.Occurancy);
+                                foreach(SpecialOccurancy occurancy in options.SpecialOccurancies)
+                                    Console.WriteLine("{0}:{1}", occurancy.Value, occurancy.Occurancy);
+                            }
                             break;
                     }
                 }

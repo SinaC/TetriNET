@@ -18,7 +18,6 @@ namespace TetriNET.WPF_WCF_Client.AI
         private readonly ManualResetEvent _stopEvent;
 
         private bool _isConfusionActive;
-        private Task _botTask;
 
         private bool _activated;
         public bool Activated { get { return _activated; }
@@ -29,7 +28,7 @@ namespace TetriNET.WPF_WCF_Client.AI
                 if (_activated)
                 {
                     _handleNextPieceEvent.Set();
-                    _botTask = Task.Factory.StartNew(BotTask);
+                    Task.Factory.StartNew(BotTask);
                 }
                 else
                     _stopEvent.Set();
@@ -83,7 +82,10 @@ namespace TetriNET.WPF_WCF_Client.AI
         private void _client_OnRoundStarted()
         {
             if (Activated)
+            {
+                Log.WriteLine(Log.LogLevels.Debug, "Raise next piece event");
                 _handleNextPieceEvent.Set();
+            }
         }
 
         private void client_OnGameStarted()
@@ -112,6 +114,10 @@ namespace TetriNET.WPF_WCF_Client.AI
             while (true)
             {
                 int handle = WaitHandle.WaitAny(waitHandles, SleepTime);
+                if (!_handleNextPieceEvent.WaitOne(0) && _client.IsGameStarted)
+                {
+                    Log.WriteLine(Log.LogLevels.Warning, "!!!!!!!!!!! NextPieceEvent not raised  {0}", handle);
+                }
                 _handleNextPieceEvent.Reset();
                 _stopEvent.Reset();
 
@@ -183,8 +189,6 @@ namespace TetriNET.WPF_WCF_Client.AI
                         //Log.WriteLine(Log.LogLevels.Debug, "Rotation: {0} Translation {1}  {2}", bestRotationDelta, bestTranslationDelta, rotationBeforeTranslation);
 
                         // Perform move
-                        //  Down 1 time
-                        Down(1);
 
                         if (rotationBeforeTranslation)
                         {
