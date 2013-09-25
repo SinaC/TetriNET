@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using TetriNET.Common.Attributes;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
@@ -39,7 +38,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                         Fill = bigBrush,
                     };
                     Canvas.Children.Add(bigRectangle);
-                    Canvas.SetLeft(bigRectangle, 5 + i*(16 + 5));
+                    Canvas.SetLeft(bigRectangle, 5 + i * (16 + 5));
                     Canvas.SetTop(bigRectangle, 5);
 
                     //
@@ -51,7 +50,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                         Fill = smallBrush,
                     };
                     Canvas.Children.Add(smallRectangle);
-                    Canvas.SetLeft(smallRectangle, 5 + i*(8 + 5));
+                    Canvas.SetLeft(smallRectangle, 5 + i * (8 + 5));
                     Canvas.SetTop(smallRectangle, 30);
                     //
                     i++;
@@ -70,7 +69,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                         Fill = bigBrush,
                     };
                     Canvas.Children.Add(bigRectangle);
-                    Canvas.SetLeft(bigRectangle, 5 + i*(16 + 5));
+                    Canvas.SetLeft(bigRectangle, 5 + i * (16 + 5));
                     Canvas.SetTop(bigRectangle, 50);
 
                     //
@@ -82,7 +81,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                         Fill = smallBrush,
                     };
                     Canvas.Children.Add(smallRectangle);
-                    Canvas.SetLeft(smallRectangle, 5 + i*(8 + 5));
+                    Canvas.SetLeft(smallRectangle, 5 + i * (8 + 5));
                     Canvas.SetTop(smallRectangle, 75);
                     // 
                     i++;
