@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -17,7 +16,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
     /// <summary>
     /// Interaction logic for OpponentGridControl.xaml
     /// </summary>
-    public partial class OpponentGridControl : UserControl, INotifyPropertyChanged
+    public partial class OpponentGridControl : UserControl
     {
         private const int CellWidth = 8;
         private const int CellHeight = 8;
@@ -26,17 +25,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private static readonly SolidColorBrush ImmunityBorderColor = new SolidColorBrush(Colors.Red);
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
-
-        private Brush _borderColor;
-        public Brush BorderColor
-        {
-            get { return _borderColor; }
-            set
-            {
-                _borderColor = value;
-                OnPropertyChanged();
-            }
-        }
 
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
@@ -66,7 +54,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     Canvas.SetLeft(rect, canvasLeft);
                     Canvas.SetTop(rect, canvasTop);
                 }
-            BorderColor = TransparentColor;
+            Border.BorderBrush = TransparentColor;
         }
 
         private void DrawGrid(IBoard board)
@@ -98,6 +86,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void ClearGrid()
         {
+            Border.BorderBrush = TransparentColor;
             foreach (Rectangle uiPart in _grid)
                 uiPart.Fill = TransparentColor;
         }
@@ -113,56 +102,59 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnGameStarted()
         {
-            BorderColor = TransparentColor;
             ExecuteOnUIThread.Invoke(ClearGrid);
         }
 
         private void OnRedrawBoard(int playerId, IBoard board)
         {
-            OpponentViewModel vm = DataContext as OpponentViewModel;
-            if (vm == null)
-                return;
-            if (playerId == vm.PlayerId && (vm.Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying))
-                ExecuteOnUIThread.Invoke(() => DrawGrid(board));
+            ExecuteOnUIThread.Invoke(() =>
+            {
+                OpponentViewModel vm = DataContext as OpponentViewModel; // <-- this may cause cross-thread exception
+                if (vm == null)
+                    return;
+                if (playerId == vm.PlayerId && (vm.Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying))
+                    DrawGrid(board);
+            });
         }
 
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
-            BorderColor = TransparentColor;
+            ExecuteOnUIThread.Invoke(() => Border.BorderBrush = TransparentColor);
+
         }
 
         private void OnPlayerUnregistered()
         {
-            BorderColor = TransparentColor;
+            ExecuteOnUIThread.Invoke(() => Border.BorderBrush = TransparentColor);
         }
 
         private void OnSpecialUsed(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special)
         {
-            OpponentViewModel vm = DataContext as OpponentViewModel;
-            if (vm == null)
-                return;
-            if (targetId == vm.PlayerId && special == Specials.Immunity)
-                BorderColor = ImmunityBorderColor;
+            ExecuteOnUIThread.Invoke(() =>
+            {
+                OpponentViewModel vm = DataContext as OpponentViewModel;
+                if (vm == null)
+                    return;
+                if (targetId == vm.PlayerId && special == Specials.Immunity)
+                    Border.BorderBrush = ImmunityBorderColor;
+            });
         }
 
         private void OnContinuousSpecialFinished(int playerId, Specials special)
         {
-            OpponentViewModel vm = DataContext as OpponentViewModel;
-            if (vm == null)
-                return;
-            if (playerId == vm.PlayerId && special == Specials.Immunity)
-                BorderColor = TransparentColor;
+            ExecuteOnUIThread.Invoke(() =>
+            {
+                OpponentViewModel vm = DataContext as OpponentViewModel;
+                if (vm == null)
+                    return;
+                if (playerId == vm.PlayerId && special == Specials.Immunity)
+                    Border.BorderBrush = TransparentColor;
+            });
         }
 
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+        #region DataContext + Client
         private void OpponentGridControl_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             // Crappy workaround MVVM -> code behind
@@ -199,5 +191,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 newClient.OnContinuousSpecialFinished += OnContinuousSpecialFinished;
             }
         }
+        #endregion
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -18,7 +17,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
     /// <summary>
     /// Interaction logic for PlayerGridControl.xaml
     /// </summary>
-    public partial class PlayerGridControl : UserControl, INotifyPropertyChanged
+    public partial class PlayerGridControl : UserControl
     {
         private const int CellWidth = 16;
         private const int CellHeight = 16;
@@ -32,17 +31,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private readonly VisualBrush _hintBrush;
         private readonly VisualBrush _dropBrush;
-
-        private Brush _borderColor;
-        public Brush BorderColor
-        {
-            get { return _borderColor; }
-            set
-            {
-                _borderColor = value;
-                OnPropertyChanged();
-            }
-        }
 
         private bool _isDarknessActive;
         private bool _isHintActivated;
@@ -80,7 +68,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     Canvas.SetLeft(rect, canvasLeft);
                     Canvas.SetTop(rect, canvasTop);
                 }
-            BorderColor = TransparentColor;
+            Border.BorderBrush = TransparentColor;
 
             // Create hint brush
             _hintBrush = CreateDoubleRectangleBrush(Colors.GreenYellow);//Color.FromArgb(128, 77, 115, 141));
@@ -124,9 +112,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private void DrawHint()
         {
             PlayerViewModel vm = DataContext as PlayerViewModel;
-            if (vm == null)
+            if (vm == null || vm.Client.Board == null || vm.Client.CurrentPiece == null || vm.Client.NextPiece == null)
                 return;
-            if(_isHintActivated)
+            if (_isHintActivated)
             {
                 if (_pieceHint == null)
                 {
@@ -161,7 +149,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private void DrawDropLocation()
         {
             PlayerViewModel vm = DataContext as PlayerViewModel;
-            if (vm == null)
+            if (vm == null || vm.Client.Board == null || vm.Client.CurrentPiece == null)
                 return;
             if (_displayDropLocation)
             {
@@ -177,7 +165,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private void DrawCurrentPiece()
         {
             PlayerViewModel vm = DataContext as PlayerViewModel;
-            if (vm == null)
+            if (vm == null || vm.Client.Board == null || vm.Client.CurrentPiece == null)
                 return; 
             Pieces cellPiece = vm.Client.CurrentPiece.Value;
             Brush brush = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigPiece(cellPiece);
@@ -187,7 +175,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private void DrawGrid()
         {
             PlayerViewModel vm = DataContext as PlayerViewModel;
-            if (vm == null)
+            if (vm == null || vm.Client.Board == null)
                 return;
             for (int y = 1; y <= vm.Client.Board.Height; y++)
                 for (int x = 1; x <= vm.Client.Board.Width; x++)
@@ -248,14 +236,17 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnImmunityToggled(bool active)
         {
-            BorderColor = active ? ImmunityBorderColor : TransparentColor;
+            ExecuteOnUIThread.Invoke(() => Border.BorderBrush = active ? ImmunityBorderColor : TransparentColor);
         }
 
         private void OnDarknessToggled(bool active)
         {
             _isDarknessActive = active;
-            Canvas.Background = active ? DarknessColor : TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
-            ExecuteOnUIThread.Invoke(DrawEverything);
+            ExecuteOnUIThread.Invoke(() =>
+            {
+                Canvas.Background = active ? DarknessColor : TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
+                DrawEverything();
+            });
         }
 
         private void OnRedraw()
@@ -284,60 +275,17 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
-            BorderColor = TransparentColor;
+            ExecuteOnUIThread.Invoke(() => Border.BorderBrush = TransparentColor);
         }
 
         private void OnPlayerUnregistered()
         {
-            BorderColor = TransparentColor;
+            ExecuteOnUIThread.Invoke(() => Border.BorderBrush = TransparentColor);
         }
 
         #endregion
 
-        private static VisualBrush CreateDoubleRectangleBrush(Color color)
-        {
-            Canvas hintCanvas = new Canvas
-            {
-                Width = 16,
-                Height = 16,
-            };
-            Rectangle outer = new Rectangle
-            {
-                Width = 16,
-                Height = 16,
-                Fill = TransparentColor,
-                Stroke = new SolidColorBrush(color),
-                StrokeThickness = 1,
-
-            };
-            Rectangle inner = new Rectangle
-            {
-                Width = 12,
-                Height = 12,
-                Fill = TransparentColor,
-                Stroke = new SolidColorBrush(color),
-                StrokeThickness = 1,
-            };
-            hintCanvas.Children.Add(outer);
-            Canvas.SetLeft(outer, 0);
-            Canvas.SetTop(outer, 0);
-            hintCanvas.Children.Add(inner);
-            Canvas.SetLeft(inner, 2);
-            Canvas.SetTop(inner, 2);
-
-            return new VisualBrush
-            {
-                Visual = hintCanvas
-            };
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+        #region DataContext + Client
         private void PlayerGridControl_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             // Crappy workaround MVVM -> code behind
@@ -377,6 +325,44 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 newClient.OnDarknessToggled += OnDarknessToggled;
                 newClient.OnImmunityToggled += OnImmunityToggled;
             }
+        }
+        #endregion
+
+        private static VisualBrush CreateDoubleRectangleBrush(Color color)
+        {
+            Canvas hintCanvas = new Canvas
+            {
+                Width = 16,
+                Height = 16,
+            };
+            Rectangle outer = new Rectangle
+            {
+                Width = 16,
+                Height = 16,
+                Fill = TransparentColor,
+                Stroke = new SolidColorBrush(color),
+                StrokeThickness = 1,
+
+            };
+            Rectangle inner = new Rectangle
+            {
+                Width = 12,
+                Height = 12,
+                Fill = TransparentColor,
+                Stroke = new SolidColorBrush(color),
+                StrokeThickness = 1,
+            };
+            hintCanvas.Children.Add(outer);
+            Canvas.SetLeft(outer, 0);
+            Canvas.SetTop(outer, 0);
+            hintCanvas.Children.Add(inner);
+            Canvas.SetLeft(inner, 2);
+            Canvas.SetTop(inner, 2);
+
+            return new VisualBrush
+            {
+                Visual = hintCanvas
+            };
         }
     }
 }

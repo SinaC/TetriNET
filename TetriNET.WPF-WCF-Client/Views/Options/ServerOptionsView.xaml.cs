@@ -1,7 +1,4 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Shapes;
-using TetriNET.Common.DataContracts;
-using TetriNET.Common.Interfaces;
 
 namespace TetriNET.WPF_WCF_Client.Views.Options
 {

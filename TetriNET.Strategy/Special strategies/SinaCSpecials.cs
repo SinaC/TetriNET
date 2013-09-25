@@ -10,6 +10,7 @@ namespace TetriNET.Strategy
     {
         // TODO: helpers should return IOpponent instead of int
         // TODO: when confusion is activated, bot doesn't do anything
+        // TODO: immunity
 
         public bool GetSpecialAdvice(IBoard board, IPiece current, IPiece next, List<Specials> inventory, int inventoryMaxSize, List<IOpponent> opponents, out List<SpecialAdvices> advices)
         {

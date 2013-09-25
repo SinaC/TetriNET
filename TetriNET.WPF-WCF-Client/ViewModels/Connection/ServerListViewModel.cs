@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using TetriNET.WPF_WCF_Client.Helpers;
 
@@ -55,6 +56,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             IsScanForServerEnabled = true;
 
             ScanForServerCommand = new AsyncRelayCommand(ScanForServer);
+            //ScanForServerCommand = new AsyncRelayCommand2( async _ => await Task.Run(() => ScanForServer()));
             SelectServerCommand = new RelayCommand(SelectServer);
         }
 

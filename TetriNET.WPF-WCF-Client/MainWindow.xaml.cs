@@ -19,24 +19,26 @@ namespace TetriNET.WPF_WCF_Client
         }
 
         #region UI Events
+        
         private void MainWindow_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
         }
-        #endregion
 
-        #region Commands
-        private void CloseCommandHandler(object sender, ExecutedRoutedEventArgs e)
-        {
-            this.Close();
-        }
-        #endregion
-
-        #region UI Events
         private void Minimize_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
         }
+
+        #endregion
+
+        #region Commands
+        
+        private void CloseCommandHandler(object sender, ExecutedRoutedEventArgs e)
+        {
+            this.Close();
+        }
+
         #endregion
     }
 }

@@ -14,17 +14,18 @@ namespace TetriNET.WPF_WCF_Client.Helpers
 
         #region ICommand Members
 
+        public event EventHandler CanExecuteChanged;
+
         public bool CanExecute(object parameter)
         {
             return true;
         }
 
-        public event EventHandler CanExecuteChanged;
-
         public void Execute(object parameter)
         {
             _action();
         }
+
         #endregion
     }
 
@@ -38,17 +39,19 @@ namespace TetriNET.WPF_WCF_Client.Helpers
         }
 
         #region ICommand Members
+
+        public event EventHandler CanExecuteChanged;
+
         public bool CanExecute(object parameter)
         {
             return true;
         }
 
-        public event EventHandler CanExecuteChanged;
-
         public void Execute(object parameter)
         {
             _action((T)parameter);
         }
+
 
         #endregion
     }

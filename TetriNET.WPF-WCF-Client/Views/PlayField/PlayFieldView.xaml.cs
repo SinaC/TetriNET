@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.Strategy;
 using TetriNET.WPF_WCF_Client.AI;

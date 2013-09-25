@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Threading;
+using TetriNET.Logger;
 
 namespace TetriNET.WPF_WCF_Client.Helpers
 {
@@ -14,12 +15,26 @@ namespace TetriNET.WPF_WCF_Client.Helpers
 
         public static void Invoke(Action action, DispatcherPriority priority = DispatcherPriority.Render)
         {
-            _uiDispatcher.Invoke(action, priority);
+            try
+            {
+                _uiDispatcher.Invoke(action, priority);
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine(Log.LogLevels.Error, "Exception raised in ExecuteOnUIThread. {0}", ex);
+            }
         }
 
         public static void InvokeAsync(Action action, DispatcherPriority priority = DispatcherPriority.Render)
         {
-            _uiDispatcher.InvokeAsync(action, priority);
+            try
+            {
+                _uiDispatcher.InvokeAsync(action, priority);
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine(Log.LogLevels.Error, "Exception raised in ExecuteOnUIThread. {0}", ex);
+            }
         }
     }
 }

@@ -111,6 +111,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         private void ResetOptions()
         {
             Options.ResetToDefault();
+            Settings.Default.GameOptions = Options;
+            Settings.Default.Save();
+            OnPropertyChanged("Options");
         }
 
         private void UpdateSpecialOccurancy()

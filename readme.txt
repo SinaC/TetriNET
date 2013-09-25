@@ -22,8 +22,7 @@ receiving an add line when commiting a piece, line and piece are merged ->
 		on AddLines: move current piece up for each add lines if in conflict with cells on floor
 wall kick http://tetris.wikia.com/wiki/Wall_kick  http://tetris.wikia.com/wiki/Floor_kick
 display tetrimino instead of text in server options
-
-MVVM PlayerGrid done, OpponentGrid started --> cross-thread exception in redraw (should have the same bug in PlayerGrid)
+Team
 
 wcf + jquery
 http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-with-nettcpbinding
@@ -102,6 +101,10 @@ http://www.vidarholen.net/contents/junk/tetris/
 http://hal.archives-ouvertes.fr/docs/00/41/89/54/PDF/article.pdf
 http://totologic.blogspot.be/2013/03/tetris-ai-explained.html
 http://lgames.sourceforge.net/index.php?project=LTris
+http://en.sfml-dev.org/forums/index.php?topic=10719.0
+http://meritology.com/library/public/SmartAgent%20-%20Creating%20Reinforcement%20Learning%20Tetris%20AI.pdf
+https://code.google.com/p/tetris-challenge/
+http://harddrop.com/forums/index.php?showtopic=1138
 
 tetris
 http://jetrix.sourceforge.net/dev-guide.php

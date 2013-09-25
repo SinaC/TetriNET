@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.ViewModels.Options;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
@@ -75,12 +76,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         private void OnPlayerAddLines(string playerName, int specialId, int count)
         {
-            AddEntry(specialId + 1, String.Format("{0} line{1} added to All", count, (count > 1) ? "s" : ""), playerName);
+            if (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
+                AddEntry(specialId + 1, String.Format("{0} line{1} added to All", count, (count > 1) ? "s" : ""), playerName);
         }
 
         private void OnSpecialUsed(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special)
         {
-            AddEntry(specialId + 1, Mapper.MapSpecialToString(special), playerName, targetName);
+            if (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
+                AddEntry(specialId + 1, Mapper.MapSpecialToString(special), playerName, targetName);
         }
 
         #endregion
