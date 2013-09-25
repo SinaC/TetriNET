@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using TetriNET.Common.Attributes;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;

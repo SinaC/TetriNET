@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using ServiceModelEx;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
-using TetriNET.Common.WCF;
 
 namespace TetriNET.WCFProxy
 {
@@ -30,11 +30,11 @@ namespace TetriNET.WCFProxy
             if (String.IsNullOrEmpty(address1) || address1.ToLower() == "auto")
             {
                 Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Searching IWCFTetriNET server");
-                List<EndpointAddress> endpointAddresses = DiscoveryHelper.DiscoverAddresses<IWCFTetriNET>();
+                EndpointAddress[] endpointAddresses = DiscoveryHelper.DiscoverAddresses<IWCFTetriNET>();
                 if (endpointAddresses != null && endpointAddresses.Any())
                 {
                     foreach (EndpointAddress endpoint in endpointAddresses)
-                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "{0}:\t{1}", endpointAddresses.IndexOf(endpoint), endpoint.Uri);
+                        Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "{0}:\t{1}", Array.IndexOf(endpointAddresses, endpoint), endpoint.Uri);
                     Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Selecting first server");
                     endpointAddress = endpointAddresses[0];
                 }
@@ -63,11 +63,11 @@ namespace TetriNET.WCFProxy
         public static List<string> DiscoverHosts()
         {
             Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Searching IWCFTetriNET server");
-            List<EndpointAddress> endpointAddresses = DiscoveryHelper.DiscoverAddresses<IWCFTetriNET>();
+            EndpointAddress[] endpointAddresses = DiscoveryHelper.DiscoverAddresses<IWCFTetriNET>();
             if (endpointAddresses != null && endpointAddresses.Any())
             {
                 foreach (EndpointAddress endpoint in endpointAddresses)
-                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "{0}:\t{1}", endpointAddresses.IndexOf(endpoint), endpoint.Uri);
+                    Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "{0}:\t{1}", Array.IndexOf(endpointAddresses, endpoint), endpoint.Uri);
                 Logger.Log.WriteLine(Logger.Log.LogLevels.Debug, "Selecting first server");
 
                 return endpointAddresses.Select(x => x.Uri.ToString()).ToList();

@@ -17,6 +17,20 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             get { return _servers; }
         }
 
+        private bool _isScanForServerEnabled;
+        public bool IsScanForServerEnabled
+        {
+            get { return _isScanForServerEnabled; } 
+            set
+            {
+                if (_isScanForServerEnabled != value)
+                {
+                    _isScanForServerEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private bool _isProgressBarVisible;
         public bool IsProgressBarVisible
         {
@@ -38,6 +52,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         public ServerListViewModel()
         {
             IsProgressBarVisible = false;
+            IsScanForServerEnabled = true;
 
             ScanForServerCommand = new AsyncRelayCommand(ScanForServer);
             SelectServerCommand = new RelayCommand(SelectServer);
@@ -48,6 +63,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             //Mouse.OverrideCursor = Cursors.Wait;
             try
             {
+                IsScanForServerEnabled = false;
                 IsProgressBarVisible = true;
                 List<string> servers = WCFProxy.WCFProxy.DiscoverHosts();
                 ExecuteOnUIThread.Invoke(() =>
@@ -67,6 +83,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             finally
             {
                 IsProgressBarVisible = false;
+                IsScanForServerEnabled = true;
                 //Mouse.OverrideCursor = null;
             }
         }
@@ -79,8 +96,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         #region Commands
 
-        public ICommand ScanForServerCommand { get; set; }
-        public ICommand SelectServerCommand { get; set; }
+        public ICommand ScanForServerCommand { get; private set; }
+        public ICommand SelectServerCommand { get; private set; }
 
         #endregion
 

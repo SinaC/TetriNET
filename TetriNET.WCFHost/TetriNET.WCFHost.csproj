@@ -40,6 +40,10 @@
     <Compile Include="WCFHost.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ServiceModelEx\ServiceModelEx.csproj">
+      <Project>{0858c710-af53-4049-b98e-cfe3638d1228}</Project>
+      <Name>ServiceModelEx</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>

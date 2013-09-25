@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Net;
 using System.ServiceModel;
-using System.ServiceModel.Channels;
+using ServiceModelEx;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
-using TetriNET.Common.WCF;
 
 namespace TetriNET.WCFHost
 {

@@ -17,30 +17,37 @@ namespace TetriNET.WPF_WCF_Client.Helpers
         protected IDictionary<TKey, TValue> Dictionary { get; private set; }
 
         #region Constructors
+
         public ObservableDictionary()
         {
             Dictionary = new Dictionary<TKey, TValue>();
         }
+
         public ObservableDictionary(IDictionary<TKey, TValue> dictionary)
         {
             Dictionary = new Dictionary<TKey, TValue>(dictionary);
         }
+
         public ObservableDictionary(IEqualityComparer<TKey> comparer)
         {
             Dictionary = new Dictionary<TKey, TValue>(comparer);
         }
+
         public ObservableDictionary(int capacity)
         {
             Dictionary = new Dictionary<TKey, TValue>(capacity);
         }
+
         public ObservableDictionary(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer)
         {
             Dictionary = new Dictionary<TKey, TValue>(dictionary, comparer);
         }
+
         public ObservableDictionary(int capacity, IEqualityComparer<TKey> comparer)
         {
             Dictionary = new Dictionary<TKey, TValue>(capacity, comparer);
         }
+
         #endregion
 
         #region IDictionary<TKey,TValue> Members
@@ -174,7 +181,8 @@ namespace TetriNET.WPF_WCF_Client.Helpers
 
         public void AddRange(IDictionary<TKey, TValue> items)
         {
-            if (items == null) throw new ArgumentNullException("items");
+            if (items == null) 
+                throw new ArgumentNullException("items");
 
             if (items.Count > 0)
             {
@@ -183,7 +191,8 @@ namespace TetriNET.WPF_WCF_Client.Helpers
                     if (items.Keys.Any(k => Dictionary.ContainsKey(k)))
                         throw new ArgumentException("An item with the same key has already been added.");
                     else
-                        foreach (var item in items) Dictionary.Add(item);
+                        foreach (var item in items) 
+                            Dictionary.Add(item);
                 }
                 else
                     Dictionary = new Dictionary<TKey, TValue>(items);
@@ -200,8 +209,10 @@ namespace TetriNET.WPF_WCF_Client.Helpers
             TValue item;
             if (Dictionary.TryGetValue(key, out item))
             {
-                if (add) throw new ArgumentException("An item with the same key has already been added.");
-                if (Equals(item, value)) return;
+                if (add) 
+                    throw new ArgumentException("An item with the same key has already been added.");
+                if (Equals(item, value)) 
+                    return;
                 Dictionary[key] = value;
 
                 OnCollectionChanged(NotifyCollectionChangedAction.Replace, new KeyValuePair<TKey, TValue>(key, value), new KeyValuePair<TKey, TValue>(key, item));

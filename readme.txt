@@ -17,12 +17,11 @@ Add Pentaminos (http://en.wikipedia.org/wiki/Pentomino)
 New options: random blocks clear count, mutation count, darkness time, confusion time, immunity time, random spawn orientation
 Solo mode
 Server integrated in WPF client
-receiving an add line when commiting a piece, line and piece are merged
+receiving an add line when commiting a piece, line and piece are merged -> 
+		on SpecialUsed: if current piece is in conflict -> PlaceTetrimino
+		on AddLines: move current piece up for each add lines if in conflict with cells on floor
 wall kick http://tetris.wikia.com/wiki/Wall_kick  http://tetris.wikia.com/wiki/Floor_kick
 display tetrimino instead of text in server options
-
-use http://blogs.u2u.be/diederik/post/2010/02/26/Yet-another-Circular-ProgressBar-control-for-WPF.aspx
-
 
 wcf + jquery
 http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-with-nettcpbinding

@@ -27,11 +27,13 @@
             </ListBox.ItemContainerStyle>
         </ListBox>
         <Button Grid.Row="1" Margin="0,4,0,0"
+                IsEnabled="{Binding IsScanForServerEnabled}"
                 Command="{Binding ScanForServerCommand}">
             <TextBlock Text="Scan for servers"/>
         </Button>
         <userControls:CircularProgressBar 
             ToolTip="Searching..." Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="100"
+            StartupDelay="0"
             Visibility="{Binding IsProgressBarVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
     </Grid>
 </UserControl>
