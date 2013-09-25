@@ -4,7 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
 
-namespace TetriNET.WPF_WCF_Client.Views.Options
+namespace TetriNET.WPF_WCF_Client.UserControls
 {
     public class KeyBox : TextBox
     {

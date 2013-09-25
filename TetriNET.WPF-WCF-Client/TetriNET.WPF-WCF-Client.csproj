@@ -114,7 +114,7 @@
     <Compile Include="Views\Options\ClientOptionsView.xaml.cs">
       <DependentUpon>ClientOptionsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Options\KeyBox.cs" />
+    <Compile Include="UserControls\KeyBox.cs" />
     <Compile Include="Views\Options\ServerOptionsView.xaml.cs">
       <DependentUpon>ServerOptionsView.xaml</DependentUpon>
     </Compile>

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:validators="clr-namespace:TetriNET.WPF_WCF_Client.Validators"
              xmlns:optionsViewModel="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Options"
-             xmlns:options="clr-namespace:TetriNET.WPF_WCF_Client.Views.Options"
+             xmlns:userControls="clr-namespace:TetriNET.WPF_WCF_Client.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640"
              d:DataContext="{d:DesignInstance optionsViewModel:ClientOptionsViewModel}">
@@ -43,7 +43,7 @@
                                 <ColumnDefinition Width="64"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="{Binding CommandDescription}"/>
-                            <options:KeyBox Grid.Row="0" Grid.Column="1" DataContext="{Binding}" Margin="0,0,10,0"/>
+                            <userControls:KeyBox Grid.Row="0" Grid.Column="1" DataContext="{Binding}" Margin="0,0,10,0"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

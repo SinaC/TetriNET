@@ -89,7 +89,7 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>rem mkdir  "%25ProgramFiles%25\IDesign"
-copy "$(TargetPath) "    "%25ProgramFiles%25\IDesign"</PostBuildEvent>
+rem copy "$(TargetPath) "    "%25ProgramFiles%25\IDesign"</PostBuildEvent>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
