@@ -18,7 +18,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
     {
         private GenericBot _bot;
         private GameController.GameController _controller;
-        private int _playerId;
+        //private int _playerId;
 
         public PlayFieldView()
         {
@@ -31,33 +31,33 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         #region IClient events handler
 
-        private void OnPlayerLeft(int playerId, string playerName, LeaveReasons reason)
-        {
-            OpponentGridControl grid = GetOpponentGrid(playerId);
-            if (grid != null)
-            {
-                grid.PlayerId = -1;
-                grid.PlayerName = "Not playing";
-            }
-        }
+        //private void OnPlayerLeft(int playerId, string playerName, LeaveReasons reason)
+        //{
+        //    OpponentGridControl grid = GetOpponentGrid(playerId);
+        //    if (grid != null)
+        //    {
+        //        grid.PlayerId = -1;
+        //        grid.PlayerName = "Not playing";
+        //    }
+        //}
 
-        private void OnPlayerJoined(int playerId, string playerName)
-        {
-            OpponentGridControl grid = GetOpponentGrid(playerId);
-            if (grid != null)
-            {
-                grid.PlayerId = playerId;
-                grid.PlayerName = playerName;
-            }
-        }
+        //private void OnPlayerJoined(int playerId, string playerName)
+        //{
+        //    OpponentGridControl grid = GetOpponentGrid(playerId);
+        //    if (grid != null)
+        //    {
+        //        grid.PlayerId = playerId;
+        //        grid.PlayerName = playerName;
+        //    }
+        //}
 
-        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
-        {
-            if (result == RegistrationResults.RegistrationSuccessful)
-                _playerId = playerId;
-            else
-                _playerId = -1;
-        }
+        //private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
+        //{
+        //    if (result == RegistrationResults.RegistrationSuccessful)
+        //        _playerId = playerId;
+        //    else
+        //        _playerId = -1;
+        //}
 
         private void OnGameStarted()
         {
@@ -176,31 +176,31 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             return Commands.Invalid;
         }
 
-        private OpponentGridControl GetOpponentGrid(int playerId)
-        {
-            if (playerId == _playerId)
-                return null;
-            // playerId -> id mapping rule
-            // 0 1 [2] 3 4 5 -> 1 2 / 3 4 5
-            // [0] 1 2 3 4 5 -> / 1 2 3 4 5 
-            // 0 1 2 3 4 [5] -> 1 2 3 4 5 /
-            int id;
-            if (playerId < _playerId)
-                id = playerId + 1;
-            else
-                id = playerId;
-            if (id == 1)
-                return OpponentGrid1;
-            if (id == 2)
-                return OpponentGrid2;
-            if (id == 3)
-                return OpponentGrid3;
-            if (id == 4)
-                return OpponentGrid4;
-            if (id == 5)
-                return OpponentGrid5;
-            return null;
-        }
+        //private OpponentGridControl GetOpponentGrid(int playerId)
+        //{
+        //    if (playerId == _playerId)
+        //        return null;
+        //    // playerId -> id mapping rule
+        //    // 0 1 [2] 3 4 5 -> 1 2 / 3 4 5
+        //    // [0] 1 2 3 4 5 -> / 1 2 3 4 5 
+        //    // 0 1 2 3 4 [5] -> 1 2 3 4 5 /
+        //    int id;
+        //    if (playerId < _playerId)
+        //        id = playerId + 1;
+        //    else
+        //        id = playerId;
+        //    if (id == 1)
+        //        return OpponentGrid1;
+        //    if (id == 2)
+        //        return OpponentGrid2;
+        //    if (id == 3)
+        //        return OpponentGrid3;
+        //    if (id == 4)
+        //        return OpponentGrid4;
+        //    if (id == 5)
+        //        return OpponentGrid5;
+        //    return null;
+        //}
 
         private void PlayFieldView_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -220,9 +220,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             // Remove old handlers
             if (oldClient != null)
             {
-                oldClient.OnPlayerJoined -= OnPlayerJoined;
-                oldClient.OnPlayerLeft -= OnPlayerLeft;
-                oldClient.OnPlayerRegistered -= OnPlayerRegistered;
+                //oldClient.OnPlayerJoined -= OnPlayerJoined;
+                //oldClient.OnPlayerLeft -= OnPlayerLeft;
+                //oldClient.OnPlayerRegistered -= OnPlayerRegistered;
                 oldClient.OnGameStarted -= OnGameStarted;
 
                 if (_controller != null)
@@ -233,18 +233,18 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             // Set new client
             Inventory.Client = newClient;
             NextPiece.Client = newClient;
-            PlayerGrid.Client = newClient;
-            OpponentGrid1.Client = newClient;
-            OpponentGrid2.Client = newClient;
-            OpponentGrid3.Client = newClient;
-            OpponentGrid4.Client = newClient;
-            OpponentGrid5.Client = newClient;
+            //PlayerGrid.Client = newClient;
+            //OpponentGrid1.Client = newClient;
+            //OpponentGrid2.Client = newClient;
+            //OpponentGrid3.Client = newClient;
+            //OpponentGrid4.Client = newClient;
+            //OpponentGrid5.Client = newClient;
             // Add new handlers
             if (newClient != null)
             {
-                newClient.OnPlayerJoined += OnPlayerJoined;
-                newClient.OnPlayerLeft += OnPlayerLeft;
-                newClient.OnPlayerRegistered += OnPlayerRegistered;
+                //newClient.OnPlayerJoined += OnPlayerJoined;
+                //newClient.OnPlayerLeft += OnPlayerLeft;
+                //newClient.OnPlayerRegistered += OnPlayerRegistered;
                 newClient.OnGameStarted += OnGameStarted;
 
                 // And create controller + bot

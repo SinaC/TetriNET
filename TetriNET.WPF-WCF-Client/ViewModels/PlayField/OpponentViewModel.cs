@@ -1,9 +1,8 @@
-﻿using TetriNET.Common.DataContracts;
-using TetriNET.Common.Interfaces;
+﻿using TetriNET.Common.Interfaces;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
-    public class PlayerViewModel : ViewModelBase
+    public class OpponentViewModel : ViewModelBase
     {
         public bool IsPlayerIdVisible
         {
@@ -15,9 +14,18 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             get { return PlayerId + 1; }
         }
 
+        private string _playerName;
         public string PlayerName
         {
-            get { return Client == null || !Client.IsRegistered ? "Not registered" : Client.Name; }
+            get { return _playerName; }
+            set
+            {
+                if (_playerName != value)
+                {
+                    _playerName = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private int _playerId;
@@ -32,7 +40,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                     OnPropertyChanged();
                     OnPropertyChanged("DisplayPlayerId");
                     OnPropertyChanged("IsPlayerIdVisible");
-                    OnPropertyChanged("PlayerName");
                 }
             }
         }
@@ -51,56 +58,54 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             }
         }
 
-        public PlayerViewModel()
+        public OpponentViewModel()
         {
             PlayerId = -1;
+            PlayerName = "Not playing";
             HasLost = false;
         }
 
         #region ViewModelBase
-
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnPlayerRegistered -= OnPlayerRegistered;
             oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
             oldClient.OnConnectionLost -= OnConnectionLost;
-            oldClient.OnGameOver -= OnGameOver;
+            oldClient.OnPlayerLost -= OnPlayerLost;
+            oldClient.OnGameStarted -= OnGameStarted;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnPlayerRegistered += OnPlayerRegistered;
             newClient.OnPlayerUnregistered += OnPlayerUnregistered;
             newClient.OnConnectionLost += OnConnectionLost;
-            newClient.OnGameOver += OnGameOver;
+            newClient.OnPlayerLost += OnPlayerLost;
+            newClient.OnGameStarted += OnGameStarted;
         }
-
         #endregion
 
         #region IClient events handler
 
-        private void OnGameOver()
+        private void OnGameStarted()
         {
-            HasLost = true;
+            HasLost = false;
+        }
+
+        private void OnPlayerLost(int playerId, string playerName)
+        {
+            if (playerId == PlayerId)
+                HasLost = true;
         }
 
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
             PlayerId = -1;
-            HasLost = false;
-        }
-
-        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
-        {
-            if (result == RegistrationResults.RegistrationSuccessful)
-                PlayerId = playerId;
-            HasLost = false;
+            PlayerName = "Not playing";
         }
 
         private void OnPlayerUnregistered()
         {
             PlayerId = -1;
-            HasLost = false;
+            PlayerName = "Not playing";
         }
 
         #endregion

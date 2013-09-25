@@ -23,6 +23,8 @@ receiving an add line when commiting a piece, line and piece are merged ->
 wall kick http://tetris.wikia.com/wiki/Wall_kick  http://tetris.wikia.com/wiki/Floor_kick
 display tetrimino instead of text in server options
 
+MVVM PlayerGrid done, OpponentGrid started --> cross-thread exception in redraw (should have the same bug in PlayerGrid)
+
 wcf + jquery
 http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-with-nettcpbinding
 http://www.codeproject.com/Articles/132809/Calling-WCF-Services-using-jQuery

@@ -93,6 +93,7 @@
     <Compile Include="ViewModels\Connection\ServerListViewModel.cs" />
     <Compile Include="ViewModels\Options\ClientOptionsViewModel.cs" />
     <Compile Include="ViewModels\Options\ServerOptionsViewModel.cs" />
+    <Compile Include="ViewModels\PlayField\OpponentViewModel.cs" />
     <Compile Include="ViewModels\PlayField\PlayerViewModel.cs" />
     <Compile Include="ViewModels\PlayField\GameInfoViewModel.cs" />
     <Compile Include="ViewModels\PlayField\PlayFieldViewModel.cs" />

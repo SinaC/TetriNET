@@ -11,21 +11,21 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         public GameInfoViewModel GameInfoViewModel { get; set; }
         public InGameChatViewModel InGameChatViewModel { get; set; }
         public PlayerViewModel PlayerViewModel { get; set; }
-        public PlayerViewModel[] Opponents { get; set; }
+        public OpponentViewModel[] OpponentsViewModel { get; set; }
 
         public PlayFieldViewModel()
         {
             GameInfoViewModel = new GameInfoViewModel();
             InGameChatViewModel = new InGameChatViewModel();
             PlayerViewModel = new PlayerViewModel();
-            Opponents = new PlayerViewModel[OpponentCount];
+            OpponentsViewModel = new OpponentViewModel[OpponentCount];
             for (int i = 0; i < OpponentCount; i++)
-                Opponents[i] = new PlayerViewModel();
+                OpponentsViewModel[i] = new OpponentViewModel();
 
             ClientChanged += OnClientChanged;
         }
 
-        private PlayerViewModel GetOpponentViewModel(int playerId)
+        private OpponentViewModel GetOpponentViewModel(int playerId)
         {
             if (playerId == Client.PlayerId)
                 return null;
@@ -38,7 +38,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                 id = playerId + 1;
             else
                 id = playerId;
-            return Opponents[id - 1];
+            return OpponentsViewModel[id - 1];
         }
 
         #region ITabIndex
@@ -57,7 +57,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             GameInfoViewModel.Client = newClient;
             InGameChatViewModel.Client = newClient;
             PlayerViewModel.Client = newClient;
-            foreach (PlayerViewModel opponent in Opponents)
+            foreach (OpponentViewModel opponent in OpponentsViewModel)
                 opponent.Client = newClient;
         }
 
@@ -79,7 +79,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         private void OnPlayerLeft(int playerId, string playerName, LeaveReasons reason)
         {
-            PlayerViewModel opponent = GetOpponentViewModel(playerId);
+            OpponentViewModel opponent = GetOpponentViewModel(playerId);
             if (opponent != null)
             {
                 opponent.PlayerId = -1;
@@ -89,7 +89,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         private void OnPlayerJoined(int playerId, string playerName)
         {
-            PlayerViewModel opponent = GetOpponentViewModel(playerId);
+            OpponentViewModel opponent = GetOpponentViewModel(playerId);
             if (opponent != null)
             {
                 opponent.PlayerId = playerId;

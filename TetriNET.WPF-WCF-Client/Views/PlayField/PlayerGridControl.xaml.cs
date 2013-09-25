@@ -11,6 +11,7 @@ using TetriNET.Common.Interfaces;
 using TetriNET.Strategy;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
+using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
 
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
@@ -32,24 +33,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private readonly VisualBrush _hintBrush;
         private readonly VisualBrush _dropBrush;
 
-        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("PlayerGridCanvasClientProperty", typeof(IClient), typeof(PlayerGridControl), new PropertyMetadata(Client_Changed));
-        public IClient Client
-        {
-            get { return (IClient) GetValue(ClientProperty); }
-            set { SetValue(ClientProperty, value); }
-        }
-
-        private Brush _canvasBackground;
-        public Brush CanvasBackground
-        {
-            get { return _canvasBackground; }
-            set
-            {
-                _canvasBackground = value;
-                OnPropertyChanged();
-            }
-        }
-        
         private Brush _borderColor;
         public Brush BorderColor
         {
@@ -58,52 +41,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             {
                 _borderColor = value;
                 OnPropertyChanged();
-            }
-        }
-
-        public bool IsPlayerIdVisible
-        {
-            get { return PlayerId != -1; }
-        }
-
-        public int DisplayPlayerId
-        {
-            get { return PlayerId + 1; }
-        }
-
-        public string PlayerName
-        {
-            get { return Client == null || !Client.IsRegistered ? "Not registered" : Client.Name; }
-        }
-
-        private int _playerId;
-        public int PlayerId
-        {
-            get { return _playerId; }
-            set
-            {
-                if (_playerId != value)
-                {
-                    _playerId = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged("DisplayPlayerId");
-                    OnPropertyChanged("IsPlayerIdVisible");
-                    OnPropertyChanged("PlayerName");
-                }
-            }
-        }
-
-        private bool _hasLost;
-        public bool HasLost
-        {
-            get { return _hasLost; }
-            set
-            {
-                if (_hasLost != value)
-                {
-                    _hasLost = value;
-                    OnPropertyChanged();
-                }
             }
         }
 
@@ -121,13 +58,10 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             _isHintActivated = false;
             _displayDropLocation = false;
 
-            PlayerId = -1;
-            HasLost = false;
-
             if (!DesignerProperties.GetIsInDesignMode(this))
-                CanvasBackground = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
+                Canvas.Background = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
             else
-                CanvasBackground = new SolidColorBrush(Colors.Black);
+                Canvas.Background = new SolidColorBrush(Colors.Black);
 
             for (int y = 0; y < ClientOptionsViewModel.Height; y++)
                 for (int x = 0; x < ClientOptionsViewModel.Width; x++)
@@ -189,14 +123,17 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void DrawHint()
         {
+            PlayerViewModel vm = DataContext as PlayerViewModel;
+            if (vm == null)
+                return;
             if(_isHintActivated)
             {
                 if (_pieceHint == null)
                 {
                     // Clone board, current and next
-                    IBoard board = Client.Board.Clone();
-                    _pieceHint = Client.CurrentPiece.Clone();
-                    IPiece next = Client.NextPiece.Clone();
+                    IBoard board = vm.Client.Board.Clone();
+                    _pieceHint = vm.Client.CurrentPiece.Clone();
+                    IPiece next = vm.Client.NextPiece.Clone();
 
                     // Get hint
                     int bestRotationDelta, bestTranslationDelta;
@@ -217,70 +154,65 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     board.Drop(_pieceHint);
                 }
                 // Draw piece
-                //DrawPiece(Client.Board, _pieceHint, HintColor);
-                DrawPiece(Client.Board, _pieceHint, _hintBrush);
+                DrawPiece(vm.Client.Board, _pieceHint, _hintBrush);
             }
         }
 
         private void DrawDropLocation()
         {
+            PlayerViewModel vm = DataContext as PlayerViewModel;
+            if (vm == null)
+                return;
             if (_displayDropLocation)
             {
-                IBoard board = Client.Board.Clone();
-                IPiece piece = Client.CurrentPiece.Clone();
+                IBoard board = vm.Client.Board.Clone();
+                IPiece piece = vm.Client.CurrentPiece.Clone();
 
                 board.Drop(piece);
 
-                DrawPiece(Client.Board, piece, _dropBrush);
+                DrawPiece(vm.Client.Board, piece, _dropBrush);
             }
         }
 
         private void DrawCurrentPiece()
         {
-            if (Client == null)
-                return;
-            IBoard board = Client.Board;
-            if (board == null)
-                return;
-            IPiece currentPiece = Client.CurrentPiece;
-            if (currentPiece == null)
-                return;
-            Pieces cellPiece = Client.CurrentPiece.Value;
+            PlayerViewModel vm = DataContext as PlayerViewModel;
+            if (vm == null)
+                return; 
+            Pieces cellPiece = vm.Client.CurrentPiece.Value;
             Brush brush = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigPiece(cellPiece);
-            DrawPiece(board, currentPiece, brush);
+            DrawPiece(vm.Client.Board, vm.Client.CurrentPiece, brush);
         }
 
         private void DrawGrid()
         {
-            if (Client == null)
+            PlayerViewModel vm = DataContext as PlayerViewModel;
+            if (vm == null)
                 return;
-            IBoard board = Client.Board;
-            if (board == null)
-                return;
-                for (int y = 1; y <= board.Height; y++)
-                    for (int x = 1; x <= board.Width; x++)
+            for (int y = 1; y <= vm.Client.Board.Height; y++)
+                for (int x = 1; x <= vm.Client.Board.Width; x++)
+                {
+                    int cellY = vm.Client.Board.Height - y;
+                    int cellX = x - 1;
+                    byte cellValue = vm.Client.Board[x, y];
+
+                    Rectangle uiPart = GetControl(cellX, cellY);
+                    if (uiPart != null)
                     {
-                        int cellY = board.Height - y;
-                        int cellX = x - 1;
-                        byte cellValue = board[x, y];
-
-                        Rectangle uiPart = GetControl(cellX, cellY);
-                        if (uiPart != null)
+                        if (cellValue == CellHelper.EmptyCell)
+                            uiPart.Fill = TransparentColor;
+                        else
                         {
-                            if (cellValue == CellHelper.EmptyCell)
-                                uiPart.Fill = TransparentColor;
-                            else
-                            {
-                                Specials special = CellHelper.GetSpecial(cellValue);
-                                Pieces color = CellHelper.GetColor(cellValue);
+                            Specials special = CellHelper.GetSpecial(cellValue);
+                            Pieces color = CellHelper.GetColor(cellValue);
 
-                                if (special == Specials.Invalid)
-                                    uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigPiece(color);
-                                else
-                                    uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigSpecial(special);
-                            }
+                            if (special == Specials.Invalid)
+                                uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigPiece(color);
+                            else
+                                uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigSpecial(special);
                         }
                     }
+                }
         }
 
         private void ClearGrid()
@@ -312,47 +244,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             return _grid[cellX + cellY * ClientOptionsViewModel.Width];
         }
 
-        private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-        {
-            PlayerGridControl @this = sender as PlayerGridControl;
-
-            if (@this != null)
-            {
-                // Remove old handlers
-                IClient oldClient = args.OldValue as IClient;
-                if (oldClient != null)
-                {
-                    oldClient.OnPlayerRegistered -= @this.OnPlayerRegistered;
-                    oldClient.OnPlayerUnregistered -= @this.OnPlayerUnregistered;
-                    oldClient.OnConnectionLost -= @this.OnConnectionLost;
-                    oldClient.OnGameOver -= @this.OnGameOver;
-                    oldClient.OnGameStarted -= @this.OnGameStarted;
-                    oldClient.OnRoundStarted -= @this.OnRoundStarted;
-                    oldClient.OnPieceMoved -= @this.OnPieceMoved;
-                    oldClient.OnRedraw -= @this.OnRedraw;
-                    oldClient.OnDarknessToggled -= @this.OnDarknessToggled;
-                    oldClient.OnImmunityToggled -= @this.OnImmunityToggled;
-                }
-                // Set new client
-                IClient newClient = args.NewValue as IClient;
-                @this.Client = newClient;
-                // Add new handlers
-                if (newClient != null)
-                {
-                    newClient.OnPlayerRegistered += @this.OnPlayerRegistered;
-                    newClient.OnPlayerUnregistered += @this.OnPlayerUnregistered;
-                    newClient.OnConnectionLost += @this.OnConnectionLost;
-                    newClient.OnGameOver += @this.OnGameOver;
-                    newClient.OnGameStarted += @this.OnGameStarted;
-                    newClient.OnRoundStarted += @this.OnRoundStarted;
-                    newClient.OnPieceMoved += @this.OnPieceMoved;
-                    newClient.OnRedraw += @this.OnRedraw;
-                    newClient.OnDarknessToggled += @this.OnDarknessToggled;
-                    newClient.OnImmunityToggled += @this.OnImmunityToggled;
-                }
-            }
-        }
-
         #region IClient events handler
 
         private void OnImmunityToggled(bool active)
@@ -363,7 +254,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private void OnDarknessToggled(bool active)
         {
             _isDarknessActive = active;
-            CanvasBackground = active ? DarknessColor : TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
+            Canvas.Background = active ? DarknessColor : TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
             ExecuteOnUIThread.Invoke(DrawEverything);
         }
 
@@ -391,31 +282,13 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             ExecuteOnUIThread.Invoke(DrawEverything);
         }
 
-        private void OnGameOver()
-        {
-            HasLost = true;
-        }
-
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
-            PlayerId = -1;
-            HasLost = false;
             BorderColor = TransparentColor;
-        }
-
-        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
-        {
-            if (result == RegistrationResults.RegistrationSuccessful)
-                PlayerId = playerId;
-            else
-                PlayerId = -1;
-            HasLost = false;
         }
 
         private void OnPlayerUnregistered()
         {
-            PlayerId = -1;
-            HasLost = false;
             BorderColor = TransparentColor;
         }
 
@@ -463,6 +336,47 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         {
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void PlayerGridControl_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // Crappy workaround MVVM -> code behind
+            PlayerViewModel vm = DataContext as PlayerViewModel;
+            if (vm != null)
+            {
+                vm.ClientChanged += OnClientChanged;
+
+                if (vm.Client != null)
+                    OnClientChanged(null, vm.Client);
+            }
+        }
+
+        private void OnClientChanged(IClient oldClient, IClient newClient)
+        {
+            // Remove old handlers
+            if (oldClient != null)
+            {
+                oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
+                oldClient.OnConnectionLost -= OnConnectionLost;
+                oldClient.OnGameStarted -= OnGameStarted;
+                oldClient.OnRoundStarted -= OnRoundStarted;
+                oldClient.OnPieceMoved -= OnPieceMoved;
+                oldClient.OnRedraw -= OnRedraw;
+                oldClient.OnDarknessToggled -= OnDarknessToggled;
+                oldClient.OnImmunityToggled -= OnImmunityToggled;
+            }
+            // Add new handlers
+            if (newClient != null)
+            {
+                newClient.OnPlayerUnregistered += OnPlayerUnregistered;
+                newClient.OnConnectionLost += OnConnectionLost;
+                newClient.OnGameStarted += OnGameStarted;
+                newClient.OnRoundStarted += OnRoundStarted;
+                newClient.OnPieceMoved += OnPieceMoved;
+                newClient.OnRedraw += OnRedraw;
+                newClient.OnDarknessToggled += OnDarknessToggled;
+                newClient.OnImmunityToggled += OnImmunityToggled;
+            }
         }
     }
 }
