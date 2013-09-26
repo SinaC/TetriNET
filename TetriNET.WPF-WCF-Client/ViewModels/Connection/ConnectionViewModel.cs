@@ -4,12 +4,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 {
     public class ConnectionViewModel : ViewModelBase, ITabIndex
     {
-        public ConnectionControlViewModel ConnectionControlViewModel { get; set; }
+        public LoginViewModel ConnectionControlViewModel { get; set; }
         public ServerListViewModel ServerListViewModel { get; set; }
 
         public ConnectionViewModel()
         {
-            ConnectionControlViewModel = new ConnectionControlViewModel();
+            ConnectionControlViewModel = new LoginViewModel();
             ServerListViewModel = new ServerListViewModel();
             ServerListViewModel.OnServerSelected += OnServerSelected;
 

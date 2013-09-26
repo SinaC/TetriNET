@@ -3,11 +3,11 @@
 namespace TetriNET.WPF_WCF_Client.Views.Connection
 {
     /// <summary>
-    /// Interaction logic for ConnectionControl.xaml
+    /// Interaction logic for LoginView.xaml
     /// </summary>
-    public partial class ConnectionControl : UserControl
+    public partial class LoginView : UserControl
     {
-        public ConnectionControl()
+        public LoginView()
         {
             InitializeComponent();
         }

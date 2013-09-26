@@ -7,8 +7,8 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:validators="clr-namespace:TetriNET.WPF_WCF_Client.Validators"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers"
              xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
+             xmlns:Commands="clr-namespace:TetriNET.WPF_WCF_Client.Commands" 
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640"
              d:DataContext="{d:DesignInstance options:ServerOptionsViewModel}">
@@ -114,7 +114,7 @@
                                 <TextBox Grid.Column="1" MaxWidth="40" Width="40">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="TextChanged">
-                                            <helpers:EventToCommand Command="{Binding Mode=OneWay, Path=DataContext.PieceOccurancyChangedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}}"/>
+                                            <Commands:EventToCommand Command="{Binding Mode=OneWay, Path=DataContext.PieceOccurancyChangedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                     <TextBox.Text>
@@ -174,7 +174,7 @@
                                 <TextBox Grid.Column="1" MaxWidth="40" Width="40">
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="TextChanged">
-                                            <helpers:EventToCommand Command="{Binding Mode=OneWay, Path=DataContext.SpecialOccurancyChangedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}}"/>
+                                            <Commands:EventToCommand Command="{Binding Mode=OneWay, Path=DataContext.SpecialOccurancyChangedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                     <TextBox.Text>

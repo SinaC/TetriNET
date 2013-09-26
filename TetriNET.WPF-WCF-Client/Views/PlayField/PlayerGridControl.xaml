@@ -30,7 +30,7 @@
             </TextBlock>
             <Run Text="{Binding PlayerName}"/>
         </TextBlock>-->
-        <Border x:Name="Border" Grid.Row="1" Background="Green" BorderThickness="2">
+        <Border x:Name="Border" Grid.Row="1" Background="Green" BorderThickness="4">
             <Canvas x:Name="Canvas" VerticalAlignment="Top" HorizontalAlignment="Left" Width="192" Height="352">
                 <!-- will be filled with controls in ctor -->
             </Canvas>

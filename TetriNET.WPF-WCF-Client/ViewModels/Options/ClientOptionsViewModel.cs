@@ -274,19 +274,19 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
             KeySettings = new ObservableCollection<KeySetting>();
 
-            SetKeySetting(Settings.Default.Down, Commands.Down);
-            SetKeySetting(Settings.Default.Drop, Commands.Drop);
-            SetKeySetting(Settings.Default.Left, Commands.Left);
-            SetKeySetting(Settings.Default.Right, Commands.Right);
-            SetKeySetting(Settings.Default.RotateClockwise, Commands.RotateClockwise);
-            SetKeySetting(Settings.Default.RotateCounterclockwise, Commands.RotateCounterclockwise);
-            SetKeySetting(Settings.Default.DiscardFirstSpecial, Commands.DiscardFirstSpecial);
-            SetKeySetting(Settings.Default.UseSpecialOn1, Commands.UseSpecialOn1);
-            SetKeySetting(Settings.Default.UseSpecialOn2, Commands.UseSpecialOn2);
-            SetKeySetting(Settings.Default.UseSpecialOn3, Commands.UseSpecialOn3);
-            SetKeySetting(Settings.Default.UseSpecialOn4, Commands.UseSpecialOn4);
-            SetKeySetting(Settings.Default.UseSpecialOn5, Commands.UseSpecialOn5);
-            SetKeySetting(Settings.Default.UseSpecialOn6, Commands.UseSpecialOn6);
+            SetKeySetting(Settings.Default.Down, Common.Interfaces.Commands.Down);
+            SetKeySetting(Settings.Default.Drop, Common.Interfaces.Commands.Drop);
+            SetKeySetting(Settings.Default.Left, Common.Interfaces.Commands.Left);
+            SetKeySetting(Settings.Default.Right, Common.Interfaces.Commands.Right);
+            SetKeySetting(Settings.Default.RotateClockwise, Common.Interfaces.Commands.RotateClockwise);
+            SetKeySetting(Settings.Default.RotateCounterclockwise, Common.Interfaces.Commands.RotateCounterclockwise);
+            SetKeySetting(Settings.Default.DiscardFirstSpecial, Common.Interfaces.Commands.DiscardFirstSpecial);
+            SetKeySetting(Settings.Default.UseSpecialOn1, Common.Interfaces.Commands.UseSpecialOn1);
+            SetKeySetting(Settings.Default.UseSpecialOn2, Common.Interfaces.Commands.UseSpecialOn2);
+            SetKeySetting(Settings.Default.UseSpecialOn3, Common.Interfaces.Commands.UseSpecialOn3);
+            SetKeySetting(Settings.Default.UseSpecialOn4, Common.Interfaces.Commands.UseSpecialOn4);
+            SetKeySetting(Settings.Default.UseSpecialOn5, Common.Interfaces.Commands.UseSpecialOn5);
+            SetKeySetting(Settings.Default.UseSpecialOn6, Common.Interfaces.Commands.UseSpecialOn6);
         }
 
         #region ViewModelBase
@@ -333,7 +333,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #endregion
 
-        private void SetKeySetting(int key, Commands cmd)
+        private void SetKeySetting(int key, Common.Interfaces.Commands cmd)
         {
             KeySetting keySetting = KeySettings.FirstOrDefault(x => x.Command == cmd);
             if (keySetting != null)

@@ -81,14 +81,14 @@
     <Compile Include="AI\GenericBot.cs" />
     <Compile Include="Converters\ChatColorBrushConverter.cs" />
     <Compile Include="Converters\SpecialToStringConverter.cs" />
-    <Compile Include="Helpers\AsyncRelayCommand.cs" />
-    <Compile Include="Helpers\EventToCommand.cs" />
-    <Compile Include="Helpers\RelayCommand.cs" />
+    <Compile Include="Commands\AsyncRelayCommand.cs" />
+    <Compile Include="Commands\EventToCommand.cs" />
+    <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Models\ChatColor.cs" />
     <Compile Include="ViewModels\Options\KeySetting.cs" />
     <Compile Include="ViewModels\ITabIndex.cs" />
     <Compile Include="TextureManager\ITextureManager.cs" />
-    <Compile Include="ViewModels\Connection\ConnectionControlViewModel.cs" />
+    <Compile Include="ViewModels\Connection\LoginViewModel.cs" />
     <Compile Include="ViewModels\Connection\ConnectionViewModel.cs" />
     <Compile Include="ViewModels\Connection\ServerListViewModel.cs" />
     <Compile Include="ViewModels\Options\ClientOptionsViewModel.cs" />
@@ -109,8 +109,8 @@
     <Compile Include="UserControls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Connection\ConnectionControl.xaml.cs">
-      <DependentUpon>ConnectionControl.xaml</DependentUpon>
+    <Compile Include="Views\Connection\LoginView.xaml.cs">
+      <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Options\ClientOptionsView.xaml.cs">
       <DependentUpon>ClientOptionsView.xaml</DependentUpon>
@@ -132,8 +132,8 @@
     <Compile Include="Views\PartyLine\PlayersManagerControl.xaml.cs">
       <DependentUpon>PlayersManagerControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Connection\ServerListControl.xaml.cs">
-      <DependentUpon>ServerListControl.xaml</DependentUpon>
+    <Compile Include="Views\Connection\ServerListView.xaml.cs">
+      <DependentUpon>ServerListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="TextureManager\TextureManager.cs" />
     <Compile Include="Helpers\ObservableDictionary.cs" />
@@ -179,7 +179,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Connection\ConnectionControl.xaml">
+    <Page Include="Views\Connection\LoginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -199,7 +199,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Connection\ServerListControl.xaml">
+    <Page Include="Views\Connection\ServerListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -227,7 +227,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="AI\PierreDellacherieOnePieceBot.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>

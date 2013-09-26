@@ -30,52 +30,24 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         #region IClient events handler
 
-        //private void OnPlayerLeft(int playerId, string playerName, LeaveReasons reason)
-        //{
-        //    OpponentGridControl grid = GetOpponentGrid(playerId);
-        //    if (grid != null)
-        //    {
-        //        grid.PlayerId = -1;
-        //        grid.PlayerName = "Not playing";
-        //    }
-        //}
-
-        //private void OnPlayerJoined(int playerId, string playerName)
-        //{
-        //    OpponentGridControl grid = GetOpponentGrid(playerId);
-        //    if (grid != null)
-        //    {
-        //        grid.PlayerId = playerId;
-        //        grid.PlayerName = playerName;
-        //    }
-        //}
-
-        //private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
-        //{
-        //    if (result == RegistrationResults.RegistrationSuccessful)
-        //        _playerId = playerId;
-        //    else
-        //        _playerId = -1;
-        //}
-
         private void OnGameStarted()
         {
             if (ClientOptionsViewModel.Instance.DropSensibilityActivated)
-                _controller.RemoveSensibility(Commands.Drop);
+                _controller.RemoveSensibility(Common.Interfaces.Commands.Drop);
             else
-                _controller.AddSensibility(Commands.Drop, ClientOptionsViewModel.Instance.DropSensibility);
+                _controller.AddSensibility(Common.Interfaces.Commands.Drop, ClientOptionsViewModel.Instance.DropSensibility);
             if (ClientOptionsViewModel.Instance.DownSensibilityActivated)
-                _controller.RemoveSensibility(Commands.Down);
+                _controller.RemoveSensibility(Common.Interfaces.Commands.Down);
             else
-                _controller.AddSensibility(Commands.Down, ClientOptionsViewModel.Instance.DownSensibility);
+                _controller.AddSensibility(Common.Interfaces.Commands.Down, ClientOptionsViewModel.Instance.DownSensibility);
             if (ClientOptionsViewModel.Instance.LeftSensibilityActivated)
-                _controller.RemoveSensibility(Commands.Left);
+                _controller.RemoveSensibility(Common.Interfaces.Commands.Left);
             else
-                _controller.AddSensibility(Commands.Left, ClientOptionsViewModel.Instance.LeftSensibility);
+                _controller.AddSensibility(Common.Interfaces.Commands.Left, ClientOptionsViewModel.Instance.LeftSensibility);
             if (ClientOptionsViewModel.Instance.RightSensibilityActivated)
-                _controller.RemoveSensibility(Commands.Right);
+                _controller.RemoveSensibility(Common.Interfaces.Commands.Right);
             else
-                _controller.AddSensibility(Commands.Down, ClientOptionsViewModel.Instance.RightSensibility);
+                _controller.AddSensibility(Common.Interfaces.Commands.Right, ClientOptionsViewModel.Instance.RightSensibility);
         }
 
         #endregion
@@ -117,22 +89,22 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
             else
             {
-                Commands cmd = MapKeyToCommand(e.Key);
-                if (cmd != Commands.Invalid)
+                Common.Interfaces.Commands cmd = MapKeyToCommand(e.Key);
+                if (cmd != Common.Interfaces.Commands.Invalid)
                     _controller.KeyDown(cmd);
             }
         }
 
         private void GameView_KeyUp(object sender, KeyEventArgs e)
         {
-            Commands cmd = MapKeyToCommand(e.Key);
-            if (cmd != Commands.Invalid)
+            Common.Interfaces.Commands cmd = MapKeyToCommand(e.Key);
+            if (cmd != Common.Interfaces.Commands.Invalid)
                 _controller.KeyUp(cmd);
         }
         
         #endregion
 
-        private Commands MapKeyToCommand(Key key)
+        private Common.Interfaces.Commands MapKeyToCommand(Key key)
         {
             KeySetting keySetting = ClientOptionsViewModel.Instance.KeySettings.FirstOrDefault(x => x.Key == key);
             if (keySetting != null)
@@ -140,66 +112,40 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             switch (key)
             {
                 case Key.Space:
-                    return Commands.Drop;
+                    return Common.Interfaces.Commands.Drop;
                 case Key.Down:
-                    return Commands.Down;
+                    return Common.Interfaces.Commands.Down;
                 case Key.Left:
-                    return Commands.Left;
+                    return Common.Interfaces.Commands.Left;
                 case Key.Right:
-                    return Commands.Right;
+                    return Common.Interfaces.Commands.Right;
                 case Key.Up:
-                    return Commands.RotateCounterclockwise;
+                    return Common.Interfaces.Commands.RotateCounterclockwise;
                 case Key.PageDown:
-                    return Commands.RotateClockwise;
+                    return Common.Interfaces.Commands.RotateClockwise;
                 case Key.D:
-                    return Commands.DiscardFirstSpecial;
+                    return Common.Interfaces.Commands.DiscardFirstSpecial;
                 case Key.NumPad1:
                 case Key.D1:
-                    return Commands.UseSpecialOn1;
+                    return Common.Interfaces.Commands.UseSpecialOn1;
                 case Key.NumPad2:
                 case Key.D2:
-                    return Commands.UseSpecialOn2;
+                    return Common.Interfaces.Commands.UseSpecialOn2;
                 case Key.NumPad3:
                 case Key.D3:
-                    return Commands.UseSpecialOn3;
+                    return Common.Interfaces.Commands.UseSpecialOn3;
                 case Key.NumPad4:
                 case Key.D4:
-                    return Commands.UseSpecialOn4;
+                    return Common.Interfaces.Commands.UseSpecialOn4;
                 case Key.NumPad5:
                 case Key.D5:
-                    return Commands.UseSpecialOn5;
+                    return Common.Interfaces.Commands.UseSpecialOn5;
                 case Key.NumPad6:
                 case Key.D6:
-                    return Commands.UseSpecialOn6;
+                    return Common.Interfaces.Commands.UseSpecialOn6;
             }
-            return Commands.Invalid;
+            return Common.Interfaces.Commands.Invalid;
         }
-
-        //private OpponentGridControl GetOpponentGrid(int playerId)
-        //{
-        //    if (playerId == _playerId)
-        //        return null;
-        //    // playerId -> id mapping rule
-        //    // 0 1 [2] 3 4 5 -> 1 2 / 3 4 5
-        //    // [0] 1 2 3 4 5 -> / 1 2 3 4 5 
-        //    // 0 1 2 3 4 [5] -> 1 2 3 4 5 /
-        //    int id;
-        //    if (playerId < _playerId)
-        //        id = playerId + 1;
-        //    else
-        //        id = playerId;
-        //    if (id == 1)
-        //        return OpponentGrid1;
-        //    if (id == 2)
-        //        return OpponentGrid2;
-        //    if (id == 3)
-        //        return OpponentGrid3;
-        //    if (id == 4)
-        //        return OpponentGrid4;
-        //    if (id == 5)
-        //        return OpponentGrid5;
-        //    return null;
-        //}
 
         private void PlayFieldView_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -219,9 +165,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             // Remove old handlers
             if (oldClient != null)
             {
-                //oldClient.OnPlayerJoined -= OnPlayerJoined;
-                //oldClient.OnPlayerLeft -= OnPlayerLeft;
-                //oldClient.OnPlayerRegistered -= OnPlayerRegistered;
                 oldClient.OnGameStarted -= OnGameStarted;
 
                 if (_controller != null)
@@ -232,18 +175,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             // Set new client
             Inventory.Client = newClient;
             NextPiece.Client = newClient;
-            //PlayerGrid.Client = newClient;
-            //OpponentGrid1.Client = newClient;
-            //OpponentGrid2.Client = newClient;
-            //OpponentGrid3.Client = newClient;
-            //OpponentGrid4.Client = newClient;
-            //OpponentGrid5.Client = newClient;
             // Add new handlers
             if (newClient != null)
             {
-                //newClient.OnPlayerJoined += OnPlayerJoined;
-                //newClient.OnPlayerLeft += OnPlayerLeft;
-                //newClient.OnPlayerRegistered += OnPlayerRegistered;
                 newClient.OnGameStarted += OnGameStarted;
 
                 // And create controller + bot

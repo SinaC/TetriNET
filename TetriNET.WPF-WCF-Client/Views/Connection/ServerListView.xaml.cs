@@ -7,9 +7,9 @@ namespace TetriNET.WPF_WCF_Client.Views.Connection
     /// <summary>
     /// Interaction logic for ServerListControl.xaml
     /// </summary>
-    public partial class ServerListControl : UserControl
+    public partial class ServerListView : UserControl
     {
-        public ServerListControl()
+        public ServerListView()
         {
             InitializeComponent();
         }

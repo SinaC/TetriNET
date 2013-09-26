@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Input;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
+using TetriNET.WPF_WCF_Client.Commands;
 using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
@@ -24,17 +25,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             {
                 if (Client == null)
                     return null;
-                int sum = Client.Statistics.PieceCount.Values.Sum();
-                ObservableDictionary<Pieces, ValuePercentage> returnValue = new ObservableDictionary<Pieces, ValuePercentage>();
-                foreach (KeyValuePair<Pieces, int> kv in Client.Statistics.PieceCount)
-                {
-                    returnValue.Add(kv.Key, new ValuePercentage
-                        {
-                            Value = kv.Value,
-                            Percentage = sum == 0 ? 0 : (100*kv.Value)/sum
-                        });
-                }
-                return returnValue;
+                return BuildStatistics(Client.Statistics.PieceCount);
             }
         }
 
@@ -44,17 +35,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             {
                 if (Client == null)
                     return null;
-                int sum = Client.Statistics.SpecialCount.Values.Sum();
-                ObservableDictionary<Specials, ValuePercentage> returnValue = new ObservableDictionary<Specials, ValuePercentage>();
-                foreach (KeyValuePair<Specials, int> kv in Client.Statistics.SpecialCount)
-                {
-                    returnValue.Add(kv.Key, new ValuePercentage
-                        {
-                            Value = kv.Value,
-                            Percentage = sum == 0 ? 0 : (100*kv.Value)/sum
-                        });
-                }
-                return returnValue;
+                return BuildStatistics(Client.Statistics.SpecialCount);
             }
         }
 
@@ -64,17 +45,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             {
                 if (Client == null)
                     return null;
-                int sum = Client.Statistics.SpecialUsed.Values.Sum();
-                ObservableDictionary<Specials, ValuePercentage> returnValue = new ObservableDictionary<Specials, ValuePercentage>();
-                foreach (KeyValuePair<Specials, int> kv in Client.Statistics.SpecialUsed)
-                {
-                    returnValue.Add(kv.Key, new ValuePercentage
-                        {
-                            Value = kv.Value,
-                            Percentage = sum == 0 ? 0 : (100*kv.Value)/sum
-                        });
-                }
-                return returnValue;
+                return BuildStatistics(Client.Statistics.SpecialUsed);
             }
         }
 
@@ -84,17 +55,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             {
                 if (Client == null)
                     return null;
-                int sum = Client.Statistics.SpecialDiscarded.Values.Sum();
-                ObservableDictionary<Specials, ValuePercentage> returnValue = new ObservableDictionary<Specials, ValuePercentage>();
-                foreach (KeyValuePair<Specials, int> kv in Client.Statistics.SpecialDiscarded)
-                {
-                    returnValue.Add(kv.Key, new ValuePercentage
-                        {
-                            Value = kv.Value,
-                            Percentage = sum == 0 ? 0 : (100*kv.Value)/sum
-                        });
-                }
-                return returnValue;
+                return BuildStatistics(Client.Statistics.SpecialDiscarded);
             }
         }
 
@@ -213,5 +174,20 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         public ICommand RefreshStatisticsCommand { get; set; }
 
         #endregion
+
+        private static ObservableDictionary<T, ValuePercentage> BuildStatistics<T>(IDictionary<T, int> dictionary)
+        {
+            int sum = dictionary.Values.Sum();
+            ObservableDictionary<T, ValuePercentage> returnValue = new ObservableDictionary<T, ValuePercentage>();
+            foreach (KeyValuePair<T, int> kv in dictionary)
+            {
+                returnValue.Add(kv.Key, new ValuePercentage
+                {
+                    Value = kv.Value,
+                    Percentage = sum == 0 ? 0 : (100 * kv.Value) / sum
+                });
+            }
+            return returnValue;
+        }
     }
 }

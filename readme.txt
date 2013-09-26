@@ -24,6 +24,8 @@ wall kick http://tetris.wikia.com/wiki/Wall_kick  http://tetris.wikia.com/wiki/F
 display tetrimino instead of text in server options
 Team
 
+when a player is kicked, he cannot reconnect -> exception on heartbeat
+
 wcf + jquery
 http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-with-nettcpbinding
 http://www.codeproject.com/Articles/132809/Calling-WCF-Services-using-jQuery

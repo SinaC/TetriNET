@@ -77,6 +77,11 @@ namespace TetriNET.WPF_WCF_Client.AI
         private void _client_OnConfusionToggled(bool active)
         {
             _isConfusionActive = active;
+            if (!_isConfusionActive)
+            {
+                Log.WriteLine(Log.LogLevels.Debug, "Confusion ended, raise next piece event");
+                _handleNextPieceEvent.Set();
+            }
         }
 
         private void _client_OnRoundStarted()
@@ -90,6 +95,7 @@ namespace TetriNET.WPF_WCF_Client.AI
 
         private void client_OnGameStarted()
         {
+            _isConfusionActive = false;
             if (Activated)
                 _handleNextPieceEvent.Set();
         }
@@ -114,9 +120,9 @@ namespace TetriNET.WPF_WCF_Client.AI
             while (true)
             {
                 int handle = WaitHandle.WaitAny(waitHandles, SleepTime);
-                if (!_handleNextPieceEvent.WaitOne(0) && _client.IsGameStarted)
+                if (!_handleNextPieceEvent.WaitOne(0) && _client.IsPlaying && !_isConfusionActive)
                 {
-                    Log.WriteLine(Log.LogLevels.Warning, "!!!!!!!!!!! NextPieceEvent not raised  {0}", handle);
+                    Log.WriteLine(Log.LogLevels.Warning, "!!!!!!!!!!! NextPieceEvent not raised  {0}  {1}", handle, _client.CurrentPiece == null ? -1 : _client.CurrentPiece.Index);
                 }
                 _handleNextPieceEvent.Reset();
                 _stopEvent.Reset();
@@ -125,6 +131,8 @@ namespace TetriNET.WPF_WCF_Client.AI
                     break;
                 if (handle == 0 /*next piece event*/ && _client.IsPlaying && _client.Board != null && _client.CurrentPiece != null && _client.NextPiece != null)
                 {
+                    Log.WriteLine(Log.LogLevels.Debug, "NextPieceEvent was raised");
+
                     int currentPieceIndex = _client.CurrentPiece.Index;
                     //Log.WriteLine(Log.LogLevels.Debug, "Searching best move for Piece {0} {1}", _client.CurrentPiece.Value, _client.CurrentPiece.Index);
 

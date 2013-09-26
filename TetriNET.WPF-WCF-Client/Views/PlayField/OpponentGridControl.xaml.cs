@@ -54,7 +54,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     Canvas.SetLeft(rect, canvasLeft);
                     Canvas.SetTop(rect, canvasTop);
                 }
-            Border.BorderBrush = TransparentColor;
+            ResetImmunity();
         }
 
         private void DrawGrid(IBoard board)
@@ -86,7 +86,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void ClearGrid()
         {
-            Border.BorderBrush = TransparentColor;
             foreach (Rectangle uiPart in _grid)
                 uiPart.Fill = TransparentColor;
         }
@@ -96,6 +95,18 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             if (cellX < 0 || cellX >= ClientOptionsViewModel.Width || cellY < 0 || cellY >= ClientOptionsViewModel.Height)
                 return null;
             return _grid[cellX + cellY * ClientOptionsViewModel.Width];
+        }
+
+        private void SetImmunity()
+        {
+            Border.BorderBrush = ImmunityBorderColor;
+            ImmunityDisplay.Visibility = Visibility.Visible;
+        }
+
+        private void ResetImmunity()
+        {
+            Border.BorderBrush = TransparentColor;
+            ImmunityDisplay.Visibility = Visibility.Hidden;
         }
 
         #region IClient events handler
@@ -119,13 +130,13 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
-            ExecuteOnUIThread.Invoke(() => Border.BorderBrush = TransparentColor);
+            ExecuteOnUIThread.Invoke(ResetImmunity);
 
         }
 
         private void OnPlayerUnregistered()
         {
-            ExecuteOnUIThread.Invoke(() => Border.BorderBrush = TransparentColor);
+            ExecuteOnUIThread.Invoke(ResetImmunity);
         }
 
         private void OnSpecialUsed(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special)
@@ -136,7 +147,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 if (vm == null)
                     return;
                 if (targetId == vm.PlayerId && special == Specials.Immunity)
-                    Border.BorderBrush = ImmunityBorderColor;
+                    SetImmunity();
             });
         }
 
@@ -148,7 +159,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 if (vm == null)
                     return;
                 if (playerId == vm.PlayerId && special == Specials.Immunity)
-                    Border.BorderBrush = TransparentColor;
+                    ResetImmunity();
             });
         }
 

@@ -35,5 +35,7 @@
                 <!-- will be filled with controls in ctor -->
             </Canvas>
         </Border>
+
+        <Rectangle x:Name="ImmunityDisplay" Fill="#90FF0000" Grid.Row="1" Visibility="Visible" />
     </Grid>
 </UserControl>

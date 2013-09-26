@@ -643,6 +643,30 @@ namespace TetriNET.Client
             // Send player lost
             _proxy.GameLost(this);
 
+            if (_isConfusionActive)
+            {
+                _isConfusionActive = false;
+                if (ClientOnConfusionToggled != null)
+                    ClientOnConfusionToggled(false);
+                _proxy.FinishContinuousSpecial(this, Specials.Confusion);
+            }
+
+            if (_isDarknessActive)
+            {
+                _isDarknessActive = false;
+                if (ClientOnDarknessToggled != null)
+                    ClientOnDarknessToggled(false);
+                    _proxy.FinishContinuousSpecial(this, Specials.Darkness);
+            }
+
+            if (_isImmunityActive)
+            {
+                _isImmunityActive = false;
+                if (ClientOnImmunityToggled != null)
+                    ClientOnImmunityToggled(false);
+                _proxy.FinishContinuousSpecial(this, Specials.Immunity);
+            }
+
             if (ClientOnGameOver != null)
                 ClientOnGameOver();
         }

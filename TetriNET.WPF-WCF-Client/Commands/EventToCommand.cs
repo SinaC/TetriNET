@@ -18,7 +18,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interactivity;
 
-namespace TetriNET.WPF_WCF_Client.Helpers
+namespace TetriNET.WPF_WCF_Client.Commands
 {
     public class EventToCommand : TriggerAction<DependencyObject>
     {

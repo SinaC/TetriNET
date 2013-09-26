@@ -25,21 +25,14 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <playField:PlayerGridControl x:Name="PlayerGrid" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" DataContext="{Binding PlayerViewModel}" />
-        <!--<playField:OpponentGridControl x:Name="OpponentGrid1" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" />
-        <playField:OpponentGridControl x:Name="OpponentGrid2" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" />
-        <playField:OpponentGridControl x:Name="OpponentGrid3" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" />
-        <playField:OpponentGridControl x:Name="OpponentGrid4" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0"/>
-        <playField:OpponentGridControl x:Name="OpponentGrid5" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" />-->
         <playField:OpponentGridControl x:Name="OpponentGrid1" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[0]}" />
         <playField:OpponentGridControl x:Name="OpponentGrid2" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[1]}" />
         <playField:OpponentGridControl x:Name="OpponentGrid3" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[2]}" />
         <playField:OpponentGridControl x:Name="OpponentGrid4" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[3]}" />
         <playField:OpponentGridControl x:Name="OpponentGrid5" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[4]}" />
         <playField:InventoryControl x:Name="Inventory" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <playField:InGameChatControl Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,4,0,0" DataContext="{Binding InGameChatViewModel}"/>
-        <!--<playField:InGameChatControl x:Name="InGameMessages" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,4,0,0"/>-->
-        <playField:NextPieceControl x:Name="NextPiece" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="16,0,16,0"/>
-        <playField:GameInfoControl Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16,0,0,16" DataContext="{Binding GameInfoViewModel}"/>
-        <!--<playField:GameInfoControl x:Name="GameInfo"  Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16,0,0,16"/>-->
+        <playField:InGameChatControl Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,4,0,0" DataContext="{Binding InGameChatViewModel}"/>
+        <playField:NextPieceControl x:Name="NextPiece" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="8,0,8,0"/>
+        <playField:GameInfoControl Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="8,0,0,8" DataContext="{Binding GameInfoViewModel}"/>
     </Grid>
 </UserControl>

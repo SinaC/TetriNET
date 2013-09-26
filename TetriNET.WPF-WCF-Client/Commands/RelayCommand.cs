@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace TetriNET.WPF_WCF_Client.Helpers
+namespace TetriNET.WPF_WCF_Client.Commands
 {
     public class RelayCommand : ICommand
     {

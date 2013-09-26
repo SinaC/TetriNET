@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:connection="clr-namespace:TetriNET.WPF_WCF_Client.Views.Connection"
+             xmlns:views="clr-namespace:TetriNET.WPF_WCF_Client.Views.Connection"
              xmlns:connectionViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance connectionViewModels:ConnectionViewModel}"
@@ -13,7 +13,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <connection:ConnectionControl Grid.Column="0" Margin="0,0,4,0" DataContext="{Binding ConnectionControlViewModel}" />
-        <connection:ServerListControl Grid.Column="1" Margin="4,0,0,0" DataContext="{Binding ServerListViewModel}" />
+        <views:LoginView Grid.Column="0" Margin="0,0,4,0" DataContext="{Binding ConnectionControlViewModel}" />
+        <views:ServerListView Grid.Column="1" Margin="4,0,0,0" DataContext="{Binding ServerListViewModel}" />
     </Grid>
 </UserControl>

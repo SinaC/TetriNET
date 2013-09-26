@@ -4,13 +4,14 @@ using System.Windows.Input;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
+using TetriNET.WPF_WCF_Client.Commands;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.Models;
 using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 {
-    public class ConnectionControlViewModel : ViewModelBase
+    public class LoginViewModel : ViewModelBase
     {
         private bool _isRegistered;
 
@@ -39,6 +40,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                 if (_serverAddress != value)
                 {
                     _serverAddress = value;
+
+                    //if (!_serverAddress.StartsWith("net.tcp://"))
+                    //    _serverAddress = "net.tcp://" + _serverAddress;
+                    //if (!_serverAddress.EndsWith(":8765/TetriNET"))
+                    //    _serverAddress = _serverAddress + ":8765/TetriNET";
+
                     OnPropertyChanged();
                     Settings.Default.Server = _serverAddress;
                     Settings.Default.Save();
@@ -93,7 +100,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             }
         }
 
-        public ConnectionControlViewModel()
+        public LoginViewModel()
         {
             ConnectionResultColor = ChatColor.Black;
             IsProgressBarVisible = false;

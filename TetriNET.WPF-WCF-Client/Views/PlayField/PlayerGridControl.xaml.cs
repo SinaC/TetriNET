@@ -68,7 +68,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     Canvas.SetLeft(rect, canvasLeft);
                     Canvas.SetTop(rect, canvasTop);
                 }
-            Border.BorderBrush = TransparentColor;
+            ActivateDarkness(false);
+            ActivateImmunity(false);
 
             // Create hint brush
             _hintBrush = CreateDoubleRectangleBrush(Colors.GreenYellow);//Color.FromArgb(128, 77, 115, 141));
@@ -232,21 +233,34 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             return _grid[cellX + cellY * ClientOptionsViewModel.Width];
         }
 
+        private void ActivateDarkness(bool active)
+        {
+            _isDarknessActive = active;
+            Canvas.Background = active ? DarknessColor : TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
+            DrawEverything();
+        }
+
+        private void ActivateImmunity(bool active)
+        {
+            Border.BorderBrush = active ? ImmunityBorderColor : TransparentColor;
+        }
+
+        private void DesactivateContinuousSpecials()
+        {
+            ActivateDarkness(false);
+            ActivateImmunity(false);
+        }
+
         #region IClient events handler
 
         private void OnImmunityToggled(bool active)
         {
-            ExecuteOnUIThread.Invoke(() => Border.BorderBrush = active ? ImmunityBorderColor : TransparentColor);
+            ExecuteOnUIThread.Invoke(() => ActivateImmunity(active));
         }
 
         private void OnDarknessToggled(bool active)
         {
-            _isDarknessActive = active;
-            ExecuteOnUIThread.Invoke(() =>
-            {
-                Canvas.Background = active ? DarknessColor : TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
-                DrawEverything();
-            });
+            ExecuteOnUIThread.Invoke(() => ActivateDarkness(active));
         }
 
         private void OnRedraw()
@@ -270,17 +284,27 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         {
             _displayDropLocation = ClientOptionsViewModel.Instance.DisplayDropLocation;
             _pieceHint = null; // reset hint>
-            ExecuteOnUIThread.Invoke(DrawEverything);
+            ExecuteOnUIThread.Invoke(() => ActivateDarkness(false));
         }
 
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
-            ExecuteOnUIThread.Invoke(() => Border.BorderBrush = TransparentColor);
+            ExecuteOnUIThread.Invoke(DesactivateContinuousSpecials);
         }
 
         private void OnPlayerUnregistered()
         {
-            ExecuteOnUIThread.Invoke(() => Border.BorderBrush = TransparentColor);
+            ExecuteOnUIThread.Invoke(DesactivateContinuousSpecials);
+        }
+
+        private void OnGameOver()
+        {
+            ExecuteOnUIThread.Invoke(DesactivateContinuousSpecials);
+        }
+
+        private void OnGameFinished()
+        {
+            ExecuteOnUIThread.Invoke(DesactivateContinuousSpecials);
         }
 
         #endregion
@@ -304,6 +328,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             // Remove old handlers
             if (oldClient != null)
             {
+                oldClient.OnGameOver -= OnGameOver;
+                oldClient.OnGameFinished -= OnGameFinished;
                 oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
                 oldClient.OnConnectionLost -= OnConnectionLost;
                 oldClient.OnGameStarted -= OnGameStarted;
@@ -316,6 +342,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             // Add new handlers
             if (newClient != null)
             {
+                newClient.OnGameOver += OnGameOver;
+                newClient.OnGameFinished += OnGameFinished;
                 newClient.OnPlayerUnregistered += OnPlayerUnregistered;
                 newClient.OnConnectionLost += OnConnectionLost;
                 newClient.OnGameStarted += OnGameStarted;

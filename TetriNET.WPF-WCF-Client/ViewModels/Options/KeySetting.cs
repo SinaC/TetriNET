@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using TetriNET.Common.Helpers;
-using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Options
@@ -38,8 +37,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             }
         }
 
-        private Commands _command;
-        public Commands Command
+        private Common.Interfaces.Commands _command;
+        public Common.Interfaces.Commands Command
         {
             get { return _command; }
             set
@@ -63,7 +62,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         }
 
 
-        public KeySetting(Key key, Commands command)
+        public KeySetting(Key key, Common.Interfaces.Commands command)
         {
             Key = key;
             Command = command;
@@ -73,43 +72,43 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         {
             switch (Command)
             {
-                case Commands.Drop:
+                case Common.Interfaces.Commands.Drop:
                     Settings.Default.Drop = (int)Key;
                     break;
-                case Commands.Down:
+                case Common.Interfaces.Commands.Down:
                     Settings.Default.Down = (int)Key;
                     break;
-                case Commands.Left:
+                case Common.Interfaces.Commands.Left:
                     Settings.Default.Left = (int)Key;
                     break;
-                case Commands.Right:
+                case Common.Interfaces.Commands.Right:
                     Settings.Default.Right = (int)Key;
                     break;
-                case Commands.RotateClockwise:
+                case Common.Interfaces.Commands.RotateClockwise:
                     Settings.Default.RotateClockwise = (int)Key;
                     break;
-                case Commands.RotateCounterclockwise:
+                case Common.Interfaces.Commands.RotateCounterclockwise:
                     Settings.Default.RotateCounterclockwise = (int)Key;
                     break;
-                case Commands.DiscardFirstSpecial:
+                case Common.Interfaces.Commands.DiscardFirstSpecial:
                     Settings.Default.DiscardFirstSpecial = (int)Key;
                     break;
-                case Commands.UseSpecialOn1:
+                case Common.Interfaces.Commands.UseSpecialOn1:
                     Settings.Default.UseSpecialOn1 = (int)Key;
                     break;
-                case Commands.UseSpecialOn2:
+                case Common.Interfaces.Commands.UseSpecialOn2:
                     Settings.Default.UseSpecialOn2 = (int)Key;
                     break;
-                case Commands.UseSpecialOn3:
+                case Common.Interfaces.Commands.UseSpecialOn3:
                     Settings.Default.UseSpecialOn3 = (int)Key;
                     break;
-                case Commands.UseSpecialOn4:
+                case Common.Interfaces.Commands.UseSpecialOn4:
                     Settings.Default.UseSpecialOn4 = (int)Key;
                     break;
-                case Commands.UseSpecialOn5:
+                case Common.Interfaces.Commands.UseSpecialOn5:
                     Settings.Default.UseSpecialOn5 = (int)Key;
                     break;
-                case Commands.UseSpecialOn6:
+                case Common.Interfaces.Commands.UseSpecialOn6:
                     Settings.Default.UseSpecialOn6 = (int)Key;
                     break;
             }
