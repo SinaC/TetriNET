@@ -13,15 +13,15 @@ using TetriNET.WPF_WCF_Client.Helpers;
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
     /// <summary>
-    /// Interaction logic for InventoryControl.xaml
+    /// Interaction logic for InventoryView.xaml
     /// </summary>
-    public partial class InventoryControl : UserControl, INotifyPropertyChanged
+    public partial class InventoryView : UserControl, INotifyPropertyChanged
     {
         private const int MaxInventorySize = 15;
 
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
 
-        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("InventoryClientProperty", typeof(IClient), typeof(InventoryControl), new PropertyMetadata(Client_Changed));
+        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("InventoryClientProperty", typeof(IClient), typeof(InventoryView), new PropertyMetadata(Client_Changed));
         public IClient Client
         {
             get { return (IClient)GetValue(ClientProperty); }
@@ -44,7 +44,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
         }
 
-        public InventoryControl()
+        public InventoryView()
         {
             InitializeComponent();
 
@@ -88,7 +88,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
-            InventoryControl @this = sender as InventoryControl;
+            InventoryView @this = sender as InventoryView;
 
             if (@this != null)
             {

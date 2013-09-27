@@ -119,18 +119,18 @@
     <Compile Include="Views\Options\ServerOptionsView.xaml.cs">
       <DependentUpon>ServerOptionsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PlayField\GameInfoControl.xaml.cs">
-      <DependentUpon>GameInfoControl.xaml</DependentUpon>
+    <Compile Include="Views\PlayField\GameInfoView.xaml.cs">
+      <DependentUpon>GameInfoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ListBoxExtenders.cs" />
-    <Compile Include="Views\PlayField\NextPieceControl.xaml.cs">
-      <DependentUpon>NextPieceControl.xaml</DependentUpon>
+    <Compile Include="Views\PlayField\NextPieceView.xaml.cs">
+      <DependentUpon>NextPieceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PlayField\OpponentGridControl.xaml.cs">
       <DependentUpon>OpponentGridControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PartyLine\PlayersManagerControl.xaml.cs">
-      <DependentUpon>PlayersManagerControl.xaml</DependentUpon>
+    <Compile Include="Views\PartyLine\PlayersManagerView.xaml.cs">
+      <DependentUpon>PlayersManagerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Connection\ServerListView.xaml.cs">
       <DependentUpon>ServerListView.xaml</DependentUpon>
@@ -144,8 +144,8 @@
     <Compile Include="Views\Options\OptionsView.xaml.cs">
       <DependentUpon>OptionsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PlayField\PlayerGridControl.xaml.cs">
-      <DependentUpon>PlayerGridControl.xaml</DependentUpon>
+    <Compile Include="Views\PlayField\PlayerGridView.xaml.cs">
+      <DependentUpon>PlayerGridView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Views\Connection\ConnectionView.xaml.cs">
@@ -175,7 +175,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PartyLine\ChatControl.xaml">
+    <Page Include="Views\PartyLine\ChatView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -183,11 +183,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PlayField\GameInfoControl.xaml">
+    <Page Include="Views\PlayField\GameInfoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PlayField\NextPieceControl.xaml">
+    <Page Include="Views\PlayField\NextPieceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -195,7 +195,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\PartyLine\PlayersManagerControl.xaml">
+    <Page Include="Views\PartyLine\PlayersManagerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -211,15 +211,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PlayField\PlayerGridControl.xaml">
+    <Page Include="Views\PlayField\PlayerGridView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\PlayField\InGameChatControl.xaml">
+    <Page Include="Views\PlayField\InGameChatView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PlayField\InventoryControl.xaml">
+    <Page Include="Views\PlayField\InventoryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -231,14 +231,14 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Views\PartyLine\ChatControl.xaml.cs">
-      <DependentUpon>ChatControl.xaml</DependentUpon>
+    <Compile Include="Views\PartyLine\ChatView.xaml.cs">
+      <DependentUpon>ChatView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PlayField\InGameChatControl.xaml.cs">
-      <DependentUpon>InGameChatControl.xaml</DependentUpon>
+    <Compile Include="Views\PlayField\InGameChatView.xaml.cs">
+      <DependentUpon>InGameChatView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PlayField\InventoryControl.xaml.cs">
-      <DependentUpon>InventoryControl.xaml</DependentUpon>
+    <Compile Include="Views\PlayField\InventoryView.xaml.cs">
+      <DependentUpon>InventoryView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Mapper.cs" />
     <Compile Include="Helpers\ExecuteOnUIThread.cs" />

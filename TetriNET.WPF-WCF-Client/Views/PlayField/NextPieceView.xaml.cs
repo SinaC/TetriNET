@@ -10,9 +10,9 @@ using TetriNET.WPF_WCF_Client.Helpers;
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
     /// <summary>
-    /// Interaction logic for NextPieceControl.xaml
+    /// Interaction logic for NextPieceView.xaml
     /// </summary>
-    public partial class NextPieceControl : UserControl
+    public partial class NextPieceView : UserControl
     {
         private const int CellWidth = 16;
         private const int CellHeight = 16;
@@ -21,7 +21,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
 
-        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("NextPieceClientProperty", typeof(IClient), typeof(NextPieceControl), new PropertyMetadata(Client_Changed));
+        public static readonly DependencyProperty ClientProperty = DependencyProperty.Register("NextPieceClientProperty", typeof(IClient), typeof(NextPieceView), new PropertyMetadata(Client_Changed));
         public IClient Client
         {
             get { return (IClient)GetValue(ClientProperty); }
@@ -30,7 +30,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
-        public NextPieceControl()
+        public NextPieceView()
         {
             InitializeComponent();
 
@@ -93,7 +93,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
-            NextPieceControl @this = sender as NextPieceControl;
+            NextPieceView @this = sender as NextPieceView;
 
             if (@this != null)
             {

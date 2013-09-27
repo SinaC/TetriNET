@@ -3,11 +3,11 @@
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
     /// <summary>
-    /// Interaction logic for InGameChatControl.xaml
+    /// Interaction logic for InGameChatView.xaml
     /// </summary>
-    public partial class InGameChatControl : UserControl
+    public partial class InGameChatView : UserControl
     {
-        public InGameChatControl()
+        public InGameChatView()
         {
             InitializeComponent();
         }

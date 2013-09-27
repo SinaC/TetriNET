@@ -3,11 +3,11 @@
 namespace TetriNET.WPF_WCF_Client.Views.PartyLine
 {
     /// <summary>
-    /// Interaction logic for PlayersManagerControl.xaml
+    /// Interaction logic for PlayersManagerView.xaml
     /// </summary>
-    public partial class PlayersManagerControl : UserControl
+    public partial class PlayersManagerView : UserControl
     {
-        public PlayersManagerControl()
+        public PlayersManagerView()
         {
             InitializeComponent();
         }

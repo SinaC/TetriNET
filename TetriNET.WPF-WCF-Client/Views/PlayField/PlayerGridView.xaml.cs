@@ -15,9 +15,9 @@ using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
     /// <summary>
-    /// Interaction logic for PlayerGridControl.xaml
+    /// Interaction logic for PlayerGridView.xaml
     /// </summary>
-    public partial class PlayerGridControl : UserControl
+    public partial class PlayerGridView : UserControl
     {
         private const int CellWidth = 16;
         private const int CellHeight = 16;
@@ -39,7 +39,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private IPiece _pieceHint;
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
-        public PlayerGridControl()
+        public PlayerGridView()
         {
             InitializeComponent();
 

@@ -71,7 +71,7 @@ namespace TetriNET.Client
 
         private PlayerData Player
         {
-            get { return _playersData[_clientPlayerId]; }
+            get { return _clientPlayerId >= 0 && _clientPlayerId <= MaxPlayers ? _playersData[_clientPlayerId] : null; }
         }
 
         public Client(Func<Pieces, int, int, int, int, bool, IPiece> createPieceFunc, Func<IBoard> createBoardFunc)
@@ -822,7 +822,7 @@ namespace TetriNET.Client
 
         public IBoard Board
         {
-            get { return Player.Board; }
+            get { return Player == null ? null : Player.Board; }
         }
         
         public bool IsGamePaused

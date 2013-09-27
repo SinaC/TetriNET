@@ -24,15 +24,16 @@ namespace TetriNET.WPF_WCF_Client.Commands
 
         public async void Execute(object parameter)
         {
-            await ExecuteAsync(parameter);
+            //await ExecuteAsync(parameter);
+            await Task.Run(() => _action());
         }
 
         #endregion
 
-        protected virtual async Task ExecuteAsync(object parameter)
-        {
-            await Task.Run(() => _action());
-        }
+        //protected virtual async Task ExecuteAsync(object parameter)
+        //{
+        //    await Task.Run(() => _action());
+        //}
     }
 
     public class AsyncRelayCommand<T> : ICommand
@@ -55,14 +56,15 @@ namespace TetriNET.WPF_WCF_Client.Commands
 
         public async void Execute(object parameter)
         {
-            await ExecuteAsync(parameter);
+            //await ExecuteAsync(parameter);
+            await Task.Run(() => _action((T)parameter));
         }
 
         #endregion
 
-        protected virtual async Task ExecuteAsync(object parameter)
-        {
-            await Task.Run(() => _action((T)parameter));
-        }
+        //protected virtual async Task ExecuteAsync(object parameter)
+        //{
+        //    await Task.Run(() => _action((T)parameter));
+        //}
     }
 }

@@ -5,12 +5,12 @@ using System.Windows.Input;
 namespace TetriNET.WPF_WCF_Client.Views.PartyLine
 {
     /// <summary>
-    /// Interaction logic for ChatControl.xaml
+    /// Interaction logic for ChatView.xaml
     /// </summary>
-    public partial class ChatControl : UserControl
+    public partial class ChatView : UserControl
     {
        
-        public ChatControl()
+        public ChatView()
         {
             InitializeComponent();
         }

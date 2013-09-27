@@ -1,9 +1,13 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Timers;
 using TetriNET.Common.Interfaces;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
+    // TODO: class continuous effect timer + collection of timer sorted by time left
+
     public class GameInfoViewModel : ViewModelBase
     {
         private int _level;
@@ -78,10 +82,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             oldClient.OnLinesClearedChanged -= OnLinesClearedChanged;
             oldClient.OnLevelChanged -= OnLevelChanged;
             oldClient.OnGameStarted -= OnGameStarted;
-            oldClient.OnGameOver -= StopTimer;
-            oldClient.OnGameFinished -= StopTimer;
+            oldClient.OnGameOver -= StopTimerAndComputeTime;
+            oldClient.OnGameFinished -= StopTimerAndComputeTime;
             oldClient.OnConnectionLost -= OnConnectionLost;
-            oldClient.OnPlayerUnregistered -= StopTimer;
+            oldClient.OnPlayerUnregistered -= StopTimerAndComputeTime;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
@@ -89,10 +93,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             newClient.OnLinesClearedChanged += OnLinesClearedChanged;
             newClient.OnLevelChanged += OnLevelChanged;
             newClient.OnGameStarted += OnGameStarted;
-            newClient.OnGameOver += StopTimer;
-            newClient.OnGameFinished += StopTimer;
+            newClient.OnGameOver += StopTimerAndComputeTime;
+            newClient.OnGameFinished += StopTimerAndComputeTime;
             newClient.OnConnectionLost += OnConnectionLost;
-            newClient.OnPlayerUnregistered += StopTimer;
+            newClient.OnPlayerUnregistered += StopTimerAndComputeTime;
         }
 
         #endregion
@@ -101,13 +105,19 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
-            StopTimer();
+            StopTimer(false);
         }
 
-        private void StopTimer()
+        private void StopTimerAndComputeTime()
+        {
+            StopTimer(true);
+        }
+
+        private void StopTimer(bool computeTime = true)
         {
             _timer.Stop();
-            ElapsedTime = DateTime.Now - _gameStartTime;
+            if (computeTime)
+                ElapsedTime = DateTime.Now - _gameStartTime;
         }
 
         private void OnGameStarted()

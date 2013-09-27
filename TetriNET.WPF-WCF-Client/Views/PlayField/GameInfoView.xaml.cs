@@ -3,11 +3,11 @@
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
     /// <summary>
-    /// Interaction logic for GameInfoControl.xaml
+    /// Interaction logic for GameInfoView.xaml
     /// </summary>
-    public partial class GameInfoControl : UserControl
+    public partial class GameInfoView : UserControl
     {
-        public GameInfoControl()
+        public GameInfoView()
         {
             InitializeComponent();
         }
