@@ -11,7 +11,6 @@ using System.Reflection;
 using System.Threading;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
-using System.Net;
 using System.Linq;
 
 namespace ServiceModelEx

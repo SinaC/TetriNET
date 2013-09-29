@@ -6,6 +6,7 @@
              xmlns:playField="clr-namespace:TetriNET.WPF_WCF_Client.Views.PlayField"
              xmlns:viewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PlayField" mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModels:PlayFieldViewModel}"
+             IsTabStop="False"
              DataContextChanged="PlayFieldView_OnDataContextChanged"
              KeyDown="GameView_KeyDown"
              KeyUp="GameView_KeyUp">

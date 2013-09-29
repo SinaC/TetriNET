@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="BoardHelper.cs" />
     <Compile Include="Move strategies\AdvancedPierreDellacherieOnePiece.cs" />
+    <Compile Include="Move strategies\ColinFaheyTwoPiece.cs" />
     <Compile Include="Move strategies\LuckyToiletOnePiece.cs" />
     <Compile Include="Special strategies\SinaCSpecials.cs" />
     <Compile Include="Move strategies\PierreDellacherieOnePiece.cs" />

@@ -1,4 +1,5 @@
-﻿using TetriNET.Common.Interfaces;
+﻿using TetriNET.Common.Helpers;
+using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Strategy
 {
@@ -211,7 +212,7 @@ namespace TetriNET.Strategy
             {
                 byte cellValue = board[x, y];
 
-                if (cellValue != 0)
+                if (cellValue != CellHelper.EmptyCell)
                     enable = true;
                 else if (enable)
                     totalHoles++;
@@ -307,6 +308,69 @@ namespace TetriNET.Strategy
             return total;
         }
 
+        public static int GetTotalShadowedHoles(IBoard board)
+        {
+            int totalShadowedHoles = 0;
+
+            // For each column we search top-down through the rows,
+            // noting the first occupied cell, and counting any
+            // unoccupied cells after that point...
+            for (int x = 1; x <= board.Width; x++)
+                totalShadowedHoles += GetBuriedHolesForColumn(board, x);
+
+            return totalShadowedHoles;
+        }
+
+        public static int GetPileHeightWeightedCells(IBoard board)
+        {
+            int totalWeightedCells = 0;
+
+            for (int y = 1; y <= board.Height; y++)
+                for (int x = 1; x <= board.Width; x++)
+                    if (board[x, y] != CellHelper.EmptyCell)
+                        totalWeightedCells += y;
+
+            return totalWeightedCells;
+        }
+
+        public static int GetSumOfWellHeights(IBoard board)
+        {
+            int sumOfWellHeights = 0;
+            int columnHeight = 0;
+            int columnHeightToLeft = 0;
+            int columnHeightToRight = 0;
+
+            // Determine height of LEFT  well
+            columnHeight = GetColumnHeight(board, 1);
+            columnHeightToRight = GetColumnHeight(board, 2);
+            if (columnHeightToRight > columnHeight)
+                sumOfWellHeights += (columnHeightToRight - columnHeight);
+
+            // Determine height of RIGHT well
+            columnHeightToLeft = GetColumnHeight(board, board.Width - 1);
+            columnHeight = GetColumnHeight(board, board.Width);
+            if (columnHeightToLeft > columnHeight)
+                sumOfWellHeights += (columnHeightToLeft - columnHeight);
+
+            // Now do all interior columns, 1..(width-1), which have TWO adjacent lines...
+            for (int x = 2; x <= board.Width - 1; x++)
+            {
+                columnHeightToLeft = GetColumnHeight(board, x - 1);
+                columnHeight = GetColumnHeight(board, x);
+                columnHeightToRight = GetColumnHeight(board, x + 1);
+
+                if (columnHeightToLeft > columnHeightToRight)
+                    columnHeightToLeft = columnHeightToRight;
+                else
+                    columnHeightToRight = columnHeightToLeft;
+
+                if (columnHeightToLeft > columnHeight)
+                    sumOfWellHeights += (columnHeightToLeft - columnHeight);
+            }
+
+            return sumOfWellHeights;
+        }
+
         private static int GetBlanksDownBeforeBlockedForColumn(IBoard board, int x, int topY) // result range: 0..topY
         {
             int totalBlanksBeforeBlocked = 0;
@@ -320,6 +384,20 @@ namespace TetriNET.Strategy
             }
 
             return totalBlanksBeforeBlocked;
+        }
+
+        private static int GetColumnHeight(IBoard board, int x)
+        {
+            if (x <= 0)
+                return 0;
+            if (x > board.Width)
+                return 0;
+
+            // top-down search for first occupied cell
+            for (int y = board.Height; y >= 1; y--) // top-down search
+                if (board[x, y] != CellHelper.EmptyCell)
+                    return y;
+            return 0;
         }
     }
 }

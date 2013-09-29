@@ -39,10 +39,8 @@ namespace TetriNET.Common.Interfaces
     public delegate void ClientLinesClearedChangedHandler();
     public delegate void ClientLevelChangedHandler();
     public delegate void ClientSpecialUsedHandler(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special);
-    public delegate void ClientPlayerAddLines(string playerName, int specialId, int count);
-    public delegate void ClientToggleDarkness(bool active);
-    public delegate void ClientToggleConfusion(bool active);
-    public delegate void ClientToggleImmunity(bool active);
+    public delegate void ClientPlayerAddLinesHandler(string playerName, int specialId, int count);
+    public delegate void ClientContinuousSpecialToggledHandler(Specials special, bool active, double durationLeftInSeconds);
     public delegate void ClientContinuousSpecialFinishedHandler(int playerId, Specials special);
 
     public interface IClient
@@ -96,11 +94,9 @@ namespace TetriNET.Common.Interfaces
         event ClientLinesClearedChangedHandler OnLinesClearedChanged;
         event ClientLevelChangedHandler OnLevelChanged;
         event ClientSpecialUsedHandler OnSpecialUsed;
-        event ClientPlayerAddLines OnPlayerAddLines;
-        event ClientToggleDarkness OnDarknessToggled;
-        event ClientToggleConfusion OnConfusionToggled;
-        event ClientToggleImmunity OnImmunityToggled;
-        event ClientContinuousSpecialFinishedHandler OnContinuousSpecialFinished;
+        event ClientPlayerAddLinesHandler OnPlayerAddLines;
+        event ClientContinuousSpecialToggledHandler OnContinuousEffectToggled; // on player
+        event ClientContinuousSpecialFinishedHandler OnContinuousSpecialFinished; // on opponent
 
         bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc);
         bool Disconnect();

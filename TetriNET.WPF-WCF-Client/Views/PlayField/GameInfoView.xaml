@@ -4,11 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:playField="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PlayField"
+             xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance playField:GameInfoViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:SpecialToBrushConverter x:Key="SpecialToBrushConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>    
     <Grid>
          <Grid.ColumnDefinitions>
-             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="28"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -16,12 +23,20 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Time :"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="Time :"/>
         <!--<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ElapsedTime, StringFormat=hh\\:mm\\:ss\\.fff}" FontWeight="Bold" Margin="16,0,0,0" />-->
-        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ElapsedTime, StringFormat=hh\\:mm\\:ss}" FontWeight="Bold" Margin="16,0,0,0" />
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Lines :"/>
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LinesCleared}" FontWeight="Bold" Margin="16,0,0,0" />
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Level :"/>
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Level}" FontWeight="Bold" Margin="16,0,0,0" />
+        <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding ElapsedTime, StringFormat=hh\\:mm\\:ss}" FontWeight="Bold" Margin="16,0,0,0" />
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="Lines :"/>
+        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding LinesCleared}" FontWeight="Bold" Margin="16,0,0,0" />
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="Level :"/>
+        <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Level}" FontWeight="Bold" Margin="16,0,0,0" />
+        <ItemsControl IsTabStop="False" Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="0,0,12,0"
+                      ItemsSource="{Binding Effects}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Rectangle Stretch="Fill" Width="16" Height="16" Fill="{Binding Special, Converter={StaticResource SpecialToBrushConverter}}" Opacity="{Binding Opacity}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </UserControl>

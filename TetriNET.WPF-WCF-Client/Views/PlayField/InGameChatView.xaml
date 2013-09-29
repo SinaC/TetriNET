@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Text="Attacks/Defenses" HorizontalAlignment="Left" />
         <ItemsControl 
-            Grid.Row="1" 
+            Grid.Row="1" IsTabStop="False"
             Background="White" Width="Auto" MaxWidth="300" Height="Auto" HorizontalAlignment="Left" VerticalAlignment="Top"
             ItemsSource="{Binding Entries, Mode=OneWay}">
             <ItemsControl.Template>

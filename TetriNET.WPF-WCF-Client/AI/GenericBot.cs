@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.Logger;
 using TetriNET.Strategy;
@@ -56,7 +57,7 @@ namespace TetriNET.WPF_WCF_Client.AI
             _client.OnGameStarted += client_OnGameStarted;
             _client.OnGameFinished += _client_OnGameFinished;
             _client.OnGameOver += _client_OnGameOver;
-            _client.OnConfusionToggled += _client_OnConfusionToggled;
+            _client.OnContinuousEffectToggled += _client_OnContinuousEffectToggled;
 
             _stopEvent = new ManualResetEvent(false);
             _handleNextPieceEvent = new ManualResetEvent(false);
@@ -71,16 +72,19 @@ namespace TetriNET.WPF_WCF_Client.AI
             _client.OnGameStarted -= client_OnGameStarted;
             _client.OnGameFinished -= _client_OnGameFinished;
             _client.OnGameOver -= _client_OnGameOver;
-            _client.OnConfusionToggled -= _client_OnConfusionToggled;
+            _client.OnContinuousEffectToggled -= _client_OnContinuousEffectToggled;
         }
 
-        private void _client_OnConfusionToggled(bool active)
+        private void _client_OnContinuousEffectToggled(Specials special, bool active, double duration)
         {
-            _isConfusionActive = active;
-            if (!_isConfusionActive)
+            if (special == Specials.Confusion)
             {
-                Log.WriteLine(Log.LogLevels.Debug, "Confusion ended, raise next piece event");
-                _handleNextPieceEvent.Set();
+                _isConfusionActive = active;
+                if (!_isConfusionActive)
+                {
+                    Log.WriteLine(Log.LogLevels.Debug, "Confusion ended, raise next piece event");
+                    _handleNextPieceEvent.Set();
+                }
             }
         }
 

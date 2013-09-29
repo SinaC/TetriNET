@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Threading;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.Logger;
 
@@ -37,7 +38,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
             client.OnGameStarted += OnGameStarted;
             client.OnGamePaused += OnGamePaused;
             client.OnGameFinished += OnGameFinished;
-            client.OnConfusionToggled += OnConfusionToggled;
+            client.OnContinuousEffectToggled += OnContinuousEffectToggled;
         }
 
         #region IGameController
@@ -78,7 +79,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
             Client.OnGameStarted -= OnGameStarted;
             Client.OnGamePaused -= OnGamePaused;
             Client.OnGameFinished -= OnGameFinished;
-            Client.OnConfusionToggled -= OnConfusionToggled;
+            Client.OnContinuousEffectToggled -= OnContinuousEffectToggled;
         }
 
         public void KeyDown(Common.Interfaces.Commands cmd)
@@ -168,18 +169,21 @@ namespace TetriNET.WPF_WCF_Client.GameController
                 timer.Stop();
         }
 
-        private void OnConfusionToggled(bool active)
+        private void OnContinuousEffectToggled(Specials special, bool active, double duration)
         {
-            _isConfusionActive = active;
-            if (active)
+            if (special == Specials.Confusion)
             {
-                _confusionMapping.Clear();
-                //List<Commands> commands = Enum.GetValues(typeof(Commands)).Cast<Commands>().Where(x => x != Commands.Invalid).ToList();
-                List<Common.Interfaces.Commands> shuffled = Shuffle(_random, CommandsAvailableForConfusion);
-                for (int i = 0; i < CommandsAvailableForConfusion.Length; i++)
+                _isConfusionActive = active;
+                if (active)
                 {
-                    _confusionMapping.Add(CommandsAvailableForConfusion[i], shuffled[i]);
-                    Log.WriteLine(Log.LogLevels.Debug, "Confusion mapping {0} -> {1}", CommandsAvailableForConfusion[i], shuffled[i]);
+                    _confusionMapping.Clear();
+                    //List<Commands> commands = Enum.GetValues(typeof(Commands)).Cast<Commands>().Where(x => x != Commands.Invalid).ToList();
+                    List<Common.Interfaces.Commands> shuffled = Shuffle(_random, CommandsAvailableForConfusion);
+                    for (int i = 0; i < CommandsAvailableForConfusion.Length; i++)
+                    {
+                        _confusionMapping.Add(CommandsAvailableForConfusion[i], shuffled[i]);
+                        Log.WriteLine(Log.LogLevels.Debug, "Confusion mapping {0} -> {1}", CommandsAvailableForConfusion[i], shuffled[i]);
+                    }
                 }
             }
         }

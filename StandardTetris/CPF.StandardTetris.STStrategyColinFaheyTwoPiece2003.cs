@@ -10,19 +10,10 @@ namespace CPF.StandardTetris
 {
     public class STStrategyColinFaheyTwoPiece2003 : STStrategy
     {
-
-
-
         public override String GetStrategyName ( )
         {
             return ("Colin Fahey (two-piece, 2003)");
         }
-
-
-
-
-
-
 
         // WARNING: Moves requiring rotation must wait until piece has fallen by
         // at least one row.
@@ -70,10 +61,6 @@ namespace CPF.StandardTetris
                 );
 			}
         }
-
-
-
-
 
         private double PrivateStrategy
         (
@@ -262,13 +249,6 @@ namespace CPF.StandardTetris
 			return( currentBestMerit );
         }
 
-
-
-
-
-
-
-
         private double PrivateStrategyNextPiece
         (
             STBoard board,
@@ -439,10 +419,5 @@ namespace CPF.StandardTetris
 
 			return( currentBestMerit );
         }
-
-
-
-
-
     }
 }

@@ -41,17 +41,40 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                 {
                     _serverAddress = value;
 
-                    //if (!_serverAddress.StartsWith("net.tcp://"))
-                    //    _serverAddress = "net.tcp://" + _serverAddress;
-                    //if (!_serverAddress.EndsWith(":8765/TetriNET"))
-                    //    _serverAddress = _serverAddress + ":8765/TetriNET";
+                    // net.tcp://[ip|machine name]:[port]/TetriNET
+                    if (!_serverAddress.StartsWith("net.tcp://"))
+                        _serverAddress = "net.tcp://" + _serverAddress;
+                    if (!_serverAddress.EndsWith("/TetriNET"))
+                        _serverAddress = _serverAddress + "/TetriNET";
 
                     OnPropertyChanged();
+                    OnPropertyChanged("ServerCompleteAddress");
                     Settings.Default.Server = _serverAddress;
                     Settings.Default.Save();
                 }
             }
         }
+
+        private int _serverPort;
+        public int ServerPort
+        {
+            get { return _serverPort; }
+            set
+            {
+                if (_serverPort != value)
+                {
+                    _serverPort = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged("ServerCompleteAddress");
+                }
+            }
+        }
+
+        public string ServerCompleteAddress
+        {
+            get { return "net.tcp://" + ServerAddress + ":" + ServerPort + "/TetriNET"; }
+        }
+
 
         public string ConnectDisconnectLabel
         {

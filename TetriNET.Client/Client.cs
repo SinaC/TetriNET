@@ -349,6 +349,15 @@ namespace TetriNET.Client
                 _statistics.PieceCount[firstPiece]++;
             // Reset inventory
             _inventory.Reset(Options.InventorySize);
+            //_inventory.Enqueue(new List<Specials>
+            //{
+            //    Specials.Darkness,
+            //    Specials.Darkness,
+            //    Specials.Confusion,
+            //    Specials.Confusion,
+            //    Specials.Immunity,
+            //    Specials.Immunity,
+            //});
             // Reset line and level
             LinesCleared = 0;
             Level = Options.StartingLevel;
@@ -646,24 +655,24 @@ namespace TetriNET.Client
             if (_isConfusionActive)
             {
                 _isConfusionActive = false;
-                if (ClientOnConfusionToggled != null)
-                    ClientOnConfusionToggled(false);
+                if (ClientOnContinuousEffectToggled != null)
+                    ClientOnContinuousEffectToggled(Specials.Confusion, false, 0);
                 _proxy.FinishContinuousSpecial(this, Specials.Confusion);
             }
 
             if (_isDarknessActive)
             {
                 _isDarknessActive = false;
-                if (ClientOnDarknessToggled != null)
-                    ClientOnDarknessToggled(false);
+                if (ClientOnContinuousEffectToggled != null)
+                    ClientOnContinuousEffectToggled(Specials.Darkness, false, 0);
                     _proxy.FinishContinuousSpecial(this, Specials.Darkness);
             }
 
             if (_isImmunityActive)
             {
                 _isImmunityActive = false;
-                if (ClientOnImmunityToggled != null)
-                    ClientOnImmunityToggled(false);
+                if (ClientOnContinuousEffectToggled != null)
+                    ClientOnContinuousEffectToggled(Specials.Immunity, false, 0);
                 _proxy.FinishContinuousSpecial(this, Specials.Immunity);
             }
 
@@ -1106,32 +1115,18 @@ namespace TetriNET.Client
             remove { ClientOnSpecialUsed -= value; }
         }
 
-        private event ClientPlayerAddLines ClientOnPlayerAddLines;
-        event ClientPlayerAddLines IClient.OnPlayerAddLines
+        private event ClientPlayerAddLinesHandler ClientOnPlayerAddLines;
+        event ClientPlayerAddLinesHandler IClient.OnPlayerAddLines
         {
             add { ClientOnPlayerAddLines += value; }
             remove { ClientOnPlayerAddLines -= value; }
         }
 
-        private event ClientToggleDarkness ClientOnDarknessToggled;
-        event ClientToggleDarkness IClient.OnDarknessToggled
+        private event ClientContinuousSpecialToggledHandler ClientOnContinuousEffectToggled;
+        event ClientContinuousSpecialToggledHandler IClient.OnContinuousEffectToggled
         {
-            add { ClientOnDarknessToggled += value; }
-            remove { ClientOnDarknessToggled -= value; }
-        }
-
-        private event ClientToggleConfusion ClientOnConfusionToggled;
-        event ClientToggleConfusion IClient.OnConfusionToggled
-        {
-            add { ClientOnConfusionToggled += value; }
-            remove { ClientOnConfusionToggled -= value; }
-        }
-
-        private event ClientToggleImmunity ClientOnImmunityToggled;
-        event ClientToggleImmunity IClient.OnImmunityToggled
-        {
-            add { ClientOnImmunityToggled += value; }
-            remove { ClientOnImmunityToggled -= value; }
+            add { ClientOnContinuousEffectToggled += value; }
+            remove { ClientOnContinuousEffectToggled -= value; }
         }
 
         private event ClientContinuousSpecialFinishedHandler ClientOnContinuousSpecialFinished;
@@ -1402,8 +1397,8 @@ namespace TetriNET.Client
                     if (DateTime.Now > _confusionEndTime)
                     {
                         _isConfusionActive = false;
-                        if (ClientOnConfusionToggled != null)
-                            ClientOnConfusionToggled(false);
+                        if (ClientOnContinuousEffectToggled != null)
+                            ClientOnContinuousEffectToggled(Specials.Confusion, false, 0);
                         _proxy.FinishContinuousSpecial(this, Specials.Confusion);
                     }
                 }
@@ -1413,8 +1408,8 @@ namespace TetriNET.Client
                     if (DateTime.Now > _darknessEndTime)
                     {
                         _isDarknessActive = false;
-                        if (ClientOnDarknessToggled != null)
-                            ClientOnDarknessToggled(false);
+                        if (ClientOnContinuousEffectToggled != null)
+                            ClientOnContinuousEffectToggled(Specials.Darkness, false, 0);
                         _proxy.FinishContinuousSpecial(this, Specials.Darkness);
                     }
                 }
@@ -1424,8 +1419,8 @@ namespace TetriNET.Client
                     if (DateTime.Now > _immunityEndTime)
                     {
                         _isImmunityActive = false;
-                        if (ClientOnImmunityToggled != null)
-                            ClientOnImmunityToggled(false);
+                        if (ClientOnContinuousEffectToggled != null)
+                            ClientOnContinuousEffectToggled(Specials.Immunity, false, 0);
                         _proxy.FinishContinuousSpecial(this, Specials.Immunity);
                     }
                 }
@@ -1740,9 +1735,9 @@ namespace TetriNET.Client
             {
                 _isDarknessActive = true;
                 _darknessEndTime = DateTime.Now.AddSeconds(delayInSeconds);
-                if (ClientOnDarknessToggled != null)
-                    ClientOnDarknessToggled(true);
             }
+            if (ClientOnContinuousEffectToggled != null)
+                ClientOnContinuousEffectToggled(Specials.Darkness, true, (_darknessEndTime - DateTime.Now).TotalSeconds);
         }
 
         private void Confusion(int delayInSeconds)
@@ -1755,9 +1750,9 @@ namespace TetriNET.Client
             {
                 _isConfusionActive = true;
                 _confusionEndTime = DateTime.Now.AddSeconds(delayInSeconds);
-                if (ClientOnConfusionToggled != null)
-                    ClientOnConfusionToggled(true);
             }
+            if (ClientOnContinuousEffectToggled != null)
+                ClientOnContinuousEffectToggled(Specials.Confusion, true, (_confusionEndTime - DateTime.Now).TotalSeconds);
         }
 
         private void Immunity(int delayInSeconds)
@@ -1770,9 +1765,9 @@ namespace TetriNET.Client
             {
                 _isImmunityActive = true;
                 _immunityEndTime = DateTime.Now.AddSeconds(delayInSeconds);
-                if (ClientOnImmunityToggled != null)
-                    ClientOnImmunityToggled(true);
             }
+            if (ClientOnContinuousEffectToggled != null)
+                ClientOnContinuousEffectToggled(Specials.Immunity, true, (_immunityEndTime - DateTime.Now).TotalSeconds);
         }
 
         private void ZebraField()

@@ -253,14 +253,12 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         #region IClient events handler
 
-        private void OnImmunityToggled(bool active)
+        private void OnContinuousEffectToggled(Specials special, bool active, double duration)
         {
-            ExecuteOnUIThread.Invoke(() => ActivateImmunity(active));
-        }
-
-        private void OnDarknessToggled(bool active)
-        {
-            ExecuteOnUIThread.Invoke(() => ActivateDarkness(active));
+            if (special == Specials.Immunity)
+                ExecuteOnUIThread.Invoke(() => ActivateImmunity(active));
+            else if (special == Specials.Darkness)
+                ExecuteOnUIThread.Invoke(() => ActivateDarkness(active));
         }
 
         private void OnRedraw()
@@ -336,8 +334,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 oldClient.OnRoundStarted -= OnRoundStarted;
                 oldClient.OnPieceMoved -= OnPieceMoved;
                 oldClient.OnRedraw -= OnRedraw;
-                oldClient.OnDarknessToggled -= OnDarknessToggled;
-                oldClient.OnImmunityToggled -= OnImmunityToggled;
+                oldClient.OnContinuousEffectToggled -= OnContinuousEffectToggled;
             }
             // Add new handlers
             if (newClient != null)
@@ -350,8 +347,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 newClient.OnRoundStarted += OnRoundStarted;
                 newClient.OnPieceMoved += OnPieceMoved;
                 newClient.OnRedraw += OnRedraw;
-                newClient.OnDarknessToggled += OnDarknessToggled;
-                newClient.OnImmunityToggled += OnImmunityToggled;
+                newClient.OnContinuousEffectToggled += OnContinuousEffectToggled;
             }
         }
         #endregion

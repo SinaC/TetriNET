@@ -2,10 +2,7 @@
 //Questions? Comments? go to 
 //http://www.idesign.net
 
-using System;
-using System.Linq;
 using System.ServiceModel.Discovery;
-using System.Collections.Generic;
 using System.Threading;
 using System.Runtime.CompilerServices;
 

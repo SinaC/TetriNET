@@ -5,13 +5,8 @@
 using System;
 using System.ServiceModel;
 using System.Diagnostics;
-using System.Threading;
-using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel.Description;
-using System.ServiceModel.Dispatcher;
 using System.ServiceModel.Channels;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace ServiceModelEx

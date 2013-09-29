@@ -109,21 +109,29 @@ namespace TetriNET.Strategy.Move_strategies
             int edgeTouchingFloor = 0;
 
             //double rating = 0;
-            //rating += -0.03*totalHeight;
-            //rating += -7.5*totalHoles;
-            //rating += -3.5*totalBlockades;
-            //rating += 8.0*completedRows;
-            //rating += 3.0*edgeTouchingAnotherBlock;
-            //rating += 2.5*edgeTouchingWall;
-            //rating += 5.0*edgeTouchingFloor;
+            //rating += -0.03 * totalHeight;
+            //rating += -7.5 * totalHoles;
+            //rating += -3.5 * totalBlockades;
+            //rating += 8.0 * completedRows;
+            //rating += 3.0 * edgeTouchingAnotherBlock;
+            //rating += 2.5 * edgeTouchingWall;
+            //rating += 5.0 * edgeTouchingFloor;
+            //double rating = 0;
+            //rating += -3.78 * totalHeight;
+            //rating += -2.31 * totalHoles;
+            //rating += -0.59 * totalBlockades;
+            //rating += 1.6 * completedRows;
+            //rating += 3.97 * edgeTouchingAnotherBlock;
+            //rating += 6.52 * edgeTouchingWall;
+            //rating += 0.65 * edgeTouchingFloor;
             double rating = 0;
-            rating += -3.78 * totalHeight;
-            rating += -2.31 * totalHoles;
-            rating += -0.59 * totalBlockades;
-            rating += 1.6 * completedRows;
-            rating += 3.97 * edgeTouchingAnotherBlock;
-            rating += 6.52 * edgeTouchingWall;
-            rating += 0.65 * edgeTouchingFloor;
+            rating += -0.868099 * totalHeight;
+            rating += -2.45402 * totalHoles;
+            rating += -0.236702 * totalBlockades;
+            rating += 3.59764 * completedRows;
+            rating += 5.33378 * edgeTouchingAnotherBlock;
+            rating += 8.20521 * edgeTouchingWall;
+            rating += 0.00 * edgeTouchingFloor;
 
             return rating;
         }

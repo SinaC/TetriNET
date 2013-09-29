@@ -1,12 +1,87 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Timers;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
+using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
-    // TODO: class continuous effect timer + collection of timer sorted by time left
+    // TODO: opacity linked to time left
+    public class ContinuousEffect : INotifyPropertyChanged
+    {
+        private const double Epsilon = 0.00001;
+
+        private Specials _special;
+        public Specials Special
+        {
+            get { return _special; }
+            set
+            {
+                if (_special != value)
+                {
+                    _special = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private double _opacity;
+        public double Opacity
+        {
+            get { return _opacity; }
+            set {
+                if (Math.Abs(_opacity-value) > Epsilon)
+                {
+                    _opacity = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private double _totalSeconds;
+        public double TotalSeconds
+        {
+            get { return _totalSeconds; }
+            set
+            {
+                if (Math.Abs(_totalSeconds - value) > Epsilon)
+                {
+                    _totalSeconds = value;
+                    Opacity = 1.0;
+                    // Restart timer
+                    _timer.Stop();
+                    _timerStarted = DateTime.Now;
+                    _timer.Start();
+                }
+            }
+        }
+
+        private DateTime _timerStarted;
+        private readonly Timer _timer;
+
+        public ContinuousEffect()
+        {
+            _timer = new Timer(250);
+            _timer.Elapsed += TimerOnElapsed;
+        }
+
+        private void TimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+        {
+            double elapsedSeconds = (DateTime.Now - _timerStarted).TotalSeconds;
+            Opacity = 1.0 - elapsedSeconds/TotalSeconds; // TODO: 0 -> 1
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
 
     public class GameInfoViewModel : ViewModelBase
     {
@@ -54,10 +129,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             }
         }
 
+        private readonly ObservableCollection<ContinuousEffect> _effects;
+        public ObservableCollection<ContinuousEffect> Effects { get { return _effects; }}
+
         public GameInfoViewModel()
         {
             _timer = new Timer(250);
             _timer.Elapsed += TimerOnElapsed;
+            _effects = new ObservableCollection<ContinuousEffect>();
         }
 
         private void TimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
@@ -79,6 +158,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
+            oldClient.OnContinuousEffectToggled -= OnContinuousEffectToggled;
             oldClient.OnLinesClearedChanged -= OnLinesClearedChanged;
             oldClient.OnLevelChanged -= OnLevelChanged;
             oldClient.OnGameStarted -= OnGameStarted;
@@ -90,6 +170,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
+            newClient.OnContinuousEffectToggled += OnContinuousEffectToggled;
             newClient.OnLinesClearedChanged += OnLinesClearedChanged;
             newClient.OnLevelChanged += OnLevelChanged;
             newClient.OnGameStarted += OnGameStarted;
@@ -102,7 +183,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         #endregion
 
         #region IClient events handler
-
+        
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
             StopTimer(false);
@@ -140,5 +221,32 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         }
 
         #endregion
+
+        private void OnContinuousEffectToggled(Specials special, bool active, double duration)
+        {
+            if (active)
+            {
+                ContinuousEffect effect = Effects.FirstOrDefault(x => x.Special == special);
+                if (effect != null)
+                {
+                    effect.TotalSeconds = duration;
+                }
+                else
+                {
+                    effect = new ContinuousEffect
+                    {
+                        Special = special,
+                        TotalSeconds = duration
+                    };
+                    ExecuteOnUIThread.Invoke(() => _effects.Add(effect));
+                }
+            }
+            else
+            {
+                ContinuousEffect effect = Effects.FirstOrDefault(x => x.Special == special);
+                if (effect != null)
+                    ExecuteOnUIThread.Invoke(() => Effects.Remove(effect));
+            }
+        }
     }
 }

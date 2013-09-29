@@ -6,6 +6,7 @@
              xmlns:viewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
              xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
              xmlns:userControls="clr-namespace:TetriNET.WPF_WCF_Client.UserControls"
+             xmlns:validators="clr-namespace:TetriNET.WPF_WCF_Client.Validators"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModels:LoginViewModel}">
     <UserControl.Resources>
@@ -23,23 +24,43 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition  Width="240" />
+            <ColumnDefinition Width="160" />
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="80" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Username: " />
-        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Username}" MaxLength="20"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Username}" MaxLength="20"/>
+        
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Server address: " />
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ServerAddress}"/>
-        <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,4,0,4"
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding ServerAddress}"/>
+        
+        <!--<TextBlock Grid.Row="1" Grid.Column="2" Text="Port: "/>
+        <TextBox Grid.Row="1" Grid.Column="3">
+            <TextBox.Text>
+                <Binding Path="ServerPort" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <validators:NumericValidationRule Minimum="5000" Maximum="30000"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>-->
+
+        <!--<TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding ServerCompleteAddress}" />-->
+
+        <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,4,0,4"
                 Command="{Binding ConnectDisconnectCommand}">
             <TextBlock Text="{Binding ConnectDisconnectLabel}"/>
         </Button>
-        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding ConnectionResult}" Foreground="{Binding ConnectionResultColor, Converter={StaticResource ChatColorBrushConverter}}"/>
+        
+        <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding ConnectionResult}" Foreground="{Binding ConnectionResultColor, Converter={StaticResource ChatColorBrushConverter}}"/>
         <userControls:CircularProgressBar 
             ToolTip="Connecting..." 
             Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center"

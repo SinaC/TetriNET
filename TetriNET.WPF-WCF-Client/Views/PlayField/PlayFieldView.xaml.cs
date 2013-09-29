@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using TetriNET.Common.Interfaces;
 using TetriNET.Strategy;
+using TetriNET.Strategy.Move_strategies;
 using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
 using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
@@ -184,6 +185,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 _controller = new GameController.GameController(newClient);
                 //_bot = new GenericBot(newClient, new LuckyToiletOnePiece(), null);
                 _bot = new GenericBot(newClient, new PierreDellacherieOnePiece(), new SinaCSpecials());
+                //_bot = new GenericBot(newClient, new ColinFaheyTwoPiece(), new SinaCSpecials());
             }
             else
             {
