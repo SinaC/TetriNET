@@ -14,9 +14,9 @@ using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
     /// <summary>
-    /// Interaction logic for OpponentGridControl.xaml
+    /// Interaction logic for OpponentGridView.xaml
     /// </summary>
-    public partial class OpponentGridControl : UserControl
+    public partial class OpponentGridView : UserControl
     {
         private const int CellWidth = 8;
         private const int CellHeight = 8;
@@ -28,7 +28,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
-        public OpponentGridControl()
+        public OpponentGridView()
         {
             InitializeComponent();
 

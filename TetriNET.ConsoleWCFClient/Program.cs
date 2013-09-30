@@ -25,9 +25,10 @@ namespace TetriNET.ConsoleWCFClient
 
             //
             GameController.GameController controller = new GameController.GameController(client);
-            PierreDellacherieOnePieceBot bot = new PierreDellacherieOnePieceBot(client)
+            //PierreDellacherieOnePieceBot bot = new PierreDellacherieOnePieceBot(client)
+            ColinFaheyTwoPiecesBot bot = new ColinFaheyTwoPiecesBot(client)
             {
-                SleepTime = 100,
+                SleepTime = 75,
                 Activated = true,
             };
             //

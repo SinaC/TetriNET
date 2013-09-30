@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using TetriNET.Common.Interfaces;
 using TetriNET.Strategy;
-using TetriNET.Strategy.Move_strategies;
 using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
 using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
@@ -16,9 +15,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
     /// </summary>
     public partial class PlayFieldView : UserControl
     {
-        private GenericBot _bot;
         private GameController.GameController _controller;
-        //private int _playerId;
+
+        public GenericBot Bot { get; private set; }
 
         public PlayFieldView()
         {
@@ -70,7 +69,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
             else if (e.Key == Key.A && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift) )
             {
-                _bot.Activated = !_bot.Activated;
+                Bot.Activated = !Bot.Activated;
             }
             else if (e.Key == Key.H && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
             {
@@ -82,11 +81,11 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
             else if (e.Key == Key.Add)
             {
-                _bot.SleepTime += 100;
+                Bot.SleepTime += 100;
             }
             else if (e.Key == Key.Subtract)
             {
-                _bot.SleepTime -= 100;
+                Bot.SleepTime -= 100;
             }
             else
             {
@@ -170,8 +169,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
                 if (_controller != null)
                     _controller.UnsubscribeFromClientEvents();
-                if (_bot != null)
-                    _bot.UnsubscribeFromClientEvents();
+                if (Bot != null)
+                    Bot.UnsubscribeFromClientEvents();
             }
             // Set new client
             Inventory.Client = newClient;
@@ -183,14 +182,14 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
                 // And create controller + bot
                 _controller = new GameController.GameController(newClient);
-                //_bot = new GenericBot(newClient, new LuckyToiletOnePiece(), null);
-                _bot = new GenericBot(newClient, new PierreDellacherieOnePiece(), new SinaCSpecials());
-                //_bot = new GenericBot(newClient, new ColinFaheyTwoPiece(), new SinaCSpecials());
+                //Bot = new GenericBot(newClient, new LuckyToiletOnePiece(), null);
+                Bot = new GenericBot(newClient, new PierreDellacherieOnePiece(), new SinaCSpecials());
+                //Bot = new GenericBot(newClient, new ColinFaheyTwoPiece(), new SinaCSpecials());
             }
             else
             {
                 _controller = null;
-                _bot = null;
+                Bot = null;
             }
         }
     }

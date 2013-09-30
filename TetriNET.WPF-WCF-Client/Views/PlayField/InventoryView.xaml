@@ -12,7 +12,7 @@
             <ColumnDefinition Width="240"/>
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Column="0" Text="{Binding FirstSpecial}"/>
-        <Canvas x:Name="Canvas" Grid.Column="1" Background="Black" Width="240" Height="16">
+        <Canvas x:Name="Canvas" Grid.Column="1" Background="Black" Width="240" Height="16" HorizontalAlignment="Left">
         </Canvas>
         <Rectangle Grid.Column="1" Width="18" Height="18" Stroke="Red" StrokeThickness="2" HorizontalAlignment="Left" Margin="-1,0,0,0"/>
     </Grid>

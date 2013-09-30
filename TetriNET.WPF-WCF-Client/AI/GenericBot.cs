@@ -12,13 +12,14 @@ namespace TetriNET.WPF_WCF_Client.AI
 {
     public class GenericBot
     {
-        private readonly ISpecialStrategy _specialStrategy;
-        private readonly IMoveStrategy _moveStrategy;
         private readonly IClient _client;
         private readonly ManualResetEvent _handleNextPieceEvent;
         private readonly ManualResetEvent _stopEvent;
 
         private bool _isConfusionActive;
+
+        public ISpecialStrategy SpecialStrategy { get; private set; }
+        public IMoveStrategy MoveStrategy { get; private set; }
 
         private bool _activated;
         public bool Activated { get { return _activated; }
@@ -50,8 +51,8 @@ namespace TetriNET.WPF_WCF_Client.AI
         {
             _client = client;
 
-            _specialStrategy = specialStrategy;
-            _moveStrategy = moveStrategy;
+            SpecialStrategy = specialStrategy;
+            MoveStrategy = moveStrategy;
 
             _client.OnRoundStarted += _client_OnRoundStarted;
             _client.OnGameStarted += client_OnGameStarted;
@@ -143,10 +144,10 @@ namespace TetriNET.WPF_WCF_Client.AI
                     DateTime searchBestMoveStartTime = DateTime.Now;
 
                     // Use specials
-                    if (_specialStrategy != null)
+                    if (SpecialStrategy != null)
                     {
                         List<SpecialAdvices> advices;
-                        _specialStrategy.GetSpecialAdvice(_client.Board, _client.CurrentPiece, _client.NextPiece, _client.Inventory, _client.InventorySize, _client.Opponents.ToList(), out advices);
+                        SpecialStrategy.GetSpecialAdvice(_client.Board, _client.CurrentPiece, _client.NextPiece, _client.Inventory, _client.InventorySize, _client.Opponents.ToList(), out advices);
                         foreach (SpecialAdvices advice in advices)
                         {
                             bool continueLoop = true;
@@ -182,12 +183,12 @@ namespace TetriNET.WPF_WCF_Client.AI
                     }
 
                     // Get best move
-                    if (_moveStrategy != null)
+                    if (MoveStrategy != null)
                     {
                         int bestRotationDelta;
                         int bestTranslationDelta;
                         bool rotationBeforeTranslation;
-                        _moveStrategy.GetBestMove(_client.Board, _client.CurrentPiece, _client.NextPiece, out bestRotationDelta, out bestTranslationDelta, out rotationBeforeTranslation);
+                        MoveStrategy.GetBestMove(_client.Board, _client.CurrentPiece, _client.NextPiece, out bestRotationDelta, out bestTranslationDelta, out rotationBeforeTranslation);
 
                         // TODO: could use an event linked to Client.OnRoundFinished
                         if (_client.CurrentPiece.Index != currentPieceIndex)

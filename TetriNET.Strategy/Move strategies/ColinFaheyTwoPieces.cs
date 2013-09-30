@@ -2,9 +2,9 @@
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 
-namespace TetriNET.Strategy.Move_strategies
+namespace TetriNET.Strategy
 {
-    public class ColinFaheyTwoPiece : IMoveStrategy
+    public class ColinFaheyTwoPieces : IMoveStrategy
     {
         public bool GetBestMove(IBoard board, IPiece current, IPiece next, out int bestRotationDelta, out int bestTranslationDelta, out bool rotationBeforeTranslation)
         {

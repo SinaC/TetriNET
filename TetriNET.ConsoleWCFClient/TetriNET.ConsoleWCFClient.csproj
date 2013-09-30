@@ -43,6 +43,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\ColinFaheyTwoPiecesBot.cs" />
     <Compile Include="GameController\GameController.cs" />
     <Compile Include="AI\PierreDellacherieOnePieceBot.cs" />
     <Compile Include="Program.cs" />

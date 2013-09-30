@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using TetriNET.Common.Interfaces;
 
-namespace TetriNET.Strategy.Move_strategies
+namespace TetriNET.Strategy
 {
     public class LuckyToiletOnePiece : IMoveStrategy
     {

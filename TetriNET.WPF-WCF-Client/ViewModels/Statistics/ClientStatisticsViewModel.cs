@@ -83,9 +83,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         {
             get { return Client == null ? 0 : Client.Statistics.EndOfPieceQueueReached; }
         }
+        
         public int NextPieceNotYetReceived
         {
             get { return Client == null ? 0 : Client.Statistics.NextPieceNotYetReceived; }
+        }
+
+        public int TetrisCount
+        {
+            get { return Client == null ? 0 : Client.Statistics.TetrisCount; }
         }
 
         private DateTime _gameStartedDateTime;
@@ -118,6 +124,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             OnPropertyChanged("SpecialCountSum");
             OnPropertyChanged("SpecialUsedSum");
             OnPropertyChanged("SpecialDiscardedSum");
+            OnPropertyChanged("TetrisCount");
             OnPropertyChanged("EndOfPieceQueueReached");
             OnPropertyChanged("NextPieceNotYetReceived");
             OnPropertyChanged("LinesPerSec");

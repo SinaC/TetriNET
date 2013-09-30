@@ -65,6 +65,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
             oldClient.OnConnectionLost -= OnConnectionLost;
             oldClient.OnGameOver -= OnGameOver;
+            oldClient.OnGameStarted -= OnGameStarted;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
@@ -73,11 +74,17 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             newClient.OnPlayerUnregistered += OnPlayerUnregistered;
             newClient.OnConnectionLost += OnConnectionLost;
             newClient.OnGameOver += OnGameOver;
+            newClient.OnGameStarted += OnGameStarted;
         }
 
         #endregion
 
         #region IClient events handler
+
+        private void OnGameStarted()
+        {
+            HasLost = false;
+        }
 
         private void OnGameOver()
         {

@@ -9,6 +9,7 @@ using System.Windows.Shapes;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.ViewModels.Options;
 
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
@@ -86,6 +87,11 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
         }
 
+        private void SetInventoryLength()
+        {
+            Canvas.Width = ServerOptionsViewModel.Instance.Options.InventorySize*16;
+        }
+
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
             InventoryView @this = sender as InventoryView;
@@ -114,7 +120,11 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         #region IClient events handler
         private void OnGameStarted()
         {
-            ExecuteOnUIThread.Invoke(DrawInventory);
+            ExecuteOnUIThread.Invoke(() =>
+            {
+                SetInventoryLength();
+                DrawInventory();
+            });
         }
 
         private void OnInventoryChanged()

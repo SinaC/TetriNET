@@ -12,6 +12,7 @@ namespace TetriNET.Client
         public Dictionary<Specials, int> SpecialUsed { get; set; }
         public Dictionary<Specials, int> SpecialDiscarded { get; set; }
 
+        public int TetrisCount { get; set; }
         public int EndOfPieceQueueReached { get; set; }
         public int NextPieceNotYetReceived { get; set; }
 
@@ -42,6 +43,7 @@ namespace TetriNET.Client
                 SpecialUsed[special] = 0;
                 SpecialDiscarded[special] = 0;
             }
+            TetrisCount = 0; 
             EndOfPieceQueueReached = 0;
             NextPieceNotYetReceived = 0;
         }

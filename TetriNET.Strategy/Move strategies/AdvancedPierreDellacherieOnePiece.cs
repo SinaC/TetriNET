@@ -4,7 +4,7 @@ using System.Text;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 
-namespace TetriNET.Strategy.Move_strategies
+namespace TetriNET.Strategy
 {
     // http://hal.archives-ouvertes.fr/docs/00/41/89/54/PDF/article.pdf
     public class AdvancedPierreDellacherieOnePiece : IMoveStrategy

@@ -127,8 +127,8 @@
     <Compile Include="Views\PlayField\NextPieceView.xaml.cs">
       <DependentUpon>NextPieceView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PlayField\OpponentGridControl.xaml.cs">
-      <DependentUpon>OpponentGridControl.xaml</DependentUpon>
+    <Compile Include="Views\PlayField\OpponentGridView.xaml.cs">
+      <DependentUpon>OpponentGridView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PartyLine\PlayersManagerView.xaml.cs">
       <DependentUpon>PlayersManagerView.xaml</DependentUpon>
@@ -192,7 +192,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PlayField\OpponentGridControl.xaml">
+    <Page Include="Views\PlayField\OpponentGridView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

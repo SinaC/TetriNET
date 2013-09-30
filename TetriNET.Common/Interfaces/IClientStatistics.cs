@@ -10,6 +10,7 @@ namespace TetriNET.Common.Interfaces
         Dictionary<Specials, int> SpecialUsed { get; }
         Dictionary<Specials, int> SpecialDiscarded { get; }
 
+        int TetrisCount { get; }
         int EndOfPieceQueueReached { get; }
         int NextPieceNotYetReceived { get; }
     }

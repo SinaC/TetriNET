@@ -784,8 +784,12 @@ namespace TetriNET.Client
             if (Options.ClassicStyleMultiplayerRules && deletedRows > 1)
             {
                 int addLines = deletedRows - 1;
-                if (deletedRows >= 4) // special case for Tetris and above
+                if (deletedRows >= 4)
+                {
+                    // special case for Tetris and above
                     addLines = 4;
+                    _statistics.TetrisCount++;
+                }
                 _proxy.SendLines(this, addLines);
             }
 

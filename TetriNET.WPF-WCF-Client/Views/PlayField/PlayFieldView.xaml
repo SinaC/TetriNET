@@ -4,13 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:playField="clr-namespace:TetriNET.WPF_WCF_Client.Views.PlayField"
-             xmlns:viewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PlayField" mc:Ignorable="d" 
+             xmlns:viewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PlayField"
+             mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance viewModels:PlayFieldViewModel}"
              IsTabStop="False"
              DataContextChanged="PlayFieldView_OnDataContextChanged"
              KeyDown="GameView_KeyDown"
              KeyUp="GameView_KeyUp">
-    <!--DataContext="{Binding RelativeSource={RelativeSource Self}}"-->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -26,11 +26,11 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <playField:PlayerGridView x:Name="PlayerGrid" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" DataContext="{Binding PlayerViewModel}" />
-        <playField:OpponentGridControl x:Name="OpponentGrid1" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[0]}" />
-        <playField:OpponentGridControl x:Name="OpponentGrid2" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[1]}" />
-        <playField:OpponentGridControl x:Name="OpponentGrid3" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[2]}" />
-        <playField:OpponentGridControl x:Name="OpponentGrid4" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[3]}" />
-        <playField:OpponentGridControl x:Name="OpponentGrid5" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[4]}" />
+        <playField:OpponentGridView x:Name="OpponentGrid1" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[0]}" />
+        <playField:OpponentGridView x:Name="OpponentGrid2" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[1]}" />
+        <playField:OpponentGridView x:Name="OpponentGrid3" Grid.Row="0" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[2]}" />
+        <playField:OpponentGridView x:Name="OpponentGrid4" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[3]}" />
+        <playField:OpponentGridView x:Name="OpponentGrid5" Grid.Row="1" Grid.Column="5" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="4,0,4,0" DataContext="{Binding OpponentsViewModel[4]}" />
         <playField:InventoryView x:Name="Inventory" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <playField:InGameChatView Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,4,0,0" DataContext="{Binding InGameChatViewModel}"/>
         <playField:NextPieceView x:Name="NextPiece" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="8,0,8,0"/>
