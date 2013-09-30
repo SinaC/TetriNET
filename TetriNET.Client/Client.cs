@@ -632,7 +632,7 @@ namespace TetriNET.Client
 
         private void PlaceCurrentPiece()
         {
-            //Log.WriteLine(Log.LogLevels.Debug, "Place current pieceo {0} {1}", CurrentPiece.Value, CurrentPiece.Index);
+            //Log.WriteLine(Log.LogLevels.Debug, "Place current piece {0} {1}", CurrentPiece.Value, CurrentPiece.Index);
 
             Board.CommitPiece(CurrentPiece);
         }
@@ -785,12 +785,29 @@ namespace TetriNET.Client
             {
                 int addLines = deletedRows - 1;
                 if (deletedRows >= 4)
-                {
                     // special case for Tetris and above
                     addLines = 4;
-                    _statistics.TetrisCount++;
-                }
                 _proxy.SendLines(this, addLines);
+            }
+
+            // Statistics
+            switch (deletedRows)
+            {
+                case 0:
+                    // NOP
+                    break;
+                case 1:
+                    _statistics.SingleCount++;
+                    break;
+                case 2:
+                    _statistics.DoubleCount++;
+                    break;
+                case 3:
+                    _statistics.TripleCount++;
+                    break;
+                case 4:
+                    _statistics.TetrisCount++;
+                    break;
             }
 
             // UI is updated in StartRound

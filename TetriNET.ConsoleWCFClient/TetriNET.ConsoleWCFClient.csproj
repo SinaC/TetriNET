@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI\ColinFaheyTwoPiecesBot.cs" />
+    <Compile Include="AI\IBot.cs" />
     <Compile Include="GameController\GameController.cs" />
     <Compile Include="AI\PierreDellacherieOnePieceBot.cs" />
     <Compile Include="Program.cs" />

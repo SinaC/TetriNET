@@ -9,6 +9,12 @@ namespace TetriNET.ConsoleWCFClient
 {
     public class Program
     {
+        private static void DisplayBotName(IBot bot)
+        {
+            Console.SetCursorPosition(40, 29);
+            Console.Write("Bot:{0}", bot.Name);
+        }
+
         static void Main(string[] args)
         {
             string name = "CONSOLE_" + Guid.NewGuid().ToString().Substring(0, 5);
@@ -25,14 +31,22 @@ namespace TetriNET.ConsoleWCFClient
 
             //
             GameController.GameController controller = new GameController.GameController(client);
-            //PierreDellacherieOnePieceBot bot = new PierreDellacherieOnePieceBot(client)
-            ColinFaheyTwoPiecesBot bot = new ColinFaheyTwoPiecesBot(client)
+            PierreDellacherieOnePieceBot bot1 = new PierreDellacherieOnePieceBot(client)
             {
                 SleepTime = 75,
-                Activated = true,
+                Activated = false,
+            };
+            ColinFaheyTwoPiecesBot bot2 = new ColinFaheyTwoPiecesBot(client)
+            {
+                SleepTime = 75,
+                Activated = false,
             };
             //
             ConsoleUI ui = new ConsoleUI(client);
+            //
+            IBot bot = bot1;
+            bot.Activated = true;
+            DisplayBotName(bot);
 
             //
             client.Register(name);
@@ -71,6 +85,17 @@ namespace TetriNET.ConsoleWCFClient
                         // Bot
                         case ConsoleKey.A:
                             bot.Activated = !bot.Activated;
+                            break;
+
+                        // Switch bot strategy
+                        case ConsoleKey.Tab:
+                            bot.Activated = false;
+                            if (bot == bot1)
+                                bot = bot2;
+                            else
+                                bot = bot1;
+                            bot.Activated = true;
+                            DisplayBotName(bot);
                             break;
 
                         // Game controller

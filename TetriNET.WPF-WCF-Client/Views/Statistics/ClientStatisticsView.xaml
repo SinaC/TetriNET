@@ -182,6 +182,9 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -199,6 +202,15 @@
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Tetris:" Margin="0,0,4,0"/>
                 <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding TetrisCount}"/>
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Triple:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding TripleCount}"/>
+
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Second:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding DoubleCount}"/>
+
+                <TextBlock Grid.Row="6" Grid.Column="0" Text="Single:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding SingleCount}"/>
             </Grid>
         </GroupBox>
         <Button Grid.Row="2" Grid.Column="0"
