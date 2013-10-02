@@ -30,6 +30,13 @@ http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-w
 http://www.codeproject.com/Articles/132809/Calling-WCF-Services-using-jQuery
 http://www.codeproject.com/Questions/604639/howplustoplusconsumepluswcfplusservicepluswithplus
 http://www.dotnetcurry.com/ShowArticle.aspx?ID=728
+http://www.codeproject.com/Articles/223572/Calling-Cross-Domain-WCF-service-using-Jquery-Java
+http://pranayamr.blogspot.be/2010/11/create-hostself-hosting-iis-hosting-and.html
+http://pranayamr.blogspot.be/2010/12/steps-to-call-wcf-service-using-jquery.html
+http://stackoverflow.com/questions/885744/wcf-servicehost-access-rights
+http://stackoverflow.com/questions/3684641/wcf-self-hosting-jquery
+http://bendewey.wordpress.com/2009/11/24/using-jsonp-with-wcf-and-jquery/
+http://stackoverflow.com/questions/11684623/consuming-wcf-service-application-from-jquery-ajax
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf
@@ -122,3 +129,97 @@ http://blockbattle.net/tutorial
 
 async relay command
 http://stackoverflow.com/questions/16848562/async-await-in-mvvm-without-void-methods
+
+
+
+
+
+
+
+
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Demo</title>
+</head>
+<body>
+	<script src="./jquery-2.0.3.min.js"></script>
+	<script>
+
+         $(document).ready(
+			function() {
+				WCFJSON();
+			});
+	</script>
+	
+	<script type="text/javascript">
+         var Type;
+         var Url;
+         var Data;
+         var ContentType;
+         var DataType;
+         var ProcessData;
+		 
+		 function WCFJSON() {
+             var userid = "1";
+             Type = "GET";
+             //Url = "localhost:8080/Service1/GetUser";
+			 Url = "http://localhost:8080/Service1/GetData";
+             //Data = '{"Id": "' + userid + '"}';
+			 Data = '{"Value":5}';
+             ContentType = "application/jsonp; charset=utf-8";
+             DataType = "jsonp";
+			 ProcessData = true; 
+             CallService();
+         }
+		 
+		 //function to call WCF  Service       
+         function CallService() {
+             $.ajax({
+                 type: Type, //GET or POST or PUT or DELETE verb
+                 url: Url, // Location of the service
+                 data: Data, //Data sent to server
+                 contentType: ContentType, // content type sent to server
+                 dataType: DataType, //Expected data format from server
+                 processdata: ProcessData, //True or False
+				 //jsonpCallback: MyCallback,
+                 success: function(msg) {//On Successfull service call
+                     ServiceSucceeded(msg);
+                 },
+                 error: ServiceFailed// When Service call fails
+             });
+         }
+ 
+		function MyCallback(data) {
+			alert(data);
+		}
+
+         function ServiceFailed(result) {
+             alert('Service call failed: ' + result.status + ' ' + result.statusText);
+             Type = null; varUrl = null; Data = null; ContentType = null; DataType = null; ProcessData = null;
+         }
+		 
+		 function ServiceSucceeded(result) {
+             if (DataType == "json") {
+                 resultObject = result.GetUserResult;
+                 for (i = 0; i < resultObject.length; i++) {
+                     alert(resultObject[i]);
+                 }
+             }
+         }
+ 
+         /*function ServiceFailed(xhr) {
+             alert(xhr.responseText);
+             if (xhr.responseText) {
+                 var err = xhr.responseText;
+                 if (err)
+                     error(err);
+                 else
+                     error({ Message: "Unknown server error." })
+             }
+             return;
+         }*/
+	</script>
+</body>
+</html>
