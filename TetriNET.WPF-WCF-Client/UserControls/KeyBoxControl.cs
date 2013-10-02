@@ -6,9 +6,9 @@ using TetriNET.WPF_WCF_Client.ViewModels.Options;
 
 namespace TetriNET.WPF_WCF_Client.UserControls
 {
-    public class KeyBox : TextBox
+    public class KeyBoxControl : TextBox
     {
-        public KeyBox()
+        public KeyBoxControl()
         {
             GotFocus += KeyBox_GotFocus;
             LostFocus += KeyBox_LostFocus;

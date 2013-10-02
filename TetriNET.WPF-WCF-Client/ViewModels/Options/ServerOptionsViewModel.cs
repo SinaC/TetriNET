@@ -232,11 +232,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
     public class ServerOptionsViewModelDesignData : ServerOptionsViewModel
     {
         public new GameOptions Options { get; private set; }
+        public new ICommand SpecialOccurancyChangedCommand { get; set; }
+        public new ICommand PieceOccurancyChangedCommand { get; set; }
 
         public ServerOptionsViewModelDesignData()
         {
             Options = new GameOptions();
             Options.ResetToDefault();
+
+            SpecialOccurancyChangedCommand = new RelayCommand(null);
+            PieceOccurancyChangedCommand = new RelayCommand(null);
         }
     }
 }

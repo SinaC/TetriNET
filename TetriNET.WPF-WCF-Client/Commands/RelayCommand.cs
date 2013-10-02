@@ -23,7 +23,8 @@ namespace TetriNET.WPF_WCF_Client.Commands
 
         public void Execute(object parameter)
         {
-            _action();
+            if (_action != null)
+                _action();
         }
 
         #endregion
@@ -49,7 +50,8 @@ namespace TetriNET.WPF_WCF_Client.Commands
 
         public void Execute(object parameter)
         {
-            _action((T)parameter);
+            if (_action != null)
+                _action((T)parameter);
         }
 
 

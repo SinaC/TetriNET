@@ -6,14 +6,14 @@
              xmlns:views="clr-namespace:TetriNET.WPF_WCF_Client.Views.Connection"
              xmlns:connectionViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance connectionViewModels:ConnectionViewModel}"
+             d:DataContext="{d:DesignInstance connectionViewModels:ConnectionViewModelDesignData}"
              d:DesignHeight="300" d:DesignWidth="600">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <views:LoginView Grid.Column="0" Margin="0,0,4,0" DataContext="{Binding ConnectionControlViewModel}" />
+        <views:LoginView Grid.Column="0" Margin="0,0,4,0" DataContext="{Binding LoginViewModel}" d:DataContext="{d:DesignInstance connectionViewModels:LoginViewModelDesignData, IsDesignTimeCreatable=True}" />
         <views:ServerListView Grid.Column="1" Margin="4,0,0,0" DataContext="{Binding ServerListViewModel}" />
     </Grid>
 </UserControl>

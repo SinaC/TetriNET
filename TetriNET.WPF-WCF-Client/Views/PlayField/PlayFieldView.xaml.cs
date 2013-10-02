@@ -32,22 +32,22 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnGameStarted()
         {
-            if (ClientOptionsViewModel.Instance.DropSensibilityActivated)
+            if (ClientOptionsViewModel.Instance.DropSensibilityViewModel.IsActivated)
                 _controller.RemoveSensibility(Common.Interfaces.Commands.Drop);
             else
-                _controller.AddSensibility(Common.Interfaces.Commands.Drop, ClientOptionsViewModel.Instance.DropSensibility);
-            if (ClientOptionsViewModel.Instance.DownSensibilityActivated)
+                _controller.AddSensibility(Common.Interfaces.Commands.Drop, ClientOptionsViewModel.Instance.DropSensibilityViewModel.Value);
+            if (ClientOptionsViewModel.Instance.DownSensibilityViewModel.IsActivated)
                 _controller.RemoveSensibility(Common.Interfaces.Commands.Down);
             else
-                _controller.AddSensibility(Common.Interfaces.Commands.Down, ClientOptionsViewModel.Instance.DownSensibility);
-            if (ClientOptionsViewModel.Instance.LeftSensibilityActivated)
+                _controller.AddSensibility(Common.Interfaces.Commands.Down, ClientOptionsViewModel.Instance.DownSensibilityViewModel.Value);
+            if (ClientOptionsViewModel.Instance.LeftSensibilityViewModel.IsActivated)
                 _controller.RemoveSensibility(Common.Interfaces.Commands.Left);
             else
-                _controller.AddSensibility(Common.Interfaces.Commands.Left, ClientOptionsViewModel.Instance.LeftSensibility);
-            if (ClientOptionsViewModel.Instance.RightSensibilityActivated)
+                _controller.AddSensibility(Common.Interfaces.Commands.Left, ClientOptionsViewModel.Instance.LeftSensibilityViewModel.Value);
+            if (ClientOptionsViewModel.Instance.RightSensibilityViewModel.IsActivated)
                 _controller.RemoveSensibility(Common.Interfaces.Commands.Right);
             else
-                _controller.AddSensibility(Common.Interfaces.Commands.Right, ClientOptionsViewModel.Instance.RightSensibility);
+                _controller.AddSensibility(Common.Interfaces.Commands.Right, ClientOptionsViewModel.Instance.RightSensibilityViewModel.Value);
         }
 
         #endregion

@@ -4,12 +4,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 {
     public class ConnectionViewModel : ViewModelBase, ITabIndex
     {
-        public LoginViewModel ConnectionControlViewModel { get; set; }
+        public LoginViewModel LoginViewModel { get; set; }
         public ServerListViewModel ServerListViewModel { get; set; }
 
         public ConnectionViewModel()
         {
-            ConnectionControlViewModel = new LoginViewModel();
+            LoginViewModel = new LoginViewModel();
             ServerListViewModel = new ServerListViewModel();
             ServerListViewModel.OnServerSelected += OnServerSelected;
 
@@ -18,7 +18,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         private void OnServerSelected(object sender, string serverAddress)
         {
-            ConnectionControlViewModel.ServerAddress = serverAddress;
+            LoginViewModel.ServerAddress = serverAddress;
         }
 
         #region ITabIndex
@@ -34,7 +34,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         private void OnClientChanged(IClient oldClient, IClient newClient)
         {
-            ConnectionControlViewModel.Client = newClient;
+            LoginViewModel.Client = newClient;
         }
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
@@ -52,11 +52,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
     public class ConnectionViewModelDesignData : ConnectionViewModel
     {
-        public new LoginViewModelDesignData ConnectionControlViewModel { get; private set; }
+        public new LoginViewModelDesignData LoginViewModel { get; private set; }
 
         public ConnectionViewModelDesignData()
         {
-            ConnectionControlViewModel = new LoginViewModelDesignData();
+            LoginViewModel = new LoginViewModelDesignData();
         }
     }
 }

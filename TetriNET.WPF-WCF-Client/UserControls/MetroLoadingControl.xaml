@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="TetriNET.WPF_WCF_Client.UserControls.MetroLoading"
+﻿<UserControl x:Class="TetriNET.WPF_WCF_Client.UserControls.MetroLoadingControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,7 +6,7 @@
              xmlns:system = "clr-namespace:System;assembly=mscorlib"
              xmlns:UserControls="clr-namespace:TetriNET.WPF_WCF_Client.UserControls"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance UserControls:MetroLoading}">
+             d:DataContext="{d:DesignInstance UserControls:MetroLoadingControl}">
     <Grid>
         <Grid.Resources>
             <!-- Particle Styling -->

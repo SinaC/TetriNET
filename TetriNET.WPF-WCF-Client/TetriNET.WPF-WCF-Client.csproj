@@ -57,10 +57,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Externals\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml">
@@ -83,11 +79,13 @@
     <Compile Include="Converters\SpecialToBrushConverter.cs" />
     <Compile Include="Converters\SpecialToStringConverter.cs" />
     <Compile Include="Commands\AsyncRelayCommand.cs" />
-    <Compile Include="Commands\EventToCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Models\ChatColor.cs" />
-    <Compile Include="UserControls\MetroLoading.xaml.cs">
-      <DependentUpon>MetroLoading.xaml</DependentUpon>
+    <Compile Include="UserControls\MetroLoadingControl.xaml.cs">
+      <DependentUpon>MetroLoadingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\SensibilityControl.xaml.cs">
+      <DependentUpon>SensibilityControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\Options\KeySetting.cs" />
     <Compile Include="ViewModels\ITabIndex.cs" />
@@ -96,6 +94,7 @@
     <Compile Include="ViewModels\Connection\ConnectionViewModel.cs" />
     <Compile Include="ViewModels\Connection\ServerListViewModel.cs" />
     <Compile Include="ViewModels\Options\ClientOptionsViewModel.cs" />
+    <Compile Include="ViewModels\Options\SensibilityViewModel.cs" />
     <Compile Include="ViewModels\Options\ServerOptionsViewModel.cs" />
     <Compile Include="ViewModels\PlayField\OpponentViewModel.cs" />
     <Compile Include="ViewModels\PlayField\PlayerViewModel.cs" />
@@ -110,8 +109,8 @@
     <Compile Include="ViewModels\PartyLine\PartyLineViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\WinList\WinListViewModel.cs" />
-    <Compile Include="UserControls\CircularProgressBar.xaml.cs">
-      <DependentUpon>CircularProgressBar.xaml</DependentUpon>
+    <Compile Include="UserControls\CircularProgressBarControl.xaml.cs">
+      <DependentUpon>CircularProgressBarControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Connection\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
@@ -119,7 +118,7 @@
     <Compile Include="Views\Options\ClientOptionsView.xaml.cs">
       <DependentUpon>ClientOptionsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\KeyBox.cs" />
+    <Compile Include="UserControls\KeyBoxControl.cs" />
     <Compile Include="Views\Options\ServerOptionsView.xaml.cs">
       <DependentUpon>ServerOptionsView.xaml</DependentUpon>
     </Compile>
@@ -167,11 +166,15 @@
     <Compile Include="Views\WinList\WinListView.xaml.cs">
       <DependentUpon>WinListView.xaml</DependentUpon>
     </Compile>
-    <Page Include="UserControls\CircularProgressBar.xaml">
+    <Page Include="UserControls\CircularProgressBarControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\MetroLoading.xaml">
+    <Page Include="UserControls\MetroLoadingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\SensibilityControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

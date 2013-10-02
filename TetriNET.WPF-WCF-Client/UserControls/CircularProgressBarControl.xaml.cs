@@ -11,7 +11,7 @@ namespace TetriNET.WPF_WCF_Client.UserControls
     /// <summary>
     /// Spinning Busy Indicator Control.
     /// </summary>
-    public partial class CircularProgressBar
+    public partial class CircularProgressBarControl
     {
         /// <summary>
         /// Startup time in miliseconds, default is a second.
@@ -20,7 +20,7 @@ namespace TetriNET.WPF_WCF_Client.UserControls
             DependencyProperty.Register(
                 "StartupDelay",
                 typeof(int),
-                typeof(CircularProgressBar),
+                typeof(CircularProgressBarControl),
                 new PropertyMetadata(1000));
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace TetriNET.WPF_WCF_Client.UserControls
             DependencyProperty.Register(
                 "RotationsPerMinute",
                 typeof(double),
-                typeof(CircularProgressBar),
+                typeof(CircularProgressBarControl),
                 new PropertyMetadata(60.0));
 
         /// <summary>
@@ -44,9 +44,9 @@ namespace TetriNET.WPF_WCF_Client.UserControls
         //private Cursor _originalCursor;
 
         /// <summary>
-        /// Initializes a new instance of the CircularProgressBar class.
+        /// Initializes a new instance of the CircularProgressBarControl class.
         /// </summary>
-        public CircularProgressBar()
+        public CircularProgressBarControl()
         {
             InitializeComponent();
 

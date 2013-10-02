@@ -61,9 +61,9 @@
         </Button>
         
         <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding ConnectionResult}" Foreground="{Binding ConnectionResultColor, Converter={StaticResource ChatColorBrushConverter}}"/>
-        <userControls:CircularProgressBar 
-            ToolTip="Connecting..." 
-            Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center"
+        <userControls:CircularProgressBarControl 
+            ToolTip="Connecting..." Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center"
+            StartupDelay="0"
             Visibility="{Binding IsProgressBarVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
     </Grid>
 </UserControl>

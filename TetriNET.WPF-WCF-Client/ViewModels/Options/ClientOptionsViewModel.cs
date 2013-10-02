@@ -117,133 +117,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #region Sensibility
 
-        private bool _dropSensibilityActivated;
-        public bool DropSensibilityActivated
-        {
-            get { return _dropSensibilityActivated; }
-            set
-            {
-                if (_dropSensibilityActivated != value)
-                {
-                    _dropSensibilityActivated = value;
-                    OnPropertyChanged();
-                    Settings.Default.DropSensibilityActivated = _dropSensibilityActivated;
-                    Settings.Default.Save();
-                }
-            }
-        }
-
-        private int _dropSensibility;
-        public int DropSensibility
-        {
-            get { return _dropSensibility; }
-            set
-            {
-                if (_dropSensibility != value)
-                {
-                    _dropSensibility = value;
-                    OnPropertyChanged();
-                    Settings.Default.DropSensibility = _dropSensibility;
-                    Settings.Default.Save();
-                }
-            }
-        }
-
-        private bool _downSensibilityActivated;
-        public bool DownSensibilityActivated
-        {
-            get { return _downSensibilityActivated; }
-            set
-            {
-                if (_downSensibilityActivated != value)
-                {
-                    _downSensibilityActivated = value;
-                    OnPropertyChanged();
-                    Settings.Default.DownSensibilityActivated = _downSensibilityActivated;
-                    Settings.Default.Save();
-                }
-            }
-        }
-
-        private int _downSensibility;
-        public int DownSensibility
-        {
-            get { return _downSensibility; }
-            set
-            {
-                if (_downSensibility != value)
-                {
-                    _downSensibility = value;
-                    OnPropertyChanged();
-                    Settings.Default.DownSensibility = _downSensibility;
-                    Settings.Default.Save();
-                }
-            }
-        }
-
-        private bool _leftSensibilityActivated;
-        public bool LeftSensibilityActivated
-        {
-            get { return _leftSensibilityActivated; }
-            set
-            {
-                if (_leftSensibilityActivated != value)
-                {
-                    _leftSensibilityActivated = value;
-                    OnPropertyChanged();
-                    Settings.Default.LeftSensibilityActivated = _leftSensibilityActivated;
-                    Settings.Default.Save();
-                }
-            }
-        }
-
-        private int _leftSensibility;
-        public int LeftSensibility
-        {
-            get { return _leftSensibility; }
-            set
-            {
-                if (_leftSensibility != value)
-                {
-                    _leftSensibility = value;
-                    OnPropertyChanged();
-                    Settings.Default.LeftSensibility = _leftSensibility;
-                    Settings.Default.Save();
-                }
-            }
-        }
-
-        private bool _rightSensibilityActivated;
-        public bool RightSensibilityActivated
-        {
-            get { return _rightSensibilityActivated; }
-            set
-            {
-                if (_rightSensibilityActivated != value)
-                {
-                    _rightSensibilityActivated = value;
-                    OnPropertyChanged();
-                    Settings.Default.RightSensibilityActivated = _rightSensibilityActivated;
-                    Settings.Default.Save();
-                }
-            }
-        }
-
-        private int _rightSensibility;
-        public int RightSensibility
-        {
-            get { return _rightSensibility; }
-            set
-            {
-                if (_rightSensibility != value)
-                {
-                    _rightSensibility = value;
-                    OnPropertyChanged();
-                    Settings.Default.RightSensibility = _rightSensibility;
-                    Settings.Default.Save();
-                }
-            }
-        }
+        public SensibilityViewModel DropSensibilityViewModel { get; private set; }
+        public SensibilityViewModel DownSensibilityViewModel { get; private set; }
+        public SensibilityViewModel LeftSensibilityViewModel { get; private set; }
+        public SensibilityViewModel RightSensibilityViewModel { get; private set; } 
 
         #endregion
 
@@ -259,14 +136,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             DisplayOpponentsFieldEvenWhenNotPlaying = Settings.Default.DisplayOpponentsFieldEvenWhenNotPlaying;
             IsDeveloperModeActivated = Settings.Default.IsDeveloperModeActivated;
             DisplayDropLocation = Settings.Default.DisplayDropLocation;
-            DropSensibilityActivated = Settings.Default.DropSensibilityActivated;
-            DropSensibility = Settings.Default.DropSensibility;
-            DownSensibilityActivated = Settings.Default.DownSensibilityActivated;
-            DownSensibility = Settings.Default.DownSensibility;
-            LeftSensibilityActivated = Settings.Default.LeftSensibilityActivated;
-            LeftSensibility = Settings.Default.LeftSensibility;
-            RightSensibilityActivated = Settings.Default.RightSensibilityActivated;
-            RightSensibility = Settings.Default.RightSensibility;
+
+            DropSensibilityViewModel = new SensibilityViewModel("DropSensibility");
+            DownSensibilityViewModel = new SensibilityViewModel("DownSensibility");
+            LeftSensibilityViewModel = new SensibilityViewModel("LeftSensibility");
+            RightSensibilityViewModel = new SensibilityViewModel("RightSensibility");
 
             KeySettings = new ObservableCollection<KeySetting>();
 

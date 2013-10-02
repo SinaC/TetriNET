@@ -5,15 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:options="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Options"
              xmlns:Options="clr-namespace:TetriNET.WPF_WCF_Client.Views.Options" mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance options:OptionsViewModel}"
+             d:DataContext="{d:DesignInstance options:OptionsViewModelDesignData}"
              d:DesignHeight="480" d:DesignWidth="640">
     <Grid>
         <TabControl>
             <TabItem Header="Client options">
-                <Options:ClientOptionsView DataContext="{Binding ClientOptionsViewModel}"/>
+                <Options:ClientOptionsView DataContext="{Binding ClientOptionsViewModel}" d:DataContext="{d:DesignInstance options:ClientOptionsViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
             <TabItem Header="Server options">
-                <Options:ServerOptionsView DataContext="{Binding ServerOptionsViewModel}"/>
+                <Options:ServerOptionsView DataContext="{Binding ServerOptionsViewModel}" d:DataContext="{d:DesignInstance options:ServerOptionsViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
         </TabControl>        
     </Grid>

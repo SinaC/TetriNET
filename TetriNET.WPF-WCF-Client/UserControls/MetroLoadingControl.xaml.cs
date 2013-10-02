@@ -5,15 +5,15 @@ using System.Windows.Media;
 namespace TetriNET.WPF_WCF_Client.UserControls
 {
     /// <summary>
-    /// Interaction logic for MetroLoading.xaml
+    /// Interaction logic for MetroLoadingControl.xaml
     /// </summary>
-    public partial class MetroLoading : UserControl
+    public partial class MetroLoadingControl : UserControl
     {
         public static readonly DependencyProperty ParticleColorProperty =
             DependencyProperty.Register(
                 "ParticleColor",
                 typeof(Brush),
-                typeof(MetroLoading),
+                typeof(MetroLoadingControl),
                 new PropertyMetadata(new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0X66, 0x99))));
         public Brush ParticleColor
         {
@@ -21,7 +21,7 @@ namespace TetriNET.WPF_WCF_Client.UserControls
             set { SetValue(ParticleColorProperty, value); }
         }
 
-        public MetroLoading()
+        public MetroLoadingControl()
         {
             InitializeComponent();
             DataContext = this; // easier binding
