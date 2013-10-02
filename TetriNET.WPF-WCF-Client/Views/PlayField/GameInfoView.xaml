@@ -5,13 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:playField="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PlayField"
              xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
-             mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance playField:GameInfoViewModel}">
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance playField:GameInfoViewModelDesignData, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:SpecialToBrushConverter x:Key="SpecialToBrushConverter"/>
         </ResourceDictionary>
-    </UserControl.Resources>    
+    </UserControl.Resources>
     <Grid>
          <Grid.ColumnDefinitions>
             <ColumnDefinition Width="28"/>
@@ -31,7 +31,7 @@
         <TextBlock Grid.Row="2" Grid.Column="1" Text="Level :"/>
         <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Level}" FontWeight="Bold" Margin="16,0,0,0" />
         <ItemsControl IsTabStop="False" Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Margin="0,0,12,0"
-                      ItemsSource="{Binding Effects}">
+                      ItemsSource="{Binding EffectsView}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Rectangle Stretch="Fill" Width="16" Height="16" Fill="{Binding Special, Converter={StaticResource SpecialToBrushConverter}}" Opacity="{Binding Opacity}"/>

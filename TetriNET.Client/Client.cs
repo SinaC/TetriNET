@@ -349,15 +349,19 @@ namespace TetriNET.Client
                 _statistics.PieceCount[firstPiece]++;
             // Reset inventory
             _inventory.Reset(Options.InventorySize);
-            //_inventory.Enqueue(new List<Specials>
-            //{
-            //    Specials.Darkness,
-            //    Specials.Darkness,
-            //    Specials.Confusion,
-            //    Specials.Confusion,
-            //    Specials.Immunity,
-            //    Specials.Immunity,
-            //});
+            _inventory.Enqueue(new List<Specials>
+            {
+                //Specials.Darkness,
+                //Specials.Confusion,
+                //Specials.Confusion,
+                //Specials.Darkness,
+                //Specials.Immunity,
+                //Specials.Immunity,
+                Specials.SwitchFields,
+                Specials.SwitchFields,
+                Specials.SwitchFields,
+                Specials.SwitchFields,
+            });
             // Reset line and level
             LinesCleared = 0;
             Level = Options.StartingLevel;
@@ -380,6 +384,7 @@ namespace TetriNET.Client
                     playerData.IsImmune = false;
                 }
             }
+            _proxy.ModifyGrid(this, Player.Board.Cells);
             // Restart timer
             _gameTimer.Start();
 

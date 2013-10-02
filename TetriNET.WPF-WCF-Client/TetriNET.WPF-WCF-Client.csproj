@@ -86,6 +86,9 @@
     <Compile Include="Commands\EventToCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Models\ChatColor.cs" />
+    <Compile Include="UserControls\MetroLoading.xaml.cs">
+      <DependentUpon>MetroLoading.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\Options\KeySetting.cs" />
     <Compile Include="ViewModels\ITabIndex.cs" />
     <Compile Include="TextureManager\ITextureManager.cs" />
@@ -165,6 +168,10 @@
       <DependentUpon>WinListView.xaml</DependentUpon>
     </Compile>
     <Page Include="UserControls\CircularProgressBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\MetroLoading.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

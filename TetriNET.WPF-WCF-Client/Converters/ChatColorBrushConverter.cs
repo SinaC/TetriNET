@@ -27,8 +27,8 @@ namespace TetriNET.WPF_WCF_Client.Converters
         // ChatColor -> Brush
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (ApplicationIsInDesignMode)
-                return Black;
+            //if (ApplicationIsInDesignMode)
+            //    return Black;
             if (!(value is ChatColor))
                 throw new ArgumentException("value not of type ChatColor");
             ChatColor cc = (ChatColor) value;

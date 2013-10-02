@@ -645,16 +645,25 @@ namespace TetriNET.Server
             // If special is Switch, call OnGridModified with switched grids
             if (special == Specials.SwitchFields)
             {
-                // Send switched grid to player and target
-                target.OnGridModified(targetId, player.Grid);
-                player.OnGridModified(playerId, target.Grid);
+                //// Send switched grid to player and target
+                //target.OnGridModified(targetId, player.Grid);
+                //player.OnGridModified(playerId, target.Grid);
                 // Switch locally
                 byte[] tmp = target.Grid;
                 target.Grid = player.Grid;
                 player.Grid = tmp;
-                // Send new grid to player and target
-                target.OnGridModified(playerId, player.Grid);
-                player.OnGridModified(targetId, target.Grid);
+                //// Send new grid to player and target
+                //target.OnGridModified(playerId, player.Grid);
+                //player.OnGridModified(targetId, target.Grid);
+
+                // Send switched grid to everyone
+                foreach (IPlayer p in _playerManager.Players)
+                {
+                    //if (p != player)
+                        p.OnGridModified(playerId, player.Grid);
+                    //if (p != target)
+                        p.OnGridModified(targetId, target.Grid);
+                }
             }
             // Inform about special use
             foreach (IPlayer p in _playerManager.Players)

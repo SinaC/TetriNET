@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:winList="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.WinList"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance winList:WinListViewModel}">
+             d:DataContext="{d:DesignInstance winList:WinListViewModelDesignData, IsDesignTimeCreatable=True}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -25,7 +25,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Grid.Row="1" Grid.Column="0" Width="100" HorizontalAlignment="Left" IsEnabled="{Binding IsServerMaster}"
+        <Button Grid.Row="1" Grid.Column="0" Width="100" HorizontalAlignment="Left" IsEnabled="{Binding IsResetEnabled}"
                 Command="{Binding ResetWinListCommand}">
             <TextBlock Text="Reset Scores"/>
         </Button>

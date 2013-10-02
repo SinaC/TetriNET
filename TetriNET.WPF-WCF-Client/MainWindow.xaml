@@ -20,10 +20,10 @@
         AllowsTransparency="True" 
         Background="Transparent" 
         MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
-        d:DataContext="{d:DesignInstance local:MainWindowViewModel, IsDesignTimeCreatable=False}"
+        d:DataContext="{d:DesignInstance local:MainWindowViewModelDesignData, IsDesignTimeCreatable=False}"
         Icon="TetriNET.ico"
         Title="TetriNET" 
-        Height="480" Width="720">
+        Height="480" Width="760">
     <!-- No window border ==> no close button either :p add a custom one before using this
         WindowStyle="None"
         AllowsTransparency="True" 

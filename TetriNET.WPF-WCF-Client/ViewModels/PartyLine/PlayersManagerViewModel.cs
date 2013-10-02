@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Data;
 using System.Windows.Input;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
@@ -46,11 +47,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
     public class PlayersManagerViewModel : ViewModelBase
     {
-        private readonly ObservableCollection<PlayerData> _playerList = new ObservableCollection<PlayerData>();
-        public ObservableCollection<PlayerData> PlayerList
-        {
-            get { return _playerList; }
-        }
+        public ObservableCollection<PlayerData> PlayerList { get; private set; }
+        public ICollectionView PlayerListView { get; private set; }
 
         public PlayerData SelectedPlayer { get; set; }
 
@@ -70,6 +68,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         public PlayersManagerViewModel()
         {
+            PlayerList = new ObservableCollection<PlayerData>();
+            PlayerListView = CollectionViewSource.GetDefaultView(PlayerList);
+            PlayerListView.SortDescriptions.Add(new SortDescription("DisplayPlayerId", ListSortDirection.Ascending));
+
             KickPlayerCommand = new RelayCommand(KickPlayer);
             BanPlayerCommand = new RelayCommand(BanPlayer);
         }
@@ -192,5 +194,35 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         public ICommand BanPlayerCommand { get; set; }
 
         #endregion
+    }
+
+    public class PlayersManagerViewModelDesignData : PlayersManagerViewModel
+    {
+        public new ObservableCollection<PlayerData> PlayerListView { get; private set; }
+
+        public PlayersManagerViewModelDesignData()
+        {
+            PlayerListView = new ObservableCollection<PlayerData>
+                {
+                    new PlayerData
+                        {
+                            PlayerName = "ServerMaster",
+                            IsServerMaster = true,
+                            RealPlayerId = 0
+                        },
+                    new PlayerData
+                        {
+                            PlayerName = "Dummy2",
+                            IsServerMaster = false,
+                            RealPlayerId = 2
+                        },
+                    new PlayerData
+                        {
+                            PlayerName = "Dummy3",
+                            IsServerMaster = false,
+                            RealPlayerId = 3
+                        },
+                };
+        }
     }
 }

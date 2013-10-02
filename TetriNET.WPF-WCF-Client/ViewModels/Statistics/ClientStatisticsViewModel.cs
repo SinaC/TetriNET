@@ -110,17 +110,17 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         }
 
         private DateTime _gameStartedDateTime;
-        public double LinesPerSec
+        public double LinesPerMinute
         {
             get
             {
                 if (Client == null)
                     return 0;
                 TimeSpan timeSpan = DateTime.Now - _gameStartedDateTime;
-                double totalSeconds = timeSpan.TotalSeconds;
-                if (totalSeconds < 0.0001)
+                double totalMinutes = timeSpan.TotalMinutes;
+                if (totalMinutes < 0.0001)
                     return 0;
-                return Client.LinesCleared/totalSeconds;
+                return Client.LinesCleared/totalMinutes;
             }
         }
 
@@ -145,7 +145,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             OnPropertyChanged("SingleCount");
             OnPropertyChanged("EndOfPieceQueueReached");
             OnPropertyChanged("NextPieceNotYetReceived");
-            OnPropertyChanged("LinesPerSec");
+            OnPropertyChanged("LinesPerMinute");
         }
 
         #region ITabIndex
@@ -200,7 +200,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
         #endregion
 
-        private static ObservableDictionary<T, ValuePercentage> BuildStatistics<T>(IDictionary<T, int> dictionary)
+        protected static ObservableDictionary<T, ValuePercentage> BuildStatistics<T>(IDictionary<T, int> dictionary)
         {
             int sum = dictionary.Values.Sum();
             ObservableDictionary<T, ValuePercentage> returnValue = new ObservableDictionary<T, ValuePercentage>();
@@ -213,6 +213,42 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
                 });
             }
             return returnValue;
+        }
+    }
+
+    public class ClientStatisticsViewModelDesignData : ClientStatisticsViewModel
+    {
+        public new ObservableDictionary<Pieces, ValuePercentage> PieceCount { get; private set; }
+        public new ObservableDictionary<Specials, ValuePercentage> SpecialCount { get; private set; }
+        public new ObservableDictionary<Specials, ValuePercentage> SpecialUsed { get; private set; }
+        public new ObservableDictionary<Specials, ValuePercentage> SpecialDiscarded { get; private set; }
+
+        public new int PiecesCountSum
+        {
+            get { return PieceCount.Aggregate(0, (sum, pair) => sum + pair.Value.Value); }
+        }
+
+        public new int SpecialCountSum
+        {
+            get { return SpecialCount.Aggregate(0, (sum, pair) => sum + pair.Value.Value); }
+        }
+
+        public new int SpecialUsedSum
+        {
+            get { return SpecialUsed.Aggregate(0, (sum, pair) => sum + pair.Value.Value); }
+        }
+
+        public new int SpecialDiscardedSum
+        {
+            get { return SpecialDiscarded.Aggregate(0, (sum, pair) => sum + pair.Value.Value); }
+        }
+
+        public ClientStatisticsViewModelDesignData()
+        {
+            PieceCount = BuildStatistics(Common.Helpers.EnumHelper.GetPieces().Select(piece => new { Key = piece, Value = 1 }).ToDictionary(x => x.Key, x => x.Value));
+            SpecialCount = BuildStatistics(Common.Helpers.EnumHelper.GetSpecials().Select(special => new {Key = special, Value = 1}).ToDictionary(x => x.Key, x => x.Value));
+            SpecialUsed = BuildStatistics(Common.Helpers.EnumHelper.GetSpecials().Select(special => new { Key = special, Value = 1 }).ToDictionary(x => x.Key, x => x.Value));
+            SpecialDiscarded = BuildStatistics(Common.Helpers.EnumHelper.GetSpecials().Select(special => new { Key = special, Value = 1 }).ToDictionary(x => x.Key, x => x.Value));
         }
     }
 }

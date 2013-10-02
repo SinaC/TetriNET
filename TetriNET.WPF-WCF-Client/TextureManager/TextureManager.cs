@@ -228,7 +228,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
         public Brush GetBigPiece(Pieces piece)
         {
             Brush brush;
-            if (!BigPiecesBrushes.TryGetValue(piece, out brush))
+            if (BigPiecesBrushes == null || !BigPiecesBrushes.TryGetValue(piece, out brush))
                 brush = CreateDummyPieceBrush(piece, false);
             return brush;
         }
@@ -236,7 +236,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
         public Brush GetSmallPiece(Pieces piece)
         {
             Brush brush;
-            if (!SmallPiecesBrushes.TryGetValue(piece, out brush))
+            if (SmallPiecesBrushes == null || !SmallPiecesBrushes.TryGetValue(piece, out brush))
                 brush = CreateDummyPieceBrush(piece, true);
             return brush;
         }
@@ -244,7 +244,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
         public Brush GetBigSpecial(Specials special)
         {
             Brush brush;
-            if (!BigSpecialsBrushes.TryGetValue(special, out brush))
+            if (BigSpecialsBrushes == null || !BigSpecialsBrushes.TryGetValue(special, out brush))
                 brush = CreateDummySpecialBrush(special, false);
             return brush;
         }
@@ -252,7 +252,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
         public Brush GetSmallSpecial(Specials special)
         {
             Brush brush;
-            if (!SmallSpecialsBrushes.TryGetValue(special, out brush))
+            if (SmallSpecialsBrushes == null || !SmallSpecialsBrushes.TryGetValue(special, out brush))
                 brush = CreateDummySpecialBrush(special, true);
             return brush;
         }

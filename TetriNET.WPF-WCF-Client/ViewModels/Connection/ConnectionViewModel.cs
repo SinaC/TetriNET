@@ -49,4 +49,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         #endregion
     }
+
+    public class ConnectionViewModelDesignData : ConnectionViewModel
+    {
+        public new LoginViewModelDesignData ConnectionControlViewModel { get; private set; }
+
+        public ConnectionViewModelDesignData()
+        {
+            ConnectionControlViewModel = new LoginViewModelDesignData();
+        }
+    }
 }

@@ -11,7 +11,7 @@
              xmlns:Commands="clr-namespace:TetriNET.WPF_WCF_Client.Commands" 
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640"
-             d:DataContext="{d:DesignInstance options:ServerOptionsViewModel}">
+             d:DataContext="{d:DesignInstance options:ServerOptionsViewModelDesignData, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

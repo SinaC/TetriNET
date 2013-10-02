@@ -127,4 +127,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
         #endregion
     }
+
+    public class MainWindowViewModelDesignData : MainWindowViewModel
+    {
+        public new WinListViewModelDesignData WinListViewModel { get; set; }
+        public new ClientStatisticsViewModelDesignData ClientStatisticsViewModel { get; set; }
+        public new OptionsViewModelDesignData OptionsViewModel { get; set; }
+        public new PartyLineViewModelDesignData PartyLineViewModel { get; set; }
+        public new ConnectionViewModelDesignData ConnectionViewModel { get; set; }
+        public new PlayFieldViewModel PlayFieldViewModel { get; set; }
+    }
 }

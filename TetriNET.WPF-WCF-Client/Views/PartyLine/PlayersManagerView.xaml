@@ -4,13 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:partyLine="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PartyLine"
-             d:DataContext="{d:DesignInstance partyLine:PlayersManagerViewModel}"
+             d:DataContext="{d:DesignInstance partyLine:PlayersManagerViewModelDesignData, IsDesignTimeCreatable=True}"
              mc:Ignorable="d">
-<UserControl.Resources>
-    <ResourceDictionary>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-    </ResourceDictionary>
-</UserControl.Resources>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -19,7 +19,7 @@
         <ListBox Grid.Row="0"
             Width="200" MaxWidth="200"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            ItemsSource="{Binding PlayerList}" SelectedItem="{Binding SelectedPlayer}">
+            ItemsSource="{Binding PlayerListView}" SelectedItem="{Binding SelectedPlayer}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">

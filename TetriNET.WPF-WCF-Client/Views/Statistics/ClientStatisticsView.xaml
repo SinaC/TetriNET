@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:statistics="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Statistics"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance statistics:ClientStatisticsViewModel}"
-             d:DesignHeight="450" d:DesignWidth="600">
+             d:DataContext="{d:DesignInstance statistics:ClientStatisticsViewModelDesignData, IsDesignTimeCreatable=True}"
+             d:DesignHeight="450" d:DesignWidth="700">
     <!-- TODO: create control with one group box (datacontext: check ClientStatisticsViewModel) and reuse it 4 times -->
     <Grid>
         <Grid.RowDefinitions>
@@ -197,8 +197,8 @@
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Invalid Piece:" Margin="0,0,4,0"/>
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding NextPieceNotYetReceived}"/>
                 
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Lines/sec:" Margin="0,0,4,0"/>
-                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LinesPerSec, StringFormat={}{0:0.00}}"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Lines/min:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LinesPerMinute, StringFormat={}{0:0.00}}"/>
 
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Tetris:" Margin="0,0,4,0"/>
                 <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding TetrisCount}"/>
@@ -206,7 +206,7 @@
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Triple:" Margin="0,0,4,0"/>
                 <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding TripleCount}"/>
 
-                <TextBlock Grid.Row="5" Grid.Column="0" Text="Second:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Double:" Margin="0,0,4,0"/>
                 <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding DoubleCount}"/>
 
                 <TextBlock Grid.Row="6" Grid.Column="0" Text="Single:" Margin="0,0,4,0"/>

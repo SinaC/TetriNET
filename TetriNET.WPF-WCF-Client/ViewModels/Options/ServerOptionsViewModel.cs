@@ -228,4 +228,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #endregion
     }
+
+    public class ServerOptionsViewModelDesignData : ServerOptionsViewModel
+    {
+        public new GameOptions Options { get; private set; }
+
+        public ServerOptionsViewModelDesignData()
+        {
+            Options = new GameOptions();
+            Options.ResetToDefault();
+        }
+    }
 }

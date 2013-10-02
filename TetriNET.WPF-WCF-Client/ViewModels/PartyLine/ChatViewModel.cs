@@ -19,11 +19,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
     {
         private const int MaxEntries = 500;
 
-        private readonly ObservableCollection<ChatEntry> _chatEntries = new ObservableCollection<ChatEntry>();
-        public ObservableCollection<ChatEntry> ChatEntries
-        {
-            get { return _chatEntries; }
-        }
+        public ObservableCollection<ChatEntry> ChatEntries { get; private set; }
 
         private string _inputChat;
         public string InputChat
@@ -53,6 +49,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                     OnPropertyChanged();
                 }
             }
+        }
+
+        public ChatViewModel()
+        {
+            ChatEntries = new ObservableCollection<ChatEntry>();
         }
 
         private void AddEntry(string msg, ChatColor color, string playerName = null)
@@ -222,5 +223,31 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         }
 
         #endregion
+    }
+
+    public class ChatViewModelDesignData : ChatViewModel
+    {
+        public new ObservableCollection<ChatEntry> ChatEntries { get; private set; }
+
+        public ChatViewModelDesignData()
+        {
+            ChatEntries = new ObservableCollection<ChatEntry>
+                {
+                    new ChatEntry
+                        {
+                            PlayerName = "Dummy1",
+                            Color = ChatColor.Green,
+                            IsPlayerVisible = false,
+                            Msg = "Message with player name visible"
+                        },
+                    new ChatEntry
+                        {
+                            PlayerName = "Dummy1",
+                            Color = ChatColor.Red,
+                            IsPlayerVisible = false,
+                            Msg = "Message with player name hidden"
+                        }
+                };
+        }
     }
 }

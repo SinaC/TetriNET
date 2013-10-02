@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Timers;
+using System.Windows.Data;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
-    // TODO: opacity linked to time left
     public class ContinuousEffect : INotifyPropertyChanged
     {
         private const double Epsilon = 0.00001;
@@ -51,6 +52,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                 if (Math.Abs(_totalSeconds - value) > Epsilon)
                 {
                     _totalSeconds = value;
+                    TimeLeft = value;
                     Opacity = 1.0;
                     // Restart timer
                     _timer.Stop();
@@ -59,6 +61,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                 }
             }
         }
+
+        public double TimeLeft { get; private set; }
 
         private DateTime _timerStarted;
         private readonly Timer _timer;
@@ -72,7 +76,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         private void TimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
             double elapsedSeconds = (DateTime.Now - _timerStarted).TotalSeconds;
-            Opacity = 1.0 - elapsedSeconds/TotalSeconds; // TODO: 0 -> 1
+            TimeLeft = TotalSeconds - elapsedSeconds;
+            Opacity = 1.0 - elapsedSeconds/TotalSeconds;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -129,14 +134,17 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             }
         }
 
-        private readonly ObservableCollection<ContinuousEffect> _effects;
-        public ObservableCollection<ContinuousEffect> Effects { get { return _effects; }}
+        public List<ContinuousEffect> Effects { get; private set; }
+        public ICollectionView EffectsView { get; private set; }
 
         public GameInfoViewModel()
         {
             _timer = new Timer(250);
             _timer.Elapsed += TimerOnElapsed;
-            _effects = new ObservableCollection<ContinuousEffect>();
+
+            Effects = new List<ContinuousEffect>();
+            EffectsView = CollectionViewSource.GetDefaultView(Effects);
+            EffectsView.SortDescriptions.Add(new SortDescription("TimeLeft", ListSortDirection.Descending));
         }
 
         private void TimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
@@ -205,6 +213,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         {
             DisplayLevel();
             DisplayClearedLines();
+            Effects.Clear();
             _gameStartTime = DateTime.Now;
             ElapsedTime = TimeSpan.FromSeconds(0);
             _timer.Start();
@@ -230,6 +239,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                 if (effect != null)
                 {
                     effect.TotalSeconds = duration;
+                    ExecuteOnUIThread.Invoke(EffectsView.Refresh);
                 }
                 else
                 {
@@ -238,15 +248,42 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                         Special = special,
                         TotalSeconds = duration
                     };
-                    ExecuteOnUIThread.Invoke(() => _effects.Add(effect));
+                    Effects.Add(effect);
+                    ExecuteOnUIThread.Invoke(EffectsView.Refresh);
                 }
             }
             else
             {
                 ContinuousEffect effect = Effects.FirstOrDefault(x => x.Special == special);
                 if (effect != null)
-                    ExecuteOnUIThread.Invoke(() => Effects.Remove(effect));
+                {
+                    Effects.Remove(effect);
+                    ExecuteOnUIThread.Invoke(EffectsView.Refresh);
+                }
             }
+        }
+    }
+
+    // http://www.codewrecks.com/blog/index.php/2012/11/07/wpf-and-design-time-data-part-2use-a-concrete-class-2/
+    public class GameInfoViewModelDesignData : GameInfoViewModel
+    {
+        public new ObservableCollection<ContinuousEffect> EffectsView { get; set; }
+
+        public GameInfoViewModelDesignData()
+        {
+            EffectsView = new ObservableCollection<ContinuousEffect>
+                {
+                    new ContinuousEffect
+                        {
+                            Special = Specials.Confusion,
+                            TotalSeconds = 30
+                        },
+                    new ContinuousEffect
+                        {
+                            Special = Specials.Darkness,
+                            TotalSeconds = 30
+                        }
+                };
         }
     }
 }

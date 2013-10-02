@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
 using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.Properties;
 
@@ -25,11 +26,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
                 }
             }
         }
-
-        //public Models.Options Options
-        //{
-        //    get { return Models.Options.OptionsSingleton.Instance; }
-        //}
 
         // Automatically switch to play field when game is started and to party line when game is over
         private bool _automaticallySwitchToPlayFieldOnGameStarted;
@@ -115,7 +111,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #region Key settings
 
-        public ObservableCollection<KeySetting> KeySettings { get; set; }
+        public ObservableCollection<KeySetting> KeySettings { get; private set; }
 
         #endregion
 
@@ -340,6 +336,23 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
                 keySetting.Key = (System.Windows.Input.Key) key;
             else
                 KeySettings.Add(new KeySetting((System.Windows.Input.Key) key, cmd));
+        }
+    }
+
+    public class ClientOptionsViewModelDesignData : ClientOptionsViewModel
+    {
+        public new ObservableCollection<KeySetting> KeySettings { get; private set; }
+
+        public ClientOptionsViewModelDesignData()
+        {
+            KeySettings = new ObservableCollection<KeySetting>
+                {
+                    new KeySetting(Key.Space, Common.Interfaces.Commands.Drop),
+                    new KeySetting(Key.Down, Common.Interfaces.Commands.Down),
+                    new KeySetting(Key.Up, Common.Interfaces.Commands.RotateCounterclockwise),
+                    new KeySetting(Key.Left, Common.Interfaces.Commands.Left),
+                    new KeySetting(Key.Right, Common.Interfaces.Commands.Right),
+                };
         }
     }
 }

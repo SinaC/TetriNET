@@ -11,36 +11,25 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
 {
     public class WinListViewModel : ViewModelBase, ITabIndex
     {
-        private bool _isServerMaster;
-        public bool IsServerMaster
+        public bool IsResetEnabled
         {
-            get { return _isServerMaster; }
-            set
-            {
-                if (_isServerMaster != value)
-                {
-                    _isServerMaster = value;
-                    OnPropertyChanged();
-                }
-            }
+            get { return Client != null && (Client.IsServerMaster && !Client.IsGameStarted); }
         }
 
-        private readonly ObservableCollection<WinEntry> _winList = new ObservableCollection<WinEntry>();
-        public ObservableCollection<WinEntry> WinList
-        {
-            get { return _winList; }
-        }
+        public ObservableCollection<WinEntry> WinList { get; private set; }
 
         public WinListViewModel()
         {
+            WinList = new ObservableCollection<WinEntry>();
+
             ResetWinListCommand = new RelayCommand(() => Client.ResetWinList());
         }
 
         private void UpdateWinList(IEnumerable<WinEntry> winList)
         {
-            _winList.Clear();
+            WinList.Clear();
             foreach (WinEntry entry in winList.OrderByDescending(x => x.Score))
-                _winList.Add(entry);
+                WinList.Add(entry);
         }
 
         #region ITabIndex
@@ -59,6 +48,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
             oldClient.OnServerMasterModified -= OnServerMasterModified;
             oldClient.OnWinListModified -= OnWinListModified;
             oldClient.OnConnectionLost -= OnConnectionLost;
+            oldClient.OnGameStarted -= RefreshResetEnable;
+            oldClient.OnGameFinished -= RefreshResetEnable;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
@@ -66,15 +57,22 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
             newClient.OnServerMasterModified += OnServerMasterModified;
             newClient.OnWinListModified += OnWinListModified;
             newClient.OnConnectionLost += OnConnectionLost;
+            newClient.OnGameStarted += RefreshResetEnable;
+            newClient.OnGameFinished += RefreshResetEnable;
         }
 
         #endregion
 
         #region IClient events handler
 
+        private void RefreshResetEnable()
+        {
+            OnPropertyChanged("IsResetEnabled");
+        }
+
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
-            IsServerMaster = false;
+            RefreshResetEnable();
         }
 
         private void OnWinListModified(List<WinEntry> winList)
@@ -84,7 +82,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
 
         private void OnServerMasterModified(int serverMasterId)
         {
-            IsServerMaster = Client.IsServerMaster;
+            RefreshResetEnable();
         }
 
         #endregion
@@ -94,5 +92,32 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
         public ICommand ResetWinListCommand { get; set; }
 
         #endregion
+    }
+
+    public class WinListViewModelDesignData : WinListViewModel
+    {
+        public new ObservableCollection<WinEntry> WinList { get; private set; }
+
+        public WinListViewModelDesignData()
+        {
+            WinList = new ObservableCollection<WinEntry>
+                {
+                    new WinEntry
+                        {
+                            PlayerName = "Dummy100",
+                            Score = 100
+                        },
+                    new WinEntry
+                        {
+                            PlayerName = "Dummy50",
+                            Score = 50
+                        },
+                    new WinEntry
+                        {
+                            PlayerName = "Dummy25",
+                            Score = 25
+                        }
+                };
+        }
     }
 }

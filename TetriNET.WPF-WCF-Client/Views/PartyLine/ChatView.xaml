@@ -6,21 +6,21 @@
              xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers"
              xmlns:partyLine="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PartyLine"
              xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
-             mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance partyLine:ChatViewModel}"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance partyLine:ChatViewModelDesignData, IsDesignTimeCreatable=True}"
              d:DesignHeight="300" d:DesignWidth="300">
-<UserControl.Resources>
-    <ResourceDictionary>
-        <ResourceDictionary.MergedDictionaries>
-            <ResourceDictionary>
-                <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-            </ResourceDictionary>
-            <ResourceDictionary>
-                <converters:ChatColorBrushConverter x:Key="ChatColorBrushConverter"/>
-            </ResourceDictionary>
-        </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
-</UserControl.Resources>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                </ResourceDictionary>
+                <ResourceDictionary>
+                    <converters:ChatColorBrushConverter x:Key="ChatColorBrushConverter"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

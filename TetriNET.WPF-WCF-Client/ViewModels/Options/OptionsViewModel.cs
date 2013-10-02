@@ -44,4 +44,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #endregion
     }
+
+    public class OptionsViewModelDesignData : OptionsViewModel
+    {
+        public new ClientOptionsViewModelDesignData ClientOptionsViewModel { get; private set; }
+        public new ServerOptionsViewModelDesignData ServerOptionsViewModel { get; private set; }
+
+        public OptionsViewModelDesignData()
+        {
+            ClientOptionsViewModel = new ClientOptionsViewModelDesignData();
+            ServerOptionsViewModel = new ServerOptionsViewModelDesignData();
+        }
+    }
 }

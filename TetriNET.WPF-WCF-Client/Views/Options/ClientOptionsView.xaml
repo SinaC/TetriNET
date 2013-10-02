@@ -8,7 +8,7 @@
              xmlns:userControls="clr-namespace:TetriNET.WPF_WCF_Client.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640"
-             d:DataContext="{d:DesignInstance optionsViewModel:ClientOptionsViewModel}">
+             d:DataContext="{d:DesignInstance optionsViewModel:ClientOptionsViewModelDesignData, IsDesignTimeCreatable=True}">
     <Grid IsEnabled="{Binding IsGameNotStarted}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

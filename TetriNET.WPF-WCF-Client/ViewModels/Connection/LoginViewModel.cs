@@ -75,7 +75,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             get { return "net.tcp://" + ServerAddress + ":" + ServerPort + "/TetriNET"; }
         }
 
-
         public string ConnectDisconnectLabel
         {
             get { return _isRegistered ? "Disconnect" : "Connect"; }
@@ -245,5 +244,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         public ICommand ConnectDisconnectCommand { get; set; }
 
         #endregion
+    }
+
+    public class LoginViewModelDesignData : LoginViewModel
+    {
+        public new ChatColor ConnectionResultColor { get; private set; }
+
+        public LoginViewModelDesignData()
+        {
+            ConnectionResultColor = ChatColor.Red;
+        }
     }
 }
