@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Timers;
 using System.Windows.Data;
 using TetriNET.Common.DataContracts;
-using TetriNET.Common.Interfaces;
+using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Configuration;
-using TetriNET.DefaultBoardAndPieces;
-using TetriNET.Common.Interfaces;
+using TetriNET.Client.DefaultBoardAndPieces;
+using TetriNET.Client.Interfaces;
+using TetriNET.Client.WCFProxy;
+using TetriNET.Common.Logger;
 using TetriNET.ConsoleWCFClient.AI;
 using TetriNET.ConsoleWCFClient.UI;
 
@@ -19,7 +21,7 @@ namespace TetriNET.ConsoleWCFClient
         {
             string name = "CONSOLE_" + Guid.NewGuid().ToString().Substring(0, 5);
 
-            Logger.Log.Initialize(ConfigurationManager.AppSettings["logpath"], name+".log");
+            Log.Initialize(ConfigurationManager.AppSettings["logpath"], name+".log");
 
             //
             //string baseAddress = @"net.tcp://localhost:8765/TetriNET";
@@ -27,7 +29,7 @@ namespace TetriNET.ConsoleWCFClient
             //IClient client = new Client.Client((piece, posX, posY, orientation, index) => new MutatedZ(posX, posY, orientation, index), () => new Board(12, 22));
 
             string baseAddress = ConfigurationManager.AppSettings["address"];
-            client.Connect(callback => new WCFProxy.WCFProxy(callback, baseAddress));
+            client.Connect(callback => new WCFProxy(callback, baseAddress));
 
             //
             GameController.GameController controller = new GameController.GameController(client);

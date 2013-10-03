@@ -4,10 +4,11 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using TetriNET.Common.DataContracts;
-using TetriNET.Common.Interfaces;
+using TetriNET.Common.Logger;
 using TetriNET.ConsoleWCFServer.Ban;
 using TetriNET.ConsoleWCFServer.Host;
 using TetriNET.ConsoleWCFServer.Player;
+using TetriNET.Server.Interfaces;
 
 namespace TetriNET.ConsoleWCFServer
 {
@@ -33,7 +34,7 @@ namespace TetriNET.ConsoleWCFServer
 
         static void Main(string[] args)
         {
-            Logger.Log.Initialize(ConfigurationManager.AppSettings["logpath"], "server.log");
+            Log.Initialize(ConfigurationManager.AppSettings["logpath"], "server.log");
 
             //
             BanManager banManager = new BanManager();
@@ -42,7 +43,7 @@ namespace TetriNET.ConsoleWCFServer
             PlayerManager playerManager = new PlayerManager(6);
 
             //
-            WCFHost.WCFHost wcfHost = new WCFHost.WCFHost(playerManager, banManager, (playerName, callback) => new Player.Player(playerName, callback))
+            Server.WCFHost.WCFHost wcfHost = new Server.WCFHost.WCFHost(playerManager, banManager, (playerName, callback) => new Player.Player(playerName, callback))
             {
                 Port = ConfigurationManager.AppSettings["port"]
             };

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using TetriNET.Client.Interfaces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
-using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Client
 {

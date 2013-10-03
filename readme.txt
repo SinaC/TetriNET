@@ -23,7 +23,6 @@ receiving an add line when commiting a piece, line and piece are merged ->
 wall kick http://tetris.wikia.com/wiki/Wall_kick  http://tetris.wikia.com/wiki/Floor_kick
 display tetrimino instead of text in server options
 Team
-Split common interfaces in Server.Interfaces and Client.Interfaces
 
 wcf + jquery
 http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-with-nettcpbinding
@@ -37,6 +36,8 @@ http://stackoverflow.com/questions/885744/wcf-servicehost-access-rights
 http://stackoverflow.com/questions/3684641/wcf-self-hosting-jquery
 http://bendewey.wordpress.com/2009/11/24/using-jsonp-with-wcf-and-jquery/
 http://stackoverflow.com/questions/11684623/consuming-wcf-service-application-from-jquery-ajax
+http://stackoverflow.com/questions/15582284/json-callback-error-was-not-called-wcf-jquery
+http://stackoverflow.com/questions/4361756/jquery-success-callback-called-with-empty-response-when-wcf-method-throws-an-exc
 
 wcf
 http://stackoverflow.com/questions/8790665/online-multiplayer-game-using-wcf
@@ -88,12 +89,24 @@ http://broadcast.oreilly.com/2010/08/understanding-c-text-mode-games.html
 http://www.c-sharpcorner.com/uploadfile/scottlysle/colorful-console-mode-applications-in-C-Sharp/
 
 various
-http://signalr.net/
-http://www.hanselman.com/blog/AsynchronousScalableWebApplicationsWithRealtimePersistentLongrunningConnectionsWithSignalR.aspx
 https://github.com/clariuslabs/reactivesockets
 http://social.msdn.microsoft.com/Forums/en-US/5c62e690-2c8d-4f32-8ec4-5e9b5ea6d2a0/using-reactive-extensions-rx-for-socket-programming-practical
 http://www.cachelog.net/using-reactive-extensions-rx-tpl-for-socket-programming/
 https://developers.google.com/protocol-buffers/docs/overview
+http://knockoutjs.com/
+http://stackoverflow.com/questions/17232183/upload-image-from-phonegap-app-to-wcf-service
+http://channel9.msdn.com/coding4fun/blog/Using-HTML5-web-sockets-and-some-C-to-build-a-multiplayer-Space-Shooter
+http://www.codeproject.com/Articles/209041/HTML5-Web-Socket-in-Essence
+
+signalr
+http://www.asp.net/signalr/overview/getting-started/tutorial-signalr-self-host
+http://signalr.net/
+https://github.com/SignalR/SignalR/wiki
+http://www.hanselman.com/blog/AsynchronousScalableWebApplicationsWithRealtimePersistentLongrunningConnectionsWithSignalR.aspx
+http://shockbyte.net/2012/05/30/signalr-samples/
+http://stackoverflow.com/questions/7872589/call-specific-client-from-signalr
+http://www.codeproject.com/Tips/417502/Online-Whiteboard-using-HTML5-and-SignalR
+http://www.asp.net/signalr/overview/hubs-api/hubs-api-guide-server
 
 Tetrinet original description
 http://gtetrinet.sourceforge.net/tetrinet.txt
@@ -129,97 +142,3 @@ http://blockbattle.net/tutorial
 
 async relay command
 http://stackoverflow.com/questions/16848562/async-await-in-mvvm-without-void-methods
-
-
-
-
-
-
-
-
-<!doctype html>
-<html>
-<head>
-	<meta charset="utf-8" />
-	<title>Demo</title>
-</head>
-<body>
-	<script src="./jquery-2.0.3.min.js"></script>
-	<script>
-
-         $(document).ready(
-			function() {
-				WCFJSON();
-			});
-	</script>
-	
-	<script type="text/javascript">
-         var Type;
-         var Url;
-         var Data;
-         var ContentType;
-         var DataType;
-         var ProcessData;
-		 
-		 function WCFJSON() {
-             var userid = "1";
-             Type = "GET";
-             //Url = "localhost:8080/Service1/GetUser";
-			 Url = "http://localhost:8080/Service1/GetData";
-             //Data = '{"Id": "' + userid + '"}';
-			 Data = '{"Value":5}';
-             ContentType = "application/jsonp; charset=utf-8";
-             DataType = "jsonp";
-			 ProcessData = true; 
-             CallService();
-         }
-		 
-		 //function to call WCF  Service       
-         function CallService() {
-             $.ajax({
-                 type: Type, //GET or POST or PUT or DELETE verb
-                 url: Url, // Location of the service
-                 data: Data, //Data sent to server
-                 contentType: ContentType, // content type sent to server
-                 dataType: DataType, //Expected data format from server
-                 processdata: ProcessData, //True or False
-				 //jsonpCallback: MyCallback,
-                 success: function(msg) {//On Successfull service call
-                     ServiceSucceeded(msg);
-                 },
-                 error: ServiceFailed// When Service call fails
-             });
-         }
- 
-		function MyCallback(data) {
-			alert(data);
-		}
-
-         function ServiceFailed(result) {
-             alert('Service call failed: ' + result.status + ' ' + result.statusText);
-             Type = null; varUrl = null; Data = null; ContentType = null; DataType = null; ProcessData = null;
-         }
-		 
-		 function ServiceSucceeded(result) {
-             if (DataType == "json") {
-                 resultObject = result.GetUserResult;
-                 for (i = 0; i < resultObject.length; i++) {
-                     alert(resultObject[i]);
-                 }
-             }
-         }
- 
-         /*function ServiceFailed(xhr) {
-             alert(xhr.responseText);
-             if (xhr.responseText) {
-                 var err = xhr.responseText;
-                 if (err)
-                     error(err);
-                 else
-                     error({ Message: "Unknown server error." })
-             }
-             return;
-         }*/
-	</script>
-</body>
-</html>

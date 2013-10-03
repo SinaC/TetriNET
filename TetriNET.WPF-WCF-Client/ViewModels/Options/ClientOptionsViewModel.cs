@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using TetriNET.Common.Interfaces;
+using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Options
@@ -144,19 +144,19 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
             KeySettings = new ObservableCollection<KeySetting>();
 
-            SetKeySetting(Settings.Default.Down, Common.Interfaces.Commands.Down);
-            SetKeySetting(Settings.Default.Drop, Common.Interfaces.Commands.Drop);
-            SetKeySetting(Settings.Default.Left, Common.Interfaces.Commands.Left);
-            SetKeySetting(Settings.Default.Right, Common.Interfaces.Commands.Right);
-            SetKeySetting(Settings.Default.RotateClockwise, Common.Interfaces.Commands.RotateClockwise);
-            SetKeySetting(Settings.Default.RotateCounterclockwise, Common.Interfaces.Commands.RotateCounterclockwise);
-            SetKeySetting(Settings.Default.DiscardFirstSpecial, Common.Interfaces.Commands.DiscardFirstSpecial);
-            SetKeySetting(Settings.Default.UseSpecialOn1, Common.Interfaces.Commands.UseSpecialOn1);
-            SetKeySetting(Settings.Default.UseSpecialOn2, Common.Interfaces.Commands.UseSpecialOn2);
-            SetKeySetting(Settings.Default.UseSpecialOn3, Common.Interfaces.Commands.UseSpecialOn3);
-            SetKeySetting(Settings.Default.UseSpecialOn4, Common.Interfaces.Commands.UseSpecialOn4);
-            SetKeySetting(Settings.Default.UseSpecialOn5, Common.Interfaces.Commands.UseSpecialOn5);
-            SetKeySetting(Settings.Default.UseSpecialOn6, Common.Interfaces.Commands.UseSpecialOn6);
+            SetKeySetting(Settings.Default.Down, TetriNET.Client.Interfaces.Commands.Down);
+            SetKeySetting(Settings.Default.Drop, TetriNET.Client.Interfaces.Commands.Drop);
+            SetKeySetting(Settings.Default.Left, TetriNET.Client.Interfaces.Commands.Left);
+            SetKeySetting(Settings.Default.Right, TetriNET.Client.Interfaces.Commands.Right);
+            SetKeySetting(Settings.Default.RotateClockwise, TetriNET.Client.Interfaces.Commands.RotateClockwise);
+            SetKeySetting(Settings.Default.RotateCounterclockwise, TetriNET.Client.Interfaces.Commands.RotateCounterclockwise);
+            SetKeySetting(Settings.Default.DiscardFirstSpecial, TetriNET.Client.Interfaces.Commands.DiscardFirstSpecial);
+            SetKeySetting(Settings.Default.UseSpecialOn1, TetriNET.Client.Interfaces.Commands.UseSpecialOn1);
+            SetKeySetting(Settings.Default.UseSpecialOn2, TetriNET.Client.Interfaces.Commands.UseSpecialOn2);
+            SetKeySetting(Settings.Default.UseSpecialOn3, TetriNET.Client.Interfaces.Commands.UseSpecialOn3);
+            SetKeySetting(Settings.Default.UseSpecialOn4, TetriNET.Client.Interfaces.Commands.UseSpecialOn4);
+            SetKeySetting(Settings.Default.UseSpecialOn5, TetriNET.Client.Interfaces.Commands.UseSpecialOn5);
+            SetKeySetting(Settings.Default.UseSpecialOn6, TetriNET.Client.Interfaces.Commands.UseSpecialOn6);
         }
 
         #region ViewModelBase
@@ -203,7 +203,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #endregion
 
-        private void SetKeySetting(int key, Common.Interfaces.Commands cmd)
+        private void SetKeySetting(int key, Client.Interfaces.Commands cmd)
         {
             KeySetting keySetting = KeySettings.FirstOrDefault(x => x.Command == cmd);
             if (keySetting != null)
@@ -221,11 +221,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         {
             KeySettings = new ObservableCollection<KeySetting>
                 {
-                    new KeySetting(Key.Space, Common.Interfaces.Commands.Drop),
-                    new KeySetting(Key.Down, Common.Interfaces.Commands.Down),
-                    new KeySetting(Key.Up, Common.Interfaces.Commands.RotateCounterclockwise),
-                    new KeySetting(Key.Left, Common.Interfaces.Commands.Left),
-                    new KeySetting(Key.Right, Common.Interfaces.Commands.Right),
+                    new KeySetting(Key.Space, TetriNET.Client.Interfaces.Commands.Drop),
+                    new KeySetting(Key.Down, TetriNET.Client.Interfaces.Commands.Down),
+                    new KeySetting(Key.Up, TetriNET.Client.Interfaces.Commands.RotateCounterclockwise),
+                    new KeySetting(Key.Left, TetriNET.Client.Interfaces.Commands.Left),
+                    new KeySetting(Key.Right, TetriNET.Client.Interfaces.Commands.Right),
                 };
         }
     }

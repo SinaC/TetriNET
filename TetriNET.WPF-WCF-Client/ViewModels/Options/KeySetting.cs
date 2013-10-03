@@ -37,8 +37,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             }
         }
 
-        private Common.Interfaces.Commands _command;
-        public Common.Interfaces.Commands Command
+        private Client.Interfaces.Commands _command;
+        public Client.Interfaces.Commands Command
         {
             get { return _command; }
             set
@@ -62,7 +62,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         }
 
 
-        public KeySetting(Key key, Common.Interfaces.Commands command)
+        public KeySetting(Key key, Client.Interfaces.Commands command)
         {
             Key = key;
             Command = command;
@@ -72,43 +72,43 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         {
             switch (Command)
             {
-                case Common.Interfaces.Commands.Drop:
+                case Client.Interfaces.Commands.Drop:
                     Settings.Default.Drop = (int)Key;
                     break;
-                case Common.Interfaces.Commands.Down:
+                case Client.Interfaces.Commands.Down:
                     Settings.Default.Down = (int)Key;
                     break;
-                case Common.Interfaces.Commands.Left:
+                case Client.Interfaces.Commands.Left:
                     Settings.Default.Left = (int)Key;
                     break;
-                case Common.Interfaces.Commands.Right:
+                case Client.Interfaces.Commands.Right:
                     Settings.Default.Right = (int)Key;
                     break;
-                case Common.Interfaces.Commands.RotateClockwise:
+                case Client.Interfaces.Commands.RotateClockwise:
                     Settings.Default.RotateClockwise = (int)Key;
                     break;
-                case Common.Interfaces.Commands.RotateCounterclockwise:
+                case Client.Interfaces.Commands.RotateCounterclockwise:
                     Settings.Default.RotateCounterclockwise = (int)Key;
                     break;
-                case Common.Interfaces.Commands.DiscardFirstSpecial:
+                case Client.Interfaces.Commands.DiscardFirstSpecial:
                     Settings.Default.DiscardFirstSpecial = (int)Key;
                     break;
-                case Common.Interfaces.Commands.UseSpecialOn1:
+                case Client.Interfaces.Commands.UseSpecialOn1:
                     Settings.Default.UseSpecialOn1 = (int)Key;
                     break;
-                case Common.Interfaces.Commands.UseSpecialOn2:
+                case Client.Interfaces.Commands.UseSpecialOn2:
                     Settings.Default.UseSpecialOn2 = (int)Key;
                     break;
-                case Common.Interfaces.Commands.UseSpecialOn3:
+                case Client.Interfaces.Commands.UseSpecialOn3:
                     Settings.Default.UseSpecialOn3 = (int)Key;
                     break;
-                case Common.Interfaces.Commands.UseSpecialOn4:
+                case Client.Interfaces.Commands.UseSpecialOn4:
                     Settings.Default.UseSpecialOn4 = (int)Key;
                     break;
-                case Common.Interfaces.Commands.UseSpecialOn5:
+                case Client.Interfaces.Commands.UseSpecialOn5:
                     Settings.Default.UseSpecialOn5 = (int)Key;
                     break;
-                case Common.Interfaces.Commands.UseSpecialOn6:
+                case Client.Interfaces.Commands.UseSpecialOn6:
                     Settings.Default.UseSpecialOn6 = (int)Key;
                     break;
             }

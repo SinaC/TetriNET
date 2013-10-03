@@ -2,7 +2,7 @@
 using System.Configuration;
 using System.IO;
 using System.Windows;
-using TetriNET.Logger;
+using TetriNET.Common.Logger;
 using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client

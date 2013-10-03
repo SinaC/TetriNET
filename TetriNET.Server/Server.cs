@@ -7,9 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
-using TetriNET.Common.Interfaces;
+using TetriNET.Common.Logger;
 using TetriNET.Common.Randomizer;
-using TetriNET.Logger;
+using TetriNET.Server.Interfaces;
 
 namespace TetriNET.Server
 {

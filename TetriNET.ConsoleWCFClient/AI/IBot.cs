@@ -1,5 +1,5 @@
-﻿using TetriNET.Common.Interfaces;
-using TetriNET.Strategy;
+﻿using TetriNET.Client.Interfaces;
+using TetriNET.Client.Strategy;
 
 namespace TetriNET.ConsoleWCFClient.AI
 {

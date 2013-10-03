@@ -1,10 +1,11 @@
 ﻿using System;
 using TetriNET.Common.Contracts;
-using TetriNET.Common.Interfaces;
+using TetriNET.Server.GenericHost;
+using TetriNET.Server.Interfaces;
 
 namespace TetriNET.ConsoleWCFServer.Host
 {
-    public sealed class BuiltInHost : GenericHost.GenericHost
+    public sealed class BuiltInHost : GenericHost
     {
         public BuiltInHost(IPlayerManager playerManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc)
             : base(playerManager, banManager, createPlayerFunc)

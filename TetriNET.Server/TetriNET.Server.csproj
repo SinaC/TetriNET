@@ -43,9 +43,13 @@
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Logger\TetriNET.Logger.csproj">
+    <ProjectReference Include="..\TetriNET.Common.Logger\TetriNET.Common.Logger.csproj">
       <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
-      <Name>TetriNET.Logger</Name>
+      <Name>TetriNET.Common.Logger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Server.Interfaces\TetriNET.Server.Interfaces.csproj">
+      <Project>{546c0189-9339-4de6-902a-f38550c5a517}</Project>
+      <Name>TetriNET.Server.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

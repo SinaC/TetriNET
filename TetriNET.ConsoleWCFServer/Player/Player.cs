@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
-using TetriNET.Common.Interfaces;
+using TetriNET.Common.Logger;
+using TetriNET.Server.Interfaces;
 
 namespace TetriNET.ConsoleWCFServer.Player
 {
@@ -34,7 +35,7 @@ namespace TetriNET.ConsoleWCFServer.Player
             }
             catch (Exception ex)
             {
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Error, "Exception:{0} {1}", actionName, ex);
+                Log.WriteLine(Log.LogLevels.Error, "Exception:{0} {1}", actionName, ex);
                 if (OnConnectionLost != null)
                     OnConnectionLost(this);
             }

@@ -43,17 +43,21 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TetriNET.Client.Interfaces\TetriNET.Client.Interfaces.csproj">
+      <Project>{85b3313b-f31a-45be-8bf6-8ae55ae484b0}</Project>
+      <Name>TetriNET.Client.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.DefaultBoardAndPieces\TetriNET.DefaultBoardAndPieces.csproj">
+    <ProjectReference Include="..\TetriNET.Client.DefaultBoardAndPieces\TetriNET.Client.DefaultBoardAndPieces.csproj">
       <Project>{2bd5936f-015d-473f-9161-6b837ef3a3ba}</Project>
-      <Name>TetriNET.DefaultBoardAndPieces</Name>
+      <Name>TetriNET.Client.DefaultBoardAndPieces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Strategy\TetriNET.Strategy.csproj">
+    <ProjectReference Include="..\TetriNET.Client.Strategy\TetriNET.Client.Strategy.csproj">
       <Project>{b77d651e-658c-45d4-972a-3c0d569d689e}</Project>
-      <Name>TetriNET.Strategy</Name>
+      <Name>TetriNET.Client.Strategy</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

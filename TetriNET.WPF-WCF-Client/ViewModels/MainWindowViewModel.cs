@@ -1,6 +1,6 @@
-﻿using TetriNET.DefaultBoardAndPieces;
+﻿using TetriNET.Client.DefaultBoardAndPieces;
 using TetriNET.Common.DataContracts;
-using TetriNET.Common.Interfaces;
+using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.ViewModels.Connection;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
 using TetriNET.WPF_WCF_Client.ViewModels.PartyLine;

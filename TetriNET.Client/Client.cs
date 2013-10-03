@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using TetriNET.Client.Interfaces;
 using TetriNET.Common.Attributes;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
-using TetriNET.Common.Interfaces;
+using TetriNET.Common.Logger;
 using TetriNET.Common.Randomizer;
-using TetriNET.Logger;
 
 namespace TetriNET.Client
 {

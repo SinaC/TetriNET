@@ -56,17 +56,6 @@
     <Compile Include="Helpers\Check.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\Singleton.cs" />
-    <Compile Include="Interfaces\IBanManager.cs" />
-    <Compile Include="Interfaces\IBoard.cs" />
-    <Compile Include="Interfaces\IClient.cs" />
-    <Compile Include="Interfaces\IClientStatistics.cs" />
-    <Compile Include="Interfaces\IGameController.cs" />
-    <Compile Include="Interfaces\IHost.cs" />
-    <Compile Include="Interfaces\IOpponent.cs" />
-    <Compile Include="Interfaces\IPlayer.cs" />
-    <Compile Include="Interfaces\IPlayerManager.cs" />
-    <Compile Include="Interfaces\IProxy.cs" />
-    <Compile Include="Interfaces\IPiece.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Randomizer\RangeRandom.cs" />
   </ItemGroup>

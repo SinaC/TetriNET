@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using TetriNET.Client.WCFProxy;
 using TetriNET.WPF_WCF_Client.Commands;
 using TetriNET.WPF_WCF_Client.Helpers;
 
@@ -67,7 +68,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             {
                 IsScanForServerEnabled = false;
                 IsProgressBarVisible = true;
-                List<string> servers = WCFProxy.WCFProxy.DiscoverHosts();
+                List<string> servers = WCFProxy.DiscoverHosts();
                 ExecuteOnUIThread.Invoke(() =>
                     {
                         Servers.Clear();

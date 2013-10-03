@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
-using TetriNET.Common.Interfaces;
-using TetriNET.Strategy;
+using TetriNET.Client.Interfaces;
+using TetriNET.Client.Strategy;
+using TetriNET.Common.Logger;
 
 namespace TetriNET.ConsoleWCFClient.AI
 {
@@ -163,7 +164,7 @@ namespace TetriNET.ConsoleWCFClient.AI
             System.Threading.Thread.Sleep((int) sleepTime); // delay drop instead of animating
             Client.Drop();
             //
-            Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "BEST MOVE found in {0} ms and special in {1} ms", (searchBestModeEndTime - specialManaged).TotalMilliseconds, (specialManaged - searchBestMoveStartTime).TotalMilliseconds);
+            Log.WriteLine(Log.LogLevels.Info, "BEST MOVE found in {0} ms and special in {1} ms", (searchBestModeEndTime - specialManaged).TotalMilliseconds, (specialManaged - searchBestMoveStartTime).TotalMilliseconds);
         }
 
         private void Rotate(int rotationDelta)

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Text;
+using TetriNET.Client.DefaultBoardAndPieces;
+using TetriNET.Client.Interfaces;
+using TetriNET.Client.Strategy;
 using TetriNET.Common.Attributes;
-using TetriNET.DefaultBoardAndPieces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
-using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Tests
 {
@@ -31,10 +32,10 @@ namespace TetriNET.Tests
             board.LeftGravity();
             DisplayBoard(board);
 
-            int buriedHoles = Strategy.BoardHelper.GetBuriedHolesForColumn(board, 1);
-            int holeDepth = Strategy.BoardHelper.GetHoleDepthForColumn(board, 1);
-            int allWells = Strategy.BoardHelper.GetAllWellsForColumn(board, 1);
-            int blockades = Strategy.BoardHelper.GetBlockadesForColumn(board, 1);
+            int buriedHoles = BoardHelper.GetBuriedHolesForColumn(board, 1);
+            int holeDepth = BoardHelper.GetHoleDepthForColumn(board, 1);
+            int allWells = BoardHelper.GetAllWellsForColumn(board, 1);
+            int blockades = BoardHelper.GetBlockadesForColumn(board, 1);
 
             Console.WriteLine();
             Console.WriteLine("{0} {1} {2} {3}", buriedHoles, holeDepth, allWells, blockades);

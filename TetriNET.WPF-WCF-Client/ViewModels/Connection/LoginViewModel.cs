@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Input;
+using TetriNET.Client.WCFProxy;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
-using TetriNET.Common.Interfaces;
+using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.Commands;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.Models;
@@ -159,7 +160,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                         SetConnectionResultMessage("Missing username", ChatColor.Red);
                         return;
                     }
-                    bool connected = Client.Connect(callback => new WCFProxy.WCFProxy(callback, ServerAddress));
+                    bool connected = Client.Connect(callback => new WCFProxy(callback, ServerAddress));
                     if (!connected)
                     {
                         SetConnectionResultMessage("Connection failed", ChatColor.Red);

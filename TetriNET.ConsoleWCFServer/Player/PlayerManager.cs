@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using TetriNET.Common.Contracts;
-using TetriNET.Common.Interfaces;
-using TetriNET.Logger;
+using TetriNET.Common.Logger;
+using TetriNET.Server.Interfaces;
 
 namespace TetriNET.ConsoleWCFServer.Player
 {

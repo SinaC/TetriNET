@@ -1,4 +1,4 @@
-﻿using TetriNET.Common.Interfaces;
+﻿using TetriNET.Client.Interfaces;
 
 namespace TetriNET.Client
 {
@@ -11,11 +11,13 @@ namespace TetriNET.Client
             Lost,
         }
 
-#region IOpponent
+        #region IOpponent
+
         public int PlayerId { get; set; }
         public bool IsImmune { get; set; }
         public IBoard Board { get; set; }
-#endregion
+
+        #endregion
 
         public string Name { get; set; }
         public States State { get; set; }

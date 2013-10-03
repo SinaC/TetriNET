@@ -52,6 +52,10 @@
     <Compile Include="UI\ConsoleUI.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TetriNET.Client.Interfaces\TetriNET.Client.Interfaces.csproj">
+      <Project>{85b3313b-f31a-45be-8bf6-8ae55ae484b0}</Project>
+      <Name>TetriNET.Client.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Client\TetriNET.Client.csproj">
       <Project>{fd867b2e-a1c2-4052-af79-ef69aed92597}</Project>
       <Name>TetriNET.Client</Name>
@@ -60,27 +64,30 @@
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.DefaultBoardAndPieces\TetriNET.DefaultBoardAndPieces.csproj">
+    <ProjectReference Include="..\TetriNET.Client.DefaultBoardAndPieces\TetriNET.Client.DefaultBoardAndPieces.csproj">
       <Project>{2bd5936f-015d-473f-9161-6b837ef3a3ba}</Project>
-      <Name>TetriNET.DefaultBoardAndPieces</Name>
+      <Name>TetriNET.Client.DefaultBoardAndPieces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Logger\TetriNET.Logger.csproj">
+    <ProjectReference Include="..\TetriNET.Common.Logger\TetriNET.Common.Logger.csproj">
       <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
-      <Name>TetriNET.Logger</Name>
+      <Name>TetriNET.Common.Logger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Strategy\TetriNET.Strategy.csproj">
+    <ProjectReference Include="..\TetriNET.Client.Strategy\TetriNET.Client.Strategy.csproj">
       <Project>{b77d651e-658c-45d4-972a-3c0d569d689e}</Project>
-      <Name>TetriNET.Strategy</Name>
+      <Name>TetriNET.Client.Strategy</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.WCFProxy\TetriNET.WCFProxy.csproj">
+    <ProjectReference Include="..\TetriNET.Client.WCFProxy\TetriNET.Client.WCFProxy.csproj">
       <Project>{b85b19f2-5c8d-4ab8-96e2-379b482089f9}</Project>
-      <Name>TetriNET.WCFProxy</Name>
+      <Name>TetriNET.Client.WCFProxy</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="TetriNET.ico" />

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common.Contracts;
-using TetriNET.Logger;
+using TetriNET.Common.Logger;
 
 namespace POC.Sockets
 {

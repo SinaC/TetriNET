@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using TetriNET.Client.Strategy;
 using TetriNET.Common.DataContracts;
-using TetriNET.Common.Interfaces;
-using TetriNET.Logger;
-using TetriNET.Strategy;
+using TetriNET.Client.Interfaces;
+using TetriNET.Common.Logger;
 
 namespace TetriNET.WPF_WCF_Client.AI
 {

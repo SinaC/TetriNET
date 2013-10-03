@@ -2,8 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using TetriNET.Common.Interfaces;
-using TetriNET.Strategy;
+using TetriNET.Client.Interfaces;
+using TetriNET.Client.Strategy;
 using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
 using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
@@ -33,21 +33,21 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private void OnGameStarted()
         {
             if (ClientOptionsViewModel.Instance.DropSensibilityViewModel.IsActivated)
-                _controller.RemoveSensibility(Common.Interfaces.Commands.Drop);
+                _controller.RemoveSensibility(Client.Interfaces.Commands.Drop);
             else
-                _controller.AddSensibility(Common.Interfaces.Commands.Drop, ClientOptionsViewModel.Instance.DropSensibilityViewModel.Value);
+                _controller.AddSensibility(Client.Interfaces.Commands.Drop, ClientOptionsViewModel.Instance.DropSensibilityViewModel.Value);
             if (ClientOptionsViewModel.Instance.DownSensibilityViewModel.IsActivated)
-                _controller.RemoveSensibility(Common.Interfaces.Commands.Down);
+                _controller.RemoveSensibility(Client.Interfaces.Commands.Down);
             else
-                _controller.AddSensibility(Common.Interfaces.Commands.Down, ClientOptionsViewModel.Instance.DownSensibilityViewModel.Value);
+                _controller.AddSensibility(Client.Interfaces.Commands.Down, ClientOptionsViewModel.Instance.DownSensibilityViewModel.Value);
             if (ClientOptionsViewModel.Instance.LeftSensibilityViewModel.IsActivated)
-                _controller.RemoveSensibility(Common.Interfaces.Commands.Left);
+                _controller.RemoveSensibility(Client.Interfaces.Commands.Left);
             else
-                _controller.AddSensibility(Common.Interfaces.Commands.Left, ClientOptionsViewModel.Instance.LeftSensibilityViewModel.Value);
+                _controller.AddSensibility(Client.Interfaces.Commands.Left, ClientOptionsViewModel.Instance.LeftSensibilityViewModel.Value);
             if (ClientOptionsViewModel.Instance.RightSensibilityViewModel.IsActivated)
-                _controller.RemoveSensibility(Common.Interfaces.Commands.Right);
+                _controller.RemoveSensibility(Client.Interfaces.Commands.Right);
             else
-                _controller.AddSensibility(Common.Interfaces.Commands.Right, ClientOptionsViewModel.Instance.RightSensibilityViewModel.Value);
+                _controller.AddSensibility(Client.Interfaces.Commands.Right, ClientOptionsViewModel.Instance.RightSensibilityViewModel.Value);
         }
 
         #endregion
@@ -89,22 +89,22 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
             else
             {
-                Common.Interfaces.Commands cmd = MapKeyToCommand(e.Key);
-                if (cmd != Common.Interfaces.Commands.Invalid)
+                Client.Interfaces.Commands cmd = MapKeyToCommand(e.Key);
+                if (cmd != Client.Interfaces.Commands.Invalid)
                     _controller.KeyDown(cmd);
             }
         }
 
         private void GameView_KeyUp(object sender, KeyEventArgs e)
         {
-            Common.Interfaces.Commands cmd = MapKeyToCommand(e.Key);
-            if (cmd != Common.Interfaces.Commands.Invalid)
+            Client.Interfaces.Commands cmd = MapKeyToCommand(e.Key);
+            if (cmd != Client.Interfaces.Commands.Invalid)
                 _controller.KeyUp(cmd);
         }
         
         #endregion
 
-        private Common.Interfaces.Commands MapKeyToCommand(Key key)
+        private Client.Interfaces.Commands MapKeyToCommand(Key key)
         {
             KeySetting keySetting = ClientOptionsViewModel.Instance.KeySettings.FirstOrDefault(x => x.Key == key);
             if (keySetting != null)
@@ -112,39 +112,39 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             switch (key)
             {
                 case Key.Space:
-                    return Common.Interfaces.Commands.Drop;
+                    return Client.Interfaces.Commands.Drop;
                 case Key.Down:
-                    return Common.Interfaces.Commands.Down;
+                    return Client.Interfaces.Commands.Down;
                 case Key.Left:
-                    return Common.Interfaces.Commands.Left;
+                    return Client.Interfaces.Commands.Left;
                 case Key.Right:
-                    return Common.Interfaces.Commands.Right;
+                    return Client.Interfaces.Commands.Right;
                 case Key.Up:
-                    return Common.Interfaces.Commands.RotateCounterclockwise;
+                    return Client.Interfaces.Commands.RotateCounterclockwise;
                 case Key.PageDown:
-                    return Common.Interfaces.Commands.RotateClockwise;
+                    return Client.Interfaces.Commands.RotateClockwise;
                 case Key.D:
-                    return Common.Interfaces.Commands.DiscardFirstSpecial;
+                    return Client.Interfaces.Commands.DiscardFirstSpecial;
                 case Key.NumPad1:
                 case Key.D1:
-                    return Common.Interfaces.Commands.UseSpecialOn1;
+                    return Client.Interfaces.Commands.UseSpecialOn1;
                 case Key.NumPad2:
                 case Key.D2:
-                    return Common.Interfaces.Commands.UseSpecialOn2;
+                    return Client.Interfaces.Commands.UseSpecialOn2;
                 case Key.NumPad3:
                 case Key.D3:
-                    return Common.Interfaces.Commands.UseSpecialOn3;
+                    return Client.Interfaces.Commands.UseSpecialOn3;
                 case Key.NumPad4:
                 case Key.D4:
-                    return Common.Interfaces.Commands.UseSpecialOn4;
+                    return Client.Interfaces.Commands.UseSpecialOn4;
                 case Key.NumPad5:
                 case Key.D5:
-                    return Common.Interfaces.Commands.UseSpecialOn5;
+                    return Client.Interfaces.Commands.UseSpecialOn5;
                 case Key.NumPad6:
                 case Key.D6:
-                    return Common.Interfaces.Commands.UseSpecialOn6;
+                    return Client.Interfaces.Commands.UseSpecialOn6;
             }
-            return Common.Interfaces.Commands.Invalid;
+            return Client.Interfaces.Commands.Invalid;
         }
 
         private void PlayFieldView_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)

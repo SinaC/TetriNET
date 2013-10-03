@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Threading;
-using TetriNET.Logger;
+using TetriNET.Common.Logger;
 
 namespace TetriNET.WPF_WCF_Client.Helpers
 {

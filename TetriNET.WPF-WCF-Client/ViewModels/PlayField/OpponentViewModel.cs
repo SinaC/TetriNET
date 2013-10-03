@@ -1,4 +1,5 @@
-﻿using TetriNET.Common.Interfaces;
+﻿
+using TetriNET.Client.Interfaces;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {

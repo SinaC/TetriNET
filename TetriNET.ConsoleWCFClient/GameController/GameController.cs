@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Timers;
-using TetriNET.Common.Interfaces;
+using TetriNET.Client.Interfaces;
 
 namespace TetriNET.ConsoleWCFClient.GameController
 {

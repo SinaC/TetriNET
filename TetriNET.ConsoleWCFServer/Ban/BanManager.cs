@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using TetriNET.Common.Interfaces;
+using TetriNET.Common.Logger;
+using TetriNET.Server.Interfaces;
 
 namespace TetriNET.ConsoleWCFServer.Ban
 {
@@ -51,7 +52,7 @@ namespace TetriNET.ConsoleWCFServer.Ban
         public void Dump()
         {
             foreach(BanEntry entry in _banList.Values)
-                Logger.Log.WriteLine(Logger.Log.LogLevels.Info, "{0} {1} {2}", entry.Address, entry.Name, entry.Reason);
+                Log.WriteLine(Log.LogLevels.Info, "{0} {1} {2}", entry.Address, entry.Name, entry.Reason);
         }
 
         private static IPAddress FixAddress(IPAddress address)
@@ -62,7 +63,7 @@ namespace TetriNET.ConsoleWCFServer.Ban
                 if (addressIPV4 != null)
                     address = addressIPV4;
                 else
-                    Logger.Log.WriteLine(Logger.Log.LogLevels.Error, "IPv4 supported only. {0} Address family: {1}", address, address.AddressFamily);
+                    Log.WriteLine(Log.LogLevels.Error, "IPv4 supported only. {0} Address family: {1}", address, address.AddressFamily);
             }
             return address;
         }

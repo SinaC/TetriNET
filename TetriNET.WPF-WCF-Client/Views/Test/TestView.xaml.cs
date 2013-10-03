@@ -3,9 +3,10 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using TetriNET.Client.Interfaces;
+using TetriNET.Client.DefaultBoardAndPieces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
-using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.TextureManager;
 
 namespace TetriNET.WPF_WCF_Client.Views.Test
@@ -89,7 +90,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
 
                 // Draw pieces
                 i = 0;
-                foreach (IPiece piece in EnumHelper.GetPieces(available => available).Select(piece => DefaultBoardAndPieces.Piece.CreatePiece(piece, 0, 0, 1, 0, false)))
+                foreach (IPiece piece in EnumHelper.GetPieces(available => available).Select(piece => Piece.CreatePiece(piece, 0, 0, 1, 0, false)))
                 {
                     for (int r = 1; r <= piece.MaxOrientations; r++)
                     {
@@ -102,7 +103,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
 
                 // Draw mutated pieces
                 i = 0;
-                foreach (IPiece piece in EnumHelper.GetPieces(available => available).Select(piece => DefaultBoardAndPieces.Piece.CreatePiece(piece, 0, 0, 1, 0, true)))
+                foreach (IPiece piece in EnumHelper.GetPieces(available => available).Select(piece => Piece.CreatePiece(piece, 0, 0, 1, 0, true)))
                 {
                     for (int r = 1; r <= piece.MaxOrientations; r++)
                     {
