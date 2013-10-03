@@ -22,8 +22,15 @@ namespace POC.SignalR
     {
         public void Configuration(IAppBuilder app)
         {
-            //app.MapSignalR();
-            app.New();
+            ////app.MapSignalR();
+            //app.New();
+            var config = new HubConfiguration
+            {
+                EnableCrossDomain = true,
+                //EnableJSONP = true
+                EnableDetailedErrors = true
+            };
+            app.MapHubs(config);
         }
     }
 

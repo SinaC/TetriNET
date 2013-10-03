@@ -107,6 +107,10 @@ http://shockbyte.net/2012/05/30/signalr-samples/
 http://stackoverflow.com/questions/7872589/call-specific-client-from-signalr
 http://www.codeproject.com/Tips/417502/Online-Whiteboard-using-HTML5-and-SignalR
 http://www.asp.net/signalr/overview/hubs-api/hubs-api-guide-server
+http://www.west-wind.com/weblog/posts/2013/Sep/04/SelfHosting-SignalR-in-a-Windows-Service
+http://stackoverflow.com/questions/17676464/hosting-signalr-with-self-host-in-windows-service
+http://sachabarbs.wordpress.com/2013/03/19/signalr-self-hosting-with-net-client/
+http://www.asp.net/signalr/overview/getting-started/tutorial-signalr-self-host
 
 Tetrinet original description
 http://gtetrinet.sourceforge.net/tetrinet.txt
