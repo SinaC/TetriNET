@@ -26,6 +26,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private static readonly SolidColorBrush DarknessColor = new SolidColorBrush(Colors.Black);
         private static readonly SolidColorBrush ImmunityBorderColor = new SolidColorBrush(Colors.Green);
+        private static readonly SolidColorBrush PieceAnchorColor = new SolidColorBrush(Colors.White);
         private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
         //private static readonly SolidColorBrush HintColor = new SolidColorBrush(Color.FromArgb( 128, 77, 115, 141)); // Some kind of gray/blue
 
@@ -95,18 +96,28 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 DrawDropLocation();
         }
 
-        private void DrawPiece(IBoard board, IPiece tetrimono, Brush brush)
+        private void DrawPiece(IBoard board, IPiece piece, Brush brush)
         {
-            for (int i = 1; i <= tetrimono.TotalCells; i++)
+            for (int i = 1; i <= piece.TotalCells; i++)
             {
                 int x, y;
-                tetrimono.GetCellAbsolutePosition(i, out x, out y); // 1->Width x 1->Height
+                piece.GetCellAbsolutePosition(i, out x, out y); // 1->Width x 1->Height
                 int cellY = board.Height - y;
                 int cellX = x - 1;
 
                 Rectangle uiPart = GetControl(cellX, cellY);
                 if (uiPart != null)
                     uiPart.Fill = brush;
+            }
+            // Draw piece center
+            if (ClientOptionsViewModel.Instance.DisplayPieceAnchor && ClientOptionsViewModel.Instance.IsDeveloperModeActivated)
+            {
+                int cellY = board.Height - piece.PosY;
+                int cellX = piece.PosX - 1;
+
+                Rectangle uiPart = GetControl(cellX, cellY);
+                if (uiPart != null)
+                    uiPart.Fill = PieceAnchorColor;
             }
         }
 

@@ -252,17 +252,16 @@ namespace TetriNET.Client.Strategy
         // Number of full cells in the column above each hole
         public static int GetHoleDepthForColumn(IBoard board, int x)
         {
-            return 0; // TODO
-            int totalCells = 0;
-            for (int y = 0; y <= board.Height; y++)
+            int count = 0;
+            bool enable = false;
+            for (int y = 1; y <= board.Height; y++)
             {
-                byte cellValue = board[x, y];
-
-                if (cellValue == 0)
-                {
-                }
+                if (board[x, y] == 0)
+                    enable = true;
+                else if (enable)
+                    count++;
             }
-            return 0;
+            return count;
         }
 
         // Number of block that’s directly above a hole

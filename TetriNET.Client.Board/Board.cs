@@ -5,7 +5,7 @@ using TetriNET.Client.Interfaces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 
-namespace TetriNET.Client.DefaultBoardAndPieces
+namespace TetriNET.Client.Board
 {
     public class Board : IBoard
     {
@@ -123,14 +123,14 @@ namespace TetriNET.Client.DefaultBoardAndPieces
 
         public bool CheckNoConflict(IPiece piece, bool checkTop = false)
         {
-            if (piece.PosX < 1)
-                return false;
-            if (piece.PosX > Width)
-                return false;
-            if (piece.PosY < 1)
-                return false;
-            if (checkTop && piece.PosY > Height)
-                return false;
+            //if (piece.PosX < 1)
+            //    return false;
+            //if (piece.PosX > Width)
+            //    return false;
+            //if (piece.PosY < 1)
+            //    return false;
+            //if (checkTop && piece.PosY > Height)
+            //    return false;
             for (int i = 1; i <= piece.TotalCells; i++)
             {
                 // Get piece position in board
@@ -236,17 +236,26 @@ namespace TetriNET.Client.DefaultBoardAndPieces
 
         public void CommitPiece(IPiece piece)
         {
-            if (piece.PosX < 1 || piece.PosX > Width)
-                return;
-            if (piece.PosY < 1 || piece.PosY > Height)
-                return;
+            //if (piece.PosX < 1 || piece.PosX > Width)
+            //    return;
+            //if (piece.PosY < 1 || piece.PosY > Height)
+            //    return;
             for (int i = 1; i <= piece.TotalCells; i++)
             {
                 // Get piece position in board
                 int x, y;
                 piece.GetCellAbsolutePosition(i, out x, out y);
+                // Check out of board
+                if (x < 1)
+                    return;
+                if (x > Width)
+                    return;
+                if (y < 1)
+                    return;
+                if (y > Height)
+                    return;
                 // Add piece in board
-                this[x, y] = CellHelper.SetColor(piece.Value);
+                this[x, y] = CellHelper.SetColor(piece.Value); // indexer will handle cell out of board
             }
         }
 
@@ -330,7 +339,7 @@ namespace TetriNET.Client.DefaultBoardAndPieces
             return true;
         }
 
-        public bool RotateClockwise(IPiece piece)
+        public virtual bool RotateClockwise(IPiece piece)
         {
             // Special case: cannot place piece at starting location.
             if (!CheckNoConflict(piece))
@@ -345,7 +354,7 @@ namespace TetriNET.Client.DefaultBoardAndPieces
             return true;
         }
 
-        public bool RotateCounterClockwise(IPiece piece)
+        public virtual bool RotateCounterClockwise(IPiece piece)
         {
             // Special case: cannot place piece at starting location.
             if (!CheckNoConflict(piece))

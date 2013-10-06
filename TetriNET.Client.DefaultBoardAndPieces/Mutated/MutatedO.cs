@@ -1,7 +1,6 @@
 ﻿using TetriNET.Client.Interfaces;
-using TetriNET.Common.DataContracts;
 
-namespace TetriNET.Client.DefaultBoardAndPieces.Mutated
+namespace TetriNET.Client.Pieces.Mutated
 {
     public class MutatedO : Piece
     {
@@ -12,7 +11,7 @@ namespace TetriNET.Client.DefaultBoardAndPieces.Mutated
         public MutatedO(int posX, int posY, int orientation, int index)
             : base(posX, posY, orientation, index)
         {
-            Value = Pieces.TetriminoO;
+            Value = Common.DataContracts.Pieces.TetriminoO;
         }
 
         public override int MaxOrientations

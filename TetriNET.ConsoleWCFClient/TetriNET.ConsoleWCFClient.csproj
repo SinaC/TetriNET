@@ -52,6 +52,10 @@
     <Compile Include="UI\ConsoleUI.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TetriNET.Client.Board\TetriNET.Client.Board.csproj">
+      <Project>{c1d244a2-a501-455e-8522-354f3e5470f8}</Project>
+      <Name>TetriNET.Client.Board</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Client.Interfaces\TetriNET.Client.Interfaces.csproj">
       <Project>{85b3313b-f31a-45be-8bf6-8ae55ae484b0}</Project>
       <Name>TetriNET.Client.Interfaces</Name>
@@ -64,9 +68,9 @@
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Client.DefaultBoardAndPieces\TetriNET.Client.DefaultBoardAndPieces.csproj">
+    <ProjectReference Include="..\TetriNET.Client.DefaultBoardAndPieces\TetriNET.Client.Pieces.csproj">
       <Project>{2bd5936f-015d-473f-9161-6b837ef3a3ba}</Project>
-      <Name>TetriNET.Client.DefaultBoardAndPieces</Name>
+      <Name>TetriNET.Client.Pieces</Name>
     </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common.Logger\TetriNET.Common.Logger.csproj">
       <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>

@@ -27,6 +27,8 @@ namespace TetriNET.Client
         private const bool IsTimeoutDetectionActive = false;
         private const int SpawnOrientation = 1;
 
+        private const bool AutomaticallyMoveDown = true; // should always be true, except for some test
+
         public enum States
         {
             Created, // -> Registering
@@ -349,19 +351,19 @@ namespace TetriNET.Client
                 _statistics.PieceCount[firstPiece]++;
             // Reset inventory
             _inventory.Reset(Options.InventorySize);
-            _inventory.Enqueue(new List<Specials>
-            {
-                //Specials.Darkness,
-                //Specials.Confusion,
-                //Specials.Confusion,
-                //Specials.Darkness,
-                //Specials.Immunity,
-                //Specials.Immunity,
-                Specials.SwitchFields,
-                Specials.SwitchFields,
-                Specials.SwitchFields,
-                Specials.SwitchFields,
-            });
+            //_inventory.Enqueue(new List<Specials>
+            //{
+            //    //Specials.Darkness,
+            //    //Specials.Confusion,
+            //    //Specials.Confusion,
+            //    //Specials.Darkness,
+            //    //Specials.Immunity,
+            //    //Specials.Immunity,
+            //    Specials.SwitchFields,
+            //    Specials.SwitchFields,
+            //    Specials.SwitchFields,
+            //    Specials.SwitchFields,
+            //});
             // Reset line and level
             LinesCleared = 0;
             Level = Options.StartingLevel;
@@ -832,7 +834,7 @@ namespace TetriNET.Client
 
         private void GameTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-            if (State == States.Playing)
+            if (State == States.Playing && AutomaticallyMoveDown)
             {
                 MoveDown();
             }

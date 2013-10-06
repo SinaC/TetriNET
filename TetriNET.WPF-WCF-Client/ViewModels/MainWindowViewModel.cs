@@ -1,4 +1,5 @@
-﻿using TetriNET.Client.DefaultBoardAndPieces;
+﻿using TetriNET.Client.Board;
+using TetriNET.Client.Pieces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.ViewModels.Connection;
@@ -45,7 +46,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             ClientChanged += OnClientChanged;
 
             // Create client
-            Client = new Client.Client(Piece.CreatePiece, () => new Board(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height));
+            Client = new Client.Client(Piece.CreatePiece, () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height));
         }
 
         #region ViewModelBase

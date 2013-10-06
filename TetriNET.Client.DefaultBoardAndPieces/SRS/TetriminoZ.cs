@@ -1,17 +1,17 @@
 ﻿using TetriNET.Client.Interfaces;
 
-namespace TetriNET.Client.Pieces.Mutated
+namespace TetriNET.Client.Pieces.SRS
 {
-    public class MutatedS : Piece
+    internal class TetriminoZ : Piece
     {
-        protected MutatedS()
+        protected TetriminoZ()
         {
         }
 
-        public MutatedS(int posX, int posY, int orientation, int index)
-            : base(posX, posY, orientation, index)
+        public TetriminoZ(int spawnX, int spawnY, int spawnOrientation, int index)
+            : base(spawnX, spawnY, spawnOrientation, index)
         {
-            Value = Common.DataContracts.Pieces.TetriminoS;
+            Value = Common.DataContracts.Pieces.TetriminoZ;
         }
 
         public override int MaxOrientations
@@ -21,16 +21,16 @@ namespace TetriNET.Client.Pieces.Mutated
 
         public override int TotalCells
         {
-            get { return 5; }
+            get { return 4; }
         }
 
         public override void GetCellAbsolutePosition(int cellIndex, out int x, out int y)
         {
             x = y = 0;
-            // orientation 1: (-1, -1),  ( 0, -1),  ( 0,  0),  ( 1,  0),  ( 1,  1)
-            // orientation 2: ( 1, -1),  ( 1,  0),  ( 0,  0),  ( 0,  1),  (-1,  1)
-            // orientation 3: ( 1,  1),  ( 0,  1),  ( 0,  0),  (-1,  0),  (-1, -1)
-            // orientation 4: (-1,  1),  (-1,  0),  ( 0,  0),  ( 0, -1),  ( 1, -1)
+            // orientation 1: (-1, -1),  ( 0, -1),  ( 0,  0),  ( 1,  0)
+            // orientation 2: ( 1, -1),  ( 0,  0),  ( 1,  0),  ( 0,  1)
+            // orientation 3: (-1,  0),  ( 0,  0),  ( 0,  1),  ( 1,  1)
+            // orientation 4: ( 0, -1),  (-1,  0),  ( 0,  0),  (-1,  1)
             switch (Orientation)
             {
                 case 1:
@@ -52,10 +52,6 @@ namespace TetriNET.Client.Pieces.Mutated
                             x = 1;
                             y = 0;
                             break;
-                        case 5:
-                            x = 1;
-                            y = 1;
-                            break;
                     }
                     break;
                 case 2:
@@ -66,19 +62,15 @@ namespace TetriNET.Client.Pieces.Mutated
                             y = -1;
                             break;
                         case 2:
-                            x = 1;
+                            x = 0;
                             y = 0;
                             break;
                         case 3:
-                            x = 0;
+                            x = 1;
                             y = 0;
                             break;
                         case 4:
                             x = 0;
-                            y = 1;
-                            break;
-                        case 5:
-                            x = -1;
                             y = 1;
                             break;
                     }
@@ -87,24 +79,20 @@ namespace TetriNET.Client.Pieces.Mutated
                     switch (cellIndex)
                     {
                         case 1:
-                            x = 1;
-                            y = 1;
+                            x = -1;
+                            y = 0;
                             break;
                         case 2:
                             x = 0;
-                            y = 1;
+                            y = 0;
                             break;
                         case 3:
                             x = 0;
-                            y = 0;
+                            y = 1;
                             break;
                         case 4:
-                            x = -1;
-                            y = 0;
-                            break;
-                        case 5:
-                            x = -1;
-                            y = -1;
+                            x = 1;
+                            y = 1;
                             break;
                     }
                     break;
@@ -112,8 +100,8 @@ namespace TetriNET.Client.Pieces.Mutated
                     switch (cellIndex)
                     {
                         case 1:
-                            x = -1;
-                            y = 1;
+                            x = 0;
+                            y = -1;
                             break;
                         case 2:
                             x = -1;
@@ -124,12 +112,8 @@ namespace TetriNET.Client.Pieces.Mutated
                             y = 0;
                             break;
                         case 4:
-                            x = 0;
-                            y = -1;
-                            break;
-                        case 5:
-                            x = 1;
-                            y = -1;
+                            x = -1;
+                            y = 1;
                             break;
                     }
                     break;
@@ -141,7 +125,7 @@ namespace TetriNET.Client.Pieces.Mutated
 
         public override IPiece Clone()
         {
-            return new MutatedS
+            return new TetriminoZ
             {
                 PosX = PosX,
                 PosY = PosY,

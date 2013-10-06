@@ -7,8 +7,8 @@
     <ProjectGuid>{2BD5936F-015D-473F-9161-6B837EF3A3BA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TetriNET.Client.DefaultBoardAndPieces</RootNamespace>
-    <AssemblyName>TetriNET.Client.DefaultBoardAndPieces</AssemblyName>
+    <RootNamespace>TetriNET.Client.Pieces</RootNamespace>
+    <AssemblyName>TetriNET.Client.Pieces</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -34,7 +34,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Board.cs" />
     <Compile Include="Mutated\MutatedI.cs" />
     <Compile Include="Mutated\MutatedJ.cs" />
     <Compile Include="Mutated\MutatedL.cs" />
@@ -51,6 +50,13 @@
     <Compile Include="Normal\TetriminoS.cs" />
     <Compile Include="Normal\TetriminoT.cs" />
     <Compile Include="Normal\TetriminoZ.cs" />
+    <Compile Include="SRS\TetriminoI.cs" />
+    <Compile Include="SRS\TetriminoJ.cs" />
+    <Compile Include="SRS\TetriminoL.cs" />
+    <Compile Include="SRS\TetriminoO.cs" />
+    <Compile Include="SRS\TetriminoS.cs" />
+    <Compile Include="SRS\TetriminoT.cs" />
+    <Compile Include="SRS\TetriminoZ.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TetriNET.Client.Interfaces\TetriNET.Client.Interfaces.csproj">

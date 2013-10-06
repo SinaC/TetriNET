@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using TetriNET.Client.DefaultBoardAndPieces;
+using TetriNET.Client.Board;
 using TetriNET.Client.Interfaces;
 using TetriNET.Client.Strategy;
 using TetriNET.Common.Attributes;

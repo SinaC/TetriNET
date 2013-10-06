@@ -41,7 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{C9AD63
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Tests", "TetriNET.Tests\TetriNET.Tests.csproj", "{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Client.DefaultBoardAndPieces", "TetriNET.Client.DefaultBoardAndPieces\TetriNET.Client.DefaultBoardAndPieces.csproj", "{2BD5936F-015D-473F-9161-6B837EF3A3BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Client.Pieces", "TetriNET.Client.DefaultBoardAndPieces\TetriNET.Client.Pieces.csproj", "{2BD5936F-015D-473F-9161-6B837EF3A3BA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceModelEx", "ServiceModelEx\ServiceModelEx.csproj", "{0858C710-AF53-4049-B98E-CFE3638D1228}"
 EndProject
@@ -66,6 +66,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Client.Interfaces", "TetriNET.Client.Interfaces\TetriNET.Client.Interfaces.csproj", "{85B3313B-F31A-45BE-8BF6-8AE55AE484B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Server.Interfaces", "TetriNET.Server.Interfaces\TetriNET.Server.Interfaces.csproj", "{546C0189-9339-4DE6-902A-F38550C5A517}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Client.Board", "TetriNET.Client.Board\TetriNET.Client.Board.csproj", "{C1D244A2-A501-455E-8522-354F3E5470F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -346,6 +348,21 @@ Global
 		{546C0189-9339-4DE6-902A-F38550C5A517}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{546C0189-9339-4DE6-902A-F38550C5A517}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{546C0189-9339-4DE6-902A-F38550C5A517}.Release|x86.ActiveCfg = Release|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Design|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Design|Any CPU.Build.0 = Debug|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Design|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Design|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Design|x86.ActiveCfg = Debug|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C1D244A2-A501-455E-8522-354F3E5470F8}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -366,6 +383,7 @@ Global
 		{2BD5936F-015D-473F-9161-6B837EF3A3BA} = {3B785C04-C291-4980-84F0-E73E72024D41}
 		{FD867B2E-A1C2-4052-AF79-EF69AED92597} = {3B785C04-C291-4980-84F0-E73E72024D41}
 		{85B3313B-F31A-45BE-8BF6-8AE55AE484B0} = {3B785C04-C291-4980-84F0-E73E72024D41}
+		{C1D244A2-A501-455E-8522-354F3E5470F8} = {3B785C04-C291-4980-84F0-E73E72024D41}
 		{0D26F900-9E0D-4FBD-B7B0-5DA679C71491} = {9138D55C-FA3F-468B-ACAF-B08BC2184D7C}
 		{010B434D-86F0-4BFF-B17B-702BCCCF69F5} = {9138D55C-FA3F-468B-ACAF-B08BC2184D7C}
 		{161C5DDA-F2A8-400E-9702-3C4B45FFB772} = {9138D55C-FA3F-468B-ACAF-B08BC2184D7C}

@@ -109,6 +109,22 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             }
         }
 
+        private bool _displayPieceAnchor;
+        public bool DisplayPieceAnchor
+        {
+            get { return _displayPieceAnchor; }
+            set
+            {
+                if (_displayPieceAnchor != value)
+                {
+                    _displayPieceAnchor = value;
+                    OnPropertyChanged();
+                    Settings.Default.DisplayPieceAnchor = _displayPieceAnchor;
+                    Settings.Default.Save();
+                }
+            }
+        }
+
         #region Key settings
 
         public ObservableCollection<KeySetting> KeySettings { get; private set; }
@@ -136,6 +152,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             DisplayOpponentsFieldEvenWhenNotPlaying = Settings.Default.DisplayOpponentsFieldEvenWhenNotPlaying;
             IsDeveloperModeActivated = Settings.Default.IsDeveloperModeActivated;
             DisplayDropLocation = Settings.Default.DisplayDropLocation;
+            DisplayPieceAnchor = Settings.Default.DisplayPieceAnchor;
 
             DropSensibilityViewModel = new SensibilityViewModel("DropSensibility");
             DownSensibilityViewModel = new SensibilityViewModel("DownSensibility");

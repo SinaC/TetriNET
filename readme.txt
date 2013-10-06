@@ -8,20 +8,14 @@ when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 client/server version used when registering
 add room notion in server (server can handle multiple rooms and client register on a room)
 SinaCSpecials: use gravity when board has enough holes or when to high + zebra + clear column + confusion + darkness + immunity + left gravity + mutation
-AdvancedPierreDellacherieOnePiece: finish GetHoleDepthForColumn
 Connect+Register and Disconnect+Unregister should be merged into one method
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
 WPF Client: save win list locally if server master
 Confusion could be managed client-side
-Add Pentaminos (http://en.wikipedia.org/wiki/Pentomino)
+Add Pentominos (http://en.wikipedia.org/wiki/Pentomino)
 New options: random blocks clear count, mutation count, darkness time, confusion time, immunity time, random spawn orientation
 Solo mode
 Server integrated in WPF client
-receiving an add line when commiting a piece, line and piece are merged -> 
-		on SpecialUsed: if current piece is in conflict -> PlaceTetrimino
-		on AddLines: move current piece up for each add lines if in conflict with cells on floor
-wall kick http://tetris.wikia.com/wiki/Wall_kick  http://tetris.wikia.com/wiki/Floor_kick
-display tetrimino instead of text in server options
 Team
 
 wcf + jquery

@@ -1,7 +1,6 @@
 ﻿using TetriNET.Client.Interfaces;
-using TetriNET.Common.DataContracts;
 
-namespace TetriNET.Client.DefaultBoardAndPieces.Normal
+namespace TetriNET.Client.Pieces.Normal
 {
     internal class TetriminoL : Piece
     {
@@ -11,7 +10,7 @@ namespace TetriNET.Client.DefaultBoardAndPieces.Normal
 
         public TetriminoL(int spawnX, int spawnY, int spawnOrientation, int index) : base(spawnX, spawnY, spawnOrientation, index)
         {
-            Value = Pieces.TetriminoL;
+            Value = Common.DataContracts.Pieces.TetriminoL;
         }
 
         public override int MaxOrientations

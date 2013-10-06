@@ -1,6 +1,6 @@
 ﻿using TetriNET.Client.Interfaces;
 
-namespace TetriNET.Client.Pieces.Normal
+namespace TetriNET.Client.Pieces.SRS
 {
     internal class TetriminoO : Piece
     {
@@ -8,7 +8,8 @@ namespace TetriNET.Client.Pieces.Normal
         {
         }
 
-        public TetriminoO(int spawnX, int spawnY, int spawnOrientation, int index) : base(spawnX, spawnY, spawnOrientation, index)
+        public TetriminoO(int spawnX, int spawnY, int spawnOrientation, int index)
+            : base(spawnX, spawnY, spawnOrientation, index)
         {
             Value = Common.DataContracts.Pieces.TetriminoO;
         }

@@ -13,13 +13,16 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers"
         xmlns:test="clr-namespace:TetriNET.WPF_WCF_Client.Views.Test"
-        xmlns:Connection="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection" mc:Ignorable="d"
+        xmlns:connectionViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
+        xmlns:wpfWcfClient="clr-namespace:TetriNET.WPF_WCF_Client"
+        mc:Ignorable="d"
         UseLayoutRounding="True"
         WindowStyle="None"
         ResizeMode="NoResize"
         AllowsTransparency="True" 
         Background="Transparent" 
         MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
+        KeyboardNavigation.DirectionalNavigation="Once"
         d:DataContext="{d:DesignInstance local:MainWindowViewModelDesignData, IsDesignTimeCreatable=False}"
         Icon="TetriNET.ico"
         Title="TetriNET" 
@@ -53,7 +56,13 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TabControl Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="3" SelectedIndex="{Binding ActiveTabItemIndex}">
+        <TabControl 
+            Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="3" 
+            KeyboardNavigation.TabNavigation="Once"
+            SelectedIndex="{Binding ActiveTabItemIndex}">
+            <TabControl.InputBindings>
+                <KeyBinding Modifiers="Control" Key="Tab" Command="{x:Static wpfWcfClient:MainWindow.CancelTabChangeCommand}" />
+            </TabControl.InputBindings>
             <!--
             <TabControl.Template>
                 <ControlTemplate TargetType="TabControl">
@@ -75,7 +84,7 @@
             </TabControl.Template>
             -->
             <TabItem Header="Connect">
-                <connection:ConnectionView DataContext="{Binding Path=ConnectionViewModel}" d:DataContext="{d:DesignInstance Connection:ConnectionViewModelDesignData, IsDesignTimeCreatable=True}"/>
+                <connection:ConnectionView DataContext="{Binding Path=ConnectionViewModel}" d:DataContext="{d:DesignInstance connectionViewModels:ConnectionViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
             <TabItem Header="Options">
                 <options:OptionsView DataContext="{Binding Path=OptionsViewModel}"/>

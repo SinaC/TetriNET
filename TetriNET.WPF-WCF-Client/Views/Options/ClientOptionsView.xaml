@@ -3,12 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:validators="clr-namespace:TetriNET.WPF_WCF_Client.Validators"
              xmlns:optionsViewModel="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Options"
              xmlns:userControls="clr-namespace:TetriNET.WPF_WCF_Client.UserControls"
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640"
              d:DataContext="{d:DesignInstance optionsViewModel:ClientOptionsViewModelDesignData, IsDesignTimeCreatable=True}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid IsEnabled="{Binding IsGameNotStarted}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -26,6 +30,7 @@
         <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding DisplayOpponentsFieldEvenWhenNotPlaying, Mode=TwoWay}">Always show opponents field</CheckBox>
         <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsDeveloperModeActivated, Mode=TwoWay}">Developer mode</CheckBox>
         <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding DisplayDropLocation, Mode=TwoWay}">Display drop location</CheckBox>
+        <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding DisplayPieceAnchor, Mode=TwoWay}" Visibility="{Binding IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">Display piece center</CheckBox>
         <GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Header="Controls">
             <ItemsControl
                 Grid.IsSharedSizeScope="True" MaxHeight="160"

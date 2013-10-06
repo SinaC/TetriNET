@@ -1,10 +1,7 @@
-﻿using TetriNET.Client.DefaultBoardAndPieces.Mutated;
-using TetriNET.Client.DefaultBoardAndPieces.Normal;
-using TetriNET.Client.Interfaces;
-using TetriNET.Common.DataContracts;
+﻿using TetriNET.Client.Interfaces;
 using TetriNET.Common.Logger;
 
-namespace TetriNET.Client.DefaultBoardAndPieces
+namespace TetriNET.Client.Pieces
 {
     public abstract class Piece : IPiece
     {
@@ -14,7 +11,7 @@ namespace TetriNET.Client.DefaultBoardAndPieces
 
         public int Index { get; protected set; }
 
-        public Pieces Value { get; protected set; }
+        public Common.DataContracts.Pieces Value { get; protected set; }
         
         public abstract int MaxOrientations { get; }
         public abstract int TotalCells { get; }
@@ -100,62 +97,62 @@ namespace TetriNET.Client.DefaultBoardAndPieces
             }
         }
 
-        public static IPiece CreatePiece(Pieces piece, int spawnX, int spawnY, int spawnOrientation, int index)
+        public static IPiece CreatePiece(Common.DataContracts.Pieces piece, int spawnX, int spawnY, int spawnOrientation, int index)
         {
             switch (piece)
             {
-                case Pieces.TetriminoI:
-                    return new TetriminoI(spawnX, spawnY, spawnOrientation, index);
-                case Pieces.TetriminoJ:
-                    return new TetriminoJ(spawnX, spawnY, spawnOrientation, index);
-                case Pieces.TetriminoL:
-                    return new TetriminoL(spawnX, spawnY, spawnOrientation, index);
-                case Pieces.TetriminoO:
-                    return new TetriminoO(spawnX, spawnY, spawnOrientation, index);
-                case Pieces.TetriminoS:
-                    return new TetriminoS(spawnX, spawnY, spawnOrientation, index);
-                case Pieces.TetriminoT:
-                    return new TetriminoT(spawnX, spawnY, spawnOrientation, index);
-                case Pieces.TetriminoZ:
-                    return new TetriminoZ(spawnX, spawnY, spawnOrientation, index);
-                case Pieces.Invalid:
+                case Common.DataContracts.Pieces.TetriminoI:
+                    return new SRS.TetriminoI(spawnX, spawnY, spawnOrientation, index);
+                case Common.DataContracts.Pieces.TetriminoJ:
+                    return new SRS.TetriminoJ(spawnX, spawnY, spawnOrientation, index);
+                case Common.DataContracts.Pieces.TetriminoL:
+                    return new SRS.TetriminoL(spawnX, spawnY, spawnOrientation, index);
+                case Common.DataContracts.Pieces.TetriminoO:
+                    return new SRS.TetriminoO(spawnX, spawnY, spawnOrientation, index);
+                case Common.DataContracts.Pieces.TetriminoS:
+                    return new SRS.TetriminoS(spawnX, spawnY, spawnOrientation, index);
+                case Common.DataContracts.Pieces.TetriminoT:
+                    return new SRS.TetriminoT(spawnX, spawnY, spawnOrientation, index);
+                case Common.DataContracts.Pieces.TetriminoZ:
+                    return new SRS.TetriminoZ(spawnX, spawnY, spawnOrientation, index);
+                case Common.DataContracts.Pieces.Invalid:
                     Log.WriteLine(Log.LogLevels.Warning, "Create random cell because server didn't send next cell");
-                    return new TetriminoZ(spawnX, spawnY, spawnOrientation, index); // TODO: sometimes server takes time to send next cell, it should send 2 or 3 next pieces to ensure this never happens
+                    return new SRS.TetriminoZ(spawnX, spawnY, spawnOrientation, index); // TODO: sometimes server takes time to send next cell, it should send 2 or 3 next pieces to ensure this never happens
             }
             Log.WriteLine(Log.LogLevels.Warning, "Unknown piece {0}", piece);
-            return new TetriminoZ(spawnX, spawnY, spawnOrientation, index);
+            return new SRS.TetriminoZ(spawnX, spawnY, spawnOrientation, index);
         }
 
-        public static IPiece CreatePiece(Pieces piece, int spawnX, int spawnY, int spawnOrientation, int index, bool isMutationActive)
+        public static IPiece CreatePiece(Common.DataContracts.Pieces piece, int spawnX, int spawnY, int spawnOrientation, int index, bool isMutationActive)
         {
             if (isMutationActive)
             {
                 switch (piece)
                 {
-                    case Pieces.TetriminoI:
-                        return new MutatedI(spawnX, spawnY, spawnOrientation, index);
-                    case Pieces.TetriminoJ:
-                        return new MutatedJ(spawnX, spawnY, spawnOrientation, index);
-                    case Pieces.TetriminoL:
-                        return new MutatedL(spawnX, spawnY, spawnOrientation, index);
-                    case Pieces.TetriminoO:
-                        return new MutatedO(spawnX, spawnY, spawnOrientation, index);
-                    case Pieces.TetriminoS:
-                        return new MutatedS(spawnX, spawnY, spawnOrientation, index);
-                    case Pieces.TetriminoT:
-                        return new MutatedT(spawnX, spawnY, spawnOrientation, index);
-                    case Pieces.TetriminoZ:
-                        return new MutatedZ(spawnX, spawnY, spawnOrientation, index);
+                    case Common.DataContracts.Pieces.TetriminoI:
+                        return new Mutated.MutatedI(spawnX, spawnY, spawnOrientation, index);
+                    case Common.DataContracts.Pieces.TetriminoJ:
+                        return new Mutated.MutatedJ(spawnX, spawnY, spawnOrientation, index);
+                    case Common.DataContracts.Pieces.TetriminoL:
+                        return new Mutated.MutatedL(spawnX, spawnY, spawnOrientation, index);
+                    case Common.DataContracts.Pieces.TetriminoO:
+                        return new Mutated.MutatedO(spawnX, spawnY, spawnOrientation, index);
+                    case Common.DataContracts.Pieces.TetriminoS:
+                        return new Mutated.MutatedS(spawnX, spawnY, spawnOrientation, index);
+                    case Common.DataContracts.Pieces.TetriminoT:
+                        return new Mutated.MutatedT(spawnX, spawnY, spawnOrientation, index);
+                    case Common.DataContracts.Pieces.TetriminoZ:
+                        return new Mutated.MutatedZ(spawnX, spawnY, spawnOrientation, index);
                     //
-                    case Pieces.Invalid:
+                    case Common.DataContracts.Pieces.Invalid:
                         Log.WriteLine(Log.LogLevels.Warning, "Create random cell because server didn't send next cell");
-                        return CreatePiece(Pieces.TetriminoZ, spawnX, spawnY, spawnOrientation, index); // TODO: sometimes server takes time to send next cell, it should send 2 or 3 next pieces to ensure this never happens
+                        return CreatePiece(Common.DataContracts.Pieces.TetriminoZ, spawnX, spawnY, spawnOrientation, index); // TODO: sometimes server takes time to send next cell, it should send 2 or 3 next pieces to ensure this never happens
                 }
             }
             else
                 return CreatePiece(piece, spawnX, spawnY, spawnOrientation, index);
             Log.WriteLine(Log.LogLevels.Warning, "Unknow piece {0}", piece);
-            return CreatePiece(Pieces.TetriminoZ, spawnX, spawnY, spawnOrientation, index);
+            return CreatePiece(Common.DataContracts.Pieces.TetriminoZ, spawnX, spawnY, spawnOrientation, index);
         }
     }
 }

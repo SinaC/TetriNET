@@ -1,7 +1,6 @@
 ﻿using TetriNET.Client.Interfaces;
-using TetriNET.Common.DataContracts;
 
-namespace TetriNET.Client.DefaultBoardAndPieces.Mutated
+namespace TetriNET.Client.Pieces.Mutated
 {
     public class MutatedJ : Piece
     {
@@ -12,7 +11,7 @@ namespace TetriNET.Client.DefaultBoardAndPieces.Mutated
         public MutatedJ(int spawnX, int spawnY, int spawnOrientation, int index)
             : base(spawnX, spawnY, spawnOrientation, index)
         {
-            Value = Pieces.TetriminoJ;
+            Value = Common.DataContracts.Pieces.TetriminoJ;
         }
 
         public override int MaxOrientations

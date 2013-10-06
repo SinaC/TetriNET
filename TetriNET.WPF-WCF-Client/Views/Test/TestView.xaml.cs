@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using TetriNET.Client.Interfaces;
-using TetriNET.Client.DefaultBoardAndPieces;
+using TetriNET.Client.Pieces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.WPF_WCF_Client.TextureManager;
@@ -16,6 +16,8 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
     /// </summary>
     public partial class TestView : UserControl
     {
+        private static readonly SolidColorBrush PieceAnchorColor = new SolidColorBrush(Colors.White);
+
         public TestView()
         {
             InitializeComponent();
@@ -26,7 +28,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                 // Add textures to Canvas
                 ITextureManager textures = TextureManager.TextureManager.TexturesSingleton.Instance;
 
-                // Special
+                // Special textures
                 i = 0;
                 foreach (Specials special in EnumHelper.GetSpecials(available => available))
                 {
@@ -57,7 +59,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                     i++;
                 }
 
-                // Pieces
+                // Pieces textures
                 i = 0;
                 foreach (Pieces piece in EnumHelper.GetPieces(available => available))
                 {
@@ -135,6 +137,17 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                 Canvas.SetLeft(rectangle, topX + x * size);
                 Canvas.SetTop(rectangle, topY + y * size);
             }
+
+            Rectangle anchor = new Rectangle
+            {
+                Width = size,
+                Height = size,
+                Fill = PieceAnchorColor
+            };
+
+            Canvas.Children.Add(anchor);
+            Canvas.SetLeft(anchor, topX);
+            Canvas.SetTop(anchor, topY);
         }
     }
 }

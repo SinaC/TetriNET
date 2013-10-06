@@ -168,7 +168,7 @@ namespace TetriNET.Client.Strategy
                 boardWells += BoardHelper.GetAllWellsForColumn(board, x);
                 if (buriedHoles > 0)
                     boardColumnWithHoles++;
-                boardHoleDepth += BoardHelper.GetHoleDepthForColumn(board, x); // TODO
+                boardHoleDepth += BoardHelper.GetHoleDepthForColumn(board, x);
             }
 
             // Final rating
