@@ -334,7 +334,7 @@
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Client.DefaultBoardAndPieces\TetriNET.Client.Pieces.csproj">
+    <ProjectReference Include="..\TetriNET.Client.Pieces\TetriNET.Client.Pieces.csproj">
       <Project>{2bd5936f-015d-473f-9161-6b837ef3a3ba}</Project>
       <Name>TetriNET.Client.Pieces</Name>
     </ProjectReference>
