@@ -108,7 +108,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             if (ClientOptionsViewModel.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
             {
                 if (ActiveTabItemIndex == PlayFieldViewModel.TabIndex)
+                {
+                    PartyLineViewModel.ChatViewModel.IsInputFocused = true;
                     ActiveTabItemIndex = PartyLineViewModel.TabIndex;
+                }
             }
         }
 
@@ -117,7 +120,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             if (ClientOptionsViewModel.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
             {
                 if (ActiveTabItemIndex == PlayFieldViewModel.TabIndex)
+                {
+                    PartyLineViewModel.ChatViewModel.IsInputFocused = true;
                     ActiveTabItemIndex = PartyLineViewModel.TabIndex;
+                }
             }
         }
 

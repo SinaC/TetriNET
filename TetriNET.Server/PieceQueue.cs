@@ -3,8 +3,6 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Server
 {
-    #region Piece queue
-
     internal sealed class PieceQueue
     {
         private readonly object _lock = new object();
@@ -58,6 +56,4 @@ namespace TetriNET.Server
                 _array[i] = _randomFunc();
         }
     }
-
-    #endregion
 }

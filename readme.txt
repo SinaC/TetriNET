@@ -5,7 +5,7 @@ when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 	use a common object for every transport address, ban list Add and isBanned take this common object instead of a real transport address
 	-> everyone can manage ban without knowing in which host it has been created
 	-> this object is stored in IPlayer and created by createPlayerFunc in host so server or host can ban a player using IPlayer info
-client/server version used when registering
+client/server version when registering
 add room notion in server (server can handle multiple rooms and client register on a room)
 SinaCSpecials: use gravity when board has enough holes or when to high + zebra + clear column + confusion + darkness + immunity + left gravity + mutation
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
@@ -16,6 +16,7 @@ New options: random blocks clear count, mutation count, darkness time, confusion
 Solo mode
 Server integrated in WPF client
 Team
+disable keyboard navigation in tabcontrol
 
 wcf + jquery
 http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-with-nettcpbinding

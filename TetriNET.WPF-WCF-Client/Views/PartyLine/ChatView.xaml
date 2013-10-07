@@ -38,6 +38,12 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>            
         </ListBox>
-        <TextBox x:Name="TxtInputChat" Grid.Row="1" IsEnabled="{Binding IsRegistered}" Text="{Binding InputChat, Mode=Default, UpdateSourceTrigger=Explicit}" KeyUp="InputChat_OnKeyUp" HorizontalAlignment="Stretch" FontSize="10"/>
+        <TextBox 
+            x:Name="TxtInputChat" Grid.Row="1" HorizontalAlignment="Stretch" FontSize="10"
+            Focusable="True"
+            IsEnabled="{Binding IsRegistered}"
+            helpers:AttachedFocus.IsFocused="{Binding IsInputFocused}"
+            Text="{Binding InputChat, Mode=Default, UpdateSourceTrigger=Explicit}" 
+            KeyUp="InputChat_OnKeyUp"/>
     </Grid>
 </UserControl>

@@ -51,6 +51,17 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             }
         }
 
+        private bool _isInputFocused;
+        public bool IsInputFocused
+        {
+            get { return _isInputFocused; }
+            set
+            {
+                _isInputFocused = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ChatViewModel()
         {
             ChatEntries = new ObservableCollection<ChatEntry>();

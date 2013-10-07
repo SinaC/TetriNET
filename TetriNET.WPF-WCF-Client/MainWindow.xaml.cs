@@ -10,8 +10,6 @@ namespace TetriNET.WPF_WCF_Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static readonly RoutedCommand CancelTabChangeCommand = new RoutedCommand();
-
         public MainWindow()
         {
             InitializeComponent();
@@ -42,5 +40,11 @@ namespace TetriNET.WPF_WCF_Client
         }
 
         #endregion
+
+        private void TabControl_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            // TODO:
+            e.Handled = false;
+        }
     }
 }
