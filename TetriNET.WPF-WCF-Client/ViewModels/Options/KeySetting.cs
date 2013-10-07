@@ -32,8 +32,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
                 //int toto = KeyInterop.VirtualKeyFromKey(Key);
                 if (Key >= Key.D0 && Key <= Key.D9)
                     return ((int) Key - (int) Key.D0).ToString(CultureInfo.InvariantCulture);
-                else
-                    return Key.ToString();
+                return Key.ToString();
             }
         }
 

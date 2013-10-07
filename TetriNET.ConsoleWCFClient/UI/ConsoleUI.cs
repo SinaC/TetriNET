@@ -404,77 +404,77 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void DisplayBoardNoColor()
-        {
-            lock (_lock)
-            {
-                for (int y = _client.Board.Height; y >= 1; y--)
-                {
-                    StringBuilder sb = new StringBuilder("|");
-                    for (int x = 1; x <= _client.Board.Width; x++)
-                    {
-                        byte cellValue = _client.Board[x, y];
-                        if (cellValue == CellHelper.EmptyCell)
-                            sb.Append(".");
-                        else {
-                            Pieces cellPiece = CellHelper.GetColor(cellValue);
-                            Specials cellSpecial = CellHelper.GetSpecial(cellValue);
-                            if (cellSpecial == Specials.Invalid)
-                                sb.Append((int) cellPiece);
-                            else
-                                sb.Append(ConvertSpecial(cellSpecial));
-                        }
-                    }
-                    sb.Append("|");
-                    Console.SetCursorPosition(0 + BoardStartX, _client.Board.Height - y + BoardStartY);
-                    Console.Write(sb.ToString());
-                }
-                Console.SetCursorPosition(0 + BoardStartX, _client.Board.Height + BoardStartY);
-                Console.Write("".PadLeft(_client.Board.Width + 2, '-'));
-            }
-        }
+        //private void DisplayBoardNoColor()
+        //{
+        //    lock (_lock)
+        //    {
+        //        for (int y = _client.Board.Height; y >= 1; y--)
+        //        {
+        //            StringBuilder sb = new StringBuilder("|");
+        //            for (int x = 1; x <= _client.Board.Width; x++)
+        //            {
+        //                byte cellValue = _client.Board[x, y];
+        //                if (cellValue == CellHelper.EmptyCell)
+        //                    sb.Append(".");
+        //                else {
+        //                    Pieces cellPiece = CellHelper.GetColor(cellValue);
+        //                    Specials cellSpecial = CellHelper.GetSpecial(cellValue);
+        //                    if (cellSpecial == Specials.Invalid)
+        //                        sb.Append((int) cellPiece);
+        //                    else
+        //                        sb.Append(ConvertSpecial(cellSpecial));
+        //                }
+        //            }
+        //            sb.Append("|");
+        //            Console.SetCursorPosition(0 + BoardStartX, _client.Board.Height - y + BoardStartY);
+        //            Console.Write(sb.ToString());
+        //        }
+        //        Console.SetCursorPosition(0 + BoardStartX, _client.Board.Height + BoardStartY);
+        //        Console.Write("".PadLeft(_client.Board.Width + 2, '-'));
+        //    }
+        //}
 
-        private void DisplayCurrentPieceNoColor()
-        {
-            lock (_lock)
-            {
-                // draw current piece
-                if (_client.CurrentPiece != null)
-                {
-                    for (int i = 1; i <= _client.CurrentPiece.TotalCells; i++)
-                    {
-                        int x, y;
-                        _client.CurrentPiece.GetCellAbsolutePosition(i, out x, out y);
-                        if (x >= 0 && x <= _client.Board.Width && y >= 0 && y <= _client.Board.Height)
-                        {
-                            Console.SetCursorPosition(x + BoardStartX, _client.Board.Height - y + BoardStartY);
-                            Console.Write(_client.CurrentPiece.Value);
-                        }
-                    }
-                }
-            }
-        }
+        //private void DisplayCurrentPieceNoColor()
+        //{
+        //    lock (_lock)
+        //    {
+        //        // draw current piece
+        //        if (_client.CurrentPiece != null)
+        //        {
+        //            for (int i = 1; i <= _client.CurrentPiece.TotalCells; i++)
+        //            {
+        //                int x, y;
+        //                _client.CurrentPiece.GetCellAbsolutePosition(i, out x, out y);
+        //                if (x >= 0 && x <= _client.Board.Width && y >= 0 && y <= _client.Board.Height)
+        //                {
+        //                    Console.SetCursorPosition(x + BoardStartX, _client.Board.Height - y + BoardStartY);
+        //                    Console.Write(_client.CurrentPiece.Value);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
-        private void HideCurrentPieceNoColor()
-        {
-            lock (_lock)
-            {
-                // draw current piece
-                if (_client.CurrentPiece != null)
-                {
-                    for (int i = 1; i <= _client.CurrentPiece.TotalCells; i++)
-                    {
-                        int x, y;
-                        _client.CurrentPiece.GetCellAbsolutePosition(i, out x, out y);
-                        if (x >= 0 && x <= _client.Board.Width && y >= 0 && y <= _client.Board.Height)
-                        {
-                            Console.SetCursorPosition(x + BoardStartX, _client.Board.Height - y + BoardStartY);
-                            Console.Write(".");
-                        }
-                    }
-                }
-            }
-        }
+        //private void HideCurrentPieceNoColor()
+        //{
+        //    lock (_lock)
+        //    {
+        //        // draw current piece
+        //        if (_client.CurrentPiece != null)
+        //        {
+        //            for (int i = 1; i <= _client.CurrentPiece.TotalCells; i++)
+        //            {
+        //                int x, y;
+        //                _client.CurrentPiece.GetCellAbsolutePosition(i, out x, out y);
+        //                if (x >= 0 && x <= _client.Board.Width && y >= 0 && y <= _client.Board.Height)
+        //                {
+        //                    Console.SetCursorPosition(x + BoardStartX, _client.Board.Height - y + BoardStartY);
+        //                    Console.Write(".");
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         private void DisplayInventory()
         {

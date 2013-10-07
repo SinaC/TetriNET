@@ -98,12 +98,15 @@ namespace TetriNET.Client.Interfaces
         event ClientContinuousSpecialToggledHandler OnContinuousEffectToggled; // on player
         event ClientContinuousSpecialFinishedHandler OnContinuousSpecialFinished; // on opponent
 
-        bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc);
-        bool Disconnect();
+        //bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc);
+        //bool Disconnect();
+
+        bool ConnectAndRegister(Func<ITetriNETCallback, IProxy> createProxyFunc, string name);
+        bool UnregisterAndDisconnect();
 
         // Client->Server command
-        void Register(string name);
-        void Unregister();
+        //void Register(string name);
+        //void Unregister();
         void StartGame();
         void StopGame();
         void PauseGame();

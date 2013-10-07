@@ -113,7 +113,11 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnGameStarted()
         {
-            ExecuteOnUIThread.Invoke(ClearGrid);
+            ExecuteOnUIThread.Invoke(() =>
+                {
+                    ClearGrid();
+                    ResetImmunity();
+                });
         }
 
         private void OnRedrawBoard(int playerId, IBoard board)

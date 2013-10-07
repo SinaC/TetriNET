@@ -8,7 +8,6 @@ when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 client/server version used when registering
 add room notion in server (server can handle multiple rooms and client register on a room)
 SinaCSpecials: use gravity when board has enough holes or when to high + zebra + clear column + confusion + darkness + immunity + left gravity + mutation
-Connect+Register and Disconnect+Unregister should be merged into one method
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
 WPF Client: save win list locally if server master
 Confusion could be managed client-side

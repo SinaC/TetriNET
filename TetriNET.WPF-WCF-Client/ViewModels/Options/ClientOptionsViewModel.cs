@@ -224,9 +224,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         {
             KeySetting keySetting = KeySettings.FirstOrDefault(x => x.Command == cmd);
             if (keySetting != null)
-                keySetting.Key = (System.Windows.Input.Key) key;
+                keySetting.Key = (Key) key;
             else
-                KeySettings.Add(new KeySetting((System.Windows.Input.Key) key, cmd));
+                KeySettings.Add(new KeySetting((Key) key, cmd));
         }
     }
 

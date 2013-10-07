@@ -160,18 +160,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                         SetConnectionResultMessage("Missing username", ChatColor.Red);
                         return;
                     }
-                    bool connected = Client.Connect(callback => new WCFProxy(callback, ServerAddress));
+                    bool connected = Client.ConnectAndRegister(callback => new WCFProxy(callback, ServerAddress), Username);
                     if (!connected)
                     {
                         SetConnectionResultMessage("Connection failed", ChatColor.Red);
                     }
-                    else
-                        Client.Register(Username);
                 }
                 else
                 {
-                    Client.Unregister();
-                    bool disconnected = Client.Disconnect();
+                    bool disconnected = Client.UnregisterAndDisconnect();
                     if (disconnected)
                         SetConnectionResultMessage("Disconnected", ChatColor.Red);
                     else
@@ -225,8 +222,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             else
             {
                 DescriptionAttribute attribute = EnumHelper.GetAttribute<DescriptionAttribute>(result);
-                Client.Disconnect();
-                SetConnectionResultMessage(String.Format("Registration failed {0}", attribute == null ? result.ToString() : attribute.Description), ChatColor.Red);
+                Client.UnregisterAndDisconnect();
+                SetConnectionResultMessage(String.Format("Registration failed: {0}", attribute == null ? result.ToString() : attribute.Description), ChatColor.Red);
             }
             _isRegistered = Client.IsRegistered;
             OnPropertyChanged("ConnectDisconnectLabel");

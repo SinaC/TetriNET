@@ -126,7 +126,9 @@ namespace TetriNET.Client
             State = States.Created;
             IsServerMaster = false;
             _clientPlayerId = -1;
+
             Disconnect();
+
             if (ClientOnConnectionLost != null)
             {
                 if (previousState == States.Registering)
@@ -832,6 +834,17 @@ namespace TetriNET.Client
             return Board.CollapseCompletedRows(out specials);
         }
 
+        private void Disconnect()
+        {
+            State = States.Created;
+            IsServerMaster = false;
+            _clientPlayerId = -1;
+
+            _proxy.OnConnectionLost -= ConnectionLostHandler;
+            _proxy.Disconnect();
+            _proxy = null;
+        }
+
         private void GameTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
             if (State == States.Playing && AutomaticallyMoveDown)
@@ -921,44 +934,6 @@ namespace TetriNET.Client
 
         public IClientStatistics Statistics {
             get { return _statistics; }
-        }
-
-        public bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc)
-        {
-            if (createProxyFunc == null)
-                throw new ArgumentNullException("createProxyFunc");
-
-            if (_proxy != null)
-                return false; // should disconnect first
-
-            try
-            {
-                _proxy = createProxyFunc(this);
-                _proxy.OnConnectionLost += ConnectionLostHandler;
-
-                return true;
-            }
-            catch(Exception ex)
-            {
-                Log.WriteLine(Log.LogLevels.Error, "Problem while creating proxy. Exception:{0}", ex.ToString());
-                return false;
-            }
-        }
-
-        public bool Disconnect()
-        {
-            if (_proxy == null)
-                return false; // should connect first
-
-            State = States.Created;
-            IsServerMaster = false;
-            _clientPlayerId = -1;
-
-            _proxy.OnConnectionLost -= ConnectionLostHandler;
-            _proxy.Disconnect();
-            _proxy = null;
-
-            return true;
         }
 
         private event ClientConnectionLostHandler ClientOnConnectionLost;
@@ -1207,23 +1182,47 @@ namespace TetriNET.Client
             // TODO: current & next piece
         }
 
-        public void Register(string name)
+        public bool ConnectAndRegister(Func<ITetriNETCallback, IProxy> createProxyFunc, string name)
         {
-            State = States.Registering;
-            Name = name;
-            _proxy.RegisterPlayer(this, Name);
-        }
+            if (createProxyFunc == null)
+                throw new ArgumentNullException("createProxyFunc");
 
-        public void Unregister()
+            if (_proxy != null)
+                return false; // should disconnect first
+
+            try
+            {
+                _proxy = createProxyFunc(this);
+                _proxy.OnConnectionLost += ConnectionLostHandler;
+
+                State = States.Registering;
+                Name = name;
+                _proxy.RegisterPlayer(this, Name);
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Log.WriteLine(Log.LogLevels.Error, "Problem in ConnectAndRegister. Exception:{0}", ex.ToString());
+                return false;
+            }
+        }
+        
+        public bool UnregisterAndDisconnect()
         {
             State = States.Created;
             IsServerMaster = false;
             _clientPlayerId = -1;
 
-            _proxy.UnregisterPlayer(this);
+            if (_proxy != null)
+                _proxy.UnregisterPlayer(this);
 
             if (ClientOnPlayerUnregistered != null)
                 ClientOnPlayerUnregistered();
+
+            Disconnect();
+
+            return true;
         }
 
         public void StartGame()

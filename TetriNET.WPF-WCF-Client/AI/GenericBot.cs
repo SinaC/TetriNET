@@ -244,12 +244,6 @@ namespace TetriNET.WPF_WCF_Client.AI
             }
         }
 
-        private void Down(int times)
-        {
-            for (int i = 0; i < times; i++)
-                _client.MoveDown();
-        }
-
         private void Rotate(int rotationDelta)
         {
             for (int rotateCount = 0; rotateCount < rotationDelta; rotateCount++)
