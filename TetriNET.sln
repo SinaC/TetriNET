@@ -41,7 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{C9AD63
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Tests", "TetriNET.Tests\TetriNET.Tests.csproj", "{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Client.Pieces", "TetriNET.Client.DefaultBoardAndPieces\TetriNET.Client.Pieces.csproj", "{2BD5936F-015D-473F-9161-6B837EF3A3BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Client.Pieces", "TetriNET.Client.Pieces\TetriNET.Client.Pieces.csproj", "{2BD5936F-015D-473F-9161-6B837EF3A3BA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceModelEx", "ServiceModelEx\ServiceModelEx.csproj", "{0858C710-AF53-4049-B98E-CFE3638D1228}"
 EndProject
