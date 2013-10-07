@@ -4,17 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A2BAD88B-73BB-4B79-B30B-ABFB4FD2C1C4}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{2BD5936F-015D-473F-9161-6B837EF3A3BA}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TetriNET.ConsoleWCFServer</RootNamespace>
-    <AssemblyName>TetriNET.ConsoleWCFServer</AssemblyName>
+    <RootNamespace>TetriNET.Client.Pieces</RootNamespace>
+    <AssemblyName>TetriNET.Client.Pieces</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,75 +20,57 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>TetriNET.ConsoleWCFServer.Program</StartupObject>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>TetriNET.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ban\BanManager.cs" />
-    <Compile Include="Ban\HostTransportAddress.cs" />
-    <Compile Include="Host\BuiltInHost.cs" />
-    <Compile Include="DummyBuiltInClient.cs" />
-    <Compile Include="Player\PlayerManager.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Mutated\MutatedI.cs" />
+    <Compile Include="Mutated\MutatedJ.cs" />
+    <Compile Include="Mutated\MutatedL.cs" />
+    <Compile Include="Mutated\MutatedO.cs" />
+    <Compile Include="Mutated\MutatedS.cs" />
+    <Compile Include="Mutated\MutatedT.cs" />
+    <Compile Include="Mutated\MutatedZ.cs" />
+    <Compile Include="Piece.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Player\Player.cs" />
-    <Compile Include="Host\SocketHost.cs" />
+    <Compile Include="Normal\TetriminoI.cs" />
+    <Compile Include="Normal\TetriminoJ.cs" />
+    <Compile Include="Normal\TetriminoL.cs" />
+    <Compile Include="Normal\TetriminoO.cs" />
+    <Compile Include="Normal\TetriminoS.cs" />
+    <Compile Include="Normal\TetriminoT.cs" />
+    <Compile Include="Normal\TetriminoZ.cs" />
+    <Compile Include="SRS\TetriminoI.cs" />
+    <Compile Include="SRS\TetriminoJ.cs" />
+    <Compile Include="SRS\TetriminoL.cs" />
+    <Compile Include="SRS\TetriminoO.cs" />
+    <Compile Include="SRS\TetriminoS.cs" />
+    <Compile Include="SRS\TetriminoT.cs" />
+    <Compile Include="SRS\TetriminoZ.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <Content Include="NLog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\TetriNET.Client.Interfaces\TetriNET.Client.Interfaces.csproj">
+      <Project>{85b3313b-f31a-45be-8bf6-8ae55ae484b0}</Project>
+      <Name>TetriNET.Client.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Server.GenericHost\TetriNET.Server.GenericHost.csproj">
-      <Project>{010b434d-86f0-4bff-b17b-702bcccf69f5}</Project>
-      <Name>TetriNET.Server.GenericHost</Name>
     </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common.Logger\TetriNET.Common.Logger.csproj">
       <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
       <Name>TetriNET.Common.Logger</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Server.Interfaces\TetriNET.Server.Interfaces.csproj">
-      <Project>{546c0189-9339-4de6-902a-f38550c5a517}</Project>
-      <Name>TetriNET.Server.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Server\TetriNET.Server.csproj">
-      <Project>{161C5DDA-F2A8-400E-9702-3C4B45FFB772}</Project>
-      <Name>TetriNET.Server</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Server.WCFHost\TetriNET.Server.WCFHost.csproj">
-      <Project>{0d26f900-9e0d-4fbd-b7b0-5da679c71491}</Project>
-      <Name>TetriNET.Server.WCFHost</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="TetriNET.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
