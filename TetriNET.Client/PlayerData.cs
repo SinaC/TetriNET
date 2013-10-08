@@ -16,6 +16,7 @@ namespace TetriNET.Client
         public int PlayerId { get; set; }
         public bool IsImmune { get; set; }
         public IBoard Board { get; set; }
+        public string Team { get; set; }
 
         #endregion
 

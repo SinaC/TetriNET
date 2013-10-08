@@ -196,7 +196,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
         #region Commands
 
-        public ICommand RefreshStatisticsCommand { get; set; }
+        public ICommand RefreshStatisticsCommand { get; private set; }
 
         #endregion
 

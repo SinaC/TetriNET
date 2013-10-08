@@ -16,7 +16,6 @@ New options: random blocks clear count, mutation count, darkness time, confusion
 Solo mode
 Server integrated in WPF client
 Team
-disable keyboard navigation in tabcontrol
 
 wcf + jquery
 http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-with-nettcpbinding

@@ -33,6 +33,7 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientPlayerWonHandler(int playerId, string playerName);
     public delegate void ClientPlayerJoinedHandler(int playerId, string playerName);
     public delegate void ClientPlayerLeftHandler(int playerId, string playerName, LeaveReasons reason);
+    public delegate void ClientPlayerTeamChangedHandler(int playerId, string team);
     public delegate void ClientPlayerPublishMessageHandler(string playerName, string msg);
     public delegate void ClientServerPublishMessageHandler(string msg);
     public delegate void ClientInventoryChangedHandler();
@@ -46,6 +47,7 @@ namespace TetriNET.Client.Interfaces
     public interface IClient
     {
         string Name { get; }
+        string Team { get; }
         int PlayerId { get; }
         int MaxPlayersCount { get; }
         IPiece CurrentPiece { get; }
@@ -88,6 +90,7 @@ namespace TetriNET.Client.Interfaces
         event ClientPlayerWonHandler OnPlayerWon;
         event ClientPlayerJoinedHandler OnPlayerJoined;
         event ClientPlayerLeftHandler OnPlayerLeft;
+        event ClientPlayerTeamChangedHandler OnPlayerTeamChanged;
         event ClientPlayerPublishMessageHandler OnPlayerPublishMessage;
         event ClientServerPublishMessageHandler OnServerPublishMessage;
         event ClientInventoryChangedHandler OnInventoryChanged;
@@ -112,6 +115,7 @@ namespace TetriNET.Client.Interfaces
         void PauseGame();
         void ResumeGame();
         void ResetWinList();
+        void ChangeTeam(string team);
         void ChangeOptions(GameOptions options);
         void KickPlayer(int playerId);
         void BanPlayer(int playerId);

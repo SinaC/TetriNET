@@ -2,6 +2,7 @@
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.Commands;
+using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 {
@@ -35,6 +36,25 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             get { return _isGamePaused ? "Resume game" : "Pause game"; }
         }
 
+        public bool IsUpdateTeamEnabled
+        {
+            get { return _isRegistered && !_isGameStarted; }
+        }
+
+        private string _team;
+        public string Team { get { return _team; }
+            set
+            {
+                if (_team != value)
+                {
+                    _team = value;
+                    OnPropertyChanged();
+                    Settings.Default.Team = _team;
+                    Settings.Default.Save();
+                }
+            }
+        }
+
         public PartyLineViewModel()
         {
             _isServerMaster = false;
@@ -46,6 +66,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
             StartStopCommand = new RelayCommand(StartStop);
             PauseResumeCommand = new RelayCommand(PauseResume);
+            UpdateTeamCommand = new RelayCommand(UpdateTeam);
+
+            Team = Settings.Default.Team;
 
             ClientChanged += OnClientChanged;
         }
@@ -56,6 +79,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             OnPropertyChanged("IsPauseResumeEnabled");
             OnPropertyChanged("StartStopLabel");
             OnPropertyChanged("PauseResumeLabel");
+            OnPropertyChanged("IsUpdateTeamEnabled");
         }
 
         private void StartStop()
@@ -74,6 +98,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             else
                 Client.PauseGame();
             UpdateEnabilityAndLabel();
+        }
+
+        private void UpdateTeam()
+        {
+            Client.ChangeTeam(Team);
         }
 
         #region ITabIndex
@@ -158,6 +187,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             _isServerMaster = Client.IsServerMaster;
             _isGamePaused = false;
             UpdateEnabilityAndLabel();
+
+            Client.ChangeTeam(Team);
         }
 
         private void OnPlayerUnregistered()
@@ -180,8 +211,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         #region Commands
 
-        public ICommand StartStopCommand { get; set; }
-        public ICommand PauseResumeCommand { get; set; }
+        public ICommand StartStopCommand { get; private set; }
+        public ICommand PauseResumeCommand { get; private set; }
+        public ICommand UpdateTeamCommand { get; private set; }
 
         #endregion
     }

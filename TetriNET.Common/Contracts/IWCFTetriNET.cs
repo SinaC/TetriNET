@@ -17,6 +17,9 @@ namespace TetriNET.Common.Contracts
         [OperationContract(IsOneWay = true)]
         void Heartbeat();
 
+        [OperationContract(IsOneWay = true)] // Team Name
+        void PlayerTeam(string team);
+
         // Chat
         [OperationContract(IsOneWay = true)] // Partyline Chat Message
         void PublishMessage(string msg);

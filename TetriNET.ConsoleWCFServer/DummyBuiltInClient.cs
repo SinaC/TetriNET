@@ -205,6 +205,12 @@ namespace TetriNET.ConsoleWCFServer
             ResetTimeout();
         }
 
+        public void OnPlayerTeamChanged(int playerId, string team)
+        {
+            Log.WriteLine(Log.LogLevels.Info, "OnPlayerTeamChanged[{0}]:[1] {2}", PlayerName, playerId, team);
+            ResetTimeout();
+        }
+
         public void OnPlayerLost(int playerId)
         {
             Log.WriteLine(Log.LogLevels.Info, "OnPlayerLost[{0}]:[{1}]", PlayerName, playerId);

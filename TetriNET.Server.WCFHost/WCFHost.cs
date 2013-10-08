@@ -31,7 +31,7 @@ namespace TetriNET.Server.WCFHost
                 if (String.IsNullOrEmpty(Port) || Port.ToLower() == "auto")
                     baseAddress = DiscoveryHelper.AvailableTcpBaseAddress;
                 else
-                    baseAddress = new Uri("net.tcp://localhost:" + Port + "/TetriNET");
+                    baseAddress = new Uri("net.tcp://localhost:" + Port + "/TetriNETv2");
 
                 _serviceHost = new ServiceHost(this, baseAddress);
                 _serviceHost.AddServiceEndpoint(typeof(IWCFTetriNET), new NetTcpBinding(SecurityMode.None), "");
@@ -68,6 +68,11 @@ namespace TetriNET.Server.WCFHost
             public void Heartbeat()
             {
                 _host.Heartbeat(Callback);
+            }
+
+            public void PlayerTeam(string team)
+            {
+                _host.PlayerTeam(Callback, team);
             }
 
             public void PublishMessage(string msg)

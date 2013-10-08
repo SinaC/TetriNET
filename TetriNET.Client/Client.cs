@@ -26,7 +26,6 @@ namespace TetriNET.Client
         private const int MaxTimeoutCountBeforeDisconnection = 3;
         private const bool IsTimeoutDetectionActive = false;
         private const int SpawnOrientation = 1;
-
         private const bool AutomaticallyMoveDown = true; // should always be true, except for some test
 
         public enum States
@@ -262,6 +261,25 @@ namespace TetriNET.Client
 
                 if (ClientOnPlayerLeft != null)
                     ClientOnPlayerLeft(playerId, name, reason);
+            }
+        }
+
+        public void OnPlayerTeamChanged(int playerId, string team)
+        {
+            Log.WriteLine(Log.LogLevels.Debug, "Player [{0}] team ({1})", playerId, team);
+
+            ResetTimeout();
+
+            if (playerId >= 0 && playerId < MaxPlayers)
+            {
+                PlayerData player = _playersData[playerId];
+                if (player != null)
+                {
+                    player.Team = team;
+
+                    if (ClientOnPlayerTeamChanged != null)
+                        ClientOnPlayerTeamChanged(playerId, team);
+                }
             }
         }
 
@@ -584,7 +602,7 @@ namespace TetriNET.Client
 
         public void OnWinListModified(List<WinEntry> winList)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Win list: {0}", winList.Any() ? winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i) : "");
+            Log.WriteLine(Log.LogLevels.Debug, "Win list: {0}", winList.Any() ? winList.Select(x => String.Format("{0}[{1}]:{2}", x.PlayerName, x.Team, x.Score)).Aggregate((n, i) => n + "|" + i) : "");
 
             ResetTimeout();
 
@@ -857,6 +875,8 @@ namespace TetriNET.Client
 
         public string Name { get; private set; }
 
+        public string Team { get; private set; }
+
         public int PlayerId
         {
             get { return _clientPlayerId; }
@@ -1076,6 +1096,13 @@ namespace TetriNET.Client
             remove { ClientOnPlayerLeft -= value; }
         }
 
+        private event ClientPlayerTeamChangedHandler ClientOnPlayerTeamChanged;
+        event ClientPlayerTeamChangedHandler IClient.OnPlayerTeamChanged
+        {
+            add { ClientOnPlayerTeamChanged += value; }
+            remove { ClientOnPlayerTeamChanged -= value; }
+        }
+
         private event ClientPlayerPublishMessageHandler ClientOnPlayerPublishMessage;
         event ClientPlayerPublishMessageHandler IClient.OnPlayerPublishMessage
         {
@@ -1253,6 +1280,13 @@ namespace TetriNET.Client
         {
             if (State == States.Registered)
                 _proxy.ResetWinList(this);
+        }
+
+        public void ChangeTeam(string team)
+        {
+            Team = team;
+            if (State == States.Registered)
+                _proxy.PlayerTeam(this, team);
         }
 
         public void ChangeOptions(GameOptions options)

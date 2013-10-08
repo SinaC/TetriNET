@@ -46,6 +46,7 @@ namespace TetriNET.ConsoleWCFServer.Player
         public event PlayerConnectionLostHandler OnConnectionLost;
 
         public string Name { get; private set; }
+        public string Team { get; set; }
         public int PieceIndex { get; set; }
         public byte[] Grid { get; set; }
         //
@@ -100,6 +101,11 @@ namespace TetriNET.ConsoleWCFServer.Player
         public void OnPlayerLeft(int playerId, string name, LeaveReasons reason)
         {
             ExceptionFreeAction(() => Callback.OnPlayerLeft(playerId, name, reason), "OnPlayerLeft");
+        }
+
+        public void OnPlayerTeamChanged(int playerId, string team)
+        {
+            ExceptionFreeAction(() => Callback.OnPlayerTeamChanged(playerId, team), "OnPlayerTeamChanged");
         }
 
         public void OnPlayerLost(int playerId)

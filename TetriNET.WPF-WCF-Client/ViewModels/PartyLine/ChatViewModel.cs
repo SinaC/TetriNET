@@ -248,7 +248,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                         {
                             PlayerName = "Dummy1",
                             Color = ChatColor.Green,
-                            IsPlayerVisible = false,
+                            IsPlayerVisible = true,
                             Msg = "Message with player name visible"
                         },
                     new ChatEntry

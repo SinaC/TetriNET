@@ -8,6 +8,7 @@ namespace TetriNET.Common.Contracts
         void RegisterPlayer(ITetriNETCallback callback, string playerName);
         void UnregisterPlayer(ITetriNETCallback callback);
         void Heartbeat(ITetriNETCallback callback);
+        void PlayerTeam(ITetriNETCallback callback, string team);
 
         // Chat
         void PublishMessage(ITetriNETCallback callback, string msg); // Partyline Chat Message

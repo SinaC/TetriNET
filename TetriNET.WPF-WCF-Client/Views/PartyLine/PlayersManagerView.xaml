@@ -27,6 +27,8 @@
                         <TextBlock Text="{Binding DisplayPlayerId}" />
                         <TextBlock Text="." Margin="0,0,2,0"/>
                         <TextBlock Text="{Binding PlayerName}"/>
+                        <TextBlock Text="-" Margin="2,0,2,0" Visibility="{Binding IsTeamNotNullOrEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <TextBlock Text="{Binding Team}" Visibility="{Binding IsTeamNotNullOrEmpty, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

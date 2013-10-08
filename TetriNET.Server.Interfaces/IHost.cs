@@ -5,6 +5,7 @@ namespace TetriNET.Server.Interfaces
 {
     public delegate void HostRegisterPlayerHandler(IPlayer player, int playerId);
     public delegate void HostUnregisterPlayerHandler(IPlayer player);
+    public delegate void HostPlayerTeamHandler(IPlayer player, string team);
     public delegate void HostPublishMessageHandler(IPlayer player, string msg);
     public delegate void HostPlacePieceHandler(IPlayer player, int index, Pieces piece, int orientation, int posX, int posY, byte[] grid);
     public delegate void HostUseSpecialHandler(IPlayer player, IPlayer target, Specials special);
@@ -27,6 +28,7 @@ namespace TetriNET.Server.Interfaces
     {
         event HostRegisterPlayerHandler OnPlayerRegistered;
         event HostUnregisterPlayerHandler OnPlayerUnregistered;
+        event HostPlayerTeamHandler OnPlayerTeamChanged;
         event HostPublishMessageHandler OnMessagePublished;
         event HostPlacePieceHandler OnPiecePlaced;
         event HostUseSpecialHandler OnUseSpecial;

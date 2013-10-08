@@ -42,11 +42,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                 {
                     _serverAddress = value;
 
-                    // net.tcp://[ip|machine name]:[port]/TetriNET
+                    // net.tcp://[ip|machine name]:[port]/TetriNETv2
                     if (!_serverAddress.StartsWith("net.tcp://"))
                         _serverAddress = "net.tcp://" + _serverAddress;
-                    if (!_serverAddress.EndsWith("/TetriNET"))
-                        _serverAddress = _serverAddress + "/TetriNET";
+                    if (!_serverAddress.EndsWith("/TetriNETv2"))
+                        _serverAddress = _serverAddress + "/TetriNETv2";
 
                     OnPropertyChanged();
                     OnPropertyChanged("ServerCompleteAddress");
@@ -73,7 +73,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         public string ServerCompleteAddress
         {
-            get { return "net.tcp://" + ServerAddress + ":" + ServerPort + "/TetriNET"; }
+            get { return "net.tcp://" + ServerAddress + ":" + ServerPort + "/TetriNETv2"; }
         }
 
         public string ConnectDisconnectLabel
@@ -239,7 +239,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         #region Commands
 
-        public ICommand ConnectDisconnectCommand { get; set; }
+        public ICommand ConnectDisconnectCommand { get; private set; }
 
         #endregion
     }

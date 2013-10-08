@@ -35,6 +35,7 @@ namespace TetriNET.Server.GenericHost
 
         public event HostRegisterPlayerHandler OnPlayerRegistered;
         public event HostUnregisterPlayerHandler OnPlayerUnregistered;
+        public event HostPlayerTeamHandler OnPlayerTeamChanged;
         public event HostPublishMessageHandler OnMessagePublished;
         public event HostPlacePieceHandler OnPiecePlaced;
         public event HostUseSpecialHandler OnUseSpecial;
@@ -143,6 +144,25 @@ namespace TetriNET.Server.GenericHost
             {
                 //Log.WriteLine("Heartbeat from {0}", player.Name);
                 player.ResetTimeout(); // player alive
+            }
+            else
+            {
+                Log.WriteLine(Log.LogLevels.Warning, "Heartbeat from unknown player");
+            }
+        }
+
+        public virtual void PlayerTeam(ITetriNETCallback callback, string team)
+        {
+            Log.WriteLine(Log.LogLevels.Debug, "PlayerTeam");
+
+            IPlayer player = PlayerManager[callback];
+            if (player != null)
+            {
+                //
+                player.ResetTimeout(); // player alive
+                //
+                if (OnPlayerTeamChanged != null)
+                    OnPlayerTeamChanged(player, team);
             }
             else
             {

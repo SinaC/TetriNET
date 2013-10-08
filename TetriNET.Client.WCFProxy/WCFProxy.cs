@@ -139,6 +139,11 @@ namespace TetriNET.Client.WCFProxy
             ExceptionFreeAction(_proxy.Heartbeat, "Heartbeat");
         }
 
+        public void PlayerTeam(ITetriNETCallback callback, string team)
+        {
+            ExceptionFreeAction(() => _proxy.PlayerTeam(team), "PlayerTeam");
+        }
+
         public void PublishMessage(ITetriNETCallback callback, string msg)
         {
             ExceptionFreeAction(() => _proxy.PublishMessage(msg), "PublishMessage");

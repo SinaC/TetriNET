@@ -22,6 +22,9 @@ namespace TetriNET.Common.Contracts
         [OperationContract(IsOneWay = true)] // Player Left
         void OnPlayerLeft(int playerId, string name, LeaveReasons reason);
 
+        [OperationContract(IsOneWay = true)] // Player Team
+        void OnPlayerTeamChanged(int playerId, string team);
+
         // Chat
         [OperationContract(IsOneWay = true)] // Partyline Chat Message
         void OnPublishPlayerMessage(string playerName, string msg);

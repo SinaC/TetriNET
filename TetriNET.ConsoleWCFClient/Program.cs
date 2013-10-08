@@ -4,6 +4,7 @@ using TetriNET.Client.Board;
 using TetriNET.Client.Interfaces;
 using TetriNET.Client.Pieces;
 using TetriNET.Client.WCFProxy;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Logger;
 using TetriNET.ConsoleWCFClient.AI;
 using TetriNET.ConsoleWCFClient.UI;
@@ -20,6 +21,7 @@ namespace TetriNET.ConsoleWCFClient
 
         static void Main(string[] args)
         {
+            const string team = "CONSOLE";
             string name = "CONSOLE_" + Guid.NewGuid().ToString().Substring(0, 5);
 
             Log.Initialize(ConfigurationManager.AppSettings["logpath"], name+".log");
@@ -27,6 +29,12 @@ namespace TetriNET.ConsoleWCFClient
             //
             //string baseAddress = @"net.tcp://localhost:8765/TetriNET";
             IClient client = new Client.Client(Piece.CreatePiece, () => new Board(12,22));
+            client.OnPlayerRegistered +=
+                (result, id, master) =>
+                {
+                    if (result == RegistrationResults.RegistrationSuccessful)
+                        client.ChangeTeam(team);
+                };
             //IClient client = new Client.Client((piece, posX, posY, orientation, index) => new MutatedZ(posX, posY, orientation, index), () => new Board(12, 22));
 
             string baseAddress = ConfigurationManager.AppSettings["address"];

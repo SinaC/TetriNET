@@ -121,11 +121,11 @@ namespace TetriNET.ConsoleWCFServer
                         }
                         case ConsoleKey.D:
                             foreach (IPlayer p in playerManager.Players)
-                                Console.WriteLine("{0}) {1} {2} {3} {4:HH:mm:ss.fff} {5:HH:mm:ss.fff}", playerManager.GetId(p), p.Name, p.State, p.PieceIndex, p.LastActionFromClient, p.LastActionToClient);
+                                Console.WriteLine("{0}) {1} [{2}] {3} {4} {5:HH:mm:ss.fff} {6:HH:mm:ss.fff}", playerManager.GetId(p), p.Name, p.Team, p.State, p.PieceIndex, p.LastActionFromClient, p.LastActionToClient);
                             break;
                         case ConsoleKey.W:
                             foreach(WinEntry e in server.WinList)
-                                Console.WriteLine("{0}: {1} pts", e.PlayerName, e.Score);
+                                Console.WriteLine("{0}[{1}]: {2} pts", e.PlayerName, e.Team, e.Score);
                             break;
                         case ConsoleKey.Q:
                             server.ResetWinList();

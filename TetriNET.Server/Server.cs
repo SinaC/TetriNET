@@ -52,7 +52,7 @@ namespace TetriNET.Server
         {
             if (playerManager == null)
                 throw new ArgumentNullException("playerManager");
-            if (hosts == null)
+            if (hosts == null || !hosts.Any())
                 throw new ArgumentNullException("hosts");
             _options = new GameOptions();
             _options.ResetToDefault();
@@ -67,6 +67,7 @@ namespace TetriNET.Server
             {
                 host.OnPlayerRegistered += RegisterPlayerHandler;
                 host.OnPlayerUnregistered += UnregisterPlayerHandler;
+                host.OnPlayerTeamChanged += PlayerTeamHandler;
                 host.OnMessagePublished += PublishMessageHandler;
                 host.OnPiecePlaced += PlacePieceHandler;
                 host.OnUseSpecial += UseSpecialHandler;
@@ -283,14 +284,15 @@ namespace TetriNET.Server
             return _options;
         }
 
-        private void UpdateWinList(string playerName, int score)
+        private void UpdateWinList(string playerName, string team, int score)
         {
-            WinEntry entry = WinList.SingleOrDefault(x => x.PlayerName == playerName);
+            WinEntry entry = WinList.SingleOrDefault(x => x.PlayerName == playerName && x.Team == team);
             if (entry == null)
             {
                 entry = new WinEntry
                 {
                     PlayerName = playerName,
+                    Team = team,
                     Score = 0
                 };
                 WinList.Add(entry);
@@ -309,11 +311,18 @@ namespace TetriNET.Server
 
             // Inform new player about other players
             foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
-                player.OnPlayerJoined(_playerManager.GetId(p), p.Name);
+            {
+                int id = _playerManager.GetId(p);
+                player.OnPlayerJoined(id, p.Name);
+                player.OnPlayerTeamChanged(id, p.Team);
+            }
 
             // Inform players about new played connected
             foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+            {
                 p.OnPlayerJoined(playerId, player.Name);
+                p.OnPlayerTeamChanged(playerId, player.Team);
+            }
 
             // Server master
             IPlayer serverMaster = _playerManager.ServerMaster;
@@ -334,6 +343,19 @@ namespace TetriNET.Server
             Log.WriteLine(Log.LogLevels.Info, "Unregister player:{0}", player.Name);
 
             PlayerLeftHandler(player, LeaveReasons.Disconnected);
+        }
+
+        private void PlayerTeamHandler(IPlayer player, string team)
+        {
+            Log.WriteLine(Log.LogLevels.Info, "Player team changed:{0}:{1}", player.Name, team);
+
+            if (String.IsNullOrWhiteSpace(team))
+                team = null;
+            player.Team = team;
+            // Send message to players
+            int id = _playerManager.GetId(player);
+            foreach(IPlayer p in _playerManager.Players)
+                p.OnPlayerTeamChanged(id, team);
         }
 
         private void PublishMessageHandler(IPlayer player, string msg)
@@ -736,11 +758,11 @@ namespace TetriNET.Server
                     Log.WriteLine(Log.LogLevels.Info, "Winner: {0}[{1}]", winner.Name, winnerId);
 
                     // Update win list
-                    UpdateWinList(winner.Name, 3);
+                    UpdateWinList(winner.Name, winner.Team, 3);
                     int points = 2;
                     foreach (IPlayer p in _playerManager.Players.Where(x => x.State == PlayerStates.GameLost).OrderByDescending(x => x.LossTime))
                     {
-                        UpdateWinList(p.Name, points);
+                        UpdateWinList(p.Name, p.Team, points);
                         points--;
                         if (points == 0)
                             break;

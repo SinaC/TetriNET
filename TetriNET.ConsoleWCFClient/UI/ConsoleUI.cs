@@ -235,7 +235,7 @@ namespace TetriNET.ConsoleWCFClient.UI
                 for (int i = 0; i < (winList.Count > 5 ? 5 : winList.Count); i++)
                 {
                     Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 22 + i);
-                    Console.Write("{0}:{1}", winList[i].PlayerName, winList[i].Score);
+                    Console.Write("{0}[{1}]:{2}", winList[i].PlayerName, winList[i].Team, winList[i].Score);
                 }
             }
         }

@@ -5,5 +5,6 @@
         int PlayerId { get; }
         bool IsImmune { get; }
         IBoard Board { get; }
+        string Team { get; }
     }
 }

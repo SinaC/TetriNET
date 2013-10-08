@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -9,6 +10,12 @@ using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
 {
+    public class Entry
+    {
+        public string Name { get; set; }
+        public int Score { get; set; }
+    }
+
     public class WinListViewModel : ViewModelBase, ITabIndex
     {
         public bool IsResetEnabled
@@ -16,20 +23,31 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
             get { return Client != null && (Client.IsServerMaster && !Client.IsGameStarted); }
         }
 
-        public ObservableCollection<WinEntry> WinList { get; private set; }
+        public ObservableCollection<Entry> PlayerWinList { get; private set; }
+        public ObservableCollection<Entry> TeamWinList { get; private set; }
 
         public WinListViewModel()
         {
-            WinList = new ObservableCollection<WinEntry>();
+            PlayerWinList = new ObservableCollection<Entry>();
+            TeamWinList = new ObservableCollection<Entry>();
 
             ResetWinListCommand = new RelayCommand(() => Client.ResetWinList());
         }
 
-        private void UpdateWinList(IEnumerable<WinEntry> winList)
+        protected void UpdateWinList(List<WinEntry> winList)
         {
-            WinList.Clear();
+            //
+            PlayerWinList.Clear();
             foreach (WinEntry entry in winList.OrderByDescending(x => x.Score))
-                WinList.Add(entry);
+                PlayerWinList.Add(new Entry
+                    {
+                        Name = entry.PlayerName + (String.IsNullOrWhiteSpace(entry.Team) ? String.Empty : (" - " + entry.Team)),
+                        Score = entry.Score
+                    });
+            //
+            TeamWinList.Clear();
+            foreach(Entry entry in winList.GroupBy(x => String.IsNullOrWhiteSpace(x.Team) ? x.PlayerName : x.Team).Select(g => new Entry { Name = g.Key, Score = g.Sum(x => x.Score) }).OrderByDescending(x => x.Score))
+                TeamWinList.Add(entry);
         }
 
         #region ITabIndex
@@ -89,35 +107,42 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
 
         #region Commands
 
-        public ICommand ResetWinListCommand { get; set; }
+        public ICommand ResetWinListCommand { get; private set; }
 
         #endregion
     }
 
     public class WinListViewModelDesignData : WinListViewModel
     {
-        public new ObservableCollection<WinEntry> WinList { get; private set; }
-
         public WinListViewModelDesignData()
         {
-            WinList = new ObservableCollection<WinEntry>
+            UpdateWinList(new List<WinEntry>
                 {
                     new WinEntry
                         {
                             PlayerName = "Dummy100",
+                            Team = "TEAM1",
                             Score = 100
                         },
                     new WinEntry
                         {
+                            PlayerName = "Dummy75",
+                            Team = "TEAM2",
+                            Score = 75
+                        },
+                    new WinEntry
+                        {
                             PlayerName = "Dummy50",
+                            Team = "TEAM2",
                             Score = 50
                         },
                     new WinEntry
                         {
                             PlayerName = "Dummy25",
+                            Team = "TEAM2",
                             Score = 25
                         }
-                };
+                });
         }
     }
 }

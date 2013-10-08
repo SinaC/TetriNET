@@ -17,6 +17,7 @@ namespace TetriNET.Server.Interfaces
         event PlayerConnectionLostHandler OnConnectionLost;
 
         string Name { get; }
+        string Team { get; set; }
         int PieceIndex { get; set; }
         byte[] Grid { get; set; }
         //

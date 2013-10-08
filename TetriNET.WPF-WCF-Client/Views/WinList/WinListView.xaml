@@ -14,14 +14,24 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <ListView Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Width="300" Height="Auto" MaxWidth="300" Background="White" HorizontalAlignment="Left" VerticalAlignment="Top"
+        <ListView Grid.Row="0" Grid.Column="0" Height="Auto" Background="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,5,0"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  ItemsSource="{Binding WinList, Mode=OneWay}">
+                  ItemsSource="{Binding PlayerWinList, Mode=OneWay}">
             <ListView.View>
                 <GridView AllowsColumnReorder="False" ColumnHeaderToolTip="Win list">
-                    <GridViewColumn DisplayMemberBinding="{Binding PlayerName}" Header="Player name" Width="240" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Player name" Width="240" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Score}" Header="Score" Width="60"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ListView Grid.Row="0" Grid.Column="1" Height="Auto" Background="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0,0,0"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  ItemsSource="{Binding TeamWinList, Mode=OneWay}">
+            <ListView.View>
+                <GridView AllowsColumnReorder="False" ColumnHeaderToolTip="Win list">
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Team/Player" Width="240" />
                     <GridViewColumn DisplayMemberBinding="{Binding Score}" Header="Score" Width="60"/>
                 </GridView>
             </ListView.View>

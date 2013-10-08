@@ -8,6 +8,9 @@ namespace TetriNET.Common.DataContracts
         [DataMember]
         public string PlayerName { get; set; }
 
+        [DataMember(IsRequired=false)]
+        public string Team { get; set; }
+
         [DataMember]
         public int Score { get; set; }
     }

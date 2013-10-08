@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -15,13 +16,32 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
     public class PlayerData : INotifyPropertyChanged
     {
         public int RealPlayerId { get; set; }
-
         public int DisplayPlayerId
         {
             get { return RealPlayerId + 1; }
         }
 
         public string PlayerName { get; set; }
+
+        private string _team;
+        public string Team
+        {
+            get { return _team; }
+            set
+            {
+                if (_team != value)
+                {
+                    _team = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged("IsTeamNotNullOrEmpty");
+                }
+            }
+        }
+
+        public bool IsTeamNotNullOrEmpty
+        {
+            get { return !String.IsNullOrWhiteSpace(Team); }
+        }
 
         private bool _isServerMaster;
         public bool IsServerMaster
@@ -85,6 +105,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                 });
         }
 
+        private void SetTeam(int playerId, string team)
+        {
+            ExecuteOnUIThread.Invoke(() =>
+                {
+                    foreach (PlayerData p in PlayerList.Where(x => x.RealPlayerId == playerId))
+                        p.Team = team;
+                });
+        }
+
         private void ClearEntries()
         {
             ExecuteOnUIThread.Invoke(() => PlayerList.Clear());
@@ -129,6 +158,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
+            oldClient.OnPlayerTeamChanged -= OnPlayerTeamChanged;
             oldClient.OnServerMasterModified -= OnServerMasterModified;
             oldClient.OnPlayerJoined -= OnPlayerJoined;
             oldClient.OnPlayerLeft -= OnPlayerLeft;
@@ -139,6 +169,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
+            newClient.OnPlayerTeamChanged += OnPlayerTeamChanged;
             newClient.OnServerMasterModified += OnServerMasterModified;
             newClient.OnPlayerJoined += OnPlayerJoined;
             newClient.OnPlayerLeft += OnPlayerLeft;
@@ -150,6 +181,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         #endregion
 
         #region IClient events handler
+
+        private void OnPlayerTeamChanged(int playerId, string team)
+        {
+            SetTeam(playerId, team);
+        }
 
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
@@ -190,8 +226,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         #region Commands
 
-        public ICommand KickPlayerCommand { get; set; }
-        public ICommand BanPlayerCommand { get; set; }
+        public ICommand KickPlayerCommand { get; private set; }
+        public ICommand BanPlayerCommand { get; private set; }
 
         #endregion
     }
@@ -207,12 +243,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                     new PlayerData
                         {
                             PlayerName = "ServerMaster",
+                            Team = "TEAM1",
                             IsServerMaster = true,
                             RealPlayerId = 0
                         },
                     new PlayerData
                         {
                             PlayerName = "Dummy2",
+                            Team = "LMA",
                             IsServerMaster = false,
                             RealPlayerId = 2
                         },
