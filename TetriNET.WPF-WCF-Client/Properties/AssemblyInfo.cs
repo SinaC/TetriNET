@@ -5,11 +5,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TetriNET WPF WCF")]
-[assembly: AssemblyDescription("TetriNET WPF WCF")]
+[assembly: AssemblyTitle("TetriNET WPF WCF Client")]
+[assembly: AssemblyDescription("TetriNET WPF WCF Client")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SinaC")]
-[assembly: AssemblyProduct("TetriNET WPF WCF")]
+[assembly: AssemblyProduct("TetriNET WPF WCF Client")]
 [assembly: AssemblyCopyright("Copyright © SinaC 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -49,6 +49,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.0.0")]
-[assembly: AssemblyFileVersion("2.0.0.0")]
+[assembly: AssemblyVersion("1.1.0.0")]
+[assembly: AssemblyFileVersion("1.1.0.0")]
 [assembly: GuidAttribute("69E324C2-6CFD-4A7F-8BFE-41D1620D273E")]

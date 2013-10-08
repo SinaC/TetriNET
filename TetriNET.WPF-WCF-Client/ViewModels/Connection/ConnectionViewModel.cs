@@ -1,4 +1,6 @@
-﻿using TetriNET.Client.Interfaces;
+﻿using System;
+using System.Reflection;
+using TetriNET.Client.Interfaces;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 {
@@ -6,6 +8,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
     {
         public LoginViewModel LoginViewModel { get; set; }
         public ServerListViewModel ServerListViewModel { get; set; }
+
+        public string AssemblyVersion
+        {
+            get
+            {
+                Version version = Assembly.GetEntryAssembly().GetName().Version;
+                string company = ((AssemblyCompanyAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyCompanyAttribute), false)).Company;
+                return String.Format("TetriNET {0}.{1} by {2}", version.Major, version.Minor, company);
+            }
+        }
 
         public ConnectionViewModel()
         {
