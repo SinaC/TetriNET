@@ -4,13 +4,43 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:playField="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PlayField"
-             mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance playField:InGameChatViewModel}">
-<UserControl.Resources>
-    <ResourceDictionary>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-    </ResourceDictionary>
-</UserControl.Resources>
+             xmlns:Converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters" mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance playField:InGameChatViewModelDesignData, IsDesignTimeCreatable=True}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <!--<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>-->
+            <Converters:SpecialToStringConverter x:Key="SpecialToStringConverter"/>
+            <DataTemplate x:Key="SpecialDataTemplate" DataType="{x:Type playField:InGameChatEntry}">
+                <WrapPanel>
+                    <TextBlock Text="{Binding Id}" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="." Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="{Binding Special, Converter={StaticResource SpecialToStringConverter}}" Foreground="DarkMagenta" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="on" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="{Binding Target}" Foreground="Blue" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="from" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="{Binding Source}" Foreground="Blue" FontSize="10"/>
+                </WrapPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="AddOneLineDataTemplate" DataType="{x:Type playField:InGameChatEntry}">
+                <WrapPanel>
+                    <TextBlock Text="{Binding Id}" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="." Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="{Binding LinesAdded}" Foreground="DarkMagenta" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="line added to All from" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="{Binding Source}" Foreground="Blue" FontSize="10"/>
+                </WrapPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="AddMultiLinesDataTemplate" DataType="{x:Type playField:InGameChatEntry}">
+                <WrapPanel>
+                    <TextBlock Text="{Binding Id}" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="." Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="{Binding LinesAdded}" Foreground="DarkMagenta" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="lines added to All from" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="{Binding Source}" Foreground="Blue" FontSize="10"/>
+                </WrapPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -27,16 +57,35 @@
                 </ControlTemplate>
             </ItemsControl.Template>
             <ItemsControl.ItemTemplate>
-                <DataTemplate>
+                <!--<DataTemplate>
                     <WrapPanel>
                         <TextBlock Text="{Binding Id}" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
                         <TextBlock Text="." Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
                         <TextBlock Text="{Binding Special}" Foreground="DarkMagenta" FontSize="10" Margin="0,0,2,0"/>
-                        <TextBlock Text="on" Foreground="black" Visibility="{Binding IsTargetVisible, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="10" Margin="0,0,2,0"/>
+                        <TextBlock Text="on" Foreground="Black" Visibility="{Binding IsTargetVisible, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="10" Margin="0,0,2,0"/>
                         <TextBlock Text="{Binding Target}" Foreground="Blue" Visibility="{Binding IsTargetVisible, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="10" Margin="0,0,2,0"/>
-                        <TextBlock Text="from" Foreground="black" FontSize="10" Margin="0,0,2,0"/>
+                        <TextBlock Text="from" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
                         <TextBlock Text="{Binding Source}" Foreground="Blue" FontSize="10"/>
                     </WrapPanel>
+                </DataTemplate>-->
+                <DataTemplate DataType="{x:Type playField:InGameChatEntry}">
+                    <ContentControl Content="{Binding}">
+                        <ContentControl.Style>
+                            <Style TargetType="{x:Type ContentControl}">
+                                <!-- Default value -->
+                                <Setter Property="ContentTemplate" Value="{StaticResource SpecialDataTemplate}" />
+                                <!-- Trigger to change template -->
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsAddLines}" Value="True">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource AddMultiLinesDataTemplate}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding LinesAdded}" Value="1">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource AddOneLineDataTemplate}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

@@ -241,8 +241,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
                     new KeySetting(Key.Space, TetriNET.Client.Interfaces.Commands.Drop),
                     new KeySetting(Key.Down, TetriNET.Client.Interfaces.Commands.Down),
                     new KeySetting(Key.Up, TetriNET.Client.Interfaces.Commands.RotateCounterclockwise),
+                    new KeySetting(Key.PageUp, TetriNET.Client.Interfaces.Commands.RotateClockwise),
                     new KeySetting(Key.Left, TetriNET.Client.Interfaces.Commands.Left),
                     new KeySetting(Key.Right, TetriNET.Client.Interfaces.Commands.Right),
+                    new KeySetting(Key.D, TetriNET.Client.Interfaces.Commands.DiscardFirstSpecial),
+                    new KeySetting(Key.D1, TetriNET.Client.Interfaces.Commands.UseSpecialOn1),
+                    new KeySetting(Key.D2, TetriNET.Client.Interfaces.Commands.UseSpecialOn2),
+                    new KeySetting(Key.D3, TetriNET.Client.Interfaces.Commands.UseSpecialOn3),
+                    new KeySetting(Key.D4, TetriNET.Client.Interfaces.Commands.UseSpecialOn4),
+                    new KeySetting(Key.D5, TetriNET.Client.Interfaces.Commands.UseSpecialOn5),
+                    new KeySetting(Key.D6, TetriNET.Client.Interfaces.Commands.UseSpecialOn6),
                 };
         }
     }

@@ -81,12 +81,12 @@ namespace TetriNET.Common.DataContracts
                 new SpecialOccurancy
                 {
                     Value = Specials.AddLines,
-                    Occurancy = 19
+                    Occurancy = 13
                 },
                 new SpecialOccurancy
                 {
                     Value = Specials.ClearLines,
-                    Occurancy = 16
+                    Occurancy = 13
                 },
                 new SpecialOccurancy
                 {
@@ -96,7 +96,7 @@ namespace TetriNET.Common.DataContracts
                 new SpecialOccurancy
                 {
                     Value = Specials.RandomBlocksClear,
-                    Occurancy = 14
+                    Occurancy = 11
                 },
                 new SpecialOccurancy
                 {
@@ -106,7 +106,7 @@ namespace TetriNET.Common.DataContracts
                 new SpecialOccurancy
                 {
                     Value = Specials.ClearSpecialBlocks,
-                    Occurancy = 14
+                    Occurancy = 10
                 },
                 new SpecialOccurancy
                 {
@@ -121,22 +121,22 @@ namespace TetriNET.Common.DataContracts
                 new SpecialOccurancy
                 {
                     Value = Specials.BlockBomb,
-                    Occurancy = 14
+                    Occurancy = 10
                 },
                 new SpecialOccurancy
                 {
                     Value = Specials.ClearColumn,
-                    Occurancy = 0
+                    Occurancy = 5
                 },
                 new SpecialOccurancy
                 {
                     Value = Specials.Immunity,
-                    Occurancy = 0
+                    Occurancy = 3
                 },
                 new SpecialOccurancy
                 {
                     Value = Specials.Darkness,
-                    Occurancy = 0
+                    Occurancy = 5
                 },
                 new SpecialOccurancy
                 {
@@ -146,7 +146,7 @@ namespace TetriNET.Common.DataContracts
                 new SpecialOccurancy
                 {
                     Value = Specials.Mutation,
-                    Occurancy = 0
+                    Occurancy = 7
                 },
                 new SpecialOccurancy // will be available when Left Gravity is implemented
                 {

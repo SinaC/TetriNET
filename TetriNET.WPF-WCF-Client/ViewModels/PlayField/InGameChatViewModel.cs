@@ -10,10 +10,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
     public class InGameChatEntry
     {
         public int Id { get; set; }
-        public string Special { get; set; }
+        //public string Special { get; set; }
+        public Specials Special { get; set; }
         public string Source { get; set; }
         public string Target { get; set; }
-        public bool IsTargetVisible { get; set; }
+        //public bool IsTargetVisible { get; set; }
+
+        public bool IsAddLines { get; set; }
+        public int LinesAdded { get; set; }
     }
 
     public class InGameChatViewModel : ViewModelBase
@@ -26,8 +30,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             get { return _entries; }
         }
 
-
-        private void AddEntry(int id, string special, string source, string target = null)
+        public void AddEntry(int id, Specials special, string source, string target)
         {
             ExecuteOnUIThread.Invoke(() =>
                 {
@@ -37,11 +40,27 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                             Special = special,
                             Source = source,
                             Target = target,
-                            IsTargetVisible = !String.IsNullOrEmpty(target)
+                            IsAddLines = false
                         });
                     if (Entries.Count > MaxEntries)
                         Entries.RemoveAt(0);
                 });
+        }
+
+        public void AddEntry(int id, int linesAdded, string source)
+        {
+            ExecuteOnUIThread.Invoke(() =>
+            {
+                Entries.Add(new InGameChatEntry
+                {
+                    Id = id,
+                    LinesAdded = linesAdded,
+                    Source = source,
+                    IsAddLines = true
+                });
+                if (Entries.Count > MaxEntries)
+                    Entries.RemoveAt(0);
+            });
         }
 
         private void ClearEntries()
@@ -77,15 +96,44 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         private void OnPlayerAddLines(string playerName, int specialId, int count)
         {
             if (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
-                AddEntry(specialId + 1, String.Format("{0} line{1} added to All", count, (count > 1) ? "s" : ""), playerName);
+                AddEntry(specialId + 1, count, playerName);
         }
 
         private void OnSpecialUsed(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special)
         {
             if (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
-                AddEntry(specialId + 1, Mapper.MapSpecialToString(special), playerName, targetName);
+                AddEntry(specialId + 1, special, playerName, targetName);
         }
 
         #endregion
+    }
+
+    public class InGameChatViewModelDesignData : InGameChatViewModel
+    {
+        public InGameChatViewModelDesignData()
+        {
+            Entries.Add(new InGameChatEntry
+            {
+                Id = 1,
+                IsAddLines = true,
+                Source = "JOEL",
+                LinesAdded = 1,
+            });
+            Entries.Add(new InGameChatEntry
+                {
+                    Id = 2,
+                    IsAddLines = false,
+                    Source = "JOEL",
+                    Target = "SOMEONE",
+                    Special = Specials.SwitchFields,
+                });
+            Entries.Add(new InGameChatEntry
+            {
+                Id = 3,
+                IsAddLines = true,
+                Source = "JOEL",
+                LinesAdded = 4,
+            });
+        }
     }
 }

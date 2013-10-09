@@ -16,10 +16,8 @@
         xmlns:winListViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.WinList"
         xmlns:partyLineViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PartyLine" mc:Ignorable="d"
         UseLayoutRounding="True"
-        WindowStyle="None"
+        WindowStyle="ToolWindow"
         ResizeMode="NoResize"
-        AllowsTransparency="True" 
-        Background="Transparent" 
         MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
         KeyboardNavigation.DirectionalNavigation="None"
         d:DataContext="{d:DesignInstance local:MainWindowViewModelDesignData, IsDesignTimeCreatable=False}"
@@ -58,28 +56,7 @@
         <TabControl 
             Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="3" 
             KeyboardNavigation.TabNavigation="None"
-            PreviewKeyDown="TabControl_OnPreviewKeyDown"
             SelectedIndex="{Binding ActiveTabItemIndex}">
-            <!--
-            <TabControl.Template>
-                <ControlTemplate TargetType="TabControl">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Border BorderThickness="0,0,1,1" BorderBrush="#D0CEBF" Grid.Row="1">
-                            <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
-                                <Border Background="{TemplateBinding Background}">
-                                    <ContentPresenter ContentSource="SelectedContent"/>
-                                </Border>
-                            </Border>
-                        </Border>
-                        <DockPanel IsItemsHost="True" LastChildFill="False" Margin="2,2,2,0" />
-                    </Grid>
-                </ControlTemplate>
-            </TabControl.Template>
-            -->
             <TabItem Header="Connect" IsTabStop="False">
                 <connection:ConnectionView DataContext="{Binding Path=ConnectionViewModel}" d:DataContext="{d:DesignInstance connectionViewModels:ConnectionViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
@@ -101,33 +78,8 @@
             <TabItem Header="Textures test" IsTabStop="False" Visibility="{Binding Path=OptionsViewModel.ClientOptionsViewModel.IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <test:TestView />
             </TabItem>
-<!--
-            <TabItem DockPanel.Dock="Right" Header="X">
-                <TabItem.Template>
-                    <ControlTemplate>
-                        <Button Content="X" Command="ApplicationCommands.Close" BorderThickness="1">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-                                    <Setter Property="Background">
-                                        <Setter.Value>
-                                            <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
-                                                <GradientStop Color="#FFF3F3F3" Offset="0"/>
-                                                <GradientStop Color="#FFEBEBEB" Offset="0.5"/>
-                                                <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
-                                                <GradientStop Color="#FFCDCDCD" Offset="1"/>
-                                            </LinearGradientBrush>
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Setter Property="BorderBrush" Value="#FF8C8E94"/>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                    </ControlTemplate>
-                </TabItem.Template>
-            </TabItem>
--->
         </TabControl>
-        <Button Grid.Row="0" Grid.Column="1" Content="_" Click="Minimize_Click" Width="18" BorderThickness="1">
+        <!--<Button x:Name="MinimizeButton" Grid.Row="0" Grid.Column="1" Content="_" Click="Minimize_Click" Width="18" BorderThickness="1">
             <Button.Style>
                 <Style TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                     <Setter Property="Background">
@@ -144,7 +96,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Grid.Row="0" Grid.Column="2" Content="X" Width="18" Command="ApplicationCommands.Close" BorderThickness="1">
+        <Button x:Name="CloseButton"  Grid.Row="0" Grid.Column="2" Content="X" Width="18" Command="ApplicationCommands.Close" BorderThickness="1">
             <Button.Style>
                 <Style TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
                     <Setter Property="Background">
@@ -160,6 +112,6 @@
                     <Setter Property="BorderBrush" Value="#FF8C8E94"/>
                 </Style>
             </Button.Style>
-        </Button>
+        </Button>-->
     </Grid>
 </Window>

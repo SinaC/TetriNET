@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using TetriNET.Client.Interfaces;
+using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 {
@@ -13,8 +14,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         {
             get
             {
-                Version version = Assembly.GetEntryAssembly().GetName().Version;
-                string company = ((AssemblyCompanyAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyCompanyAttribute), false)).Company;
+                Assembly asm = AssemblyHelper.GetEntryAssembly();
+                Version version = asm.GetName().Version;
+                string company = ((AssemblyCompanyAttribute)Attribute.GetCustomAttribute(asm, typeof(AssemblyCompanyAttribute), false)).Company;
                 return String.Format("TetriNET {0}.{1} by {2}", version.Major, version.Minor, company);
             }
         }

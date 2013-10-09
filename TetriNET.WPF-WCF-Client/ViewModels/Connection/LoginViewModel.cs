@@ -41,10 +41,13 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                 if (_serverAddress != value)
                 {
                     _serverAddress = value;
-
+                    if (String.IsNullOrWhiteSpace(_serverAddress))
+                        _serverAddress = "localhost:8765";
                     // net.tcp://[ip|machine name]:[port]/TetriNETv2
                     if (!_serverAddress.StartsWith("net.tcp://"))
                         _serverAddress = "net.tcp://" + _serverAddress;
+                    if (ServerAddress.EndsWith("/TetriNET"))
+                        _serverAddress = _serverAddress.Replace("/TetriNET", ""); // remove old endpoint
                     if (!_serverAddress.EndsWith("/TetriNETv2"))
                         _serverAddress = _serverAddress + "/TetriNETv2";
 

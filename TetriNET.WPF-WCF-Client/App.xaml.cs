@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 using TetriNET.Common.Logger;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client
 {
@@ -26,6 +27,14 @@ namespace TetriNET.WPF_WCF_Client
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
             Log.WriteLine(Log.LogLevels.Info, "Local user config path: {0}", config.FilePath);
 
+            // Get settings from old version if needed
+            if (Settings.Default.UpgradeRequired)
+            {
+                Settings.Default.Upgrade();
+                Settings.Default.UpgradeRequired = false;
+                Settings.Default.Save();
+            }
+
             //ExtractTetrinetTextures();
 
             // Get textures
@@ -42,10 +51,7 @@ namespace TetriNET.WPF_WCF_Client
             if (isDirectory)
                 TextureManager.TextureManager.TexturesSingleton.Instance.ReadFromPath(textureFilepath);
             else
-            {
                 TextureManager.TextureManager.TexturesSingleton.Instance.ReadFromFile(textureFilepath);
-                //Textures.Textures.TexturesSingleton.Instance.SaveToPath(@"d:\temp\tetrinet2\");
-            }
 
             //
             base.OnStartup(e);

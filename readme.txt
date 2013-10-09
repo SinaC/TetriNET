@@ -6,16 +6,13 @@ when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 	-> everyone can manage ban without knowing in which host it has been created
 	-> this object is stored in IPlayer and created by createPlayerFunc in host so server or host can ban a player using IPlayer info
 client/server version when registering
-add room notion in server (server can handle multiple rooms and client register on a room)
 SinaCSpecials: use gravity when board has enough holes or when to high + zebra + clear column + confusion + darkness + immunity + left gravity + mutation
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
-WPF Client: save win list locally if server master
 Confusion could be managed client-side
 Add Pentominos (http://en.wikipedia.org/wiki/Pentomino)
 New options: random blocks clear count, mutation count, darkness time, confusion time, immunity time, random spawn orientation
 Solo mode
 Server integrated in WPF client
-Team
 
 wcf + jquery
 http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-with-nettcpbinding
@@ -136,6 +133,3 @@ http://tetris.wikia.com/wiki/TetriNet_Rotation_System
 http://tetrisconcept.net/wiki/TetriNet_Rotation_System
 http://harddrop.com/wiki/Tetrinet2
 http://blockbattle.net/tutorial
-
-async relay command
-http://stackoverflow.com/questions/16848562/async-await-in-mvvm-without-void-methods

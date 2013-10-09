@@ -314,14 +314,15 @@ namespace TetriNET.Server
             {
                 int id = _playerManager.GetId(p);
                 player.OnPlayerJoined(id, p.Name);
-                player.OnPlayerTeamChanged(id, p.Team);
+                if (!String.IsNullOrWhiteSpace(p.Team))
+                    player.OnPlayerTeamChanged(id, p.Team);
             }
 
             // Inform players about new played connected
             foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
             {
                 p.OnPlayerJoined(playerId, player.Name);
-                p.OnPlayerTeamChanged(playerId, player.Team);
+                //p.OnPlayerTeamChanged(playerId, player.Team); player has not team yet
             }
 
             // Server master
