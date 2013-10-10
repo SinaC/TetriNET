@@ -25,6 +25,7 @@
         Title="TetriNET" 
         Height="480" Width="760">
     <!-- No window border ==> no close button either :p add a custom one before using this
+   
         WindowStyle="None"
         AllowsTransparency="True" 
         Background="Transparent" 

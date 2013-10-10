@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
@@ -14,7 +13,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         public Specials Special { get; set; }
         public string Source { get; set; }
         public string Target { get; set; }
-        //public bool IsTargetVisible { get; set; }
+        //public bool IsTargetVisible { get { return !String.IsNullOrWhiteSpace(Target); } }
 
         public bool IsAddLines { get; set; }
         public int LinesAdded { get; set; }
@@ -65,6 +64,37 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             });
         }
 
+        //public void AddEntry(int id, string special, string source, string target)
+        //{
+        //    ExecuteOnUIThread.Invoke(() =>
+        //        {
+        //            Entries.Add(new InGameChatEntry
+        //                {
+        //                    Id = id,
+        //                    Special = special,
+        //                    Source = source,
+        //                    Target = target,
+        //                });
+        //            if (Entries.Count > MaxEntries)
+        //                Entries.RemoveAt(0);
+        //        });
+        //}
+
+        //public void AddEntry(int id, int linesAdded, string source)
+        //{
+        //    ExecuteOnUIThread.Invoke(() =>
+        //    {
+        //        Entries.Add(new InGameChatEntry
+        //        {
+        //            Id = id,
+        //            Source = source,
+        //            Special = String.Format("{0} line{1} added to All", linesAdded, (linesAdded > 1) ? "s" : "")
+        //        });
+        //        if (Entries.Count > MaxEntries)
+        //            Entries.RemoveAt(0);
+        //    });
+        //}
+
         private void ClearEntries()
         {
             ExecuteOnUIThread.Invoke(Entries.Clear);
@@ -105,6 +135,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         {
             if (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
                 AddEntry(specialId + 1, special, playerName, targetName);
+                //AddEntry(specialId + 1, Mapper.MapSpecialToString(special), playerName, targetName);
         }
 
         #endregion
@@ -136,6 +167,25 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                 Source = "JOEL",
                 LinesAdded = 4,
             });
+            //Entries.Add(new InGameChatEntry
+            //{
+            //    Id = 1,
+            //    Source = "JOEL",
+            //    Special = "1 line added to All"
+            //});
+            //Entries.Add(new InGameChatEntry
+            //    {
+            //        Id = 2,
+            //        Source = "JOEL",
+            //        Target = "SOMEONE",
+            //        Special = Mapper.MapSpecialToString(Specials.SwitchFields),
+            //    });
+            //Entries.Add(new InGameChatEntry
+            //    {
+            //        Id = 3,
+            //        Source = "JOEL",
+            //        Special = "4 lines added to All"
+            //    });
         }
     }
 }

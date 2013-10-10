@@ -28,7 +28,7 @@
                     <TextBlock Text="{Binding Id}" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="." Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="1" Foreground="DarkMagenta" FontSize="10" Margin="0,0,2,0"/>
-                    <TextBlock Text="line added to All from" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="line added to All from" Foreground="DarkMagenta" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="{Binding Source}" Foreground="Blue" FontSize="10"/>
                 </WrapPanel>
             </DataTemplate>
@@ -37,7 +37,7 @@
                     <TextBlock Text="{Binding Id}" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="." Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="{Binding LinesAdded}" Foreground="DarkMagenta" FontSize="10" Margin="0,0,2,0"/>
-                    <TextBlock Text="lines added to All from" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="lines added to All from" Foreground="DarkMagenta" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="{Binding Source}" Foreground="Blue" FontSize="10"/>
                 </WrapPanel>
             </DataTemplate>
@@ -50,7 +50,7 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Text="Attacks/Defenses" HorizontalAlignment="Left" />
         <ItemsControl 
-            Grid.Row="1" IsTabStop="False"
+            Grid.Row="1" IsTabStop="False" Focusable="False" FocusManager.IsFocusScope="False"
             Background="White" Width="Auto" MaxWidth="300" Height="Auto" HorizontalAlignment="Left" VerticalAlignment="Top"
             ItemsSource="{Binding Entries, Mode=OneWay}">
             <ItemsControl.Template>
@@ -70,13 +70,15 @@
                         <TextBlock Text="{Binding Source}" Foreground="Blue" FontSize="10"/>
                     </WrapPanel>
                 </DataTemplate>-->
+                <!-- 
+                    Following code seems to create problem with key mapping in PlayFieldView
+                    PlayFieldView tab lose focus
+                -->
                 <DataTemplate DataType="{x:Type playField:InGameChatEntry}">
-                    <ContentControl Content="{Binding}">
+                    <ContentControl Content="{Binding}" IsTabStop="False">
                         <ContentControl.Style>
                             <Style TargetType="{x:Type ContentControl}">
-                                <!-- Default value -->
                                 <Setter Property="ContentTemplate" Value="{StaticResource SpecialDataTemplate}" />
-                                <!-- Trigger to change template -->
                                 <Style.Triggers>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
@@ -97,6 +99,7 @@
                         </ContentControl.Style>
                     </ContentControl>
                 </DataTemplate>
+                
             </ItemsControl.ItemTemplate>
         </ItemsControl>
     </Grid>
