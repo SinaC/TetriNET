@@ -123,7 +123,7 @@ namespace TetriNET.Client.Interfaces
 
         // Game controller
         void Drop();
-        void MoveDown();
+        void MoveDown(bool automatic = false);
         void MoveLeft();
         void MoveRight();
         void RotateClockwise();

@@ -12,6 +12,7 @@ namespace TetriNET.Client
         public Dictionary<Specials, int> SpecialUsed { get; set; }
         public Dictionary<Specials, int> SpecialDiscarded { get; set; }
 
+        public int MoveCount { get; set; }
         public int SingleCount { get; set; }
         public int DoubleCount { get; set; }
         public int TripleCount { get; set; }
@@ -46,6 +47,7 @@ namespace TetriNET.Client
                 SpecialUsed[special] = 0;
                 SpecialDiscarded[special] = 0;
             }
+            MoveCount = 0;
             SingleCount = 0;
             DoubleCount = 0;
             TripleCount = 0;

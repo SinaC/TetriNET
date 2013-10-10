@@ -10,6 +10,7 @@ namespace TetriNET.Client.Interfaces
         Dictionary<Specials, int> SpecialUsed { get; }
         Dictionary<Specials, int> SpecialDiscarded { get; }
 
+        int MoveCount { get; set; }
         int SingleCount { get; }
         int DoubleCount { get; }
         int TripleCount { get; }

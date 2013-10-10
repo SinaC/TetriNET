@@ -14,7 +14,10 @@
         xmlns:connectionViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
         xmlns:optionsViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Options"
         xmlns:winListViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.WinList"
-        xmlns:partyLineViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PartyLine" mc:Ignorable="d"
+        xmlns:partyLineViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PartyLine"
+        xmlns:statisticsViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Statistics"
+        xmlns:playFieldViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PlayField"
+        mc:Ignorable="d"
         UseLayoutRounding="True"
         WindowStyle="ToolWindow"
         ResizeMode="NoResize"
@@ -71,10 +74,10 @@
                 <partyLine:PartyLineView DataContext="{Binding Path=PartyLineViewModel}" d:DataContext="{d:DesignInstance partyLineViewModels:PartyLineViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
             <TabItem Header="Play fields" IsTabStop="False">
-                <playField:PlayFieldView DataContext="{Binding Path=PlayFieldViewModel}"/>
+                <playField:PlayFieldView DataContext="{Binding Path=PlayFieldViewModel}" d:DataContext="{d:DesignInstance playFieldViewModels:PlayFieldViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
-            <TabItem Header="Client statistics" IsTabStop="False" Visibility="{Binding Path=OptionsViewModel.ClientOptionsViewModel.IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <statistics:ClientStatisticsView DataContext="{Binding Path=ClientStatisticsViewModel}"/>
+            <TabItem Header="Statistics" IsTabStop="False">
+                <statistics:ClientStatisticsView DataContext="{Binding Path=ClientStatisticsViewModel}" d:DataContext="{d:DesignInstance statisticsViewModels:ClientStatisticsViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
             <TabItem Header="Textures test" IsTabStop="False" Visibility="{Binding Path=OptionsViewModel.ClientOptionsViewModel.IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <test:TestView />

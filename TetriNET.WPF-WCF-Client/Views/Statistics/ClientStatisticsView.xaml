@@ -4,11 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:statistics="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Statistics"
+             xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
+             xmlns:userControls="clr-namespace:TetriNET.WPF_WCF_Client.UserControls"
              IsTabStop="False"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance statistics:ClientStatisticsViewModelDesignData, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="700">
-    <!-- TODO: create control with one group box (datacontext: check ClientStatisticsViewModel) and reuse it 4 times -->
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:SpecialToBrushConverter x:Key="SpecialToBrushConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -18,10 +24,44 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <GroupBox Grid.Row="0" Grid.Column="0">
+        <GroupBox Grid.Row="0" Grid.Column="0" Header="Gameplay">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Lines/min:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding LinesPerMinute, StringFormat={}{0:0.00}}"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Tetris:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TetrisCount}"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Triple:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding TripleCount}"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Double:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding DoubleCount}"/>
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Single:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SingleCount}"/>
+
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Moves/min:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding MovesPerMinute, StringFormat={}{0:0.00}}"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="0" Grid.Column="1">
             <GroupBox.HeaderTemplate>
                 <DataTemplate>
                     <TextBlock>
@@ -42,12 +82,13 @@
                                 <ColumnDefinition Width="Auto" SharedSizeGroup="PieceCountKey" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="{Binding Key}" Margin="5,0,5,0"/>
-                            <TextBlock Grid.Column="1">
+                            <!--<TextBlock Text="{Binding Key}" Margin="5,0,5,0"/>-->
+                            <userControls:PieceControl PieceValue="{Binding Key}" Margin="5,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                            <TextBlock Grid.Column="1" Height="20">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0} ({1}%)">
                                         <Binding Path="Value.Value"/>
-                                        <Binding Path="Value.Percentage"/>
+                                        <Binding Path="Value.PercentageAsString"/>
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
@@ -56,7 +97,25 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </GroupBox>
-        <GroupBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2">
+        <GroupBox Grid.Row="1" Grid.Column="0" Header="Misc">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Queue problem:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding EndOfPieceQueueReached}"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Invalid Piece:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding NextPieceNotYetReceived}"/>
+            </Grid>
+        </GroupBox>
+        <!--<GroupBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2">
             <GroupBox.HeaderTemplate>
                 <DataTemplate>
                     <TextBlock>
@@ -175,44 +234,98 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </GroupBox>
-        <GroupBox Grid.Row="0" Grid.Column="3" Header="Misc">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Queue problem:" Margin="0,0,4,0"/>
-                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding EndOfPieceQueueReached}"/>
-                
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Invalid Piece:" Margin="0,0,4,0"/>
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding NextPieceNotYetReceived}"/>
-                
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Lines/min:" Margin="0,0,4,0"/>
-                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LinesPerMinute, StringFormat={}{0:0.00}}"/>
-
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Tetris:" Margin="0,0,4,0"/>
-                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding TetrisCount}"/>
-
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Triple:" Margin="0,0,4,0"/>
-                <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding TripleCount}"/>
-
-                <TextBlock Grid.Row="5" Grid.Column="0" Text="Double:" Margin="0,0,4,0"/>
-                <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding DoubleCount}"/>
-
-                <TextBlock Grid.Row="6" Grid.Column="0" Text="Single:" Margin="0,0,4,0"/>
-                <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding SingleCount}"/>
-            </Grid>
+        </GroupBox>-->
+        <GroupBox Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Background="White" Header="Specials">
+            <ListView
+                ItemsSource="{Binding Specials}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView.View>
+                    <GridView AllowsColumnReorder="False">
+                        <GridViewColumn Width="30">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Rectangle Stretch="Fill" Width="16" Height="16" Fill="{Binding Key, Converter={StaticResource SpecialToBrushConverter}}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="100">
+                            <GridViewColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}Spawn ({0})">
+                                                <Binding Path="DataContext.SpecialCountSum" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.HeaderTemplate>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0} ({1}%)">
+                                                <Binding Path="Value.Count.Value"/>
+                                                <Binding Path="Value.Count.PercentageAsString"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="100">
+                            <GridViewColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}Used ({0})">
+                                                <Binding Path="DataContext.SpecialUsedSum" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.HeaderTemplate>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0} ({1}%)">
+                                                <Binding Path="Value.Used.Value"/>
+                                                <Binding Path="Value.Used.PercentageAsString"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Width="100">
+                            <GridViewColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}Discarded ({0})">
+                                                <Binding Path="DataContext.SpecialDiscardedSum" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type GroupBox}}"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.HeaderTemplate>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0} ({1}%)">
+                                                <Binding Path="Value.Discarded.Value"/>
+                                                <Binding Path="Value.Discarded.PercentageAsString"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
         </GroupBox>
         <Button Grid.Row="2" Grid.Column="0"
                 Command="{Binding RefreshStatisticsCommand}">

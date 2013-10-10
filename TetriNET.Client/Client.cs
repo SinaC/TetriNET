@@ -867,7 +867,7 @@ namespace TetriNET.Client
         {
             if (State == States.Playing && AutomaticallyMoveDown)
             {
-                MoveDown();
+                MoveDown(true);
             }
         }
 
@@ -1322,9 +1322,10 @@ namespace TetriNET.Client
 
             //Log.WriteLine(Log.LogLevels.Debug, "ENQUEUE DROP {0} {1}", CurrentPiece.Value, CurrentPiece.Index);
             EnqueueBoardAction(DropAction);
+            _statistics.MoveCount++;
         }
 
-        public void MoveDown()
+        public void MoveDown(bool automatic = false)
         {
             //Log.WriteLine(Log.LogLevels.Debug, "MoveDown");
 
@@ -1332,6 +1333,8 @@ namespace TetriNET.Client
                 return;
             //Log.WriteLine(Log.LogLevels.Debug, "ENQUEUE DOWN {0} {1}", CurrentPiece.Value, CurrentPiece.Index);
             EnqueueBoardAction(MoveDownAction);
+            if (!automatic) 
+                _statistics.MoveCount++;
         }
 
         public void MoveLeft()
@@ -1339,6 +1342,7 @@ namespace TetriNET.Client
             if (State != States.Playing)
                 return;
             EnqueueBoardAction(MoveLeftAction);
+            _statistics.MoveCount++;
         }
 
         public void MoveRight()
@@ -1346,6 +1350,7 @@ namespace TetriNET.Client
             if (State != States.Playing)
                 return;
             EnqueueBoardAction(MoveRightAction);
+            _statistics.MoveCount++;
         }
 
         public void RotateClockwise()
@@ -1353,6 +1358,7 @@ namespace TetriNET.Client
             if (State != States.Playing)
                 return;
             EnqueueBoardAction(RotateClockwiseAction);
+            _statistics.MoveCount++;
         }
 
         public void RotateCounterClockwise()
@@ -1360,6 +1366,7 @@ namespace TetriNET.Client
             if (State != States.Playing)
                 return;
             EnqueueBoardAction(RotateCounterClockwiseAction);
+            _statistics.MoveCount++;
         }
 
         public void DiscardFirstSpecial()
