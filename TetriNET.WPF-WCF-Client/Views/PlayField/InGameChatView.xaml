@@ -10,11 +10,13 @@
         <ResourceDictionary>
             <!--<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>-->
             <Converters:SpecialToStringConverter x:Key="SpecialToStringConverter"/>
+            <!--<Converters:SpecialToBrushConverter x:Key="SpecialToBrushConverter"/>-->
             <DataTemplate x:Key="SpecialDataTemplate" DataType="{x:Type playField:InGameChatEntry}">
                 <WrapPanel>
                     <TextBlock Text="{Binding Id}" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="." Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="{Binding Special, Converter={StaticResource SpecialToStringConverter}}" Foreground="DarkMagenta" FontSize="10" Margin="0,0,2,0"/>
+                    <!--<Rectangle Fill="{Binding Special, Converter={StaticResource SpecialToBrushConverter}}" Width="12" Height="12"/>-->
                     <TextBlock Text="on" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="{Binding Target}" Foreground="Blue" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="from" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
@@ -25,7 +27,7 @@
                 <WrapPanel>
                     <TextBlock Text="{Binding Id}" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="." Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
-                    <TextBlock Text="{Binding LinesAdded}" Foreground="DarkMagenta" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="1" Foreground="DarkMagenta" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="line added to All from" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="{Binding Source}" Foreground="Blue" FontSize="10"/>
                 </WrapPanel>
@@ -76,12 +78,20 @@
                                 <Setter Property="ContentTemplate" Value="{StaticResource SpecialDataTemplate}" />
                                 <!-- Trigger to change template -->
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsAddLines}" Value="True">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource AddMultiLinesDataTemplate}" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding LinesAdded}" Value="1">
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsAddLines}" Value="True" />
+                                            <Condition Binding="{Binding LinesAdded}" Value="1" />
+                                        </MultiDataTrigger.Conditions>
                                         <Setter Property="ContentTemplate" Value="{StaticResource AddOneLineDataTemplate}" />
-                                    </DataTrigger>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsAddLines}" Value="True" />
+                                            <Condition Binding="{Binding MoreThanOneLine}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="ContentTemplate" Value="{StaticResource AddMultiLinesDataTemplate}" />
+                                    </MultiDataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </ContentControl.Style>

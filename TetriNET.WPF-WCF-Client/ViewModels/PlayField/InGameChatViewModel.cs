@@ -18,6 +18,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         public bool IsAddLines { get; set; }
         public int LinesAdded { get; set; }
+
+        public bool MoreThanOneLine { get { return LinesAdded > 1; } }
     }
 
     public class InGameChatViewModel : ViewModelBase
