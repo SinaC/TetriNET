@@ -92,6 +92,7 @@
     <Compile Include="UserControls\SensibilityControl.xaml.cs">
       <DependentUpon>SensibilityControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Validators\StringValidationRule.cs" />
     <Compile Include="ViewModels\Options\KeySetting.cs" />
     <Compile Include="ViewModels\ITabIndex.cs" />
     <Compile Include="TextureManager\ITextureManager.cs" />

@@ -37,7 +37,16 @@
         </Grid.RowDefinitions>
         
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Username: " />
-        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Username}" MaxLength="20"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" MaxLength="20" Text="{Binding Username, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+        <!--<TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" MaxLength="20">
+            <TextBox.Text>
+                <Binding Path="Username" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <validators:StringValidationRule FieldName="Username" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>-->
         
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Server address: " />
         <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding ServerAddress}"/>
@@ -56,6 +65,7 @@
         <!--<TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding ServerCompleteAddress}" />-->
 
         <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,4,0,4"
+                IsEnabled="{Binding IsConnectDisconnectEnabled}"
                 Command="{Binding ConnectDisconnectCommand}">
             <TextBlock Text="{Binding ConnectDisconnectLabel}"/>
         </Button>

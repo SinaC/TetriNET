@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
+using System.Windows.Controls;
 using System.Windows.Input;
 using TetriNET.Client.WCFProxy;
 using TetriNET.Common.DataContracts;
@@ -9,12 +11,22 @@ using TetriNET.WPF_WCF_Client.Commands;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.Models;
 using TetriNET.WPF_WCF_Client.Properties;
+using TetriNET.WPF_WCF_Client.Validators;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 {
-    public class LoginViewModel : ViewModelBase
+    public class LoginViewModel : ViewModelBase, IDataErrorInfo
     {
         private bool _isRegistered;
+
+        public bool IsConnectDisconnectEnabled
+        {
+            get
+            {
+                string error = this["Username"];
+                return String.IsNullOrWhiteSpace(error);
+            }
+        }
 
         private string _username;
         public string Username
@@ -26,8 +38,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                 {
                     _username = value;
                     OnPropertyChanged();
-                    Settings.Default.Username = _username;
-                    Settings.Default.Save();
+                    OnPropertyChanged("IsConnectDisconnectEnabled");
                 }
             }
         }
@@ -53,8 +64,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
                     OnPropertyChanged();
                     OnPropertyChanged("ServerCompleteAddress");
-                    Settings.Default.Server = _serverAddress;
-                    Settings.Default.Save();
                 }
             }
         }
@@ -158,11 +167,18 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                         SetConnectionResultMessage("Missing server address", ChatColor.Red);
                         return;
                     }
-                    if (String.IsNullOrEmpty(Username))
+                    Settings.Default.Server = _serverAddress;
+                    Settings.Default.Save();
+                    
+                    string error = this["Username"];
+                    if (!String.IsNullOrWhiteSpace(error))
                     {
-                        SetConnectionResultMessage("Missing username", ChatColor.Red);
+                        SetConnectionResultMessage(error, ChatColor.Red);
                         return;
                     }
+                    Settings.Default.Username = _username;
+                    Settings.Default.Save();
+
                     bool connected = Client.ConnectAndRegister(callback => new WCFProxy(callback, ServerAddress), Username);
                     if (!connected)
                     {
@@ -243,6 +259,32 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         #region Commands
 
         public ICommand ConnectDisconnectCommand { get; private set; }
+
+        #endregion
+
+        #region IDataErrorInfo
+
+        public string this[string columnName]
+        {
+            get
+            {
+                if (columnName == "Username")
+                {
+                    StringValidationRule rule = new StringValidationRule
+                        {
+                            FieldName = columnName
+                        };
+                    ValidationResult result = rule.Validate(Username, CultureInfo.InvariantCulture);
+                    return (string) result.ErrorContent;
+                }
+                return null;
+            }
+        }
+        
+        public string Error
+        {
+            get { return String.Empty; }
+        }
 
         #endregion
     }

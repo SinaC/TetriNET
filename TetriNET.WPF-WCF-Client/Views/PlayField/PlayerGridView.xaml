@@ -21,7 +21,9 @@
             <TextBlock Text="[L]" Visibility="{Binding HasLost, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,2,0"/>
             <TextBlock Text="{Binding DisplayPlayerId}" Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             <TextBlock Text="." Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,2,0"/>
-            <TextBlock Text="{Binding PlayerName}" />
+            <TextBlock Text="{Binding PlayerName}"/>
+            <TextBlock Text="-" Visibility="{Binding IsPlayerInTeam, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2,0,2,0"/>
+            <TextBlock Text="{Binding Team}" Visibility="{Binding IsPlayerInTeam, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </StackPanel>
         <!--<TextBlock HorizontalAlignment="Center" MaxWidth="192">
             <TextBlock Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}">

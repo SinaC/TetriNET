@@ -138,14 +138,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.SingleCount; }
         }
 
+        private bool _gameFinished;
         private DateTime _gameStartedDateTime;
+        private DateTime _gameFinishedDateTime;
         public double LinesPerMinute
         {
             get
             {
                 if (Client == null)
                     return 0;
-                TimeSpan timeSpan = DateTime.Now - _gameStartedDateTime;
+                TimeSpan timeSpan = (_gameFinished ? _gameFinishedDateTime : DateTime.Now) - _gameStartedDateTime;
                 double totalMinutes = timeSpan.TotalMinutes;
                 if (totalMinutes < 0.0001)
                     return 0;
@@ -159,7 +161,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             {
                 if (Client == null || Client.Statistics == null)
                     return 0;
-                TimeSpan timeSpan = DateTime.Now - _gameStartedDateTime;
+                TimeSpan timeSpan = (_gameFinished ? _gameFinishedDateTime : DateTime.Now) - _gameStartedDateTime;
                 double totalMinutes = timeSpan.TotalMinutes;
                 if (totalMinutes < 0.0001)
                     return 0;
@@ -225,16 +227,27 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         private void OnGameStarted()
         {
             _gameStartedDateTime = DateTime.Now;
+            _gameFinished = false;
         }
 
         private void OnGameFinished()
         {
-            Refresh();
+            if (!_gameFinished)
+            {
+                _gameFinishedDateTime = DateTime.Now;
+                _gameFinished = true;
+                Refresh();
+            }
         }
 
         private void OnGameOver()
         {
-            Refresh();
+            if (!_gameFinished)
+            {
+                _gameFinishedDateTime = DateTime.Now;
+                _gameFinished = true;
+                Refresh();
+            }
         }
 
         #endregion

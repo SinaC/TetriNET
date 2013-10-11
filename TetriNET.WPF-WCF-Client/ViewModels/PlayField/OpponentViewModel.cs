@@ -15,6 +15,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             get { return PlayerId + 1; }
         }
 
+        public bool IsPlayerInTeam
+        {
+            get { return !string.IsNullOrWhiteSpace(Team); }
+        }
+
         private string _playerName;
         public string PlayerName
         {
@@ -25,6 +30,21 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                 {
                     _playerName = value;
                     OnPropertyChanged();
+                }
+            }
+        }
+
+        private string _team;
+        public string Team
+        {
+            get { return _team; }
+            set
+            {
+                if (_team != value)
+                {
+                    _team = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged("IsPlayerInTeam");
                 }
             }
         }
@@ -73,6 +93,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             oldClient.OnConnectionLost -= OnConnectionLost;
             oldClient.OnPlayerLost -= OnPlayerLost;
             oldClient.OnGameStarted -= OnGameStarted;
+            oldClient.OnPlayerTeamChanged -= OnPlayerTeamChanged;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
@@ -81,10 +102,17 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             newClient.OnConnectionLost += OnConnectionLost;
             newClient.OnPlayerLost += OnPlayerLost;
             newClient.OnGameStarted += OnGameStarted;
+            newClient.OnPlayerTeamChanged += OnPlayerTeamChanged;
         }
         #endregion
 
         #region IClient events handler
+
+        private void OnPlayerTeamChanged(int playerId, string team)
+        {
+            if (PlayerId == playerId)
+                Team = team;
+        }
 
         private void OnGameStarted()
         {

@@ -1,12 +1,17 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.ComponentModel;
+using System.Globalization;
+using System.Windows.Controls;
+using System.Windows.Input;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.Commands;
 using TetriNET.WPF_WCF_Client.Properties;
+using TetriNET.WPF_WCF_Client.Validators;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 {
-    public class PartyLineViewModel : ViewModelBase, ITabIndex
+    public class PartyLineViewModel : ViewModelBase, ITabIndex, IDataErrorInfo
     {
         public ChatViewModel ChatViewModel { get; set; }
         public PlayersManagerViewModel PlayersManagerViewModel { get; set; }
@@ -38,7 +43,19 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         public bool IsUpdateTeamEnabled
         {
-            get { return _isRegistered && !_isGameStarted; }
+            get
+            {
+                return _isRegistered && !_isGameStarted;
+            }
+        }
+
+        public bool IsUpdateTeamButtonEnabled
+        {
+            get
+            {
+                string error = this["Team"];
+                return String.IsNullOrWhiteSpace(error) && _isRegistered && !_isGameStarted;
+            }
         }
 
         private string _team;
@@ -49,8 +66,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                 {
                     _team = value;
                     OnPropertyChanged();
-                    Settings.Default.Team = _team;
-                    Settings.Default.Save();
+                    UpdateEnabilityAndLabel();
                 }
             }
         }
@@ -80,6 +96,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             OnPropertyChanged("StartStopLabel");
             OnPropertyChanged("PauseResumeLabel");
             OnPropertyChanged("IsUpdateTeamEnabled");
+            OnPropertyChanged("IsUpdateTeamButtonEnabled");
         }
 
         private void StartStop()
@@ -102,6 +119,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         private void UpdateTeam()
         {
+            Settings.Default.Team = _team;
+            Settings.Default.Save();
             Client.ChangeTeam(Team);
         }
 
@@ -214,6 +233,33 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         public ICommand StartStopCommand { get; private set; }
         public ICommand PauseResumeCommand { get; private set; }
         public ICommand UpdateTeamCommand { get; private set; }
+
+        #endregion
+
+        #region IDataErrorInfo
+
+        public string this[string columnName]
+        {
+            get
+            {
+                if (columnName == "Team")
+                {
+                    StringValidationRule rule = new StringValidationRule
+                    {
+                        FieldName = columnName,
+                        NullAccepted = true
+                    };
+                    ValidationResult result = rule.Validate(Team, CultureInfo.InvariantCulture);
+                    return (string)result.ErrorContent;
+                }
+                return null;
+            }
+        }
+
+        public string Error
+        {
+            get { return String.Empty; }
+        }
 
         #endregion
     }

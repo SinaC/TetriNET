@@ -20,12 +20,12 @@
         </Grid.ColumnDefinitions>
         <DockPanel Grid.Row="0" Grid.Column="0">
             <TextBlock DockPanel.Dock="Left" Text="Team you are playing on: (blank for none)" Margin="5"/>
-            <TextBox DockPanel.Dock="Right" Margin="2" FontSize="10" 
-                     Text="{Binding Team}" MaxLength="16"
+            <TextBox DockPanel.Dock="Right" Margin="2" FontSize="10" MaxLength="16"
+                     Text="{Binding Team, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                      IsEnabled="{Binding IsUpdateTeamEnabled}"/>
         </DockPanel>
         <Button Grid.Row="0" Grid.Column="1" Margin="2" 
-                IsEnabled="{Binding IsUpdateTeamEnabled}"
+                IsEnabled="{Binding IsUpdateTeamButtonEnabled}"
                 Command="{Binding UpdateTeamCommand}">
             <TextBlock Text="Update team"/>
         </Button>
