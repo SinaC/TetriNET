@@ -515,7 +515,7 @@ namespace TetriNET.Client
                     PlayerData playerData = GetPlayer(playerId);
                     string playerName = playerData == null ? "???" : playerData.Name;
 
-                    ClientOnPlayerAddLines(playerName, specialId, lineCount);
+                    ClientOnPlayerAddLines(playerId, playerName, specialId, lineCount);
                 }
             //}
         }

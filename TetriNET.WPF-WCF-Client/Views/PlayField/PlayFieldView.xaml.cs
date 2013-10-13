@@ -74,6 +74,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             else if (e.Key == Key.H && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
             {
                 PlayerGrid.ToggleHint();
+                Inventory.ToggleHint();
             }
             else if (e.Key == Key.D && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
             {

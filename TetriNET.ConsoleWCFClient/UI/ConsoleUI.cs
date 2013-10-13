@@ -50,7 +50,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             Console.BufferHeight = 30;
         }
 
-        private void OnPlayerAddLines(string playerName, int specialId, int count)
+        private void OnPlayerAddLines(int playerId, string playerName, int specialId, int count)
         {
             lock (_lock)
             {

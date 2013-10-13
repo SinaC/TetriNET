@@ -84,6 +84,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             {
                 opponent.PlayerId = -1;
                 opponent.PlayerName = "Not playing";
+                opponent.Team = "";
             }
         }
 

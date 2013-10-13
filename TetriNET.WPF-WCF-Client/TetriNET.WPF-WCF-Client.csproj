@@ -76,6 +76,7 @@
     </ApplicationDefinition>
     <Compile Include="AI\GenericBot.cs" />
     <Compile Include="Converters\ChatColorBrushConverter.cs" />
+    <Compile Include="Converters\PlayerIdToBrushConverter.cs" />
     <Compile Include="Converters\SpecialToBrushConverter.cs" />
     <Compile Include="Converters\SpecialToStringConverter.cs" />
     <Compile Include="Commands\AsyncRelayCommand.cs" />

@@ -2,11 +2,14 @@
 {
     public enum ChatColor
     {
+        Black,
         Red,
         Green,
         Orange,
         Blue,
-        Black,
-        Yellow
+        Yellow,
+        Magenta,
+        Cyan,
+        White,
     }
 }

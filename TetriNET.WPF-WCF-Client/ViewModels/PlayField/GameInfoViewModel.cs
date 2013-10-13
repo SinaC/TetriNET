@@ -173,7 +173,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             oldClient.OnGameOver -= StopTimerAndComputeTime;
             oldClient.OnGameFinished -= StopTimerAndComputeTime;
             oldClient.OnConnectionLost -= OnConnectionLost;
-            oldClient.OnPlayerUnregistered -= StopTimerAndComputeTime;
+            oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
@@ -185,13 +185,18 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             newClient.OnGameOver += StopTimerAndComputeTime;
             newClient.OnGameFinished += StopTimerAndComputeTime;
             newClient.OnConnectionLost += OnConnectionLost;
-            newClient.OnPlayerUnregistered += StopTimerAndComputeTime;
+            newClient.OnPlayerUnregistered += OnPlayerUnregistered;
         }
 
         #endregion
 
         #region IClient events handler
-        
+
+        private void OnPlayerUnregistered()
+        {
+            StopTimer(false);
+        }
+
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
             StopTimer(false);

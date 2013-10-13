@@ -1,5 +1,6 @@
 ﻿
 using TetriNET.Client.Interfaces;
+using TetriNET.WPF_WCF_Client.ViewModels.Options;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
@@ -18,6 +19,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         public bool IsPlayerInTeam
         {
             get { return !string.IsNullOrWhiteSpace(Team); }
+        }
+
+        public bool IsColorSchemeUsed
+        {
+            get { return ClientOptionsViewModel.Instance == null || ClientOptionsViewModel.Instance.IsColorSchemeUsed; } // true if no instance (aka in designer mode)
         }
 
         private string _playerName;
@@ -83,6 +89,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         {
             PlayerId = -1;
             PlayerName = "Not playing";
+            Team = "";
             HasLost = false;
         }
 
@@ -129,12 +136,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         {
             PlayerId = -1;
             PlayerName = "Not playing";
+            Team = "";
         }
 
         private void OnPlayerUnregistered()
         {
             PlayerId = -1;
             PlayerName = "Not playing";
+            Team = "";
         }
 
         #endregion

@@ -17,6 +17,9 @@ namespace TetriNET.WPF_WCF_Client.Converters
         private static readonly Brush Orange = new SolidColorBrush(Colors.Orange);
         private static readonly Brush Red = new SolidColorBrush(Colors.Red);
         private static readonly Brush Yellow = new SolidColorBrush(Colors.Yellow);
+        private static readonly Brush Magenta = new SolidColorBrush(Colors.Magenta);
+        private static readonly Brush Cyan = new SolidColorBrush(Colors.Cyan);
+        private static readonly Brush White = new SolidColorBrush(Colors.White);
         private static readonly Brush DeepPink = new SolidColorBrush(Colors.DeepPink); // default value
 
         private static bool ApplicationIsInDesignMode
@@ -27,8 +30,8 @@ namespace TetriNET.WPF_WCF_Client.Converters
         // ChatColor -> Brush
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (ApplicationIsInDesignMode)
-                return Black;
+            //if (ApplicationIsInDesignMode)
+            //    return DeepPink;
             if (!(value is ChatColor))
                 throw new ArgumentException("value not of type ChatColor");
             ChatColor cc = (ChatColor) value;
@@ -46,6 +49,12 @@ namespace TetriNET.WPF_WCF_Client.Converters
                     return Red;
                 case ChatColor.Yellow:
                     return Yellow;
+                case ChatColor.Magenta:
+                    return Magenta;
+                case ChatColor.Cyan:
+                    return Cyan;
+                case ChatColor.White:
+                    return White;
                 default:
                     return DeepPink; // default value
             }

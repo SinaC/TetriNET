@@ -40,7 +40,7 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientLinesClearedChangedHandler();
     public delegate void ClientLevelChangedHandler();
     public delegate void ClientSpecialUsedHandler(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special);
-    public delegate void ClientPlayerAddLinesHandler(string playerName, int specialId, int count);
+    public delegate void ClientPlayerAddLinesHandler(int playerId, string playerName, int specialId, int count);
     public delegate void ClientContinuousSpecialToggledHandler(Specials special, bool active, double durationLeftInSeconds);
     public delegate void ClientContinuousSpecialFinishedHandler(int playerId, Specials special);
 

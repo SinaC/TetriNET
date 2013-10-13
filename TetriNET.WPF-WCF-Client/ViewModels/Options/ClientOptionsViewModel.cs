@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Input;
 using TetriNET.Client.Interfaces;
+using TetriNET.WPF_WCF_Client.Models;
 using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Options
@@ -140,6 +141,29 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #endregion
 
+        #region Player colors
+
+        private bool _isColorSchemeUsed;
+
+        public bool IsColorSchemeUsed
+        {
+            get { return _isColorSchemeUsed; }
+            set
+            {
+                if (_isColorSchemeUsed != value)
+                {
+                    _isColorSchemeUsed = value;
+                    OnPropertyChanged();
+                    Settings.Default.IsColorSchemeUsed = _isColorSchemeUsed;
+                    Settings.Default.Save();
+                }
+            }
+        }
+
+        public ObservableCollection<ChatColor> PlayerColors { get; set; }
+
+        #endregion
+
         public ClientOptionsViewModel()
         {
             Instance = this;
@@ -174,6 +198,17 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             SetKeySetting(Settings.Default.UseSpecialOn4, TetriNET.Client.Interfaces.Commands.UseSpecialOn4);
             SetKeySetting(Settings.Default.UseSpecialOn5, TetriNET.Client.Interfaces.Commands.UseSpecialOn5);
             SetKeySetting(Settings.Default.UseSpecialOn6, TetriNET.Client.Interfaces.Commands.UseSpecialOn6);
+
+            IsColorSchemeUsed = Settings.Default.IsColorSchemeUsed;
+            PlayerColors = new ObservableCollection<ChatColor>
+            {
+                ChatColor.Blue, // 1
+                ChatColor.Red, // 2
+                ChatColor.Green, // 3
+                ChatColor.Yellow, // 4
+                ChatColor.Magenta, // 5
+                ChatColor.Cyan, // 6
+            };
         }
 
         #region ViewModelBase

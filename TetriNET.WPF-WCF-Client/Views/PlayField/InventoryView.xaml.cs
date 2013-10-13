@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using TetriNET.Client.Strategy;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
@@ -29,6 +30,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             set { SetValue(ClientProperty, value); }
         }
 
+        private bool _isHintActivated;
+        private ISpecialStrategy _specialStrategy;
         private readonly List<Rectangle> _inventory = new List<Rectangle>();
 
         private string _firstSpecial;
@@ -64,6 +67,21 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
 
             FirstSpecial = "No Special Blocks";
+            _isHintActivated = false;
+        }
+
+        public void ToggleHint()
+        {
+            _isHintActivated = !_isHintActivated;
+            if (_isHintActivated)
+            {
+                _specialStrategy = _specialStrategy ?? new SinaCSpecials();
+                DisplayHint();
+            }
+        }
+
+        private void DisplayHint()
+        {
         }
 
         private void DrawInventory()
@@ -104,6 +122,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 {
                     oldClient.OnGameStarted -= @this.OnGameStarted;
                     oldClient.OnInventoryChanged -= @this.OnInventoryChanged;
+                    oldClient.OnPieceMoved -= @this.OnPieceMoved;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
@@ -113,11 +132,17 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 {
                     newClient.OnGameStarted += @this.OnGameStarted;
                     newClient.OnInventoryChanged += @this.OnInventoryChanged;
+                    newClient.OnPieceMoved += @this.OnPieceMoved;
                 }
             }
         }
 
         #region IClient events handler
+
+        private void OnPieceMoved()
+        {
+        }
+
         private void OnGameStarted()
         {
             ExecuteOnUIThread.Invoke(() =>
@@ -131,6 +156,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         {
             ExecuteOnUIThread.Invoke(DrawInventory);
         }
+
         #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;

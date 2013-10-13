@@ -24,14 +24,20 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        
         <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding AutomaticallySwitchToPartyLineOnRegistered, Mode=TwoWay}">Switch on connect</CheckBox>
-        <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding AutomaticallySwitchToPlayFieldOnGameStarted, Mode=TwoWay}">Switch on start/stop game</CheckBox>
-        <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding DisplayOpponentsFieldEvenWhenNotPlaying, Mode=TwoWay}">Always show opponents field</CheckBox>
-        <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsDeveloperModeActivated, Mode=TwoWay}">Developer mode</CheckBox>
+        <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding AutomaticallySwitchToPlayFieldOnGameStarted, Mode=TwoWay}">Switch on start/stop game</CheckBox>
         <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding DisplayDropLocation, Mode=TwoWay}">Display drop location</CheckBox>
-        <CheckBox Grid.Row="2" Grid.Column="1" IsChecked="{Binding DisplayPieceAnchor, Mode=TwoWay}" Visibility="{Binding IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">Display piece center</CheckBox>
-        <GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Header="Controls">
+        
+        <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding DisplayOpponentsFieldEvenWhenNotPlaying, Mode=TwoWay}">Always show opponents field</CheckBox>
+        <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsColorSchemeUsed, Mode=TwoWay}">Player color mode (restart needed)</CheckBox>
+        
+        <CheckBox Grid.Row="0" Grid.Column="2" IsChecked="{Binding IsDeveloperModeActivated, Mode=TwoWay}">Developer mode</CheckBox>
+        <CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding DisplayPieceAnchor, Mode=TwoWay}" Visibility="{Binding IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">Display piece center</CheckBox>
+        
+        <GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Header="Controls">
             <ItemsControl
                 Grid.IsSharedSizeScope="True" MaxHeight="160"
                 ItemsSource="{Binding KeySettings}">
@@ -55,7 +61,7 @@
             </ItemsControl>
         </GroupBox>
         
-        <GroupBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Header="Sensibility">
+        <GroupBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Header="Sensibility">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
