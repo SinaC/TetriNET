@@ -371,19 +371,27 @@ namespace TetriNET.Client
                 _statistics.PieceCount[firstPiece]++;
             // Reset inventory
             _inventory.Reset(Options.InventorySize);
-            //_inventory.Enqueue(new List<Specials>
-            //{
-            //    //Specials.Darkness,
-            //    //Specials.Confusion,
-            //    //Specials.Confusion,
-            //    //Specials.Darkness,
-            //    //Specials.Immunity,
-            //    //Specials.Immunity,
-            //    Specials.SwitchFields,
-            //    Specials.SwitchFields,
-            //    Specials.SwitchFields,
-            //    Specials.SwitchFields,
-            //});
+            _inventory.Enqueue(new List<Specials>
+            {
+                //Specials.Darkness,
+                //Specials.Confusion,
+                //Specials.Confusion,
+                //Specials.Darkness,
+                //Specials.Immunity,
+                //Specials.Immunity,
+                //Specials.SwitchFields,
+                //Specials.SwitchFields,
+                //Specials.SwitchFields,
+                //Specials.SwitchFields,
+                //Specials.NukeField,
+                //Specials.NukeField,
+                //Specials.NukeField,
+                //Specials.NukeField,
+                Specials.BlockBomb,
+                Specials.BlockBomb,
+                Specials.BlockBomb,
+                Specials.BlockBomb,
+            });
             // Reset line and level
             LinesCleared = 0;
             Level = Options.StartingLevel;
@@ -395,15 +403,22 @@ namespace TetriNET.Client
             _isImmunityActive = false;
             _mutationCount = 0;
             // Reset boards
+            PlayingOpponentsInCurrentGame = 0;
             for (int i = 0; i < MaxPlayers; i++)
             {
                 PlayerData playerData = _playersData[i];
                 if (playerData != null)
                 {
                     if (playerData.Board != null)
+                    {
                         playerData.Board.Clear();
+                        for (int y = 1; y <= 3; y++)
+                            for (int x = 1; x <= playerData.Board.Width; x++)
+                                playerData.Board.Cells[playerData.Board.GetCellIndex(x, y)] = (x % 2 == 0) ? (byte)5 : (byte)Specials.BlockBomb;
+                    }
                     playerData.State = PlayerData.States.Playing;
                     playerData.IsImmune = false;
+                    PlayingOpponentsInCurrentGame++;
                 }
             }
             _proxy.ModifyGrid(this, Player.Board.Cells);
@@ -538,6 +553,7 @@ namespace TetriNET.Client
                 if (target != null && target.State == PlayerData.States.Playing)
                     target.IsImmune = true;
             }
+
             // Messages are displayed immediately, only board action is enqueued
             if (ClientOnSpecialUsed != null)
             {
@@ -549,6 +565,7 @@ namespace TetriNET.Client
 
                 ClientOnSpecialUsed(playerId, playerName, targetId, targetName, specialId, special);
             }
+
             //}
         }
 
@@ -841,7 +858,7 @@ namespace TetriNET.Client
 
             //
             if (ClientOnRoundFinished != null)
-                ClientOnRoundFinished();
+                ClientOnRoundFinished(deletedRows);
 
             // Start next round
             StartRound();
@@ -943,6 +960,8 @@ namespace TetriNET.Client
         public GameOptions Options { get; private set; }
 
         public bool IsServerMaster { get; private set; }
+
+        public int PlayingOpponentsInCurrentGame { get; private set; }
 
         public IEnumerable<IOpponent> Opponents
         {
@@ -1145,6 +1164,13 @@ namespace TetriNET.Client
             remove { ClientOnSpecialUsed -= value; }
         }
 
+        private event ClientUseSpecialHandler ClientOnUseSpecial;
+        event ClientUseSpecialHandler IClient.OnUseSpecial
+        {
+            add { ClientOnUseSpecial += value; }
+            remove { ClientOnUseSpecial -= value; }
+        }
+
         private event ClientPlayerAddLinesHandler ClientOnPlayerAddLines;
         event ClientPlayerAddLinesHandler IClient.OnPlayerAddLines
         {
@@ -1309,7 +1335,7 @@ namespace TetriNET.Client
 
         public void PublishMessage(string msg)
         {
-            if (State == States.Registered)
+            if (State == States.Registered || State == States.Playing)
                 _proxy.PublishMessage(this, msg);
         }
 
@@ -1415,6 +1441,10 @@ namespace TetriNET.Client
                     //
                     if (ClientOnInventoryChanged != null)
                         ClientOnInventoryChanged();
+
+                    //
+                    if (ClientOnUseSpecial != null)
+                        ClientOnUseSpecial(targetId, target.Name, special);
                 }
             }
             return succeeded;

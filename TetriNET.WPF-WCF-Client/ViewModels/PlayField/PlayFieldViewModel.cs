@@ -1,4 +1,6 @@
-﻿using TetriNET.Common.DataContracts;
+﻿using System;
+using System.Timers;
+using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
@@ -6,6 +8,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
     // PlayerViewModel not used
     public class PlayFieldViewModel : ViewModelBase, ITabIndex
     {
+        private const double Epsilon = 0.00001;
+
         public int OpponentCount = 5;
 
         public GameInfoViewModel GameInfoViewModel { get; set; }
@@ -13,8 +17,55 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         public PlayerViewModel PlayerViewModel { get; set; }
         public OpponentViewModel[] OpponentsViewModel { get; set; }
 
+        private readonly Timer _achievementTimer;
+
+        private string _achievement;
+        public string Achievement
+        {
+            get { return _achievement; }
+            set
+            {
+                if (_achievement != value)
+                {
+                    _achievement = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private double _achievementOpacity;
+        public double AchievementOpacity
+        {
+            get { return _achievementOpacity; }
+            set
+            {
+                if (Math.Abs(_achievementOpacity - value) > Epsilon)
+                {
+                    _achievementOpacity = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private IAchievementManager _achievementManager;
+        public IAchievementManager AchievementManager
+        {
+            get { return _achievementManager; }
+            set
+            {
+                if (_achievementManager != null)
+                    _achievementManager.OnAchieved -= OnAchieved;
+                _achievementManager = value;
+                if (_achievementManager != null)
+                    _achievementManager.OnAchieved += OnAchieved;
+            }
+        }
+
         public PlayFieldViewModel()
         {
+            _achievementTimer = new Timer(250);
+            _achievementTimer.Elapsed += TimerOnElapsed;
+
             GameInfoViewModel = new GameInfoViewModel();
             InGameChatViewModel = new InGameChatViewModel();
             PlayerViewModel = new PlayerViewModel();
@@ -23,6 +74,21 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                 OpponentsViewModel[i] = new OpponentViewModel();
 
             ClientChanged += OnClientChanged;
+        }
+
+        private void TimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+        {
+            AchievementOpacity -= 0.1;
+            if (AchievementOpacity <= 0)
+                _achievementTimer.Stop();
+        }
+
+        private void OnAchieved(IAchievement achievement, bool firstTime)
+        {
+            Achievement = achievement.Title;
+            _achievementTimer.Stop();
+            AchievementOpacity = 1;
+            _achievementTimer.Start();
         }
 
         private OpponentViewModel GetOpponentViewModel(int playerId)

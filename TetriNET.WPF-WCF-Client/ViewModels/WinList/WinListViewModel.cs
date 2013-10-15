@@ -20,7 +20,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
     {
         public bool IsResetEnabled
         {
-            get { return Client != null && (Client.IsServerMaster && !Client.IsGameStarted); }
+            get { return Client != null && Client.IsServerMaster && !Client.IsGameStarted; }
         }
 
         public ObservableCollection<Entry> PlayerWinList { get; private set; }

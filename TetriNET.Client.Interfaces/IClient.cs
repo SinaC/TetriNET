@@ -14,7 +14,7 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientConnectionLostHandler(ConnectionLostReasons reason);
 
     public delegate void ClientRoundStartedHandler();
-    public delegate void ClientRoundFinishedHandler();
+    public delegate void ClientRoundFinishedHandler(int deletedRows);
     public delegate void ClientStartGameHandler();
     public delegate void ClientFinishGameHandler();
     public delegate void ClientPauseGameHandler();
@@ -40,6 +40,7 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientLinesClearedChangedHandler();
     public delegate void ClientLevelChangedHandler();
     public delegate void ClientSpecialUsedHandler(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special);
+    public delegate void ClientUseSpecialHandler(int targetId, string targetName, Specials special);
     public delegate void ClientPlayerAddLinesHandler(int playerId, string playerName, int specialId, int count);
     public delegate void ClientContinuousSpecialToggledHandler(Specials special, bool active, double durationLeftInSeconds);
     public delegate void ClientContinuousSpecialFinishedHandler(int playerId, Specials special);
@@ -63,9 +64,8 @@ namespace TetriNET.Client.Interfaces
         int InventorySize { get; }
         GameOptions Options { get; }
         bool IsServerMaster { get; }
+        int PlayingOpponentsInCurrentGame { get; }
 
-        //IBoard GetBoard(int playerId);
-        //bool IsPlaying(int playerId);
         IEnumerable<IOpponent> Opponents { get; }
         IClientStatistics Statistics { get; }
 
@@ -97,6 +97,7 @@ namespace TetriNET.Client.Interfaces
         event ClientLinesClearedChangedHandler OnLinesClearedChanged;
         event ClientLevelChangedHandler OnLevelChanged;
         event ClientSpecialUsedHandler OnSpecialUsed;
+        event ClientUseSpecialHandler OnUseSpecial;
         event ClientPlayerAddLinesHandler OnPlayerAddLines;
         event ClientContinuousSpecialToggledHandler OnContinuousEffectToggled; // on player
         event ClientContinuousSpecialFinishedHandler OnContinuousSpecialFinished; // on opponent

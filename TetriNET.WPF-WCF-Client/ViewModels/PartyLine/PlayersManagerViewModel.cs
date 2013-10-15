@@ -121,7 +121,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         private void AddEntry(int playerId, string playerName)
         {
-            // TODO: sort: http://msdn.microsoft.com/en-us/library/ms742542.aspx
             ExecuteOnUIThread.Invoke(() => PlayerList.Add(new PlayerData
                 {
                     RealPlayerId = playerId,

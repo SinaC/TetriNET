@@ -1,7 +1,11 @@
-﻿using TetriNET.Client.Board;
+﻿using System.Collections.Generic;
+using TetriNET.Client.Achievements;
+using TetriNET.Client.Achievements.Achievements;
+using TetriNET.Client.Board;
 using TetriNET.Client.Pieces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
+using TetriNET.WPF_WCF_Client.ViewModels.Achievements;
 using TetriNET.WPF_WCF_Client.ViewModels.Connection;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
 using TetriNET.WPF_WCF_Client.ViewModels.PartyLine;
@@ -13,14 +17,18 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public WinListViewModel WinListViewModel { get; set; }
-        public ClientStatisticsViewModel ClientStatisticsViewModel { get; set; }
-        public OptionsViewModel OptionsViewModel { get; set; }
-        public PartyLineViewModel PartyLineViewModel { get; set; }
-        public ConnectionViewModel ConnectionViewModel { get; set; }
-        public PlayFieldViewModel PlayFieldViewModel { get; set; }
+        public WinListViewModel WinListViewModel { get; private set; }
+        public ClientStatisticsViewModel ClientStatisticsViewModel { get; private set; }
+        public OptionsViewModel OptionsViewModel { get; private set; }
+        public PartyLineViewModel PartyLineViewModel { get; private set; }
+        public ConnectionViewModel ConnectionViewModel { get; private set; }
+        public PlayFieldViewModel PlayFieldViewModel { get; private set; }
+        public AchievementsViewModel AchievementsViewModel { get; private set; }
+
+        public IAchievementManager AchievementManager { get; private set; }
 
         private int _activeTabItemIndex;
+
         public int ActiveTabItemIndex
         {
             get { return _activeTabItemIndex; }
@@ -43,10 +51,100 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             PartyLineViewModel = new PartyLineViewModel();
             ConnectionViewModel = new ConnectionViewModel();
             PlayFieldViewModel = new PlayFieldViewModel();
+            AchievementsViewModel = new AchievementsViewModel();
+
+            //
+            //
+            AchievementManager = new AchievementManager
+            {
+                Achievements = new List<IAchievement>
+                {
+                    new Sniper(),
+                    new Architect(),
+                    new Magician(),
+                    new FearMyBrain(),
+                    new RunBabyRun(),
+                    new SerialBuilder(),
+                    new TooGoodForYou(),
+                    new HitchhikersGuide(),
+                    new NewtonsApple(),
+                    new TooEasyForMe(),
+                    new WhoIsYourDaddy(),
+                    new CallMeSavior(),
+                    new JustInTime(),
+                    new NuclearLaunchDetected()
+                },
+                //    Achievements = new List<Achievement>
+                //    {
+                //        new Sniper
+                //        {
+                //            IsAchieved = true,
+                //            FirstTimeAchieved = DateTime.Now.AddDays(-2).AddHours(1),
+                //            LastTimeAchieved = DateTime.Now.AddDays(-2).AddHours(1),
+                //            AchieveCount = 1,
+                //        },
+                //        new Architect
+                //        {
+                //            IsAchieved = false
+                //        },
+                //        new Magician
+                //        {
+                //            IsAchieved = false
+                //        },
+                //        new FearMyBrain
+                //        {
+                //            IsAchieved = true,
+                //            FirstTimeAchieved = DateTime.Now.AddDays(-4),
+                //            LastTimeAchieved = DateTime.Now.AddDays(-1),
+                //            AchieveCount = 2
+                //        },
+                //        new RunBabyRun
+                //        {
+                //            IsAchieved = false
+                //        },
+                //        new SerialBuilder
+                //        {
+                //            IsAchieved = false
+                //        },
+                //        new TooGoodForYou
+                //        {
+                //            IsAchieved = true,
+                //            FirstTimeAchieved = DateTime.Now.AddHours(-4),
+                //            LastTimeAchieved = DateTime.Now.AddHours(-4),
+                //            AchieveCount = 1,
+                //        },
+                //        new HitchhikersGuide
+                //        {
+                //            IsAchieved = false
+                //        },
+                //        new NewtonsApple
+                //        {
+                //            IsAchieved = false
+                //        },
+                //        new TooEasyForMe
+                //        {
+                //            IsAchieved = false
+                //        },
+                //        new WhoIsYourDaddy
+                //        {
+                //            IsAchieved = false
+                //        },
+                //        new CallMeSavior
+                //        {
+                //            IsAchieved = false
+                //        }
+                //    }
+            };
+            AchievementsViewModel.AchievementManager = AchievementManager;
+            PlayFieldViewModel.AchievementManager = AchievementManager;
+            // TODO: read/write achievement data from settings
+
+            //
             ClientChanged += OnClientChanged;
 
             // Create client
-            Client = new Client.Client(Piece.CreatePiece, () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height));
+            //Client = new Client.Client(Piece.CreatePiece, () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height));
+            Client = new Client.Client((pieces, i, arg3, arg4, arg5, arg6) => Piece.CreatePiece(Pieces.TetriminoI, i, arg3, arg4, arg5, arg6), () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height));
         }
 
         #region ViewModelBase
@@ -59,6 +157,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             PartyLineViewModel.Client = newClient;
             ConnectionViewModel.Client = newClient;
             PlayFieldViewModel.Client = newClient;
+            AchievementsViewModel.Client = newClient;
+
+            AchievementManager.Client = Client;
         }
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
@@ -137,11 +238,23 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
     public class MainWindowViewModelDesignData : MainWindowViewModel
     {
-        public new WinListViewModelDesignData WinListViewModel { get; set; }
-        public new ClientStatisticsViewModelDesignData ClientStatisticsViewModel { get; set; }
-        public new OptionsViewModelDesignData OptionsViewModel { get; set; }
-        public new PartyLineViewModelDesignData PartyLineViewModel { get; set; }
-        public new ConnectionViewModelDesignData ConnectionViewModel { get; set; }
-        public new PlayFieldViewModel PlayFieldViewModel { get; set; }
+        public new WinListViewModelDesignData WinListViewModel { get; private set; }
+        public new ClientStatisticsViewModelDesignData ClientStatisticsViewModel { get; private set; }
+        public new OptionsViewModelDesignData OptionsViewModel { get; private set; }
+        public new PartyLineViewModelDesignData PartyLineViewModel { get; private set; }
+        public new ConnectionViewModelDesignData ConnectionViewModel { get; private set; }
+        public new PlayFieldViewModelDesignData PlayFieldViewModel { get; private set; }
+        public new AchievementsViewModelDesignData AchievementsViewModel { get; private set; }
+
+        public MainWindowViewModelDesignData()
+        {
+            WinListViewModel = new WinListViewModelDesignData();
+            ClientStatisticsViewModel = new ClientStatisticsViewModelDesignData();
+            OptionsViewModel = new OptionsViewModelDesignData();
+            PartyLineViewModel = new PartyLineViewModelDesignData();
+            ConnectionViewModel = new ConnectionViewModelDesignData();
+            PlayFieldViewModel = new PlayFieldViewModelDesignData();
+            AchievementsViewModel = new AchievementsViewModelDesignData();
+        }
     }
 }

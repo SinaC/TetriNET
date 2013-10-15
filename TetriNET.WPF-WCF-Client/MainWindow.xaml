@@ -6,6 +6,7 @@
         xmlns:options="clr-namespace:TetriNET.WPF_WCF_Client.Views.Options"
         xmlns:partyLine="clr-namespace:TetriNET.WPF_WCF_Client.Views.PartyLine"
         xmlns:winList="clr-namespace:TetriNET.WPF_WCF_Client.Views.WinList"
+        xmlns:achievements="clr-namespace:TetriNET.WPF_WCF_Client.Views.Achievements"
         xmlns:local="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -17,6 +18,7 @@
         xmlns:partyLineViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PartyLine"
         xmlns:statisticsViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Statistics"
         xmlns:playFieldViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PlayField"
+        xmlns:achievementsViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Achievements"
         mc:Ignorable="d"
         UseLayoutRounding="True"
         WindowStyle="ToolWindow"
@@ -75,6 +77,9 @@
             </TabItem>
             <TabItem Header="Play fields" IsTabStop="False">
                 <playField:PlayFieldView DataContext="{Binding Path=PlayFieldViewModel}" d:DataContext="{d:DesignInstance playFieldViewModels:PlayFieldViewModelDesignData, IsDesignTimeCreatable=True}"/>
+            </TabItem>
+            <TabItem Header="Achievements" IsTabStop="False">
+                <achievements:AchievementsView DataContext="{Binding Path=AchievementsViewModel}" d:DataContext="{d:DesignInstance achievementsViewModels:AchievementsViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
             <TabItem Header="Statistics" IsTabStop="False">
                 <statistics:ClientStatisticsView DataContext="{Binding Path=ClientStatisticsViewModel}" d:DataContext="{d:DesignInstance statisticsViewModels:ClientStatisticsViewModelDesignData, IsDesignTimeCreatable=True}"/>

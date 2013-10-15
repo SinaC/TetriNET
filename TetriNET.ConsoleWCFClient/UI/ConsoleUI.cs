@@ -90,7 +90,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void OnRoundFinished()
+        private void OnRoundFinished(int deletedRows)
         {
             HideNextPieceColor();
         }

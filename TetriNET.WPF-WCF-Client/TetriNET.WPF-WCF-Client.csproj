@@ -95,6 +95,7 @@
       <DependentUpon>SensibilityControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Validators\StringValidationRule.cs" />
+    <Compile Include="ViewModels\Achievements\AchievementsViewModel.cs" />
     <Compile Include="ViewModels\Options\KeySetting.cs" />
     <Compile Include="ViewModels\ITabIndex.cs" />
     <Compile Include="TextureManager\ITextureManager.cs" />
@@ -119,6 +120,9 @@
     <Compile Include="ViewModels\WinList\WinListViewModel.cs" />
     <Compile Include="UserControls\CircularProgressBarControl.xaml.cs">
       <DependentUpon>CircularProgressBarControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Achievements\AchievementsView.xaml.cs">
+      <DependentUpon>AchievementsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Connection\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
@@ -187,6 +191,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\SensibilityControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Achievements\AchievementsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -323,6 +331,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TetriNET.Client.Achievements\TetriNET.Client.Achievements.csproj">
+      <Project>{d10dd72d-bc4a-4b47-9568-74c29bc067cd}</Project>
+      <Name>TetriNET.Client.Achievements</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Client.Board\TetriNET.Client.Board.csproj">
       <Project>{c1d244a2-a501-455e-8522-354f3e5470f8}</Project>
       <Name>TetriNET.Client.Board</Name>

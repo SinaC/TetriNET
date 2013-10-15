@@ -1,0 +1,104 @@
+﻿<UserControl x:Class="TetriNET.WPF_WCF_Client.Views.Achievements.AchievementsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:achievements="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Achievements"
+             xmlns:achievementsModels="clr-namespace:TetriNET.Client.Achievements.Achievements;assembly=TetriNET.Client.Achievements"
+             IsTabStop="False"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance achievements:AchievementsViewModelDesignData, IsDesignTimeCreatable=True}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="AchievedDataTemplate" DataType="{x:Type achievementsModels:Achievement}">
+                <Border BorderBrush="Black" BorderThickness="1">
+                    <StackPanel Orientation="Vertical" Margin="5,0,5,0" Background="Transparent">
+                        <StackPanel.ToolTip>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="#Achieved:"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,0,0"
+                                           Text="{Binding AchieveCount}"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="First time achieved:"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,0,0"
+                                           Text="{Binding FirstTimeAchieved, StringFormat={}{0:dd MMMM yyyy HH:mm:ss}}"/>
+                                
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Last time achieved:"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,0,0"
+                                           Text="{Binding LastTimeAchieved, StringFormat={}{0:dd MMMM yyyy HH:mm:ss}}"/>
+                            </Grid>
+                        </StackPanel.ToolTip>
+                        <DockPanel>
+                            <TextBlock HorizontalAlignment="Left" FontWeight="Bold"
+                                               Text="{Binding Title}" />
+                            <TextBlock HorizontalAlignment="Right"
+                                               Text="{Binding FirstTimeAchieved, StringFormat={}{0:dd MMMM yyyy}}"/>
+                        </DockPanel>
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap"
+                                           Text="{Binding Description}"/>
+                    </StackPanel>
+                </Border>
+            </DataTemplate>
+            <DataTemplate x:Key="NotAchievedDataTemplate" DataType="{x:Type achievementsModels:Achievement}">
+                <Border BorderBrush="Black" BorderThickness="1">
+                    <StackPanel Orientation="Vertical" Margin="5,0,5,0" Opacity="0.5" Background="Transparent">
+                        <TextBlock HorizontalAlignment="Left" FontWeight="Bold"
+                                            Text="{Binding Title}" />
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap"
+                                           Text="{Binding Description}"/>
+                    </StackPanel>
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" >
+            <ItemsControl 
+                HorizontalAlignment="Stretch" Background="Transparent"
+                ItemsSource="{Binding Achievements}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type achievementsModels:Achievement}">
+                        <ContentControl Content="{Binding}" IsTabStop="False">
+                            <ContentControl.Style>
+                                <Style TargetType="{x:Type ContentControl}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsAchieved}" Value="True">
+                                            <Setter Property="ContentTemplate" Value="{StaticResource AchievedDataTemplate}"/>
+                                        </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsAchieved}" Value="False">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource NotAchievedDataTemplate}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                                </Style>
+                            </ContentControl.Style>
+                        </ContentControl>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <Button Grid.Row="1" Grid.Column="0" Width="100" HorizontalAlignment="Left" IsEnabled="{Binding IsResetEnabled}"
+                Command="{Binding ResetAchievementsCommand}">
+            <TextBlock Text="Reset Scores"/>
+        </Button>
+    </Grid>
+</UserControl>

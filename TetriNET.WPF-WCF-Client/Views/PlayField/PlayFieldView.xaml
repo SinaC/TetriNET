@@ -35,5 +35,8 @@
         <playField:InGameChatView Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,4,0,0" DataContext="{Binding InGameChatViewModel}" d:DataContext="{d:DesignInstance viewModels:InGameChatViewModelDesignData, IsDesignTimeCreatable=True}"/>
         <playField:NextPieceView x:Name="NextPiece" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="8,0,8,0"/>
         <playField:GameInfoView Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="8,0,8,8" DataContext="{Binding GameInfoViewModel}" d:DataContext="{d:DesignInstance viewModels:GameInfoViewModelDesignData, IsDesignTimeCreatable=True}"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" Foreground="SteelBlue" 
+                   Opacity="{Binding AchievementOpacity}"
+                   Text="{Binding Achievement, StringFormat={}You earned: {0}}" />
     </Grid>
 </UserControl>

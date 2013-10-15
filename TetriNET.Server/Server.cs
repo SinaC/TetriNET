@@ -769,11 +769,11 @@ namespace TetriNET.Server
                             break;
                     }
 
-                    // Send game finished, winner and win list
+                    // Send winner, game finished and win list
                     foreach (IPlayer p in _playerManager.Players)
                     {
-                        p.OnGameFinished();
                         p.OnPlayerWon(winnerId);
+                        p.OnGameFinished();
                         p.OnWinListModified(WinList);
                     }
                     State = States.WaitingStartGame;

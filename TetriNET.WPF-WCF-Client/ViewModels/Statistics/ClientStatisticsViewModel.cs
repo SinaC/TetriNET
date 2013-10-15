@@ -199,7 +199,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
         public int TabIndex
         {
-            get { return 5; }
+            get { return 6; }
         }
 
         #endregion
