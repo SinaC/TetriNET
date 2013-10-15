@@ -7,6 +7,7 @@
              xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
              mc:Ignorable="d"
              DataContextChanged="PlayerGridControl_OnDataContextChanged"
+             IsTabStop="False"
              d:DataContext="{d:DesignInstance viewModels:PlayerViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -51,7 +52,7 @@
         <!-- http://stackoverflow.com/questions/11558298/contentpresenter-in-usercontrol -->
         <!-- http://www.codeproject.com/Articles/82464/How-to-Embed-Arbitrary-Content-in-a-WPF-Control -->
         <!-- http://stackoverflow.com/questions/5771362/wpf-how-to-set-the-data-template-trigger-for-content-control-->
-        <ContentControl Grid.Row="0" HorizontalAlignment="Stretch" MaxWidth="192">
+        <ContentControl Grid.Row="0" HorizontalAlignment="Stretch" MaxWidth="192" IsTabStop="False">
             <ContentControl.Style>
                 <Style TargetType="ContentControl">
                     <Setter Property="Template" Value="{StaticResource PlayerDataTemplate}" />

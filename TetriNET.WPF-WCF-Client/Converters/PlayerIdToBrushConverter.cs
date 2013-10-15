@@ -12,11 +12,11 @@ namespace TetriNET.WPF_WCF_Client.Converters
     [ValueConversion(typeof(int), typeof(Brush))]
     public class PlayerIdToBrushConverter : IValueConverter
     {
-        private readonly ChatColorBrushConverter _chatColorBrushConverter;
+        private readonly ChatColorBrushConverter _chatChatColorBrushConverter;
 
         public PlayerIdToBrushConverter()
         {
-            _chatColorBrushConverter = new ChatColorBrushConverter();
+            _chatChatColorBrushConverter = new ChatColorBrushConverter();
         }
 
         private static bool ApplicationIsInDesignMode
@@ -31,15 +31,15 @@ namespace TetriNET.WPF_WCF_Client.Converters
                 throw new ArgumentException("value not of type int");
             int playerId = (int) value;
             ChatColor cc;
-            if (playerId == -1)
+            if (ApplicationIsInDesignMode)
+                cc = (ChatColor)(playerId+1); // no black
+            else if (playerId == -1)
                 cc = ChatColor.White;
             else if (playerId < 0 || playerId >= 6)
                 throw new ArgumentException("value must be in [0,5]");
-            else if (ApplicationIsInDesignMode)
-                cc = (ChatColor)(playerId+1); // no black
             else
                 cc = ClientOptionsViewModel.Instance.PlayerColors[playerId];
-            return _chatColorBrushConverter.Convert(cc, targetType, null, null);
+            return _chatChatColorBrushConverter.Convert(cc, targetType, null, null);
         }
 
         // Brush -> int

@@ -14,6 +14,26 @@ New options: random blocks clear count, mutation count, darkness time, confusion
 Solo mode
 Server integrated in WPF client
 
+Achievements (first time achieved, last time achieved)
+------------
+TITLE				DESCRIPTION											TRIGGER					CONDITIONS
+Sniper				Win a game in less than 1 minute (min 3 players)	GameWon					play time < 60 sec and player count >= 3
+Architect			2 Tetris in a row									RoundFinished			if line completed == 4 and active == true -> VALIDATED; if line completed == 4 and active == false, active = true; if line completed < 4 -> active = false
+Just in time…		"Nuke" 1 line before death (from me to me)			SpecialUsed				special == nuke and column height[board.spawnX] == board.Height-1
+Call me Savior !	"Nuke" a friend (only in team)						SpecialUsed				special == nuke and target.team != null && target.team == player.team
+Too easy for me.	"Nuke" a ennemy (and win the game)					SpecialUsed+GameWon		SpecialUsed: special == nuke and target.id <> player.id, active = true   GameWon: if active -> VALIDATED
+Magician			Use 3 "switch" in a game							SpecialUsed				if special == switch, count = count + 1; if count == 3 -> VALIDATED
+Fear my brain !		8 lines non stop									RoundFinished			if line completed == 0, active = false; if line completed >= 1 and active == false, count = 0; if line completed >= 1 and active == true, count = count + 1; if active == true and count == 8 -> VALIDATED
+Run baby run		> 300 mov/min and win the game(at least 3 min game)	GameWon					move count / play time(in min) > 300 and player count >= 3
+Serial Builder		> 15 lines/min										GameWon or GameLost		line count / play time(in min) > 15
+
+Triggers:
+Game Won (play time, move count, line count, player count)
+Game Lost (play time, move count, line count, player count)
+Round Finished (line completed)
+Special Used (player[id, team, board], source[id, team, board], target[id, team, board], special)
+
+
 wcf + jquery
 http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-with-nettcpbinding
 http://www.codeproject.com/Articles/132809/Calling-WCF-Services-using-jQuery

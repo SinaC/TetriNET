@@ -29,7 +29,7 @@
                 Command="{Binding UpdateTeamCommand}">
             <TextBlock Text="Update team"/>
         </Button>
-        <partyLine:ChatView Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Width="480" Height="380" DataContext="{Binding ChatViewModel}" />
+        <partyLine:ChatView Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Width="450" Height="380" DataContext="{Binding ChatViewModel}" />
         <Grid Grid.Row="2" Grid.Column="1" Margin="2,4,0,4" VerticalAlignment="Bottom">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

@@ -146,24 +146,24 @@ namespace TetriNET.WPF_WCF_Client.AI
                     // Use specials
                     if (SpecialStrategy != null)
                     {
-                        List<SpecialAdvices> advices;
-                        SpecialStrategy.GetSpecialAdvice(_client.Board, _client.CurrentPiece, _client.NextPiece, _client.Inventory, _client.InventorySize, _client.Opponents.ToList(), out advices);
-                        foreach (SpecialAdvices advice in advices)
+                        List<SpecialAdvice> advices;
+                        SpecialStrategy.GetSpecialAdvices(_client.Board, _client.CurrentPiece, _client.NextPiece, _client.Inventory, _client.InventorySize, _client.Opponents.ToList(), out advices);
+                        foreach (SpecialAdvice advice in advices)
                         {
                             bool continueLoop = true;
                             switch (advice.SpecialAdviceAction)
                             {
-                                case SpecialAdvices.SpecialAdviceActions.Wait:
+                                case SpecialAdvice.SpecialAdviceActions.Wait:
                                     continueLoop = false;
                                     break;
-                                case SpecialAdvices.SpecialAdviceActions.Discard:
+                                case SpecialAdvice.SpecialAdviceActions.Discard:
                                     _client.DiscardFirstSpecial();
                                     continueLoop = true;
                                     break;
-                                case SpecialAdvices.SpecialAdviceActions.UseSelf:
+                                case SpecialAdvice.SpecialAdviceActions.UseSelf:
                                     continueLoop = _client.UseSpecial(_client.PlayerId);
                                     break;
-                                case SpecialAdvices.SpecialAdviceActions.UseOpponent:
+                                case SpecialAdvice.SpecialAdviceActions.UseOpponent:
                                     continueLoop = _client.UseSpecial(advice.OpponentId);
                                     break;
                             }

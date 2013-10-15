@@ -105,24 +105,24 @@ namespace TetriNET.ConsoleWCFClient.AI
             DateTime searchBestMoveStartTime = DateTime.Now;
 
             // Use specials
-            List<SpecialAdvices> advices;
-            SpecialStrategy.GetSpecialAdvice(Client.Board, Client.CurrentPiece, Client.NextPiece, Client.Inventory, Client.InventorySize, Client.Opponents.ToList(), out advices);
-            foreach (SpecialAdvices advice in advices)
+            List<SpecialAdvice> advices;
+            SpecialStrategy.GetSpecialAdvices(Client.Board, Client.CurrentPiece, Client.NextPiece, Client.Inventory, Client.InventorySize, Client.Opponents.ToList(), out advices);
+            foreach (SpecialAdvice advice in advices)
             {
                 bool continueLoop = true;
                 switch (advice.SpecialAdviceAction)
                 {
-                    case SpecialAdvices.SpecialAdviceActions.Wait:
+                    case SpecialAdvice.SpecialAdviceActions.Wait:
                         continueLoop = false;
                         break;
-                    case SpecialAdvices.SpecialAdviceActions.Discard:
+                    case SpecialAdvice.SpecialAdviceActions.Discard:
                         Client.DiscardFirstSpecial();
                         continueLoop = true;
                         break;
-                    case SpecialAdvices.SpecialAdviceActions.UseSelf:
+                    case SpecialAdvice.SpecialAdviceActions.UseSelf:
                         continueLoop = Client.UseSpecial(Client.PlayerId);
                         break;
-                    case SpecialAdvices.SpecialAdviceActions.UseOpponent:
+                    case SpecialAdvice.SpecialAdviceActions.UseOpponent:
                         continueLoop = Client.UseSpecial(advice.OpponentId);
                         break;
                 }

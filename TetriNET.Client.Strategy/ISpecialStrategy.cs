@@ -4,7 +4,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Strategy
 {
-    public class SpecialAdvices
+    public class SpecialAdvice
     {
         public enum SpecialAdviceActions
         {
@@ -20,6 +20,6 @@ namespace TetriNET.Client.Strategy
 
     public interface ISpecialStrategy
     {
-        bool GetSpecialAdvice(IBoard board, IPiece current, IPiece next, List<Specials> inventory, int inventoryMaxSize, List<IOpponent> opponents, out List<SpecialAdvices> advices);
+        bool GetSpecialAdvices(IBoard board, IPiece current, IPiece next, List<Specials> inventory, int inventoryMaxSize, List<IOpponent> opponents, out List<SpecialAdvice> advices);
     }
 }

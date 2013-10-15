@@ -143,8 +143,21 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #region Player colors
 
-        private bool _isColorSchemeUsed;
+        private string _testColor;
+        public string TestColor
+        {
+            get { return _testColor; }
+            set
+            {
+                if (_testColor != value)
+                {
+                    _testColor = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
+        private bool _isColorSchemeUsed;
         public bool IsColorSchemeUsed
         {
             get { return _isColorSchemeUsed; }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -76,12 +77,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             if (_isHintActivated)
             {
                 _specialStrategy = _specialStrategy ?? new SinaCSpecials();
-                DisplayHint();
+                DrawInventory();
             }
-        }
-
-        private void DisplayHint()
-        {
         }
 
         private void DrawInventory()
@@ -98,6 +95,28 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 for (int i = 0; i < specials.Count; i++)
                     _inventory[i].Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigSpecial(specials[i]);
                 FirstSpecial = Mapper.MapSpecialToString(specials[0]);
+                // Get hint
+                if (_isHintActivated)
+                {
+                    List<SpecialAdvice> advices;
+                    _specialStrategy.GetSpecialAdvices(Client.Board, Client.CurrentPiece, Client.NextPiece, specials, MaxInventorySize, Client.Opponents.ToList(), out advices);
+                    if (advices != null && advices.Any())
+                        switch (advices[0].SpecialAdviceAction)
+                        {
+                            case SpecialAdvice.SpecialAdviceActions.Wait:
+                                // NOP
+                                break;
+                            case SpecialAdvice.SpecialAdviceActions.UseSelf:
+                                FirstSpecial += String.Format("[{0}]", Client.PlayerId + 1);
+                                break;
+                            case SpecialAdvice.SpecialAdviceActions.Discard:
+                                FirstSpecial += "[D]";
+                                break;
+                            case SpecialAdvice.SpecialAdviceActions.UseOpponent:
+                                FirstSpecial += String.Format("[{0}]", advices[0].OpponentId + 1);
+                                break;
+                        }
+                }
             }
             else
             {
@@ -141,6 +160,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnPieceMoved()
         {
+            ExecuteOnUIThread.Invoke(DrawInventory);
         }
 
         private void OnGameStarted()
