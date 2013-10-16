@@ -49,9 +49,22 @@
                     </StackPanel>
                 </Border>
             </DataTemplate>
-            <DataTemplate x:Key="NotAchievedDataTemplate" DataType="{x:Type interfaces:IAchievement}">
+            <DataTemplate x:Key="NotAchievedNoProgressDataTemplate" DataType="{x:Type interfaces:IAchievement}">
                 <Border BorderBrush="Black" BorderThickness="1">
                     <StackPanel Orientation="Vertical" Margin="5,0,5,0" Opacity="0.5" Background="Transparent">
+                        <TextBlock HorizontalAlignment="Left" FontWeight="Bold"
+                                            Text="{Binding Title}" />
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap"
+                                           Text="{Binding Description}"/>
+                    </StackPanel>
+                </Border>
+            </DataTemplate>
+            <DataTemplate x:Key="NotAchievedProgressDataTemplate" DataType="{x:Type interfaces:IAchievement}">
+                <Border BorderBrush="Black" BorderThickness="1">
+                    <StackPanel Orientation="Vertical" Margin="5,0,5,0" Opacity="0.5" Background="Transparent">
+                        <StackPanel.ToolTip>
+                            <TextBlock Text="{Binding Progress}"/>
+                        </StackPanel.ToolTip>
                         <TextBlock HorizontalAlignment="Left" FontWeight="Bold"
                                             Text="{Binding Title}" />
                         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap"
@@ -80,10 +93,21 @@
                                         <DataTrigger Binding="{Binding IsAchieved}" Value="True">
                                             <Setter Property="ContentTemplate" Value="{StaticResource AchievedDataTemplate}"/>
                                         </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsAchieved}" Value="False">
-                                        <Setter Property="ContentTemplate" Value="{StaticResource NotAchievedDataTemplate}"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsAchieved}" Value="False"/>
+                                                <Condition Binding="{Binding IsProgressAvailable}" Value="False"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="ContentTemplate" Value="{StaticResource NotAchievedNoProgressDataTemplate}"/>
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsAchieved}" Value="False"/>
+                                                <Condition Binding="{Binding IsProgressAvailable}" Value="True"/>
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="ContentTemplate" Value="{StaticResource NotAchievedProgressDataTemplate}"/>
+                                        </MultiDataTrigger>
+                                    </Style.Triggers>
                                 </Style>
                             </ContentControl.Style>
                         </ContentControl>

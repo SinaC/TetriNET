@@ -10,8 +10,12 @@ namespace TetriNET.Client.Interfaces
         string Title { get; }
         string Description { get; }
         bool ResetOnGameStarted { get; } // default: true
+        bool OnlyOnce { get; } // default: false
 
         bool IsAchievable { get; }
+
+        string Progress { get; }
+        bool IsProgressAvailable { get; }
 
         int AchieveCount { get; set; }
         bool IsAchieved { get; set; }

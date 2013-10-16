@@ -1,4 +1,5 @@
-﻿using TetriNET.Client.Interfaces;
+﻿using System;
+using TetriNET.Client.Interfaces;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
@@ -9,6 +10,11 @@ namespace TetriNET.Client.Achievements.Achievements
             Title = "Eliminator";
             Description = "Clear a total of 10,000 lines";
             OnlyOnce = true;
+        }
+
+        public override string Progress
+        {
+            get { return String.Format("{0} / {1} ({2:0.0}%)", ExtraData, 10000, 100.0 * (ExtraData / 10000.0)); }
         }
 
         public override void OnRoundFinished(int lineCompleted, int level, IBoard board)

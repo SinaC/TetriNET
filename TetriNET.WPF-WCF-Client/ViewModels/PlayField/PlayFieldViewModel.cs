@@ -16,6 +16,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         public PlayerViewModel PlayerViewModel { get; set; }
         public OpponentViewModel[] OpponentsViewModel { get; set; }
 
+        private DateTime _lastAchievement;
         private readonly Timer _achievementTimer;
 
         private string _achievement;
@@ -48,12 +49,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         public PlayFieldViewModel()
         {
-            _achievementTimer = new Timer(500);
+            _achievementTimer = new Timer(100);
             _achievementTimer.Elapsed += (sender, args) =>
             {
-                AchievementOpacity -= 0.1;
-                if (AchievementOpacity <= 0)
-                    _achievementTimer.Stop();
+                TimeSpan timeSpan = DateTime.Now - _lastAchievement;
+                if (timeSpan.TotalSeconds > 5)
+                {
+                    AchievementOpacity -= 0.1;
+                    if (AchievementOpacity <= 0)
+                        _achievementTimer.Stop();
+                }
             };
 
             GameInfoViewModel = new GameInfoViewModel();
@@ -124,6 +129,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         {
             Achievement = achievement.Title;
             _achievementTimer.Stop();
+            _lastAchievement = DateTime.Now;
             AchievementOpacity = 1;
             _achievementTimer.Start();
         }

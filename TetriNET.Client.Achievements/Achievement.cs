@@ -26,7 +26,17 @@ namespace TetriNET.Client.Achievements
                 return (OnlyOnce && !IsAchieved) || (!OnlyOnce && !IsFailed && !AlreadyAchievedThisGame);
             }
         }
-        
+
+        public virtual string Progress
+        {
+            get { return String.Empty; }
+        }
+
+        public virtual bool IsProgressAvailable
+        {
+            get { return !String.IsNullOrWhiteSpace(Progress); }
+        }
+
         public event AchievedHandler Achieved;
 
         protected Achievement()

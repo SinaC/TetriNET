@@ -148,23 +148,23 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             Entries.Add(new InGameChatEntry
             {
                 Id = 1,
-                Source = "JOEL",
+                Source = "JOEL0123456789012345",
                 SourceId = 1,
                 LinesAdded = 1,
             });
             Entries.Add(new InGameChatEntry
             {
                 Id = 2,
-                Source = "JOEL",
+                Source = "JOEL0123456789012345",
                 SourceId = 1,
-                Target = "SOMEONE",
+                Target = "SOMEONE0123456789012",
                 TargetId = 4,
                 Special = Specials.SwitchFields,
             });
             Entries.Add(new InGameChatEntry
             {
                 Id = 3,
-                Source = "TSEKWA",
+                Source = "TSEKWA01234567890123",
                 SourceId = 5,
                 LinesAdded = 4,
             });

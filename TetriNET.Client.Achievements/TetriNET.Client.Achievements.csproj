@@ -56,6 +56,7 @@
     <Compile Include="Achievements\RunBabyRun.cs" />
     <Compile Include="Achievements\SerialBuilder.cs" />
     <Compile Include="Achievements\Sniper.cs" />
+    <Compile Include="Achievements\SomeLikeItHot.cs" />
     <Compile Include="Achievements\TetrisAce.cs" />
     <Compile Include="Achievements\TooEasyForMe.cs" />
     <Compile Include="Achievements\TooGoodForYou.cs" />

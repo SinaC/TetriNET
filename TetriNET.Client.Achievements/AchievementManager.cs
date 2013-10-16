@@ -77,6 +77,7 @@ namespace TetriNET.Client.Achievements
             {
                 achievement.IsAchieved = false;
                 achievement.AchieveCount = 0;
+                achievement.ExtraData = 0;
             }
         }
 

@@ -155,6 +155,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
                 tooGoodForYou.LastTimeAchieved = DateTime.Now.AddDays(-4);
                 tooGoodForYou.AchieveCount = 1;
             }
+            IAchievement tetrisAce = manager.Achievements.FirstOrDefault(x => x.Title == "Tetris Ace");
+            if (tetrisAce != null)
+            {
+                tetrisAce.IsAchieved = false;
+                tetrisAce.ExtraData = 25;
+            }
             Achievements = BuildAchievementList(manager.Achievements);
         }
     }
