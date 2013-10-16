@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using TetriNET.Client.Achievements;
 using TetriNET.Client.Board;
 using TetriNET.Client.Interfaces;
 using TetriNET.Client.Pieces;
@@ -28,7 +29,9 @@ namespace TetriNET.ConsoleWCFClient
 
             //
             //string baseAddress = @"net.tcp://localhost:8765/TetriNET";
-            IClient client = new Client.Client(Piece.CreatePiece, () => new Board(12,22));
+            AchievementManager manager = new AchievementManager();
+            manager.FindAllAchievements();
+            IClient client = new Client.Client(Piece.CreatePiece, () => new Board(12, 22), () => manager);
             client.OnPlayerRegistered +=
                 (result, id, master) =>
                 {

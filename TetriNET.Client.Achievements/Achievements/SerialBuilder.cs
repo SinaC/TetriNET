@@ -5,7 +5,7 @@
         public SerialBuilder()
         {
             Title = "Serial builder";
-            Description = "Clear more than 15 lines in one minute";
+            Description = "Finish a game with more than 15 lines cleared/min";
         }
 
         public override void OnGameWon(double playTime, int moveCount, int lineCount, int playerCount)

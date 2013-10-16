@@ -42,6 +42,9 @@
     <Compile Include="Achievements\CallMeSavior.cs" />
     <Compile Include="Achievements\Century.cs" />
     <Compile Include="Achievements\DirtySouthStyle.cs" />
+    <Compile Include="Achievements\DropItLikeItsHot.cs" />
+    <Compile Include="Achievements\Eliminator.cs" />
+    <Compile Include="Achievements\Eradicator.cs" />
     <Compile Include="Achievements\FearMyBrain.cs" />
     <Compile Include="Achievements\HitchhikersGuide.cs" />
     <Compile Include="Achievements\JustInTime.cs" />
@@ -53,6 +56,7 @@
     <Compile Include="Achievements\RunBabyRun.cs" />
     <Compile Include="Achievements\SerialBuilder.cs" />
     <Compile Include="Achievements\Sniper.cs" />
+    <Compile Include="Achievements\TetrisAce.cs" />
     <Compile Include="Achievements\TooEasyForMe.cs" />
     <Compile Include="Achievements\TooGoodForYou.cs" />
     <Compile Include="Achievements\VoidMaster.cs" />

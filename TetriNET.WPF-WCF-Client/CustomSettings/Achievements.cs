@@ -12,6 +12,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
         public int Count;
         public DateTime FirstTime;
         public DateTime LastTime;
+        public int ExtraData;
     }
 
     [Serializable]
@@ -20,7 +21,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
         public AchievementSettings[] Achievements;
 
         // Build settings from achievements
-        public void Set(List<IAchievement> achievements)
+        public void Save(List<IAchievement> achievements)
         {
             if (achievements == null)
                 return;
@@ -29,12 +30,13 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
                 Title = x.Title,
                 Count = x.AchieveCount,
                 FirstTime = x.FirstTimeAchieved,
-                LastTime = x.LastTimeAchieved
+                LastTime = x.LastTimeAchieved,
+                ExtraData = x.ExtraData
             }).ToArray();
         }
 
         // Overwrite achievements data with settings
-        public void Get(List<IAchievement> achievements)
+        public void Load(List<IAchievement> achievements)
         {
             if (achievements == null || Achievements == null)
                 return;
@@ -47,6 +49,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
                     achievement.AchieveCount = setting.Count;
                     achievement.FirstTimeAchieved = setting.FirstTime;
                     achievement.LastTimeAchieved = setting.LastTime;
+                    achievement.ExtraData = setting.ExtraData;
                 }
             }
         }

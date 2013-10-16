@@ -9,11 +9,13 @@ namespace TetriNET.Client.Achievements
         public string Title { get; protected set; }
         public string Description { get; protected set; }
         public bool ResetOnGameStarted { get; protected set; } // default: true
+        public bool OnlyOnce { get; protected set; } // default: false
 
         public int AchieveCount { get; set; }
         public bool IsAchieved { get; set; }
         public DateTime FirstTimeAchieved { get; set; }
         public DateTime LastTimeAchieved { get; set; }
+        public int ExtraData { get; set; } // can be used to store data between game session
 
         public bool IsFailed { get; protected set; }
         public bool AlreadyAchievedThisGame { get; protected set; }
@@ -21,7 +23,7 @@ namespace TetriNET.Client.Achievements
         public bool IsAchievable {
             get
             {
-                return !IsFailed && !AlreadyAchievedThisGame;
+                return (OnlyOnce && !IsAchieved) || (!OnlyOnce && !IsFailed && !AlreadyAchievedThisGame);
             }
         }
         
@@ -30,7 +32,9 @@ namespace TetriNET.Client.Achievements
         protected Achievement()
         {
             IsFailed = false;
-            ResetOnGameStarted = true;
+            AlreadyAchievedThisGame = false;
+            ResetOnGameStarted = true; // default: true
+            OnlyOnce = false; // default: false
         }
 
         public virtual void Reset()

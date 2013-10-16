@@ -16,19 +16,16 @@ namespace TetriNET.Client.Achievements
             Achievements = new List<IAchievement>();
         }
 
-        public void GetAllAchievements()
+        public void FindAllAchievements()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
-            GetAllAchievements(assembly);
+            FindAllAchievements(assembly);
         }
 
-        public void GetAllAchievements(Assembly assembly)
+        public void FindAllAchievements(Assembly assembly)
         {
             //
-            List<Type> types = assembly.GetTypes().Where(
-                t => String.Equals(t.Namespace, "TetriNET.Client.Achievements.Achievements", StringComparison.Ordinal) 
-                    && t.IsSubclassOf(typeof(Achievement))
-                    && !t.IsAbstract).ToList();
+            List<Type> types = assembly.GetTypes().Where( t=> t.IsSubclassOf(typeof(Achievement)) && !t.IsAbstract).ToList();
             foreach (Type type in types)
             {
                 try

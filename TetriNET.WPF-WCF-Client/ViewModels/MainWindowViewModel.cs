@@ -56,19 +56,19 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
             //
             AchievementManager manager = new AchievementManager();
-            manager.GetAllAchievements();
+            manager.FindAllAchievements();
             Settings.Default.Achievements = Settings.Default.Achievements ?? new AchievementsSettings();
-            Settings.Default.Achievements.Get(manager.Achievements);
+            Settings.Default.Achievements.Load(manager.Achievements);
 
             //
             ClientChanged += OnClientChanged;
 
             // Create client
-            Client = new Client.Client(Piece.CreatePiece, () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height), () => manager);
-            //Client = new Client.Client(
-            //    (pieces, i, arg3, arg4, arg5, arg6) => Piece.CreatePiece(Pieces.TetriminoI, i, arg3, arg4, arg5, arg6),
-            //    () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height),
-            //    () => manager);
+            //Client = new Client.Client(Piece.CreatePiece, () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height), () => manager);
+            Client = new Client.Client(
+                (pieces, i, arg3, arg4, arg5, arg6) => Piece.CreatePiece(Pieces.TetriminoI, i, arg3, arg4, arg5, arg6),
+                () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height),
+                () => manager);
         }
 
         #region ViewModelBase
@@ -132,8 +132,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             {
                 if (ActiveTabItemIndex == PlayFieldViewModel.TabIndex)
                 {
-                    PartyLineViewModel.ChatViewModel.IsInputFocused = true;
                     ActiveTabItemIndex = PartyLineViewModel.TabIndex;
+                    PartyLineViewModel.ChatViewModel.IsInputFocused = true;
                 }
             }
         }

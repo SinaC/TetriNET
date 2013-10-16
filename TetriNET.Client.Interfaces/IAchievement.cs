@@ -17,6 +17,7 @@ namespace TetriNET.Client.Interfaces
         bool IsAchieved { get; set; }
         DateTime FirstTimeAchieved { get; set; }
         DateTime LastTimeAchieved { get; set; }
+        int ExtraData { get; set; } // can be used to store data between game session
 
         event AchievedHandler Achieved;
 

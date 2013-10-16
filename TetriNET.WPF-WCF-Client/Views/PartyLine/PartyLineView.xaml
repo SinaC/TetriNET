@@ -21,6 +21,7 @@
         <DockPanel Grid.Row="0" Grid.Column="0">
             <TextBlock DockPanel.Dock="Left" Text="Team you are playing on: (blank for none)" Margin="5"/>
             <TextBox DockPanel.Dock="Right" Margin="2" FontSize="10" MaxLength="16"
+                     IsTabStop="False"
                      Text="{Binding Team, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                      IsEnabled="{Binding IsUpdateTeamEnabled}"/>
         </DockPanel>

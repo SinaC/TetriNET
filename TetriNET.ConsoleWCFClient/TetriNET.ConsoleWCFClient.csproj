@@ -52,6 +52,10 @@
     <Compile Include="UI\ConsoleUI.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TetriNET.Client.Achievements\TetriNET.Client.Achievements.csproj">
+      <Project>{d10dd72d-bc4a-4b47-9568-74c29bc067cd}</Project>
+      <Name>TetriNET.Client.Achievements</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Client.Board\TetriNET.Client.Board.csproj">
       <Project>{c1d244a2-a501-455e-8522-354f3e5470f8}</Project>
       <Name>TetriNET.Client.Board</Name>

@@ -48,7 +48,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
         private void Reset()
         {
             Client.ResetAchievements();
-            Settings.Default.Achievements.Set(Client.Achievements.ToList());
+            Settings.Default.Achievements.Save(Client.Achievements.ToList());
             Settings.Default.Save();
 
             ExecuteOnUIThread.Invoke(() => Achievements = BuildAchievementList(Client.Achievements.ToList()));
@@ -77,14 +77,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnGameStarted -= RefreshResetEnable;
-            oldClient.OnGameFinished -= RefreshResetEnable;
+            oldClient.OnGameFinished -= OnGameFinished;
             oldClient.OnAchievementEarned -= OnAchievementEarned;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
             newClient.OnGameStarted += RefreshResetEnable;
-            newClient.OnGameFinished += RefreshResetEnable;
+            newClient.OnGameFinished += OnGameFinished;
             newClient.OnAchievementEarned += OnAchievementEarned;
         }
 
@@ -96,10 +96,19 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
         {
             Log.WriteLine(Log.LogLevels.Info, "Achievement: {0} {1} {2:dd/MM/yyyy HH:mm:ss}", achievement.Title, firstTime, achievement.LastTimeAchieved);
 
-            Settings.Default.Achievements.Set(Client.Achievements.ToList());
+            Settings.Default.Achievements.Save(Client.Achievements.ToList());
             Settings.Default.Save();
 
             ExecuteOnUIThread.Invoke(() => Achievements = BuildAchievementList(Client.Achievements.ToList()));
+        }
+
+        private void OnGameFinished()
+        {
+            //
+            RefreshResetEnable();
+            //
+            Settings.Default.Achievements.Save(Client.Achievements.ToList());
+            Settings.Default.Save();
         }
 
         private void RefreshResetEnable()
@@ -121,7 +130,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
         public AchievementsViewModelDesignData()
         {
             AchievementManager manager = new AchievementManager();
-            manager.GetAllAchievements(Assembly.Load("TetriNET.Client.Achievements"));
+            manager.FindAllAchievements(Assembly.Load("TetriNET.Client.Achievements"));
             IAchievement sniper = manager.Achievements.FirstOrDefault(x => x.Title == "Sniper");
             if (sniper != null)
             {

@@ -485,7 +485,6 @@ namespace TetriNET.Client
             while (!_boardActionQueue.IsEmpty)
                 _boardActionQueue.TryDequeue(out outAction);
 
-
             if (ClientOnGameFinished != null)
                 ClientOnGameFinished();
 
