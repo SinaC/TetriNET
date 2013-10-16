@@ -3,7 +3,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    public class TooGoodForYou : Achievement
+    internal class TooGoodForYou : Achievement
     {
         private int _specialCount;
 
@@ -19,10 +19,10 @@ namespace TetriNET.Client.Achievements.Achievements
             base.Reset();
         }
 
-        public override void OnSpecialUsed(int playerId, int sourceId, string sourceTeam, IBoard sourceBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
+        public override void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
         {
-            if (playerId == sourceId)
-                _specialCount++;
+            _specialCount++;
+            IsFailed = true;
         }
 
         public override void OnGameWon(double playTime, int moveCount, int lineCount, int playerCount)

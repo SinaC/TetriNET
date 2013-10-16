@@ -1,11 +1,11 @@
 ﻿namespace TetriNET.Client.Achievements.Achievements
 {
-    public class SerialBuilder : Achievement
+    internal class SerialBuilder : Achievement
     {
         public SerialBuilder()
         {
             Title = "Serial builder";
-            Description = "> 15 lines/min and at least 15 lines";
+            Description = "Clear more than 15 lines in one minute";
         }
 
         public override void OnGameWon(double playTime, int moveCount, int lineCount, int playerCount)

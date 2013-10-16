@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TetriNET.Client.Achievements.Achievements
+﻿namespace TetriNET.Client.Achievements.Achievements
 {
-    public class WhoIsYourDaddy : Achievement
+    internal class WhoIsYourDaddy : Achievement
     {
         private int _count;
 
         public WhoIsYourDaddy()
         {
             Title = "Who's your daddy ?";
-            Description = "Win 5 time in a row";
+            Description = "Win 5 times in a row";
             ResetOnGameStarted = false;
         }
 

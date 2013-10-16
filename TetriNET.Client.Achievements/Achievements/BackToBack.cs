@@ -2,14 +2,14 @@
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class Architect : Achievement
+    internal class BackToBack : Achievement
     {
         private bool _active;
 
-        public Architect()
+        public BackToBack()
         {
-            Title = "Architect";
-            Description = "Do 2 Tetrises in 2 drops";
+            Title = "Back to Back";
+            Description = "Do 2 Tetrises without clearing any lines in between";
         }
 
         public override void Reset()
@@ -20,13 +20,12 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public override void OnRoundFinished(int lineCompleted, int level, IBoard board)
         {
-            //if line completed == 4 and active == true -> VALIDATED; if line completed == 4 and active == false, active = true; if line completed < 4 -> active = false
             if (lineCompleted == 4 && _active)
                 Achieve();
             else if (lineCompleted == 4)
                 _active = true;
-            else
+            else if (lineCompleted > 0)
                 _active = false;
-       }
+        }
     }
 }

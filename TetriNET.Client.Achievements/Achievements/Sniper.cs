@@ -1,11 +1,11 @@
 ﻿namespace TetriNET.Client.Achievements.Achievements
 {
-    public class Sniper : Achievement
+    internal class Sniper : Achievement
     {
         public Sniper()
         {
             Title = "Sniper";
-            Description = "Win a game in less than 1 minute (min 3 players)";
+            Description = "Win a multiplayer game in less than 1 minute";
         }
 
         public override void OnGameWon(double playTime, int moveCount, int lineCount, int playerCount)

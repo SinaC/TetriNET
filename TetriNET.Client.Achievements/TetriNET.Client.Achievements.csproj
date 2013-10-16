@@ -32,21 +32,22 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AchievementManager.cs" />
-    <Compile Include="Achievements\Achievement.cs" />
+    <Compile Include="Achievement.cs" />
     <Compile Include="Achievements\Architect.cs" />
+    <Compile Include="Achievements\BackToBack.cs" />
+    <Compile Include="Achievements\BackToBackAndBackAgain.cs" />
     <Compile Include="Achievements\CallMeSavior.cs" />
+    <Compile Include="Achievements\Century.cs" />
+    <Compile Include="Achievements\DirtySouthStyle.cs" />
     <Compile Include="Achievements\FearMyBrain.cs" />
     <Compile Include="Achievements\HitchhikersGuide.cs" />
     <Compile Include="Achievements\JustInTime.cs" />
     <Compile Include="Achievements\Magician.cs" />
+    <Compile Include="Achievements\Millenium.cs" />
+    <Compile Include="Achievements\NeedForSpeed.cs" />
     <Compile Include="Achievements\NewtonsApple.cs" />
     <Compile Include="Achievements\NuclearLaunchDetected.cs" />
     <Compile Include="Achievements\RunBabyRun.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="Achievements\Sniper.cs" />
     <Compile Include="Achievements\TooEasyForMe.cs" />
     <Compile Include="Achievements\TooGoodForYou.cs" />
+    <Compile Include="Achievements\VoidMaster.cs" />
     <Compile Include="Achievements\WhoIsYourDaddy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -61,6 +63,10 @@
     <ProjectReference Include="..\TetriNET.Client.Interfaces\TetriNET.Client.Interfaces.csproj">
       <Project>{85b3313b-f31a-45be-8bf6-8ae55ae484b0}</Project>
       <Name>TetriNET.Client.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Common.Logger\TetriNET.Common.Logger.csproj">
+      <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
+      <Name>TetriNET.Common.Logger</Name>
     </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>

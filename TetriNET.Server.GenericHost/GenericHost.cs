@@ -25,7 +25,7 @@ namespace TetriNET.Server.GenericHost
             CreatePlayerFunc = createPlayerFunc;
         }
 
-        protected virtual void PlayerConnectionLost(IPlayer player)
+        protected virtual void PlayerOnConnectionLost(IPlayer player)
         {
             if (OnPlayerLeft != null)
                 OnPlayerLeft(player, LeaveReasons.ConnectionLost);
@@ -95,7 +95,7 @@ namespace TetriNET.Server.GenericHost
                 {
                     player = CreatePlayerFunc(playerName, callback);
                     //
-                    player.OnConnectionLost += PlayerConnectionLost;
+                    player.OnConnectionLost += PlayerOnConnectionLost;
                     //
                     id = PlayerManager.Add(player);
                 }

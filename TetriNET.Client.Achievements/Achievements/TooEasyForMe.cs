@@ -3,14 +3,14 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    public class TooEasyForMe : Achievement
+    internal class TooEasyForMe : Achievement
     {
         private bool _nukeUsed;
 
         public TooEasyForMe()
         {
             Title = "Too easy for me";
-            Description = "'Nuke Field' an ennemy (and win the game)";
+            Description = "Nuke an enemy (and win the game)";
         }
 
         public override void Reset()
@@ -19,9 +19,9 @@ namespace TetriNET.Client.Achievements.Achievements
             base.Reset();
         }
 
-        public override void OnSpecialUsed(int playerId, int sourceId, string sourceTeam, IBoard sourceBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
+        public override void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
         {
-            if (sourceId == playerId && targetId != playerId && special == Specials.NukeField)
+            if (targetId != playerId && special == Specials.NukeField)
                 _nukeUsed = true;
         }
 

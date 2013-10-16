@@ -5,15 +5,15 @@ using TetriNET.Common.Helpers;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    public class NuclearLaunchDetected : Achievement
+    internal class NuclearLaunchDetected : Achievement
     {
         public NuclearLaunchDetected()
         {
             Title = "Nuclear launch detected";
-            Description = "Explode 3 (or more) bombs in one attack";
+            Description = "Explode 3 (or more) Bombs in one attack";
         }
 
-        public override void OnUseSpecial(int playerId, int targetId, string targetTeam, IBoard targetBoard, Specials special)
+        public override void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
         {
             if (special == Specials.BlockBomb)
             {

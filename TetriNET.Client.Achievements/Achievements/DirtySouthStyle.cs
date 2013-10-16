@@ -2,14 +2,14 @@
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class FearMyBrain : Achievement
+    internal class DirtySouthStyle : Achievement
     {
         private int _count;
 
-        public FearMyBrain()
+        public DirtySouthStyle()
         {
-            Title = "Fear my brain !";
-            Description = "Clear 10 lines non-stop";
+            Title = "Dirty South Style";
+            Description = "Do 3 Tetrises in 3 drops";
         }
 
         public override void Reset()
@@ -20,12 +20,14 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public override void OnRoundFinished(int lineCompleted, int level, IBoard board)
         {
-            if (lineCompleted == 0)
-                _count = 0;
+            if (lineCompleted == 4)
+            {
+                _count++;
+                if (_count == 3)
+                    Achieve();
+            }
             else
-                _count += lineCompleted;
-            if (_count >= 10)
-                Achieve();
-        }
+                _count = 0;
+       }
     }
 }

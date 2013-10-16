@@ -2,9 +2,9 @@
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.DataContracts;
 
-namespace TetriNET.Client.Achievements.Achievements
+namespace TetriNET.Client.Achievements
 {
-    public abstract class Achievement : IAchievement
+    internal abstract class Achievement : IAchievement
     {
         public string Title { get; protected set; }
         public string Description { get; protected set; }
@@ -15,19 +15,28 @@ namespace TetriNET.Client.Achievements.Achievements
         public DateTime FirstTimeAchieved { get; set; }
         public DateTime LastTimeAchieved { get; set; }
 
-        public bool IsAchievable { get; protected set; }
+        public bool IsFailed { get; protected set; }
+        public bool AlreadyAchievedThisGame { get; protected set; }
 
-        public event OnAchievedHandler OnAchieved;
+        public bool IsAchievable {
+            get
+            {
+                return !IsFailed && !AlreadyAchievedThisGame;
+            }
+        }
+        
+        public event AchievedHandler Achieved;
 
         protected Achievement()
         {
-            IsAchievable = true;
+            IsFailed = false;
             ResetOnGameStarted = true;
         }
 
         public virtual void Reset()
         {
-            IsAchievable = true;
+            IsFailed = false;
+            AlreadyAchievedThisGame = false;
         }
 
         public virtual void Achieve()
@@ -45,8 +54,10 @@ namespace TetriNET.Client.Achievements.Achievements
 
             Reset();
 
-            if (OnAchieved != null)
-                OnAchieved(this, firstTime);
+            AlreadyAchievedThisGame = true;
+
+            if (Achieved != null)
+                Achieved(this, firstTime);
         }
 
         // Triggers
@@ -62,11 +73,11 @@ namespace TetriNET.Client.Achievements.Achievements
         {
         }
 
-        public virtual void OnUseSpecial(int playerId, int targetId, string targetTeam, IBoard targetBoard, Specials special)
+        public virtual void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
         {
         }
 
-        public virtual void OnRoundFinished(int lineCompleted)
+        public virtual void OnRoundFinished(int lineCompleted, int level, IBoard board)
         {
         }
     }

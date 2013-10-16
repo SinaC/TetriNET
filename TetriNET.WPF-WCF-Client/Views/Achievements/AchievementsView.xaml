@@ -4,13 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:achievements="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Achievements"
-             xmlns:achievementsModels="clr-namespace:TetriNET.Client.Achievements.Achievements;assembly=TetriNET.Client.Achievements"
+             xmlns:interfaces="clr-namespace:TetriNET.Client.Interfaces;assembly=TetriNET.Client.Interfaces"
              IsTabStop="False"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance achievements:AchievementsViewModelDesignData, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
-            <DataTemplate x:Key="AchievedDataTemplate" DataType="{x:Type achievementsModels:Achievement}">
+            <DataTemplate x:Key="AchievedDataTemplate" DataType="{x:Type interfaces:IAchievement}">
                 <Border BorderBrush="Black" BorderThickness="1">
                     <StackPanel Orientation="Vertical" Margin="5,0,5,0" Background="Transparent">
                         <StackPanel.ToolTip>
@@ -49,7 +49,7 @@
                     </StackPanel>
                 </Border>
             </DataTemplate>
-            <DataTemplate x:Key="NotAchievedDataTemplate" DataType="{x:Type achievementsModels:Achievement}">
+            <DataTemplate x:Key="NotAchievedDataTemplate" DataType="{x:Type interfaces:IAchievement}">
                 <Border BorderBrush="Black" BorderThickness="1">
                     <StackPanel Orientation="Vertical" Margin="5,0,5,0" Opacity="0.5" Background="Transparent">
                         <TextBlock HorizontalAlignment="Left" FontWeight="Bold"
@@ -66,17 +66,13 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" >
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="0">
             <ItemsControl 
                 HorizontalAlignment="Stretch" Background="Transparent"
                 ItemsSource="{Binding Achievements}">
                 <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type achievementsModels:Achievement}">
+                    <DataTemplate DataType="{x:Type interfaces:IAchievement}">
                         <ContentControl Content="{Binding}" IsTabStop="False">
                             <ContentControl.Style>
                                 <Style TargetType="{x:Type ContentControl}">
@@ -96,9 +92,10 @@
             </ItemsControl>
         </ScrollViewer>
 
-        <Button Grid.Row="1" Grid.Column="0" Width="100" HorizontalAlignment="Left" IsEnabled="{Binding IsResetEnabled}"
+        <Button Grid.Row="1" Width="Auto" HorizontalAlignment="Left" Margin="2,4,2,2"
+                IsEnabled="{Binding IsResetEnabled}"
                 Command="{Binding ResetAchievementsCommand}">
-            <TextBlock Text="Reset Scores"/>
+            <TextBlock Text="Reset Achievements"/>
         </Button>
     </Grid>
 </UserControl>

@@ -1,18 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TetriNET.Client.Achievements.Achievements;
+using System.Reflection;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Logger;
 
 namespace TetriNET.Client.Achievements
 {
     public class AchievementManager : IAchievementManager
     {
-        public event OnAchievedHandler OnAchieved;
+        public AchievementManager()
+        {
+            //
+            Achievements = new List<IAchievement>();
+        }
+
+        public void GetAllAchievements()
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            GetAllAchievements(assembly);
+        }
+
+        public void GetAllAchievements(Assembly assembly)
+        {
+            //
+            List<Type> types = assembly.GetTypes().Where(
+                t => String.Equals(t.Namespace, "TetriNET.Client.Achievements.Achievements", StringComparison.Ordinal) 
+                    && t.IsSubclassOf(typeof(Achievement))
+                    && !t.IsAbstract).ToList();
+            foreach (Type type in types)
+            {
+                try
+                {
+                    IAchievement achievement = Activator.CreateInstance(type) as IAchievement;
+                    if (achievement != null)
+                    {
+                        Achievements.Add(achievement);
+                        achievement.Achieved += AchievementAchieved;
+                    }
+                    else
+                        Log.WriteLine(Log.LogLevels.Warning, "Achievement {0} cannot be instantiated and casted to right IAchievement", type.FullName);
+                }
+                catch (Exception ex)
+                {
+                    Log.WriteLine(Log.LogLevels.Warning, "Achievement {0} cannot be instantiated. Exception: {1}", type.FullName, ex.ToString());
+                }
+            }
+        }
+
+        #region IAchievementManager
+        public event AchievedHandler Achieved;
 
         private List<IAchievement> _achievements;
-
         public List<IAchievement> Achievements
         {
             get
@@ -24,43 +64,11 @@ namespace TetriNET.Client.Achievements
                 List<IAchievement> oldAchievements = _achievements;
                 if (oldAchievements != null && oldAchievements.Any())
                     foreach (IAchievement achievement in oldAchievements)
-                        achievement.OnAchieved -= AchievementOnAchieved;
+                        achievement.Achieved -= AchievementAchieved;
                 _achievements = value;
                 if (_achievements != null && _achievements.Any())
                     foreach (IAchievement achievement in _achievements)
-                        achievement.OnAchieved += AchievementOnAchieved;
-            }
-        }
-
-        private IClient _client;
-
-        public IClient Client
-        {
-            get { return _client; }
-            set
-            {
-                IClient oldClient = _client;
-                if (oldClient != null)
-                {
-                    oldClient.OnGameStarted -= OnGameStarted;
-                    oldClient.OnGameFinished -= OnGameFinished;
-                    oldClient.OnPlayerWon -= OnPlayerWon;
-                    oldClient.OnGameOver -= OnGameOver;
-                    oldClient.OnSpecialUsed -= SpecialUsed;
-                    oldClient.OnRoundFinished -= OnRoundFinished;
-                    oldClient.OnUseSpecial -= UseSpecial;
-                }
-                _client = value;
-                if (_client != null)
-                {
-                    _client.OnGameStarted += OnGameStarted;
-                    _client.OnGameFinished += OnGameFinished;
-                    _client.OnPlayerWon += OnPlayerWon;
-                    _client.OnGameOver += OnGameOver;
-                    _client.OnSpecialUsed += SpecialUsed;
-                    _client.OnRoundFinished += OnRoundFinished;
-                    _client.OnUseSpecial += UseSpecial;
-                }
+                        achievement.Achieved += AchievementAchieved;
             }
         }
 
@@ -75,107 +83,54 @@ namespace TetriNET.Client.Achievements
             }
         }
 
-        private void AchievementOnAchieved(IAchievement achievement, bool firstTime)
+        private void AchievementAchieved(IAchievement achievement, bool firstTime)
         {
-            if (OnAchieved != null)
-                OnAchieved(achievement, firstTime);
+            if (Achieved != null)
+                Achieved(achievement, firstTime);
         }
 
-        private void OnGameStarted()
+        public void OnGameStarted()
         {
             _gameStartTime = DateTime.Now;
             foreach (IAchievement achievement in Achievements.Where(x => x.ResetOnGameStarted))
                 achievement.Reset();
         }
 
-        private void OnGameFinished()
+        public void OnGameFinished()
         {
         }
 
-        private void OnRoundFinished(int deletedRows)
+        public void OnRoundFinished(int deletedRows, int level, IBoard board)
         {
             foreach (IAchievement achievement in Achievements.Where(x => x.IsAchievable))
-                achievement.OnRoundFinished(deletedRows);
+                achievement.OnRoundFinished(deletedRows, level, board);
         }
 
-        private void UseSpecial(int targetId, string targetName, Specials special)
+        public void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
         {
-            // Target
-            string targetTeam = null;
-            IBoard targetBoard = null;
-            if (Client.PlayerId == targetId)
-            {
-                targetTeam = Client.Team;
-                targetBoard = Client.Board == null ? null : Client.Board.Clone();
-            }
-            else
-            {
-                IOpponent target = Client.Opponents.FirstOrDefault(x => x.PlayerId == targetId);
-                if (target != null)
-                {
-                    targetTeam = target.Team;
-                    targetBoard = target.Board == null ? null : target.Board.Clone();
-                }
-            }
-            //
             foreach (IAchievement achievement in Achievements.Where(x => x.IsAchievable))
-                achievement.OnUseSpecial(Client.PlayerId, targetId, targetTeam, targetBoard, special);
+                achievement.OnUseSpecial(playerId, playerTeam, playerBoard, targetId, targetTeam, targetBoard, special);
         }
 
-        private void SpecialUsed(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special)
+        public void OnSpecialUsed(int playerId, int sourceId, string sourceTeam, IBoard sourceBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
         {
-            // Source
-            string sourceTeam = null;
-            IBoard sourceBoard = null;
-            if (Client.PlayerId == playerId)
-            {
-                sourceTeam = Client.Team;
-                sourceBoard = Client.Board == null ? null : Client.Board.Clone();
-            }
-            else
-            {
-                IOpponent source = Client.Opponents.FirstOrDefault(x => x.PlayerId == playerId);
-                if (source != null)
-                {
-                    sourceTeam = source.Team;
-                    sourceBoard = source.Board == null ? null : source.Board.Clone();
-                }
-            }
-            // Target
-            string targetTeam = null;
-            IBoard targetBoard = null;
-            if (Client.PlayerId == targetId)
-            {
-                targetTeam = Client.Team;
-                targetBoard = Client.Board == null ? null : Client.Board.Clone();
-            }
-            else
-            {
-                IOpponent target = Client.Opponents.FirstOrDefault(x => x.PlayerId == targetId);
-                if (target != null)
-                {
-                    targetTeam = target.Team;
-                    targetBoard = target.Board == null ? null : target.Board.Clone();
-                }
-            }
-            //
             foreach (IAchievement achievement in Achievements.Where(x => x.IsAchievable))
-                achievement.OnSpecialUsed(Client.PlayerId, playerId, sourceTeam, sourceBoard, targetId, targetTeam, targetBoard, special);
+                achievement.OnSpecialUsed(playerId, sourceId, sourceTeam, sourceBoard, targetId, targetTeam, targetBoard, special);
         }
 
-        private void OnGameOver()
+        public void OnGameOver(int moveCount, int linesCleared, int playingOpponentsInCurrentGame)
         {
             TimeSpan timeSpan = DateTime.Now - _gameStartTime;
             foreach (IAchievement achievement in Achievements.Where(x => x.IsAchievable))
-                achievement.OnGameLost(timeSpan.TotalSeconds, Client.Statistics.MoveCount, Client.LinesCleared, Client.PlayingOpponentsInCurrentGame);
+                achievement.OnGameLost(timeSpan.TotalSeconds, moveCount, linesCleared, playingOpponentsInCurrentGame);
         }
 
-        private void OnPlayerWon(int playerId, string playerName)
+        public void OnGameWon(int moveCount, int linesCleared, int playingOpponentsInCurrentGame)
         {
             TimeSpan timeSpan = DateTime.Now - _gameStartTime;
-            if (playerId == Client.PlayerId)
-                foreach (IAchievement achievement in Achievements.Where(x => x.IsAchievable))
-                    achievement.OnGameWon(timeSpan.TotalSeconds, Client.Statistics.MoveCount, Client.LinesCleared, Client.PlayingOpponentsInCurrentGame);
+            foreach (IAchievement achievement in Achievements.Where(x => x.IsAchievable))
+                achievement.OnGameWon(timeSpan.TotalSeconds, moveCount, linesCleared, playingOpponentsInCurrentGame);
         }
+        #endregion
     }
 }

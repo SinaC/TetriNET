@@ -51,6 +51,7 @@ namespace TetriNET.Client
         private readonly PieceArray _pieces;
         private readonly Inventory _inventory;
         private readonly Statistics _statistics;
+        private readonly IAchievementManager _achievementManager;
         private readonly System.Timers.Timer _gameTimer;
 
         public States State { get; private set; }
@@ -116,6 +117,29 @@ namespace TetriNET.Client
             Task.Factory.StartNew(TimeoutTask);
             Task.Factory.StartNew(BoardActionTask);
         }
+
+        public Client(Func<Pieces, int, int, int, int, bool, IPiece> createPieceFunc, Func<IBoard> createBoardFunc, Func<IAchievementManager> createAchievementManagerFunc)
+            : this(createPieceFunc, createBoardFunc)
+        {
+            if (createAchievementManagerFunc == null)
+                throw new ArgumentNullException("createAchievementManagerFunc");
+
+            _achievementManager = createAchievementManagerFunc();
+            _achievementManager.Achieved += AchievementEarned;
+        }
+
+        #region IAchievementManager event handler
+
+        private void AchievementEarned(IAchievement achievement, bool firstTime)
+        {
+            // TODO: dedicated client->server API such as EarnAchievement(achievement title, bool firstTime)
+            if (firstTime)
+                _proxy.PublishMessage(this, String.Format("has earned the achievement [{0}]", achievement.Title));
+
+            if (ClientOnAchievementEarned != null)
+                ClientOnAchievementEarned(achievement, firstTime);
+        }
+        #endregion
 
         #region IProxy event handler
 
@@ -338,6 +362,9 @@ namespace TetriNET.Client
                 playerData.State = PlayerData.States.Joined;
                 if (ClientOnPlayerWon != null)
                     ClientOnPlayerWon(playerId, playerData.Name);
+
+                if (_achievementManager != null && playerId == _clientPlayerId)
+                    _achievementManager.OnGameWon(_statistics.MoveCount, LinesCleared, PlayingOpponentsInCurrentGame);
             }
         }
 
@@ -371,27 +398,27 @@ namespace TetriNET.Client
                 _statistics.PieceCount[firstPiece]++;
             // Reset inventory
             _inventory.Reset(Options.InventorySize);
-            _inventory.Enqueue(new List<Specials>
-            {
-                //Specials.Darkness,
-                //Specials.Confusion,
-                //Specials.Confusion,
-                //Specials.Darkness,
-                //Specials.Immunity,
-                //Specials.Immunity,
-                //Specials.SwitchFields,
-                //Specials.SwitchFields,
-                //Specials.SwitchFields,
-                //Specials.SwitchFields,
-                //Specials.NukeField,
-                //Specials.NukeField,
-                //Specials.NukeField,
-                //Specials.NukeField,
-                Specials.BlockBomb,
-                Specials.BlockBomb,
-                Specials.BlockBomb,
-                Specials.BlockBomb,
-            });
+            //_inventory.Enqueue(new List<Specials>
+            //{
+            //    //Specials.Darkness,
+            //    //Specials.Confusion,
+            //    //Specials.Confusion,
+            //    //Specials.Darkness,
+            //    //Specials.Immunity,
+            //    //Specials.Immunity,
+            //    //Specials.SwitchFields,
+            //    //Specials.SwitchFields,
+            //    //Specials.SwitchFields,
+            //    //Specials.SwitchFields,
+            //    //Specials.NukeField,
+            //    //Specials.NukeField,
+            //    //Specials.NukeField,
+            //    //Specials.NukeField,
+            //    Specials.BlockBomb,
+            //    Specials.BlockBomb,
+            //    Specials.BlockBomb,
+            //    Specials.BlockBomb,
+            //});
             // Reset line and level
             LinesCleared = 0;
             Level = Options.StartingLevel;
@@ -412,9 +439,9 @@ namespace TetriNET.Client
                     if (playerData.Board != null)
                     {
                         playerData.Board.Clear();
-                        for (int y = 1; y <= 3; y++)
-                            for (int x = 1; x <= playerData.Board.Width; x++)
-                                playerData.Board.Cells[playerData.Board.GetCellIndex(x, y)] = (x % 2 == 0) ? (byte)5 : (byte)Specials.BlockBomb;
+                        //for (int y = 1; y <= 3; y++)
+                        //    for (int x = 1; x <= playerData.Board.Width; x++)
+                        //        playerData.Board.Cells[playerData.Board.GetCellIndex(x, y)] = (x % 2 == 0) ? (byte)5 : (byte)Specials.BlockBomb;
                     }
                     playerData.State = PlayerData.States.Playing;
                     playerData.IsImmune = false;
@@ -427,6 +454,9 @@ namespace TetriNET.Client
 
             if (ClientOnGameStarted != null)
                 ClientOnGameStarted();
+
+            if (_achievementManager != null)
+                _achievementManager.OnGameStarted();
 
             //Log.WriteLine("PIECES:{0}", _pieces.Dump(8));
         }
@@ -458,6 +488,9 @@ namespace TetriNET.Client
 
             if (ClientOnGameFinished != null)
                 ClientOnGameFinished();
+
+            if (_achievementManager != null)
+                _achievementManager.OnGameFinished();
         }
 
         public void OnGamePaused()
@@ -558,12 +591,16 @@ namespace TetriNET.Client
             if (ClientOnSpecialUsed != null)
             {
                 PlayerData playerData = GetPlayer(playerId);
-                PlayerData target = GetPlayer(targetId);
+                PlayerData targetData = GetPlayer(targetId);
 
                 string playerName = playerData == null ? "???" : playerData.Name;
-                string targetName = target == null ? "???" : target.Name;
+                string targetName = targetData == null ? "???" : targetData.Name;
 
                 ClientOnSpecialUsed(playerId, playerName, targetId, targetName, specialId, special);
+
+                //
+                if (_achievementManager != null)
+                    _achievementManager.OnSpecialUsed(_clientPlayerId, playerId, playerData == null ? null : playerData.Team, playerData == null ? null : playerData.Board, targetId, targetData == null ? null : targetData.Team, targetData == null ? null : targetData.Board, special);
             }
 
             //}
@@ -722,6 +759,9 @@ namespace TetriNET.Client
 
             if (ClientOnGameOver != null)
                 ClientOnGameOver();
+
+            if (_achievementManager != null)
+                _achievementManager.OnGameOver(_statistics.MoveCount, LinesCleared, PlayingOpponentsInCurrentGame);
         }
 
         private void StartRound()
@@ -860,6 +900,9 @@ namespace TetriNET.Client
             if (ClientOnRoundFinished != null)
                 ClientOnRoundFinished(deletedRows);
 
+            if (_achievementManager != null)
+                _achievementManager.OnRoundFinished(deletedRows, Level, Board);
+
             // Start next round
             StartRound();
         }
@@ -971,8 +1014,17 @@ namespace TetriNET.Client
             }
         }
 
-        public IClientStatistics Statistics {
+        public IClientStatistics Statistics
+        {
             get { return _statistics; }
+        }
+
+        public IEnumerable<IAchievement> Achievements
+        {
+            get
+            {
+                return _achievementManager == null ? null : _achievementManager.Achievements;
+            }
         }
 
         private event ClientConnectionLostHandler ClientOnConnectionLost;
@@ -1190,6 +1242,13 @@ namespace TetriNET.Client
         {
             add { ClientOnContinuousSpecialFinished += value; }
             remove { ClientOnContinuousSpecialFinished -= value; }
+        }
+
+        private event ClientAchievementEarnedHandler ClientOnAchievementEarned;
+        event ClientAchievementEarnedHandler IClient.OnAchievementEarned
+        {
+            add { ClientOnAchievementEarned += value; }
+            remove { ClientOnAchievementEarned -= value; }
         }
 
         public void Dump()
@@ -1445,9 +1504,19 @@ namespace TetriNET.Client
                     //
                     if (ClientOnUseSpecial != null)
                         ClientOnUseSpecial(targetId, target.Name, special);
+
+                    //
+                    if (_achievementManager != null)
+                        _achievementManager.OnUseSpecial(_clientPlayerId, Team, Board, targetId, target.Team, target.Board, special);
                 }
             }
             return succeeded;
+        }
+
+        public void ResetAchievements()
+        {
+            if (_achievementManager != null)
+                _achievementManager.Reset();
         }
 
         #endregion

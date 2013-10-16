@@ -4,17 +4,17 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    public class CallMeSavior : Achievement
+    internal class CallMeSavior : Achievement
     {
         public CallMeSavior()
         {
             Title = "Call me Savior !";
-            Description = "'Nuke Field' a friend (only in team)";
+            Description = "Nuke a friend (only in team)";
         }
 
-        public override void OnSpecialUsed(int playerId, int sourceId, string sourceTeam, IBoard sourceBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
+        public override void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
         {
-            if (sourceId == playerId && playerId != targetId && !String.IsNullOrWhiteSpace(sourceTeam) && !String.IsNullOrWhiteSpace(targetTeam) && sourceTeam == targetTeam)
+            if (playerId != targetId && !String.IsNullOrWhiteSpace(playerTeam) && !String.IsNullOrWhiteSpace(targetTeam) && playerTeam == targetTeam)
                 Achieve();
         }
     }

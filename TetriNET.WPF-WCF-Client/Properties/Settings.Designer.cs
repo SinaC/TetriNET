@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using TetriNET.WPF_WCF_Client.CustomSettings;
+
 namespace TetriNET.WPF_WCF_Client.Properties {
     
     
@@ -427,6 +429,20 @@ namespace TetriNET.WPF_WCF_Client.Properties {
             }
             set {
                 this["IsColorSchemeUsed"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public AchievementsSettings Achievements
+        {
+            get
+            {
+                return ((AchievementsSettings)(this["Achievements"]));
+            }
+            set
+            {
+                this["Achievements"] = value;
             }
         }
     }

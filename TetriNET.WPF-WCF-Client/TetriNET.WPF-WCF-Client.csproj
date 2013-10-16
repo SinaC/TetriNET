@@ -82,9 +82,11 @@
     <Compile Include="Commands\AsyncRelayCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\StringColorConverter.cs" />
+    <Compile Include="CustomSettings\Achievements.cs" />
     <Compile Include="Helpers\AssemblyHelper.cs" />
     <Compile Include="Helpers\AttachedFocus.cs" />
     <Compile Include="Models\ChatColor.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="UserControls\MetroLoadingControl.xaml.cs">
       <DependentUpon>MetroLoadingControl.xaml</DependentUpon>
     </Compile>

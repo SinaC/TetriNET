@@ -4,21 +4,21 @@ using TetriNET.Common.Helpers;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    public class JustInTime : Achievement
+    internal class JustInTime : Achievement
     {
         public JustInTime()
         {
             Title = "Just in time...";
-            Description = "'Nuke field' 1 line before death";
+            Description = "Nuke 1 line before death";
         }
 
-        public override void OnUseSpecial(int playerId, int targetId, string targetTeam, IBoard targetBoard, Specials special)
+        public override void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
         {
             if (playerId == targetId && special == Specials.NukeField)
             {
-                int spawnX = targetBoard.PieceSpawnX;
-                int topY = targetBoard.Height - 2;
-                if (targetBoard[spawnX, topY] != CellHelper.EmptyCell)
+                int spawnX = playerBoard.PieceSpawnX;
+                int topY = playerBoard.Height - 2;
+                if (playerBoard[spawnX, topY] != CellHelper.EmptyCell)
                     Achieve();
             }
         }

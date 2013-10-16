@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Input;
-using TetriNET.Client.Achievements.Achievements;
+using TetriNET.Client.Achievements;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.WPF_WCF_Client.Commands;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
 {
@@ -36,61 +38,69 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
             get { return Client == null || !Client.IsGameStarted; }
         }
 
-        private IAchievementManager _achievementManager;
-        public IAchievementManager AchievementManager
-        {
-            get { return _achievementManager; }
-            set
-            {
-                if (_achievementManager != null)
-                    _achievementManager.OnAchieved -= OnAchieved;
-                _achievementManager = value;
-                if (_achievementManager != null)
-                {
-                    _achievementManager.OnAchieved += OnAchieved;
-                    Achievements = BuildAchievementList(_achievementManager.Achievements);
-                }
-            }
-        }
-
         public AchievementsViewModel()
         {
-            ResetAchievementsCommand = new RelayCommand(() => _achievementManager.Reset());
+            ResetAchievementsCommand = new RelayCommand(Reset);
+
+            ClientChanged += OnClientChanged;
         }
 
-        private void OnAchieved(IAchievement achievement, bool firstTime)
+        private void Reset()
         {
-            Log.WriteLine(Log.LogLevels.Info, "Achievement: {0} {1} {2:dd/MM/yyyy HH:mm:ss}", achievement.Title, firstTime, achievement.LastTimeAchieved);
+            Client.ResetAchievements();
+            Settings.Default.Achievements.Set(Client.Achievements.ToList());
+            Settings.Default.Save();
 
-            // TODO: Should be replaced with a client anonymous message or a new server API
-            Client.PublishMessage(String.Format("has earned the achievement [{0}]", achievement.Title));
-
-            ExecuteOnUIThread.Invoke(() => Achievements = BuildAchievementList(_achievementManager.Achievements));
+            ExecuteOnUIThread.Invoke(() => Achievements = BuildAchievementList(Client.Achievements.ToList()));
         }
 
-        protected ObservableCollection<IAchievement> BuildAchievementList(IEnumerable<IAchievement> achievements)
+        protected ObservableCollection<IAchievement> BuildAchievementList(List<IAchievement> achievements)
         {
+            if (achievements == null)
+                return null;
             // Sort by achieve or not, then by first time achieve
-            return new ObservableCollection<IAchievement>(achievements.OrderByDescending(x => x.IsAchieved).ThenByDescending(x => x.FirstTimeAchieved));
+            return new ObservableCollection<IAchievement>(
+                    achievements.Where(x => x.IsAchieved).OrderByDescending(x => x.FirstTimeAchieved)
+                .Union(
+                    achievements.Where(x => !x.IsAchieved).OrderBy(x => x.Title))
+            );
+            //return new ObservableCollection<IAchievement>(achievements.OrderByDescending(x => x.IsAchieved).ThenByDescending(x => x.FirstTimeAchieved));
         }
 
         #region ViewModelBase
+        
+        private void OnClientChanged(IClient oldClient, IClient newClient)
+        {
+            Achievements = BuildAchievementList(newClient.Achievements.ToList());
+        }
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnGameStarted -= RefreshResetEnable;
             oldClient.OnGameFinished -= RefreshResetEnable;
+            oldClient.OnAchievementEarned -= OnAchievementEarned;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
             newClient.OnGameStarted += RefreshResetEnable;
             newClient.OnGameFinished += RefreshResetEnable;
+            newClient.OnAchievementEarned += OnAchievementEarned;
         }
 
         #endregion
 
         #region IClient events handler
+
+        private void OnAchievementEarned(IAchievement achievement, bool firstTime)
+        {
+            Log.WriteLine(Log.LogLevels.Info, "Achievement: {0} {1} {2:dd/MM/yyyy HH:mm:ss}", achievement.Title, firstTime, achievement.LastTimeAchieved);
+
+            Settings.Default.Achievements.Set(Client.Achievements.ToList());
+            Settings.Default.Save();
+
+            ExecuteOnUIThread.Invoke(() => Achievements = BuildAchievementList(Client.Achievements.ToList()));
+        }
 
         private void RefreshResetEnable()
         {
@@ -110,66 +120,33 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
     {
         public AchievementsViewModelDesignData()
         {
-            Achievements = BuildAchievementList(new List<IAchievement>
+            AchievementManager manager = new AchievementManager();
+            manager.GetAllAchievements(Assembly.Load("TetriNET.Client.Achievements"));
+            IAchievement sniper = manager.Achievements.FirstOrDefault(x => x.Title == "Sniper");
+            if (sniper != null)
             {
-                new Sniper
-                {
-                    IsAchieved = true,
-                    FirstTimeAchieved = DateTime.Now.AddDays(-2).AddHours(1),
-                    LastTimeAchieved = DateTime.Now.AddDays(-2).AddHours(1),
-                    AchieveCount = 1,
-                },
-                new Architect
-                {
-                    IsAchieved = false
-                },
-                new Magician
-                {
-                    IsAchieved = false
-                },
-                new FearMyBrain
-                {
-                    IsAchieved = true,
-                    FirstTimeAchieved = DateTime.Now.AddDays(-4),
-                    LastTimeAchieved = DateTime.Now.AddDays(-1),
-                    AchieveCount = 2
-                },
-                new RunBabyRun
-                {
-                    IsAchieved = false
-                },
-                new SerialBuilder
-                {
-                    IsAchieved = false
-                },
-                new TooGoodForYou
-                {
-                    IsAchieved = true,
-                    FirstTimeAchieved = DateTime.Now.AddHours(-4),
-                    LastTimeAchieved = DateTime.Now.AddHours(-4),
-                    AchieveCount = 1,
-                },
-                new HitchhikersGuide
-                {
-                    IsAchieved = false
-                },
-                new NewtonsApple
-                {
-                    IsAchieved = false
-                },
-                new TooEasyForMe
-                {
-                    IsAchieved = false
-                },
-                new WhoIsYourDaddy
-                {
-                    IsAchieved = false
-                },
-                new CallMeSavior
-                {
-                    IsAchieved = false
-                }
-            });
+                sniper.IsAchieved = true;
+                sniper.FirstTimeAchieved = DateTime.Now.AddDays(-2).AddHours(1);
+                sniper.LastTimeAchieved = DateTime.Now.AddDays(-2).AddHours(1);
+                sniper.AchieveCount = 1;
+            }
+            IAchievement fearMyBrain = manager.Achievements.FirstOrDefault(x => x.Title == "Fear my brain !");
+            if (fearMyBrain != null)
+            {
+                fearMyBrain.IsAchieved = true;
+                fearMyBrain.FirstTimeAchieved =  DateTime.Now.AddDays(-4);
+                fearMyBrain.LastTimeAchieved = DateTime.Now.AddDays(-1);
+                fearMyBrain.AchieveCount = 2;
+            }
+            IAchievement tooGoodForYou = manager.Achievements.FirstOrDefault(x => x.Title == "Too good for you");
+            if (tooGoodForYou != null)
+            {
+                tooGoodForYou.IsAchieved = true;
+                tooGoodForYou.FirstTimeAchieved = DateTime.Now.AddDays(-4);
+                tooGoodForYou.LastTimeAchieved = DateTime.Now.AddDays(-4);
+                tooGoodForYou.AchieveCount = 1;
+            }
+            Achievements = BuildAchievementList(manager.Achievements);
         }
     }
 }

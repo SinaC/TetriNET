@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Navigation;
 using TetriNET.Client.Achievements;
 using TetriNET.Client.Achievements.Achievements;
 using TetriNET.Client.Board;
 using TetriNET.Client.Pieces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
+using TetriNET.WPF_WCF_Client.CustomSettings;
+using TetriNET.WPF_WCF_Client.Properties;
 using TetriNET.WPF_WCF_Client.ViewModels.Achievements;
 using TetriNET.WPF_WCF_Client.ViewModels.Connection;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
@@ -24,8 +27,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         public ConnectionViewModel ConnectionViewModel { get; private set; }
         public PlayFieldViewModel PlayFieldViewModel { get; private set; }
         public AchievementsViewModel AchievementsViewModel { get; private set; }
-
-        public IAchievementManager AchievementManager { get; private set; }
 
         private int _activeTabItemIndex;
 
@@ -54,97 +55,20 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             AchievementsViewModel = new AchievementsViewModel();
 
             //
-            //
-            AchievementManager = new AchievementManager
-            {
-                Achievements = new List<IAchievement>
-                {
-                    new Sniper(),
-                    new Architect(),
-                    new Magician(),
-                    new FearMyBrain(),
-                    new RunBabyRun(),
-                    new SerialBuilder(),
-                    new TooGoodForYou(),
-                    new HitchhikersGuide(),
-                    new NewtonsApple(),
-                    new TooEasyForMe(),
-                    new WhoIsYourDaddy(),
-                    new CallMeSavior(),
-                    new JustInTime(),
-                    new NuclearLaunchDetected()
-                },
-                //    Achievements = new List<Achievement>
-                //    {
-                //        new Sniper
-                //        {
-                //            IsAchieved = true,
-                //            FirstTimeAchieved = DateTime.Now.AddDays(-2).AddHours(1),
-                //            LastTimeAchieved = DateTime.Now.AddDays(-2).AddHours(1),
-                //            AchieveCount = 1,
-                //        },
-                //        new Architect
-                //        {
-                //            IsAchieved = false
-                //        },
-                //        new Magician
-                //        {
-                //            IsAchieved = false
-                //        },
-                //        new FearMyBrain
-                //        {
-                //            IsAchieved = true,
-                //            FirstTimeAchieved = DateTime.Now.AddDays(-4),
-                //            LastTimeAchieved = DateTime.Now.AddDays(-1),
-                //            AchieveCount = 2
-                //        },
-                //        new RunBabyRun
-                //        {
-                //            IsAchieved = false
-                //        },
-                //        new SerialBuilder
-                //        {
-                //            IsAchieved = false
-                //        },
-                //        new TooGoodForYou
-                //        {
-                //            IsAchieved = true,
-                //            FirstTimeAchieved = DateTime.Now.AddHours(-4),
-                //            LastTimeAchieved = DateTime.Now.AddHours(-4),
-                //            AchieveCount = 1,
-                //        },
-                //        new HitchhikersGuide
-                //        {
-                //            IsAchieved = false
-                //        },
-                //        new NewtonsApple
-                //        {
-                //            IsAchieved = false
-                //        },
-                //        new TooEasyForMe
-                //        {
-                //            IsAchieved = false
-                //        },
-                //        new WhoIsYourDaddy
-                //        {
-                //            IsAchieved = false
-                //        },
-                //        new CallMeSavior
-                //        {
-                //            IsAchieved = false
-                //        }
-                //    }
-            };
-            AchievementsViewModel.AchievementManager = AchievementManager;
-            PlayFieldViewModel.AchievementManager = AchievementManager;
-            // TODO: read/write achievement data from settings
+            AchievementManager manager = new AchievementManager();
+            manager.GetAllAchievements();
+            Settings.Default.Achievements = Settings.Default.Achievements ?? new AchievementsSettings();
+            Settings.Default.Achievements.Get(manager.Achievements);
 
             //
             ClientChanged += OnClientChanged;
 
             // Create client
-            //Client = new Client.Client(Piece.CreatePiece, () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height));
-            Client = new Client.Client((pieces, i, arg3, arg4, arg5, arg6) => Piece.CreatePiece(Pieces.TetriminoI, i, arg3, arg4, arg5, arg6), () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height));
+            Client = new Client.Client(Piece.CreatePiece, () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height), () => manager);
+            //Client = new Client.Client(
+            //    (pieces, i, arg3, arg4, arg5, arg6) => Piece.CreatePiece(Pieces.TetriminoI, i, arg3, arg4, arg5, arg6),
+            //    () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height),
+            //    () => manager);
         }
 
         #region ViewModelBase
@@ -158,8 +82,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             ConnectionViewModel.Client = newClient;
             PlayFieldViewModel.Client = newClient;
             AchievementsViewModel.Client = newClient;
-
-            AchievementManager.Client = Client;
         }
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)

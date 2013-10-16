@@ -45,6 +45,8 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientContinuousSpecialToggledHandler(Specials special, bool active, double durationLeftInSeconds);
     public delegate void ClientContinuousSpecialFinishedHandler(int playerId, Specials special);
 
+    public delegate void ClientAchievementEarnedHandler(IAchievement achievement, bool firstTime);
+
     public interface IClient
     {
         string Name { get; }
@@ -68,6 +70,7 @@ namespace TetriNET.Client.Interfaces
 
         IEnumerable<IOpponent> Opponents { get; }
         IClientStatistics Statistics { get; }
+        IEnumerable<IAchievement> Achievements { get; }
 
         event ClientConnectionLostHandler OnConnectionLost;
 
@@ -102,6 +105,8 @@ namespace TetriNET.Client.Interfaces
         event ClientContinuousSpecialToggledHandler OnContinuousEffectToggled; // on player
         event ClientContinuousSpecialFinishedHandler OnContinuousSpecialFinished; // on opponent
 
+        event ClientAchievementEarnedHandler OnAchievementEarned;
+
         //bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc);
         //bool Disconnect();
 
@@ -131,6 +136,9 @@ namespace TetriNET.Client.Interfaces
         void RotateCounterClockwise();
         void DiscardFirstSpecial();
         bool UseSpecial(int targetId);
+
+        // Achievement
+        void ResetAchievements();
 
         //
         void Dump();
