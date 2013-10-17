@@ -9,7 +9,7 @@ namespace TetriNET.Client.Achievements.Achievements
         public VoidMaster()
         {
             Title = "Void Master";
-            Description = "Clear whole board";
+            Description = "Clear whole board by clearing lines";
         }
 
         public override void OnRoundFinished(int lineCompleted, int level, IBoard board)

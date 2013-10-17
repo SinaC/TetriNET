@@ -9,7 +9,7 @@ namespace TetriNET.Client.Achievements.Achievements
         public FearMyBrain()
         {
             Title = "Fear my brain !";
-            Description = "Clear 10 lines non-stop";
+            Description = "Clear 10 lines in 10 drops";
         }
 
         public override void Reset()

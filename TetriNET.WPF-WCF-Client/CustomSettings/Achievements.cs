@@ -42,7 +42,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
                 return;
             foreach (AchievementSettings setting in Achievements)
             {
-                IAchievement achievement = achievements.FirstOrDefault(x => x.Title == setting.Title);
+                IAchievement achievement = achievements.FirstOrDefault(x => String.Compare(x.Title, setting.Title, StringComparison.InvariantCultureIgnoreCase) == 0);
                 if (achievement != null)
                 {
                     achievement.IsAchieved = setting.Count > 0;

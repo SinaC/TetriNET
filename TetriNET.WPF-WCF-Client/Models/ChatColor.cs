@@ -11,5 +11,11 @@
         Magenta,
         Cyan,
         White,
+        PaleVioletRed,
+        LightSeaGreen,
+        Gold,
+        MediumSlateBlue,
+        LightGray,
+        DodgerBlue,
     }
 }

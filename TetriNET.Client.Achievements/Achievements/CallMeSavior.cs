@@ -9,7 +9,7 @@ namespace TetriNET.Client.Achievements.Achievements
         public CallMeSavior()
         {
             Title = "Call me Savior !";
-            Description = "Nuke a friend (only in team)";
+            Description = "Nuke a player in your team";
         }
 
         public override void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)

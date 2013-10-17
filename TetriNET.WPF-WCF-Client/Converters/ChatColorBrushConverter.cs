@@ -20,6 +20,12 @@ namespace TetriNET.WPF_WCF_Client.Converters
         private static readonly Brush Magenta = new SolidColorBrush(Colors.Magenta);
         private static readonly Brush Cyan = new SolidColorBrush(Colors.Cyan);
         private static readonly Brush White = new SolidColorBrush(Colors.White);
+        private static readonly Brush PaleVioletRed = new SolidColorBrush(Colors.PaleVioletRed);
+        private static readonly Brush LightSeaGreen = new SolidColorBrush(Colors.LightSeaGreen);
+        private static readonly Brush Gold = new SolidColorBrush(Colors.Gold);
+        private static readonly Brush MediumSlateBlue = new SolidColorBrush(Colors.MediumSlateBlue);
+        private static readonly Brush LightGray = new SolidColorBrush(Colors.LightGray);
+        private static readonly Brush DodgerBlue = new SolidColorBrush(Colors.DodgerBlue);
         private static readonly Brush DeepPink = new SolidColorBrush(Colors.DeepPink); // default value
 
         private static bool ApplicationIsInDesignMode
@@ -55,6 +61,18 @@ namespace TetriNET.WPF_WCF_Client.Converters
                     return Cyan;
                 case ChatColor.White:
                     return White;
+                case ChatColor.PaleVioletRed:
+                    return PaleVioletRed;
+                case ChatColor.LightSeaGreen:
+                    return LightSeaGreen;
+                case ChatColor.Gold:
+                    return Gold;
+                case ChatColor.MediumSlateBlue:
+                    return MediumSlateBlue;
+                case ChatColor.LightGray:
+                    return LightGray;
+                case ChatColor.DodgerBlue:
+                    return DodgerBlue;
                 default:
                     return DeepPink; // default value
             }

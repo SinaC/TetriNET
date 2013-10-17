@@ -215,12 +215,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             IsColorSchemeUsed = Settings.Default.IsColorSchemeUsed;
             PlayerColors = new ObservableCollection<ChatColor>
             {
-                ChatColor.Blue, // 1
-                ChatColor.Red, // 2
-                ChatColor.Green, // 3
-                ChatColor.Yellow, // 4
-                ChatColor.Magenta, // 5
-                ChatColor.Cyan, // 6
+                ChatColor.LightSeaGreen, // 1
+                ChatColor.PaleVioletRed, // 2
+                ChatColor.Gold, // 3
+                ChatColor.MediumSlateBlue, // 4
+                ChatColor.LightGray, // 5
+                ChatColor.DodgerBlue, // 6
             };
         }
 
