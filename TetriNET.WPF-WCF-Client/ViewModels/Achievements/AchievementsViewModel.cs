@@ -33,6 +33,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
             }
         }
 
+        public int TotalPoints
+        {
+            get { return Achievements.Where(x => x.IsAchieved).Sum(x => x.Points); }
+        }
+
         public bool IsResetEnabled
         {
             get { return Client == null || !Client.IsGameStarted; }
@@ -72,6 +77,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
         private void OnClientChanged(IClient oldClient, IClient newClient)
         {
             Achievements = BuildAchievementList(newClient.Achievements.ToList());
+            //
+            OnPropertyChanged("TotalPoints");
         }
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
@@ -100,6 +107,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
             Settings.Default.Save();
 
             ExecuteOnUIThread.Invoke(() => Achievements = BuildAchievementList(Client.Achievements.ToList()));
+            //
+            OnPropertyChanged("TotalPoints");
         }
 
         private void OnGameFinished()
@@ -109,6 +118,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
             //
             Settings.Default.Achievements.Save(Client.Achievements.ToList());
             Settings.Default.Save();
+            //
+            OnPropertyChanged("TotalPoints");
         }
 
         private void RefreshResetEnable()

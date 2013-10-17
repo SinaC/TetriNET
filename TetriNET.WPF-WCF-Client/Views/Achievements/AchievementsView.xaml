@@ -41,7 +41,7 @@
                         <DockPanel>
                             <TextBlock HorizontalAlignment="Left" FontWeight="Bold"
                                                Text="{Binding Title}" />
-                            <TextBlock HorizontalAlignment="Right"
+                            <TextBlock HorizontalAlignment="Right" FontSize="10"
                                                Text="{Binding FirstTimeAchieved, StringFormat={}{0:dd MMMM yyyy}}"/>
                             <!--<TextBlock HorizontalAlignment="Right"
                                                Text="{Binding Points}"/>-->
@@ -127,5 +127,11 @@
                 Command="{Binding ResetAchievementsCommand}">
             <TextBlock Text="Reset Achievements"/>
         </Button>
+
+        <!--<StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="2" >
+            <TextBlock Text="Total points: " VerticalAlignment="Center"/>
+            <TextBlock  Width="Auto" VerticalAlignment="Center"
+                       Text="{Binding TotalPoints}"/>
+        </StackPanel>-->
     </Grid>
 </UserControl>
