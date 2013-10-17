@@ -53,9 +53,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
             //
             AchievementManager manager = new AchievementManager();
-            //manager.FindAllAchievements();
-            //Settings.Default.Achievements = Settings.Default.Achievements ?? new AchievementsSettings();
-            //Settings.Default.Achievements.Load(manager.Achievements);
+            manager.FindAllAchievements();
+            Settings.Default.Achievements = Settings.Default.Achievements ?? new AchievementsSettings();
+            Settings.Default.Achievements.Load(manager.Achievements);
 
             //
             ClientChanged += OnClientChanged;
