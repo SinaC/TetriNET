@@ -43,6 +43,8 @@
                                                Text="{Binding Title}" />
                             <TextBlock HorizontalAlignment="Right"
                                                Text="{Binding FirstTimeAchieved, StringFormat={}{0:dd MMMM yyyy}}"/>
+                            <!--<TextBlock HorizontalAlignment="Right"
+                                               Text="{Binding Points}"/>-->
                         </DockPanel>
                         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap"
                                            Text="{Binding Description}"/>
@@ -62,11 +64,15 @@
             <DataTemplate x:Key="NotAchievedProgressDataTemplate" DataType="{x:Type interfaces:IAchievement}">
                 <Border BorderBrush="Black" BorderThickness="1">
                     <StackPanel Orientation="Vertical" Margin="5,0,5,0" Opacity="0.5" Background="Transparent">
-                        <StackPanel.ToolTip>
+                        <!--<StackPanel.ToolTip>
                             <TextBlock Text="{Binding Progress}"/>
-                        </StackPanel.ToolTip>
-                        <TextBlock HorizontalAlignment="Left" FontWeight="Bold"
-                                            Text="{Binding Title}" />
+                        </StackPanel.ToolTip>-->
+                        <DockPanel>
+                            <TextBlock HorizontalAlignment="Left" FontWeight="Bold"
+                                       Text="{Binding Title}" />
+                            <TextBlock HorizontalAlignment="Right"
+                                       Text="{Binding Progress}"/>
+                        </DockPanel>
                         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap"
                                            Text="{Binding Description}"/>
                     </StackPanel>

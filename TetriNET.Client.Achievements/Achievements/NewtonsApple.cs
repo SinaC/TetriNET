@@ -9,6 +9,7 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public NewtonsApple()
         {
+            Points = 20;
             Title = "Newton's Apple";
             Description = "Use 5 Gravity in a game";
         }

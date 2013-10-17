@@ -23,7 +23,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
         // Build settings from achievements
         public void Save(List<IAchievement> achievements)
         {
-            if (achievements == null)
+            if (achievements == null || !achievements.Any())
                 return;
             Achievements = achievements.Select(x => new AchievementSettings
             {
@@ -38,7 +38,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
         // Overwrite achievements data with settings
         public void Load(List<IAchievement> achievements)
         {
-            if (achievements == null || Achievements == null)
+            if (achievements == null || Achievements == null || !achievements.Any() || !Achievements.Any())
                 return;
             foreach (AchievementSettings setting in Achievements)
             {

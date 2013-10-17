@@ -7,6 +7,7 @@ namespace TetriNET.Client.Achievements.Achievements
     {
         public TetrisAce()
         {
+            Points = 30;
             Title = "Tetris Ace";
             Description = "Perform 150 Tetrises";
             OnlyOnce = true;

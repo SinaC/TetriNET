@@ -9,6 +9,7 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public TooGoodForYou()
         {
+            Points = 40;
             Title = "Too good for you";
             Description = "Win a game without using any specials";
         }

@@ -7,6 +7,7 @@ namespace TetriNET.Client.Interfaces
 
     public interface IAchievement
     {
+        int Points { get; }
         string Title { get; }
         string Description { get; }
         bool ResetOnGameStarted { get; } // default: true

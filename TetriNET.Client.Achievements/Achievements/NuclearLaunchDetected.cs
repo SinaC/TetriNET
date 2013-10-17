@@ -9,6 +9,7 @@ namespace TetriNET.Client.Achievements.Achievements
     {
         public NuclearLaunchDetected()
         {
+            Points = 30;
             Title = "Nuclear launch detected";
             Description = "Explode 3 (or more) Bombs in one attack";
         }

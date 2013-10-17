@@ -9,6 +9,7 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public Magician()
         {
+            Points = 20;
             Title = "Magician";
             Description = "Use 3 Switch in a game";
         }

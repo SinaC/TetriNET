@@ -8,6 +8,7 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public FearMyBrain()
         {
+            Points = 50;
             Title = "Fear my brain !";
             Description = "Clear 10 lines in 10 drops";
         }

@@ -8,6 +8,7 @@ namespace TetriNET.Client.Achievements.Achievements
     {
         public CallMeSavior()
         {
+            Points = 5;
             Title = "Call me Savior !";
             Description = "Nuke a player in your team";
         }

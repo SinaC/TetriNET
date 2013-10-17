@@ -4,6 +4,7 @@
     {
         public HitchhikersGuide()
         {
+            Points = 15;
             Title = "Hitchhiker's Guide";
             Description = "Win with exactly 42 lines";
         }

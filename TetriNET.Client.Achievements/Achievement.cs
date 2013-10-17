@@ -6,6 +6,7 @@ namespace TetriNET.Client.Achievements
 {
     internal abstract class Achievement : IAchievement
     {
+        public int Points { get; protected set; }
         public string Title { get; protected set; }
         public string Description { get; protected set; }
         public bool ResetOnGameStarted { get; protected set; } // default: true

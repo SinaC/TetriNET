@@ -8,6 +8,7 @@ namespace TetriNET.Client.Achievements.Achievements
     {
         public JustInTime()
         {
+            Points = 30;
             Title = "Just in time...";
             Description = "Nuke 1 line before death";
         }

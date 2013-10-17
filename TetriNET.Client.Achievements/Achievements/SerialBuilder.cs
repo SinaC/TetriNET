@@ -4,6 +4,7 @@
     {
         public SerialBuilder()
         {
+            Points = 30;
             Title = "Serial builder";
             Description = "Finish a game with more than 15 lines cleared/min";
         }

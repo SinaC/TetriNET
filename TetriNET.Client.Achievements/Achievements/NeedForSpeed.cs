@@ -8,6 +8,7 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public NeedForSpeed()
         {
+            Points = 50;
             Title = "Need for speed";
             Description = "Clear 50 lines on level 100";
         }

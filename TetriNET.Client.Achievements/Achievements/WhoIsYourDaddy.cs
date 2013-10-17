@@ -6,6 +6,7 @@
 
         public WhoIsYourDaddy()
         {
+            Points = 40;
             Title = "Who's your daddy ?";
             Description = "Win 5 times in a row";
             ResetOnGameStarted = false;

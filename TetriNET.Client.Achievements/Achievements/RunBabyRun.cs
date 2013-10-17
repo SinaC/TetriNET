@@ -4,6 +4,7 @@
     {
         public RunBabyRun()
         {
+            Points = 20;
             Title = "Run baby run";
             Description = "Win a multiplayer game with more than 300 moves/min";
         }

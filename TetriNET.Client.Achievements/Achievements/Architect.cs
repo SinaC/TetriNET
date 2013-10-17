@@ -8,6 +8,7 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public Architect()
         {
+            Points = 20;
             Title = "Architect";
             Description = "Do 2 Tetrises in 2 drops";
         }

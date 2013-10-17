@@ -7,6 +7,7 @@ namespace TetriNET.Client.Achievements.Achievements
     {
         public DropItLikeItsHot()
         {
+            Points = 30;
             Title = "Drop it like it's hot";
             Description = "Drop a total of 10,000 Tetriminos";
             OnlyOnce = true;
@@ -14,7 +15,7 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public override string Progress
         {
-            get { return String.Format("{0} / {1} ({2:0.0}%)", ExtraData, 10000, 100.0*(ExtraData / 10000.0)); }
+            get { return String.Format("{0:#,0} / {1:#,0} ({2:0.0}%)", ExtraData, 10000, 100.0 * (ExtraData / 10000.0)); }
         }
 
         public override void OnRoundFinished(int lineCompleted, int level, IBoard board)

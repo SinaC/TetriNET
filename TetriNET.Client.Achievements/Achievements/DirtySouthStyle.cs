@@ -8,6 +8,7 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public DirtySouthStyle()
         {
+            Points = 60;
             Title = "Dirty South Style";
             Description = "Do 3 Tetrises in 3 drops";
         }

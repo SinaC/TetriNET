@@ -14,6 +14,8 @@ New options: random blocks clear count, mutation count, darkness time, confusion
 Solo mode (score, t-spin)
 Server integrated in WPF client
 
+achievement: display point in achieved and not achieved
+
 hold: store a piece for later use --> this could lead to problem with server (server checks piece id when receiving PlaceTetrimino msg  line 636)
 
 unique id on achievement instead of checking on title
