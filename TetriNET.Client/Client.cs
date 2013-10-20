@@ -759,8 +759,11 @@ namespace TetriNET.Client
             if (ClientOnGameOver != null)
                 ClientOnGameOver();
 
-            if (_achievementManager != null)
-                _achievementManager.OnGameOver(_statistics.MoveCount, LinesCleared, PlayingOpponentsInCurrentGame);
+             if (_achievementManager != null)
+            {
+                int opponentsLeft = _playersData.Count(x => x != null && x.PlayerId != _clientPlayerId && x.State == PlayerData.States.Playing);
+                _achievementManager.OnGameOver(_statistics.MoveCount, LinesCleared, PlayingOpponentsInCurrentGame, opponentsLeft);
+            }
         }
 
         private void StartRound()

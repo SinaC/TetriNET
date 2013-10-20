@@ -7,6 +7,7 @@ namespace TetriNET.Client.Achievements.Achievements
     {
         public Eliminator()
         {
+            Id = 10;
             Points = 30;
             Title = "Eliminator";
             Description = "Clear a total of 10,000 lines";

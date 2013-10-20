@@ -8,6 +8,7 @@ namespace TetriNET.Client.Achievements.Achievements
     {
         public VoidMaster()
         {
+            Id = 29;
             Points = 50;
             Title = "Void Master";
             Description = "Clear whole board by clearing lines";

@@ -4,6 +4,7 @@
     {
         public Sniper()
         {
+            Id = 24;
             Points = 40;
             Title = "Sniper";
             Description = "Win a multiplayer game in less than 1 minute";

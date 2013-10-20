@@ -7,6 +7,7 @@ namespace TetriNET.Client.Achievements.Achievements
     {
         public DropItLikeItsHot()
         {
+            Id = 9;
             Points = 30;
             Title = "Drop it like it's hot";
             Description = "Drop a total of 10,000 Tetriminos";

@@ -1,15 +1,15 @@
 ﻿namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class WhoIsYourDaddy : Achievement
+    internal class HabibStyle : Achievement
     {
         private int _count;
 
-        public WhoIsYourDaddy()
+        public HabibStyle()
         {
-            Id = 30;
-            Points = 40;
-            Title = "Who's your daddy ?";
-            Description = "Win 5 times in a row";
+            Id = 13;
+            Points = 10;
+            Title = "Habib’s style";
+            Description = "Be the first to lose, 5 times in a row in a multiplayer game (min. 4 players)";
             ResetOnGameStarted = false;
         }
 
@@ -21,14 +21,17 @@
 
         public override void OnGameWon(double playTime, int moveCount, int lineCount, int playerCount)
         {
-              _count++;
-            if (_count == 5)
-                Achieve();
+            _count = 0;
         }
 
         public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount, int playerLeft)
         {
-            _count = 0;
+            if (playerLeft + 1 == playerCount && playerCount >= 4)
+            {
+                _count++;
+                if (_count == 5)
+                    Achieve();
+            }
         }
     }
 }

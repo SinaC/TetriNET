@@ -3,16 +3,16 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class Magician : Achievement
+    internal class MartyIsDaPlace : Achievement
     {
         private int _count;
 
-        public Magician()
+        public MartyIsDaPlace()
         {
-            Id = 16;
+            Id = 17;
             Points = 20;
-            Title = "Magician";
-            Description = "Use 3 Switch in a game";
+            Title = "Marty is da place";
+            Description = "Use 5 Zebra in a game";
         }
 
         public override void Reset()
@@ -23,9 +23,9 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public override void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
         {
-            if (special == Specials.SwitchFields)
+            if (special == Specials.ZebraField)
                 _count++;
-            if (_count == 3)
+            if (_count == 5)
                 Achieve();
         }
     }

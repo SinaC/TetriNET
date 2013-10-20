@@ -6,6 +6,11 @@ namespace TetriNET.Client.Achievements
 {
     internal abstract class Achievement : IAchievement
     {
+        private bool AlreadyAchievedThisGame { get; set; }
+
+        protected bool IsFailed { get; set; }
+
+        public int Id { get; protected set; }
         public int Points { get; protected set; }
         public string Title { get; protected set; }
         public string Description { get; protected set; }
@@ -17,9 +22,11 @@ namespace TetriNET.Client.Achievements
         public DateTime FirstTimeAchieved { get; set; }
         public DateTime LastTimeAchieved { get; set; }
         public int ExtraData { get; set; } // can be used to store data between game session
-
-        public bool IsFailed { get; protected set; }
-        public bool AlreadyAchievedThisGame { get; protected set; }
+       
+        public bool AchievedMoreThanOnce
+        {
+            get { return AchieveCount > 1; }
+        }
 
         public bool IsAchievable {
             get
@@ -80,7 +87,7 @@ namespace TetriNET.Client.Achievements
         {
         }
 
-        public virtual void OnGameLost(double playTime/*in seconds*/, int moveCount, int lineCount, int playerCount)
+        public virtual void OnGameLost(double playTime/*in seconds*/, int moveCount, int lineCount, int playerCount, int playerLeft)
         {
         }
 

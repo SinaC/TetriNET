@@ -4,6 +4,7 @@
     {
         public SerialBuilder()
         {
+            Id = 23;
             Points = 30;
             Title = "Serial builder";
             Description = "Finish a game with more than 15 lines cleared/min";
@@ -14,7 +15,7 @@
             Check(playTime, lineCount);
         }
 
-        public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount)
+        public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount, int playerLeft)
         {
             Check(playTime, lineCount);
         }

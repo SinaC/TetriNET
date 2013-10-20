@@ -8,7 +8,8 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public BackToBack()
         {
-            Points = 15;
+            Id = 2;
+            Points = 20;
             Title = "Back to Back";
             Description = "Do 2 Tetrises without clearing any lines in between";
         }

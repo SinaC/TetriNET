@@ -8,7 +8,8 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public Century()
         {
-            Points = 10;
+            Id = 6;
+            Points = 20;
             Title = "Century";
             Description = "Clear 100 lines in one game";
         }

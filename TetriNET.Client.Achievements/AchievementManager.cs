@@ -33,8 +33,14 @@ namespace TetriNET.Client.Achievements
                     IAchievement achievement = Activator.CreateInstance(type) as IAchievement;
                     if (achievement != null)
                     {
-                        Achievements.Add(achievement);
-                        achievement.Achieved += AchievementAchieved;
+                        IAchievement alreadyExists = Achievements.FirstOrDefault(x => x.Id == achievement.Id);
+                        if (alreadyExists != null)
+                            Log.WriteLine(Log.LogLevels.Error, "Achievement {0} and {1} share the same id {2}", achievement.Title, alreadyExists.Title, achievement.Id);
+                        else
+                        {
+                            Achievements.Add(achievement);
+                            achievement.Achieved += AchievementAchieved;
+                        }
                     }
                     else
                         Log.WriteLine(Log.LogLevels.Warning, "Achievement {0} cannot be instantiated and casted to right IAchievement", type.FullName);
@@ -116,11 +122,11 @@ namespace TetriNET.Client.Achievements
                 achievement.OnSpecialUsed(playerId, sourceId, sourceTeam, sourceBoard, targetId, targetTeam, targetBoard, special);
         }
 
-        public void OnGameOver(int moveCount, int linesCleared, int playingOpponentsInCurrentGame)
+        public void OnGameOver(int moveCount, int linesCleared, int playingOpponentsInCurrentGame, int playingOpponentsLeftInCurrentGame)
         {
             TimeSpan timeSpan = DateTime.Now - _gameStartTime;
             foreach (IAchievement achievement in Achievements.Where(x => x.IsAchievable))
-                achievement.OnGameLost(timeSpan.TotalSeconds, moveCount, linesCleared, playingOpponentsInCurrentGame);
+                achievement.OnGameLost(timeSpan.TotalSeconds, moveCount, linesCleared, playingOpponentsInCurrentGame, playingOpponentsLeftInCurrentGame);
         }
 
         public void OnGameWon(int moveCount, int linesCleared, int playingOpponentsInCurrentGame)

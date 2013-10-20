@@ -38,6 +38,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
             get { return Achievements.Where(x => x.IsAchieved).Sum(x => x.Points); }
         }
 
+        public int TotalAchievements
+        {
+            get { return Achievements.Count(x => x.IsAchieved); }
+        }
+
         public bool IsResetEnabled
         {
             get { return Client == null || !Client.IsGameStarted; }
@@ -78,7 +83,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
         {
             Achievements = BuildAchievementList(newClient.Achievements.ToList());
             //
-            OnPropertyChanged("TotalPoints");
+            RefreshAchievementsStats();
         }
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
@@ -108,7 +113,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
 
             ExecuteOnUIThread.Invoke(() => Achievements = BuildAchievementList(Client.Achievements.ToList()));
             //
-            OnPropertyChanged("TotalPoints");
+            RefreshAchievementsStats();
         }
 
         private void OnGameFinished()
@@ -119,12 +124,18 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
             Settings.Default.Achievements.Save(Client.Achievements.ToList());
             Settings.Default.Save();
             //
-            OnPropertyChanged("TotalPoints");
+            RefreshAchievementsStats();
         }
 
         private void RefreshResetEnable()
         {
             OnPropertyChanged("IsResetEnabled");
+        }
+
+        protected void RefreshAchievementsStats()
+        {
+            OnPropertyChanged("TotalPoints");
+            OnPropertyChanged("TotalAchievements");
         }
 
         #endregion
@@ -173,6 +184,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
                 tetrisAce.ExtraData = 25;
             }
             Achievements = BuildAchievementList(manager.Achievements);
+            RefreshAchievementsStats();
         }
     }
 }

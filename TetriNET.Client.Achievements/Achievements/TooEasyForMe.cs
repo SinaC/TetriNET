@@ -9,6 +9,7 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public TooEasyForMe()
         {
+            Id = 27;
             Points = 20;
             Title = "Too easy for me";
             Description = "Nuke an enemy (and win the game)";

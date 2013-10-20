@@ -8,6 +8,7 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public Millenium()
         {
+            Id = 18;
             Points = 50;
             Title = "Millenium";
             Description = "Clear 1000 lines in one game";
