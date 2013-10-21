@@ -33,6 +33,8 @@ namespace TetriNET.Client.Interfaces
         UseSpecialOn5,
         [Description("Use special on player 6")]
         UseSpecialOn6,
+        [Description("User special on yourself")]
+        UseSpecialOnSelf,
     }
 
     public interface IGameController

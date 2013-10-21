@@ -164,6 +164,10 @@ namespace TetriNET.ConsoleWCFClient
                             controller.KeyDown(Commands.UseSpecialOn6);
                             controller.KeyUp(Commands.UseSpecialOn6);
                             break;
+                        case ConsoleKey.Enter:
+                            controller.KeyDown(Commands.UseSpecialOnSelf);
+                            controller.KeyUp(Commands.UseSpecialOnSelf);
+                            break;
                     }
                 }
                 else

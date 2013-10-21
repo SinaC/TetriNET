@@ -83,6 +83,7 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\StringColorConverter.cs" />
     <Compile Include="CustomSettings\Achievements.cs" />
+    <Compile Include="CustomSettings\PortableSettingsProvider.cs" />
     <Compile Include="Helpers\AssemblyHelper.cs" />
     <Compile Include="Helpers\AttachedFocus.cs" />
     <Compile Include="Models\ChatColor.cs" />

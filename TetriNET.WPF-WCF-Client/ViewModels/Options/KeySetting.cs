@@ -110,6 +110,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
                 case Client.Interfaces.Commands.UseSpecialOn6:
                     Settings.Default.UseSpecialOn6 = (int)Key;
                     break;
+                case Client.Interfaces.Commands.UseSpecialOnSelf:
+                    Settings.Default.UseSpecialOnSelf = (int)Key;
+                    break;
             }
             Settings.Default.Save();
         }

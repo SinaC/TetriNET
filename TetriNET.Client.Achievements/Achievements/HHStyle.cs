@@ -1,14 +1,14 @@
 ﻿namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class HabibStyle : Achievement
+    internal class HHStyle : Achievement
     {
         private int _count;
 
-        public HabibStyle()
+        public HHStyle()
         {
             Id = 13;
             Points = 10;
-            Title = "Habib’s style";
+            Title = "HH’s style";
             Description = "Be the first to lose, 5 times in a row in a multiplayer game (min. 4 players)";
             ResetOnGameStarted = false;
         }

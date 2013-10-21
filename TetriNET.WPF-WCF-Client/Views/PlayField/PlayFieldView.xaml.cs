@@ -144,6 +144,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 case Key.NumPad6:
                 case Key.D6:
                     return Client.Interfaces.Commands.UseSpecialOn6;
+                case Key.Enter:
+                    return Client.Interfaces.Commands.UseSpecialOn6;
             }
             return Client.Interfaces.Commands.Invalid;
         }

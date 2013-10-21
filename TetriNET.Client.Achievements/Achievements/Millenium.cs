@@ -20,7 +20,7 @@ namespace TetriNET.Client.Achievements.Achievements
             base.Reset();
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, IBoard board)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board)
         {
             _lineCount += lineCompleted;
             if (_lineCount >= 1000)

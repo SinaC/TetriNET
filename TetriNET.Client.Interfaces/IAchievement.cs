@@ -35,6 +35,6 @@ namespace TetriNET.Client.Interfaces
         void OnGameLost(double playTime /*in seconds*/, int moveCount, int lineCount, int playerCount, int playerLeft);
         void OnSpecialUsed(int playerId, int sourceId, string sourceTeam, IBoard sourceBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special);
         void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special);
-        void OnRoundFinished(int lineCompleted, int level, IBoard board);
+        void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board);
     }
 }

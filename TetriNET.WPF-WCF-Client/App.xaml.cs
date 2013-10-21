@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using TetriNET.Common.Logger;
+using TetriNET.WPF_WCF_Client.CustomSettings;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.Properties;
 
@@ -23,17 +25,41 @@ namespace TetriNET.WPF_WCF_Client
             string logFilename = "WPF_" + Guid.NewGuid().ToString().Substring(0, 5) + ".log";
             Log.Initialize(ConfigurationManager.AppSettings["logpath"], logFilename);
             
-            // Log user settings path
-            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
-            Log.WriteLine(Log.LogLevels.Info, "Local user config path: {0}", config.FilePath);
+            //// Log user settings path
+            //Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+            //Log.WriteLine(Log.LogLevels.Info, "Local user config path: {0}", config.FilePath);
 
-            // Get settings from old version if needed
-            if (Settings.Default.UpgradeRequired)
+            //// TODO: if PortableSettingsProvider file doesn't exist, copy config.FilePath to PortableSettingsProvider path
+
+            //// Get settings from old version if needed
+            //if (Settings.Default.UpgradeRequired)
+            //{
+            //    Settings.Default.Upgrade();
+            //    Settings.Default.UpgradeRequired = false;
+            //    Settings.Default.Save();
+            //}
+
+            // If new config file doesn't exist, copy old one
+            try
             {
-                Settings.Default.Upgrade();
-                Settings.Default.UpgradeRequired = false;
-                Settings.Default.Save();
+                string newPath = Path.Combine(PortableSettingsProvider.SettingsPath, PortableSettingsProvider.SettingsFilename);
+                if (!File.Exists(newPath))
+                {
+                    // Original config file path
+                    Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+                    if (File.Exists(config.FilePath))
+                    {
+                        if (!Directory.Exists(PortableSettingsProvider.SettingsPath))
+                            Directory.CreateDirectory(PortableSettingsProvider.SettingsPath);
+                        File.Copy(config.FilePath, newPath);
+                    }
+                }
             }
+            catch(Exception ex)
+            {
+                Log.WriteLine(Log.LogLevels.Error, "Error while creating new config file from old one. Exception: {0}", ex.ToString());
+            }
+
 
             //ExtractTetrinetTextures();
 

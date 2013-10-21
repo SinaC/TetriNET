@@ -211,6 +211,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             SetKeySetting(Settings.Default.UseSpecialOn4, TetriNET.Client.Interfaces.Commands.UseSpecialOn4);
             SetKeySetting(Settings.Default.UseSpecialOn5, TetriNET.Client.Interfaces.Commands.UseSpecialOn5);
             SetKeySetting(Settings.Default.UseSpecialOn6, TetriNET.Client.Interfaces.Commands.UseSpecialOn6);
+            SetKeySetting(Settings.Default.UseSpecialOnSelf, TetriNET.Client.Interfaces.Commands.UseSpecialOnSelf);
 
             IsColorSchemeUsed = Settings.Default.IsColorSchemeUsed;
             PlayerColors = new ObservableCollection<ChatColor>
@@ -299,6 +300,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
                     new KeySetting(Key.D4, TetriNET.Client.Interfaces.Commands.UseSpecialOn4),
                     new KeySetting(Key.D5, TetriNET.Client.Interfaces.Commands.UseSpecialOn5),
                     new KeySetting(Key.D6, TetriNET.Client.Interfaces.Commands.UseSpecialOn6),
+                    new KeySetting(Key.Enter, TetriNET.Client.Interfaces.Commands.UseSpecialOnSelf)
                 };
         }
     }

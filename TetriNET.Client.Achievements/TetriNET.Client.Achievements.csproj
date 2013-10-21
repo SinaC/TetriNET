@@ -48,7 +48,7 @@
     <Compile Include="Achievements\Eliminator.cs" />
     <Compile Include="Achievements\Eradicator.cs" />
     <Compile Include="Achievements\FearMyBrain.cs" />
-    <Compile Include="Achievements\HabibStyle.cs" />
+    <Compile Include="Achievements\HHStyle.cs" />
     <Compile Include="Achievements\HitchhikersGuide.cs" />
     <Compile Include="Achievements\JustInTime.cs" />
     <Compile Include="Achievements\Magician.cs" />
@@ -57,6 +57,7 @@
     <Compile Include="Achievements\NeedForSpeed.cs" />
     <Compile Include="Achievements\NewtonsApple.cs" />
     <Compile Include="Achievements\NuclearLaunchDetected.cs" />
+    <Compile Include="Achievements\PhilouStyle.cs" />
     <Compile Include="Achievements\RunBabyRun.cs" />
     <Compile Include="Achievements\SerialBuilder.cs" />
     <Compile Include="Achievements\Sniper.cs" />

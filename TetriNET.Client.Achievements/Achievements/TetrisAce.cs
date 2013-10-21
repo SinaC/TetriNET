@@ -19,7 +19,7 @@ namespace TetriNET.Client.Achievements.Achievements
             get { return String.Format("{0} / {1} ({2:0.0}%)", ExtraData, 150, 100.0 * (ExtraData / 150.0)); }
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, IBoard board)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board)
         {
             if (lineCompleted == 4)
                 ExtraData++;

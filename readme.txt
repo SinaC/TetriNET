@@ -21,7 +21,8 @@ new server->client API: OnAchievementEarned(playerId, id, title)
 when receiving OnAchievementEarned, display msg in party line chat and in game chat
 NotAvailable achievement attribute
 
-bug
+bugs:
+tetriminoI appears on row 21 instead of 22
 sometimes bottom line seems to disappear (occurs when lines are added by server)
 focus on game view is not set properly when starting a game and player is in stat tab or options tab
 chat player list is sometimes wrong (2 times the same player) server not yet started and 2 clients try to connect at the same time

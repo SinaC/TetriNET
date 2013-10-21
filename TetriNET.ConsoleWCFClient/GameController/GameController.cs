@@ -91,6 +91,9 @@ namespace TetriNET.ConsoleWCFClient.GameController
                     case Commands.UseSpecialOn6:
                         Client.UseSpecial(5);
                         break;
+                    case Commands.UseSpecialOnSelf:
+                        Client.UseSpecial(Client.PlayerId);
+                        break;
                 }
                 if (_timers.ContainsKey(cmd))
                     _timers[cmd].Start();

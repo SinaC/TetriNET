@@ -136,6 +136,9 @@ namespace TetriNET.WPF_WCF_Client.GameController
                     case TetriNET.Client.Interfaces.Commands.UseSpecialOn6:
                         Client.UseSpecial(5);
                         break;
+                    case TetriNET.Client.Interfaces.Commands.UseSpecialOnSelf:
+                        Client.UseSpecial(Client.PlayerId);
+                        break;
                 }
                 if (_timers.ContainsKey(cmd))
                     _timers[cmd].Start();

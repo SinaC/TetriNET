@@ -20,7 +20,7 @@ namespace TetriNET.Client.Achievements.Achievements
             base.Reset();
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, IBoard board)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board)
         {
             //if line completed == 4 and active == true -> VALIDATED; if line completed == 4 and active == false, active = true; if line completed < 4 -> active = false
             if (lineCompleted == 4 && _active)
