@@ -19,9 +19,9 @@ hold: store a piece for later use --> this could lead to problem with server (se
 new client->server API: EarnAchievement(id, title)  (server doesn't know anything about achievements)
 new server->client API: OnAchievementEarned(playerId, id, title)
 when receiving OnAchievementEarned, display msg in party line chat and in game chat
-NotAvailable achievement attribute
 
 bugs:
+why user.config is automatically created with default values in $APPDATA$/Local/SinaC/TetriNET WPF WCF Client/  when recompiling a new version
 tetriminoI appears on row 21 instead of 22
 sometimes bottom line seems to disappear (occurs when lines are added by server)
 focus on game view is not set properly when starting a game and player is in stat tab or options tab
@@ -227,3 +227,5 @@ http://blockbattle.net/tutorial
 
 custom user settings path
 http://stackoverflow.com/questions/2265271/custom-path-of-the-user-config
+http://stackoverflow.com/questions/175726/c-create-new-settings-at-run-time/1236190#1236190
+http://msdn.microsoft.com/en-us/library/saa62613(v=VS.100).aspx

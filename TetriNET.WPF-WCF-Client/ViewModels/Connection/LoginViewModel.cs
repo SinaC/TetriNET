@@ -167,17 +167,23 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                         SetConnectionResultMessage("Missing server address", ChatColor.Red);
                         return;
                     }
-                    Settings.Default.Server = _serverAddress;
-                    Settings.Default.Save();
-                    
+                    if (Settings.Default.Server != _serverAddress)
+                    {
+                        Settings.Default.Server = _serverAddress;
+                        Settings.Default.Save();
+                    }
+
                     string error = this["Username"];
                     if (!String.IsNullOrWhiteSpace(error))
                     {
                         SetConnectionResultMessage(error, ChatColor.Red);
                         return;
                     }
-                    Settings.Default.Username = _username;
-                    Settings.Default.Save();
+                    if (Settings.Default.Username != _username)
+                    {
+                        Settings.Default.Username = _username;
+                        Settings.Default.Save();
+                    }
 
                     bool connected = Client.ConnectAndRegister(callback => new WCFProxy(callback, ServerAddress), Username);
                     if (!connected)

@@ -3,15 +3,15 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class MartyIsDaPlace : Achievement
+    internal class MartyIsInDaPlace : Achievement
     {
         private int _count;
 
-        public MartyIsDaPlace()
+        public MartyIsInDaPlace()
         {
             Id = 17;
             Points = 20;
-            Title = "Marty is da place";
+            Title = "Marty is in da place";
             Description = "Use 5 Zebra in a game";
         }
 

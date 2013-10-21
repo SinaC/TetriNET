@@ -91,6 +91,9 @@ namespace TetriNET.Client.Achievements
         {
             if (Achieved != null)
                 Achieved(achievement, firstTime);
+
+            foreach (IAchievement iter in Achievements.Where(x => x.IsAchievable))
+                iter.OnAchievementEarned(achievement, Achievements);
         }
 
         public void OnGameStarted()
@@ -135,6 +138,7 @@ namespace TetriNET.Client.Achievements
             foreach (IAchievement achievement in Achievements.Where(x => x.IsAchievable))
                 achievement.OnGameWon(timeSpan.TotalSeconds, moveCount, linesCleared, playingOpponentsInCurrentGame);
         }
+
         #endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.DataContracts;
 
@@ -83,6 +84,10 @@ namespace TetriNET.Client.Achievements
         }
 
         // Triggers
+        public virtual void OnAchievementEarned(IAchievement achievement, IEnumerable<IAchievement> achievements)
+        {
+        }
+
         public virtual void OnGameWon(double playTime/*in seconds*/, int moveCount, int lineCount, int playerCount)
         {
         }

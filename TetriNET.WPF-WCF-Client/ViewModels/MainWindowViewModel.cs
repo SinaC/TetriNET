@@ -42,6 +42,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
         public MainWindowViewModel()
         {
+            //
+            AchievementManager manager = new AchievementManager();
+            manager.FindAllAchievements();
+            Settings.Default.Achievements = Settings.Default.Achievements ?? new AchievementsSettings();
+            Settings.Default.Achievements.Load(manager.Achievements);
+
             // Create sub view models
             WinListViewModel = new WinListViewModel();
             ClientStatisticsViewModel = new ClientStatisticsViewModel();
@@ -50,12 +56,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             ConnectionViewModel = new ConnectionViewModel();
             PlayFieldViewModel = new PlayFieldViewModel();
             AchievementsViewModel = new AchievementsViewModel();
-
-            //
-            AchievementManager manager = new AchievementManager();
-            manager.FindAllAchievements();
-            Settings.Default.Achievements = Settings.Default.Achievements ?? new AchievementsSettings();
-            Settings.Default.Achievements.Load(manager.Achievements);
 
             //
             ClientChanged += OnClientChanged;

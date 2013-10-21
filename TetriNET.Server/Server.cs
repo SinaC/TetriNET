@@ -612,6 +612,7 @@ namespace TetriNET.Server
                         {
                             try
                             {
+                                Log.WriteLine(Log.LogLevels.Debug, "Dequeue, item in queue {0}", _gameActionQueue.Count);
                                 action();
                                 Thread.Sleep(1);
                             }

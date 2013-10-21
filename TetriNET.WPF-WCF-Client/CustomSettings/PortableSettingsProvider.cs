@@ -22,6 +22,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Logger;
 using TetriNET.WPF_WCF_Client.Helpers;
 
@@ -50,7 +51,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
 
         public static string SettingsFilename
         {
-            get { return "user.config"; }
+            get { return "tetrinet.config"; }
         }
 
         public static string SettingsPath
@@ -68,7 +69,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
         // Override the Initialize method
         public override void Initialize(string name, NameValueCollection config)
         {
-            base.Initialize(this.ApplicationName, config);
+            base.Initialize(ApplicationName, config);
         }
 
         // Override the ApplicationName property, returning the solution name.  No need to set anything, we just need to
@@ -120,8 +121,8 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
             // Create a collection of values to return
             SettingsPropertyValueCollection retValues = new SettingsPropertyValueCollection();
 
-            // Create a temporary SettingsPropertyValue to reuse
-            SettingsPropertyValue setVal;
+            //// Create a temporary SettingsPropertyValue to reuse
+            //SettingsPropertyValue setVal;
 
             // Loop through the list of settings that the application has requested and add them
             // to our collection of return values.
@@ -162,7 +163,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
                 // Enable whichever applies to your application type.
 
                 // Uncomment the following line to enable a MessageBox for forms-based apps
-                Log.WriteLine(Log.LogLevels.Error, "Error writting configuration file to disk");
+                Log.WriteLine(Log.LogLevels.Error, "Error writting configuration file to disk. Exception: {0}", ex.ToString());
 
                 // Uncomment the following line to enable a console message for console-based apps
                 //Console.WriteLine("Error writing configuration file to disk: " + ex.Message);
@@ -181,7 +182,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
                     // If we have not loaded the config, try reading the file from disk.
                     try
                     {
-                        _xmlDoc.Load(System.IO.Path.Combine(GetSettingsPath(), GetSettingsFilename()));
+                        _xmlDoc.Load(Path.Combine(GetSettingsPath(), GetSettingsFilename()));
                     }
 
                     // If the file does not exist on disk, catch the exception then create the XML template for the file.
@@ -267,8 +268,8 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
                             }
                         case "TetriNET.Common.DataContracts.GameOptions":
                             {
-                                XmlSerializer xs = new XmlSerializer(typeof(Common.DataContracts.GameOptions));
-                                Common.DataContracts.GameOptions data = (Common.DataContracts.GameOptions)xs.Deserialize(new XmlTextReader(xmlData, XmlNodeType.Element, null));
+                                XmlSerializer xs = new XmlSerializer(typeof(GameOptions));
+                                GameOptions data = (GameOptions)xs.Deserialize(new XmlTextReader(xmlData, XmlNodeType.Element, null));
                                 return new SettingsPropertyValue(setProp)
                                 {
                                     Deserialized = true,
@@ -287,13 +288,21 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
                     var t = Type.GetType(setProp.PropertyType.FullName);
 
                     return new SettingsPropertyValue(setProp)
-                        {
-                            Deserialized = true,
-                            IsDirty = false,
-                            PropertyValue = Convert.ChangeType(setProp.DefaultValue, t),//setProp.DefaultValue,
-                            SerializedValue = setProp.DefaultValue,
-                        };
+                    {
+                        Deserialized = true,
+                        IsDirty = false,
+                        PropertyValue = Convert.ChangeType(setProp.DefaultValue, t), //setProp.DefaultValue,
+                        SerializedValue = setProp.DefaultValue,
+                    };
                 }
+                else
+                    return new SettingsPropertyValue(setProp)
+                    {
+                        Deserialized = true,
+                        IsDirty = false,
+                        PropertyValue = null,
+                        SerializedValue = ""
+                    };
             }
             return null;
         }
@@ -332,8 +341,8 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
                             }
                         case "TetriNET.WPF_WCF_Client.CustomSettings.AchievementsSettings":
                             {
-                                XmlSerializer xs = new XmlSerializer(typeof(TetriNET.WPF_WCF_Client.CustomSettings.AchievementsSettings));
-                                TetriNET.WPF_WCF_Client.CustomSettings.AchievementsSettings data = (TetriNET.WPF_WCF_Client.CustomSettings.AchievementsSettings)xs.Deserialize(new XmlTextReader(xmlData, XmlNodeType.Element, null));
+                                XmlSerializer xs = new XmlSerializer(typeof(AchievementsSettings));
+                                AchievementsSettings data = (AchievementsSettings)xs.Deserialize(new XmlTextReader(xmlData, XmlNodeType.Element, null));
                                 return data;
                             }
                             break;
