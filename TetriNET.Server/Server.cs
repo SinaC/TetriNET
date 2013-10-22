@@ -596,7 +596,7 @@ namespace TetriNET.Server
 
             while (true)
             {
-                int handle = WaitHandle.WaitAny(waitHandles, 100);
+                int handle = WaitHandle.WaitAny(waitHandles, 20);
                 if (handle == 0) // _stopBackgroundTaskEvent
                     break; // Stop here
                 // Even if WaitAny returned WaitHandle.WaitTimeout, we check action queue

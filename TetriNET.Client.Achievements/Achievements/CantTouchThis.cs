@@ -22,19 +22,21 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public override void Reset()
         {
-            if (IsAchieved && ExtraData != _achievementsCount)
+            if (IsAchieved && ExtraData < _achievementsCount)
                 IsAchieved = false;
             base.Reset();
         }
 
         public override void OnAchievementEarned(IAchievement achievement, IEnumerable<IAchievement> achievements)
         {
+            if (achievement == this)
+                return;
             List<IAchievement> lst = achievements.ToList();
-            int count = lst.Where(x => x.Id != achievement.Id).Count(x => x.IsAchieved);
-            if (count == lst.Count())
+            int count = lst.Count(x => x.Id != Id && x.IsAchieved);
+            if (1 + count == lst.Count()) // every achievement except ourself
             {
-                Achieve();
                 ExtraData = _achievementsCount;
+                Achieve(); // Achieve calls Reset, so we have to store ExtraData before calling Achieve (or IsAchieved will be reset to false)
             }
         }
     }

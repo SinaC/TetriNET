@@ -82,38 +82,20 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
             }
             set
             {
-                return;
             }
         }
 
         // Simply returns the name of the settings file, which is the solution name plus ".config"
         public virtual string GetSettingsFilename()
         {
-            //return ApplicationName + ".config";
-            //return "user.config";
             return SettingsFilename;
         }
 
         // Gets current executable path in order to determine where to read and write the config file
         public virtual string GetSettingsPath()
         {
-            ////return new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName;
-            //Assembly assembly = AssemblyHelper.GetEntryAssembly();
-            //string companyName = ((AssemblyCompanyAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyCompanyAttribute), false)).Company;
-            //string productName = ((AssemblyProductAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyProductAttribute), false)).Product;
-            //string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            //return Path.Combine(appDataPath, companyName, productName);
             return SettingsPath;
         }
-
-        //public virtual string GetAppFilename()
-        //{
-        //    Assembly assembly = AssemblyHelper.GetEntryAssembly();
-        //    string companyName = ((AssemblyCompanyAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyCompanyAttribute), false)).Company;
-        //    string productName = ((AssemblyProductAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyProductAttribute), false)).Product;
-        //    string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        //    return Path.Combine(appDataPath, companyName, productName, "user.config");
-        //}
 
         // Retrieve settings from the configuration file
         public override SettingsPropertyValueCollection GetPropertyValues(SettingsContext sContext, SettingsPropertyCollection settingsColl)
@@ -133,7 +115,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
                 //setVal.SerializedValue = GetSetting(sProp);
                 //setVal.PropertyValue = setVal.SerializedValue;
                 //retValues.Add(setVal);
-                SettingsPropertyValue value = GetSetting2(sProp);
+                SettingsPropertyValue value = GetSetting(sProp);
                 if (value != null)
                 {
                     value.SerializedValue = value.SerializedValue ?? String.Empty;
@@ -232,7 +214,9 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
             }
         }
 
-        private SettingsPropertyValue GetSetting2(SettingsProperty setProp)
+        // Retrieve values from the configuration file, or if the setting does not exist in the file, 
+        // retrieve the value from the application's default configuration
+        private SettingsPropertyValue GetSetting(SettingsProperty setProp)
         {
             try
             {
@@ -307,115 +291,31 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
             return null;
         }
 
-        // Retrieve values from the configuration file, or if the setting does not exist in the file, 
-        // retrieve the value from the application's default configuration
-        private object GetSetting(SettingsProperty setProp)
-        {
-            object retVal;
-            try
-            {
-                // Search for the specific settings node we are looking for in the configuration file.
-                // If it exists, return the InnerText or InnerXML of its first child node, depending on the setting type.
-
-                // If the setting is serialized as a string, return the text stored in the config
-                if (setProp.SerializeAs.ToString() == "String")
-                {
-                    return XMLConfig.SelectSingleNode("//setting[@name='" + setProp.Name + "']").FirstChild.InnerText;
-                }
-
-                // If the setting is stored as XML, deserialize it and return the proper object.  This only supports
-                // StringCollections at the moment - I will likely add other types as I use them in applications.
-                else
-                {
-                    string settingType = setProp.PropertyType.ToString();
-                    string xmlData = XMLConfig.SelectSingleNode("//setting[@name='" + setProp.Name + "']").FirstChild.InnerXml;
-                    switch (settingType)
-                    {
-                        case "System.Collections.Specialized.StringCollection":
-                            {
-                                XmlSerializer xs = new XmlSerializer(typeof(string[]));
-                                string[] data = (string[])xs.Deserialize(new XmlTextReader(xmlData, XmlNodeType.Element, null));
-                                StringCollection sc = new StringCollection();
-                                sc.AddRange(data);
-                                return sc;
-                            }
-                        case "TetriNET.WPF_WCF_Client.CustomSettings.AchievementsSettings":
-                            {
-                                XmlSerializer xs = new XmlSerializer(typeof(AchievementsSettings));
-                                AchievementsSettings data = (AchievementsSettings)xs.Deserialize(new XmlTextReader(xmlData, XmlNodeType.Element, null));
-                                return data;
-                            }
-                            break;
-                        default:
-                            return "";
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                // Check to see if a default value is defined by the application.
-                // If so, return that value, using the same rules for settings stored as Strings and XML as above
-                if ((setProp.DefaultValue != null))
-                {
-                    if (setProp.SerializeAs.ToString() == "String")
-                    {
-                        retVal = setProp.DefaultValue.ToString();
-                    }
-                    else
-                    {
-                        string settingType = setProp.PropertyType.ToString();
-                        string xmlData = setProp.DefaultValue.ToString();
-                        XmlSerializer xs = new XmlSerializer(typeof(string[]));
-                        string[] data = (string[])xs.Deserialize(new XmlTextReader(xmlData, XmlNodeType.Element, null));
-
-                        switch (settingType)
-                        {
-                            case "System.Collections.Specialized.StringCollection":
-                                StringCollection sc = new StringCollection();
-                                sc.AddRange(data);
-                                return sc;
-
-                            default: return "";
-                        }
-                    }
-                }
-                else
-                {
-                    retVal = "";
-                }
-            }
-            return retVal;
-        }
-
         private void SetSetting(SettingsPropertyValue setProp)
         {
             // Define the XML path under which we want to write our settings if they do not already exist
-            XmlNode SettingNode = null;
+            XmlNode settingNode = null;
 
             try
             {
                 // Search for the specific settings node we want to update.
                 // If it exists, return its first child node, (the <value>data here</value> node)
-                SettingNode = XMLConfig.SelectSingleNode("//setting[@name='" + setProp.Name + "']").FirstChild;
+                settingNode = XMLConfig.SelectSingleNode("//setting[@name='" + setProp.Name + "']").FirstChild;
             }
             catch (Exception)
             {
-                SettingNode = null;
+                settingNode = null;
             }
 
             // If we have a pointer to an actual XML node, update the value stored there
-            if ((SettingNode != null))
+            if (settingNode != null)
             {
                 if (setProp.Property.SerializeAs.ToString() == "String")
-                {
-                    SettingNode.InnerText = setProp.SerializedValue.ToString();
-                }
+                    settingNode.InnerText = setProp.SerializedValue.ToString();
                 else
-                {
                     // Write the object to the config serialized as Xml - we must remove the Xml declaration when writing
                     // the value, otherwise .Net's configuration system complains about the additional declaration.
-                    SettingNode.InnerXml = setProp.SerializedValue.ToString().Replace(@"<?xml version=""1.0"" encoding=""utf-16""?>", "");
-                }
+                    settingNode.InnerXml = setProp.SerializedValue.ToString().Replace(@"<?xml version=""1.0"" encoding=""utf-16""?>", "");
             }
             else
             {
@@ -427,31 +327,18 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
                 // Create a new settings node and assign its name as well as how it will be serialized
                 XmlElement newSetting = _xmlDoc.CreateElement("setting");
                 newSetting.SetAttribute("name", setProp.Name);
-
-                if (setProp.Property.SerializeAs.ToString() == "String")
-                {
-                    newSetting.SetAttribute("serializeAs", "String");
-                }
-                else
-                {
-                    newSetting.SetAttribute("serializeAs", "Xml");
-                }
-
+                newSetting.SetAttribute("serializeAs", setProp.Property.SerializeAs.ToString() == "String" ? "String" : "Xml");
                 // Append this node to the application settings node (<Appname.Properties.Settings>)
                 tmpNode.AppendChild(newSetting);
 
                 // Create an element under our named settings node, and assign it the value we are trying to save
                 XmlElement valueElement = _xmlDoc.CreateElement("value");
                 if (setProp.Property.SerializeAs.ToString() == "String")
-                {
                     valueElement.InnerText = setProp.SerializedValue.ToString();
-                }
                 else
-                {
                     // Write the object to the config serialized as Xml - we must remove the Xml declaration when writing
                     // the value, otherwise .Net's configuration system complains about the additional declaration
                     valueElement.InnerXml = setProp.SerializedValue.ToString().Replace(@"<?xml version=""1.0"" encoding=""utf-16""?>", "");
-                }
 
                 //Append this new element under the setting node we created above
                 newSetting.AppendChild(valueElement);

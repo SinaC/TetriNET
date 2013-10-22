@@ -23,7 +23,7 @@ when receiving OnAchievementEarned, display msg in party line chat and in game c
 bugs:
 why user.config is automatically created with default values in $APPDATA$/Local/SinaC/TetriNET WPF WCF Client/  when recompiling a new version
 tetriminoI appears on row 21 instead of 22
-sometimes bottom line seems to disappear (occurs when lines are added by server)
+FIXED	sometimes bottom line seems to disappear (occurs when lines are added by server) --> GRRRRRR DUMB DEVELOPER
 focus on game view is not set properly when starting a game and player is in stat tab or options tab
 chat player list is sometimes wrong (2 times the same player) server not yet started and 2 clients try to connect at the same time
 server sometimes doesn't send next pieces to client or is too slow  (400ms elapsed between PlacePiece and OnNextPiece !!!!!)    maybe it's an event problem (the same as bot one)
@@ -178,6 +178,7 @@ http://knockoutjs.com/
 http://stackoverflow.com/questions/17232183/upload-image-from-phonegap-app-to-wcf-service
 http://channel9.msdn.com/coding4fun/blog/Using-HTML5-web-sockets-and-some-C-to-build-a-multiplayer-Space-Shooter
 http://www.codeproject.com/Articles/209041/HTML5-Web-Socket-in-Essence
+http://www.discountasp.net/
 
 signalr
 http://www.asp.net/signalr/overview/getting-started/tutorial-signalr-self-host

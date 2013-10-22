@@ -413,7 +413,7 @@ namespace TetriNET.Client.Board
         {
             for (int i = 0; i < count; i++)
             {
-                int index = _random.Next(Width*Height);
+                int index = 1 + _random.Next(Width*Height);
                 Cells[index] = CellHelper.EmptyCell;
             }
         }
@@ -528,7 +528,7 @@ namespace TetriNET.Client.Board
             foreach (int index in bombIndexes)
             {
                 int x, y;
-                GetCellXY(index, out x, out y);
+                GetCellXY0Based(index, out x, out y);
                 if (x > 0 && y > 0)
                 {
                     this[x, y] = CellHelper.EmptyCell; // clear bomb
@@ -677,16 +677,16 @@ namespace TetriNET.Client.Board
                     this[x, y] = cellValue;
                 }
             // Put random junk in bottom row (row 1).
-            int hole = _random.Next(Width);
+            int hole = 1 + _random.Next(Width);
             for (int x = 1; x <= Width; x++)
             {
                 // Fill row except hole
-                byte cellValue = CellHelper.SetColor(x == hole ? Pieces.Invalid : randomFunc());
+                byte cellValue = x == hole ? CellHelper.EmptyCell : CellHelper.SetColor(randomFunc());
                 this[x, 1] = cellValue;
             }
         }
 
-        protected void GetCellXY(int index, out int x, out int y)
+        protected void GetCellXY0Based(int index, out int x, out int y)
         {
             x = y = 0;
             if (index < 0)

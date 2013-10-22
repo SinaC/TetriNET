@@ -39,19 +39,30 @@ namespace TetriNET.WPF_WCF_Client
             //    Settings.Default.Save();
             //}
 
-            // If new config file doesn't exist, copy old one
+            // If new config file doesn't exist, rename user.config or copy old one
             try
             {
                 string newPath = Path.Combine(PortableSettingsProvider.SettingsPath, PortableSettingsProvider.SettingsFilename);
                 if (!File.Exists(newPath))
                 {
-                    // Original config file path
-                    Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
-                    if (File.Exists(config.FilePath))
+                    //
+                    string oldPath = Path.Combine(PortableSettingsProvider.SettingsPath, "user.config");
+                    if (File.Exists(oldPath))
                     {
-                        if (!Directory.Exists(PortableSettingsProvider.SettingsPath))
-                            Directory.CreateDirectory(PortableSettingsProvider.SettingsPath);
-                        File.Copy(config.FilePath, newPath);
+                        Log.WriteLine(Log.LogLevels.Info, @"User settings file not found. Rename {0} to {1}", oldPath, newPath);
+                        File.Move(oldPath, newPath);
+                    }
+                    else
+                    {
+                        // Original config file path
+                        Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
+                        if (File.Exists(config.FilePath))
+                        {
+                            Log.WriteLine(Log.LogLevels.Info, "User settings file not found. Copy {0} to {1}", config.FilePath, newPath);
+                            if (!Directory.Exists(PortableSettingsProvider.SettingsPath))
+                                Directory.CreateDirectory(PortableSettingsProvider.SettingsPath);
+                            File.Copy(config.FilePath, newPath);
+                        }
                     }
                 }
             }

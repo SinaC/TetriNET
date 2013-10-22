@@ -15,6 +15,11 @@
 
         public override void Reset()
         {
+            //if (IsAchieved && FirstTimeAchieved < new DateTime(2013, 10, 22, 13, 32, 00)) // reset holder of previous version
+            //{
+            //    AchieveCount = 0;
+            //    IsAchieved = false;
+            //}
             _count = 0;
             base.Reset();
         }
@@ -32,6 +37,8 @@
                 if (_count == 5)
                     Achieve();
             }
+            else
+                _count = 0;
         }
     }
 }
