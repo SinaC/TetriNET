@@ -86,6 +86,7 @@
     <Compile Include="CustomSettings\PortableSettingsProvider.cs" />
     <Compile Include="Helpers\AssemblyHelper.cs" />
     <Compile Include="Helpers\AttachedFocus.cs" />
+    <Compile Include="Helpers\VisualTree.cs" />
     <Compile Include="Models\ChatColor.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="UserControls\MetroLoadingControl.xaml.cs">

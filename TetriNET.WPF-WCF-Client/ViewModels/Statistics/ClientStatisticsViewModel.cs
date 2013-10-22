@@ -138,6 +138,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.SingleCount; }
         }
 
+        public int GameWon
+        {
+            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.GameWon; }
+        }
+
+        public int GameLost
+        {
+            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.GameLost; }
+        }
+
         private bool _gameFinished;
         private DateTime _gameStartedDateTime;
         private DateTime _gameFinishedDateTime;
@@ -193,6 +203,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             OnPropertyChanged("NextPieceNotYetReceived");
             OnPropertyChanged("LinesPerMinute");
             OnPropertyChanged("MovesPerMinute");
+            OnPropertyChanged("GameWon");
+            OnPropertyChanged("GameLost");
         }
 
         #region ITabIndex
@@ -317,6 +329,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             public int TetrisCount { get; set; }
             public int EndOfPieceQueueReached { get; set; }
             public int NextPieceNotYetReceived { get; set; }
+            public int GameWon { get; set; }
+            public int GameLost { get; set; }
         }
 
         public new ObservableDictionary<Pieces, ValuePercentage> PieceCount { get; private set; }

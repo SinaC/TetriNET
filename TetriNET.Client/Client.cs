@@ -363,6 +363,9 @@ namespace TetriNET.Client
                 if (ClientOnPlayerWon != null)
                     ClientOnPlayerWon(playerId, playerData.Name);
 
+                if (playerId == _clientPlayerId)
+                    _statistics.GameWon++;
+
                 if (_achievementManager != null && playerId == _clientPlayerId)
                     _achievementManager.OnGameWon(_statistics.MoveCount, LinesCleared, PlayingOpponentsInCurrentGame);
             }
@@ -759,7 +762,9 @@ namespace TetriNET.Client
             if (ClientOnGameOver != null)
                 ClientOnGameOver();
 
-             if (_achievementManager != null)
+            _statistics.GameLost++;
+
+            if (_achievementManager != null)
             {
                 int opponentsLeft = _playersData.Count(x => x != null && x.PlayerId != _clientPlayerId && x.State == PlayerData.States.Playing);
                 _achievementManager.OnGameOver(_statistics.MoveCount, LinesCleared, PlayingOpponentsInCurrentGame, opponentsLeft, Inventory);

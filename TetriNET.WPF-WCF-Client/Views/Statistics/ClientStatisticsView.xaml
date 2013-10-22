@@ -59,6 +59,12 @@
 
                 <TextBlock Grid.Row="5" Grid.Column="0" Text="Moves/min:" Margin="0,0,4,0"/>
                 <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding MovesPerMinute, StringFormat={}{0:0.00}}"/>
+
+                <TextBlock Grid.Row="6" Grid.Column="0" Text="Game won:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding GameWon}"/>
+
+                <TextBlock Grid.Row="7" Grid.Column="0" Text="Game lost:" Margin="0,0,4,0"/>
+                <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding GameLost}"/>
             </Grid>
         </GroupBox>
         <GroupBox Grid.Row="0" Grid.Column="1">

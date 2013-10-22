@@ -55,9 +55,11 @@ namespace TetriNET.WPF_WCF_Client.Helpers
                     {
                         if (listBox.Items.Count > 0)
                         {
-                            object lastItem = listBox.Items[listBox.Items.Count - 1];
-                            listBoxItems.MoveCurrentTo(lastItem);
-                            listBox.ScrollIntoView(lastItem);
+                            //object lastItem = listBox.Items[listBox.Items.Count - 1];
+                            //listBoxItems.MoveCurrentTo(lastItem);
+                            //listBox.ScrollIntoView(lastItem);
+                            ScrollViewer scrollViewer = VisualTree.GetDescendantByType<ScrollViewer>(listBox);
+                            scrollViewer.ScrollToEnd();
                         }
                     });
 

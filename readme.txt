@@ -8,7 +8,7 @@ when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 client/server version when registering
 SinaCSpecials: use gravity when board has enough holes or when to high + zebra + clear column + confusion + darkness + immunity + left gravity + mutation
 WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
-Confusion could be managed client-side
+Confusion could be managed in client instead of GUI
 Add Pentominos (http://en.wikipedia.org/wiki/Pentomino)
 New options: random blocks clear count, mutation count, darkness time, confusion time, immunity time, random spawn orientation
 Solo mode (score, t-spin)
@@ -25,6 +25,8 @@ achievements idea:
 	Use on an opponent and be the target of every available specials (Grand Slam:60)
 	Clear a line with 7 different piece's colors (Rainbow warrior:30) [only 5 different colors for the moment]
 	Lose a multiplayer game while having a Nuke and a Gravity and a Switch in inventory (???:30)
+	Win 100 games (???:30)
+	Win 1000 games (???:50)
 
 	title idea: Bright side of life, I'm not dead
 

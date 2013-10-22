@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace TetriNET.WPF_WCF_Client.Helpers
 {
@@ -25,8 +27,10 @@ namespace TetriNET.WPF_WCF_Client.Helpers
             var uie = (UIElement)d;
             if ((bool) value)
             {
-                uie.Focus(); // Don't care about false values.
-                Keyboard.Focus(uie);
+                //uie.Focus(); // Don't care about false values.
+                //Keyboard.Focus(uie);
+                //FocusManager.SetFocusedElement(d, uie);
+                ExecuteOnUIThread.InvokeAsync(() => Keyboard.Focus(uie), DispatcherPriority.ContextIdle);
             }
             return value;
         }

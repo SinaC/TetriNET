@@ -20,6 +20,9 @@ namespace TetriNET.Client
         public int EndOfPieceQueueReached { get; set; }
         public int NextPieceNotYetReceived { get; set; }
 
+        public int GameWon { get; set; }
+        public int GameLost { get; set; }
+
         public Statistics()
         {
             PieceCount = new Dictionary<Pieces, int>();
@@ -54,6 +57,7 @@ namespace TetriNET.Client
             TetrisCount = 0;
             EndOfPieceQueueReached = 0;
             NextPieceNotYetReceived = 0;
+            // No reset for GameWon and GameLost
         }
     }
 }

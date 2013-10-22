@@ -1,4 +1,7 @@
-﻿namespace TetriNET.Client.Achievements.Achievements
+﻿using System.Collections.Generic;
+using TetriNET.Common.DataContracts;
+
+namespace TetriNET.Client.Achievements.Achievements
 {
     internal class WhoIsYourDaddy : Achievement
     {
@@ -26,7 +29,7 @@
                 Achieve();
         }
 
-        public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount, int playerLeft)
+        public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount, int playerLeft, List<Specials> inventory)
         {
             _count = 0;
         }
