@@ -20,6 +20,14 @@ new client->server API: EarnAchievement(id, title)  (server doesn't know anythin
 new server->client API: OnAchievementEarned(playerId, id, title)
 when receiving OnAchievementEarned, display msg in party line chat and in game chat
 
+achievements idea: 
+	Use every available specials in one game (Slam:10)
+	Use on an opponent and be the target of every available specials (Grand Slam:60)
+	Clear a line with 7 different piece's colors (Rainbow warrior:30) [only 5 different colors for the moment]
+	Lose a multiplayer game while having a Nuke and a Gravity and a Switch in inventory (???:30)
+
+	title idea: Bright side of life, I'm not dead
+
 bugs:
 why user.config is automatically created with default values in $APPDATA$/Local/SinaC/TetriNET WPF WCF Client/  when recompiling a new version
 tetriminoI appears on row 21 instead of 22

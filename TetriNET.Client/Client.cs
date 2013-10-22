@@ -762,7 +762,7 @@ namespace TetriNET.Client
              if (_achievementManager != null)
             {
                 int opponentsLeft = _playersData.Count(x => x != null && x.PlayerId != _clientPlayerId && x.State == PlayerData.States.Playing);
-                _achievementManager.OnGameOver(_statistics.MoveCount, LinesCleared, PlayingOpponentsInCurrentGame, opponentsLeft);
+                _achievementManager.OnGameOver(_statistics.MoveCount, LinesCleared, PlayingOpponentsInCurrentGame, opponentsLeft, Inventory);
             }
         }
 

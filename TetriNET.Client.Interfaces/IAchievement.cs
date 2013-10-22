@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
 using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Interfaces
@@ -36,7 +34,7 @@ namespace TetriNET.Client.Interfaces
         // Triggers
         void OnAchievementEarned(IAchievement achievement, IEnumerable<IAchievement> achievements);
         void OnGameWon(double playTime /*in seconds*/, int moveCount, int lineCount, int playerCount);
-        void OnGameLost(double playTime /*in seconds*/, int moveCount, int lineCount, int playerCount, int playerLeft);
+        void OnGameLost(double playTime /*in seconds*/, int moveCount, int lineCount, int playerCount, int playerLeft, List<Specials> inventory);
         void OnSpecialUsed(int playerId, int sourceId, string sourceTeam, IBoard sourceBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special);
         void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special);
         void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board);

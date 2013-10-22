@@ -92,7 +92,7 @@ namespace TetriNET.Client.Achievements
         {
         }
 
-        public virtual void OnGameLost(double playTime/*in seconds*/, int moveCount, int lineCount, int playerCount, int playerLeft)
+        public virtual void OnGameLost(double playTime/*in seconds*/, int moveCount, int lineCount, int playerCount, int playerLeft, List<Specials> inventory)
         {
         }
 

@@ -125,11 +125,12 @@ namespace TetriNET.Client.Achievements
                 achievement.OnSpecialUsed(playerId, sourceId, sourceTeam, sourceBoard, targetId, targetTeam, targetBoard, special);
         }
 
-        public void OnGameOver(int moveCount, int linesCleared, int playingOpponentsInCurrentGame, int playingOpponentsLeftInCurrentGame)
+        public void OnGameOver(int moveCount, int linesCleared, int playingOpponentsInCurrentGame, int playingOpponentsLeftInCurrentGame, IEnumerable<Specials> inventory)
         {
+            List<Specials> lst = inventory.ToList();
             TimeSpan timeSpan = DateTime.Now - _gameStartTime;
             foreach (IAchievement achievement in Achievements.Where(x => x.IsAchievable))
-                achievement.OnGameLost(timeSpan.TotalSeconds, moveCount, linesCleared, playingOpponentsInCurrentGame, playingOpponentsLeftInCurrentGame);
+                achievement.OnGameLost(timeSpan.TotalSeconds, moveCount, linesCleared, playingOpponentsInCurrentGame, playingOpponentsLeftInCurrentGame, lst);
         }
 
         public void OnGameWon(int moveCount, int linesCleared, int playingOpponentsInCurrentGame)
