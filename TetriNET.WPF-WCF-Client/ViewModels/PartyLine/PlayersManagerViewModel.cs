@@ -94,6 +94,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
             KickPlayerCommand = new RelayCommand(KickPlayer);
             BanPlayerCommand = new RelayCommand(BanPlayer);
+            JoinTeamCommand = new RelayCommand<string>(JoinTeam);
         }
 
         private void SetServerMaster(int serverMasterId)
@@ -151,6 +152,13 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         {
             if (SelectedPlayer != null && SelectedPlayer.RealPlayerId != Client.PlayerId)
                 Client.BanPlayer(SelectedPlayer.RealPlayerId);
+        }
+
+        public void JoinTeam(string team)
+        {
+            if (String.IsNullOrWhiteSpace(team) || Client.Team == team)
+                return;
+            Client.ChangeTeam(team);
         }
 
         #region ViewModelBase
@@ -227,6 +235,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         public ICommand KickPlayerCommand { get; private set; }
         public ICommand BanPlayerCommand { get; private set; }
+        public ICommand JoinTeamCommand { get; private set; }
 
         #endregion
     }

@@ -43,10 +43,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         public bool IsUpdateTeamEnabled
         {
-            get
-            {
-                return _isRegistered && !_isGameStarted;
-            }
+            get { return _isRegistered && !_isGameStarted; }
         }
 
         public bool IsUpdateTeamButtonEnabled
@@ -59,7 +56,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         }
 
         private string _team;
-        public string Team { get { return _team; }
+        public string Team
+        {
+            get { return _team; }
             set
             {
                 if (_team != value)
@@ -151,6 +150,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             oldClient.OnGameFinished -= OnGameFinished;
             oldClient.OnGamePaused -= OnGamePaused;
             oldClient.OnGameResumed -= OnGameResumed;
+            oldClient.OnPlayerTeamChanged -= OnPlayerTeamChanged;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
@@ -163,11 +163,18 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             newClient.OnGameFinished += OnGameFinished;
             newClient.OnGamePaused += OnGamePaused;
             newClient.OnGameResumed += OnGameResumed;
+            newClient.OnPlayerTeamChanged += OnPlayerTeamChanged;
         }
 
         #endregion
 
         #region IClient events handler
+
+        private void OnPlayerTeamChanged(int playerId, string team)
+        {
+            if (playerId == Client.PlayerId)
+                Team = team;
+        }
 
         private void OnGameResumed()
         {
@@ -245,12 +252,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                 if (columnName == "Team")
                 {
                     StringValidationRule rule = new StringValidationRule
-                    {
-                        FieldName = columnName,
-                        NullAccepted = true
-                    };
+                        {
+                            FieldName = columnName,
+                            NullAccepted = true
+                        };
                     ValidationResult result = rule.Validate(Team, CultureInfo.InvariantCulture);
-                    return (string)result.ErrorContent;
+                    return (string) result.ErrorContent;
                 }
                 return null;
             }

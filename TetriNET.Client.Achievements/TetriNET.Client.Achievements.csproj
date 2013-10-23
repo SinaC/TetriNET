@@ -42,6 +42,7 @@
     <Compile Include="Achievements\CallMeSavior.cs" />
     <Compile Include="Achievements\CantTouchThis.cs" />
     <Compile Include="Achievements\Century.cs" />
+    <Compile Include="Achievements\Cnofisuon.cs" />
     <Compile Include="Achievements\DirtySouthStyle.cs" />
     <Compile Include="Achievements\DoBarrelRoll.cs" />
     <Compile Include="Achievements\DropItLikeItsHot.cs" />

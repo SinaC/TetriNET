@@ -121,6 +121,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
             //
             RefreshResetEnable();
             //
+            ExecuteOnUIThread.Invoke(() => Achievements = BuildAchievementList(Client.Achievements.ToList()));
+            //
             Settings.Default.Achievements.Save(Client.Achievements.ToList());
             Settings.Default.Save();
             //
