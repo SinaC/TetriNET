@@ -91,6 +91,7 @@ namespace TetriNET.ConsoleWCFServer
                             DisplayHelp();
                             break;
                         case ConsoleKey.X:
+                            server.StopServer();
                             stopped = true;
                             break;
                         case ConsoleKey.S:

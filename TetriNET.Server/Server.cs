@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -89,11 +90,6 @@ namespace TetriNET.Server
                 Debug.Assert(Check.CheckEvents(host), "Every host events must be handled");
             }
 
-            SpecialId = 0;
-
-            Task.Factory.StartNew(TimeoutTask);
-            Task.Factory.StartNew(GameActionsTask);
-
             State = States.WaitingStartServer;
         }
 
@@ -102,6 +98,11 @@ namespace TetriNET.Server
             Log.WriteLine(Log.LogLevels.Info, "Starting server");
 
             State = States.StartingServer;
+
+            SpecialId = 0;
+
+            Task.Factory.StartNew(TimeoutTask);
+            Task.Factory.StartNew(GameActionsTask);
 
             // Start hosts
             foreach (IHost host in _hosts)
@@ -116,6 +117,10 @@ namespace TetriNET.Server
         {
             Log.WriteLine(Log.LogLevels.Info, "Stopping server");
             State = States.StoppingServer;
+
+            // Stop worker threads
+            _stopBackgroundTaskEvent.Set();
+            _cancellationTokenSource.Cancel();
 
             // Inform players
             foreach (IPlayer p in _playerManager.Players)
@@ -140,9 +145,14 @@ namespace TetriNET.Server
             if (State == States.WaitingStartGame)
             {
                 // Reset action list
-                Action outAction;
-                while (!_gameActionQueue.IsEmpty)
-                    _gameActionQueue.TryDequeue(out outAction);
+                //Action outAction;
+                //while (!_gameActionQueue.IsEmpty)
+                //    _gameActionQueue.TryDequeue(out outAction);
+                while (_gameActionBlockingCollection.Count > 0)
+                {
+                    Action item;
+                    _gameActionBlockingCollection.TryTake(out item);
+                }
 
                 // Reset special id
                 SpecialId = 0;
@@ -337,6 +347,9 @@ namespace TetriNET.Server
                 // Send server master id to player even if not modified
                 player.OnServerMasterChanged(serverMasterId);
             }
+
+            // Send win list
+            player.OnWinListModified(WinList);
         }
 
         private void UnregisterPlayerHandler(IPlayer player)
@@ -577,53 +590,90 @@ namespace TetriNET.Server
         #endregion
 
         #region Game action queue
-        private readonly ManualResetEvent _actionEnqueuedEvent = new ManualResetEvent(false);
-        private readonly ConcurrentQueue<Action> _gameActionQueue = new ConcurrentQueue<Action>();
+        //private readonly ManualResetEvent _actionEnqueuedEvent = new ManualResetEvent(false);
+        //private readonly ConcurrentQueue<Action> _gameActionQueue = new ConcurrentQueue<Action>();
+        
+        private readonly BlockingCollection<Action> _gameActionBlockingCollection = new BlockingCollection<Action>(new ConcurrentQueue<Action>());
+        private CancellationTokenSource _cancellationTokenSource;
 
         private void EnqueueAction(Action action)
         {
-            _gameActionQueue.Enqueue(action);
-            _actionEnqueuedEvent.Set();
+            //_gameActionQueue.Enqueue(action);
+            //_actionEnqueuedEvent.Set();
+
+            _gameActionBlockingCollection.Add(action);
         }
 
         private void GameActionsTask()
         {
-            WaitHandle[] waitHandles =
-            {
-                _stopBackgroundTaskEvent,
-                _actionEnqueuedEvent
-            };
+            Log.WriteLine(Log.LogLevels.Info, "GameActionsTask started");
+
+            //WaitHandle[] waitHandles =
+            //{
+            //    _stopBackgroundTaskEvent,
+            //    _actionEnqueuedEvent
+            //};
+
+            //while (true)
+            //{
+            //    int handle = WaitHandle.WaitAny(waitHandles, 20);
+            //    if (handle == 0) // _stopBackgroundTaskEvent
+            //        break; // Stop here
+            //    // Even if WaitAny returned WaitHandle.WaitTimeout, we check action queue
+            //    _actionEnqueuedEvent.Reset();
+            //    // Perform game actions
+            //    if (State == States.GameStarted && !_gameActionQueue.IsEmpty)
+            //    {
+            //        while (!_gameActionQueue.IsEmpty)
+            //        {
+            //            Action action;
+            //            bool dequeue = _gameActionQueue.TryDequeue(out action);
+            //            if (dequeue)
+            //            {
+            //                try
+            //                {
+            //                    Log.WriteLine(Log.LogLevels.Debug, "Dequeue, item in queue {0}", _gameActionQueue.Count);
+            //                    action();
+            //                    Thread.Sleep(1);
+            //                }
+            //                catch (Exception ex)
+            //                {
+            //                    Log.WriteLine(Log.LogLevels.Error, "Exception raised in TaskResolveGameActions. Exception:{0}", ex);
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+
+            _cancellationTokenSource = new CancellationTokenSource();
 
             while (true)
             {
-                int handle = WaitHandle.WaitAny(waitHandles, 20);
-                if (handle == 0) // _stopBackgroundTaskEvent
-                    break; // Stop here
-                // Even if WaitAny returned WaitHandle.WaitTimeout, we check action queue
-                _actionEnqueuedEvent.Reset();
-                // Perform game actions
-                if (State == States.GameStarted && !_gameActionQueue.IsEmpty)
+                try
                 {
-                    while (!_gameActionQueue.IsEmpty)
+                    Action action;
+                    bool taken = _gameActionBlockingCollection.TryTake(out action, 10, _cancellationTokenSource.Token);
+                    if (taken)
                     {
-                        Action action;
-                        bool dequeue = _gameActionQueue.TryDequeue(out action);
-                        if (dequeue)
+                        try
                         {
-                            try
-                            {
-                                Log.WriteLine(Log.LogLevels.Debug, "Dequeue, item in queue {0}", _gameActionQueue.Count);
-                                action();
-                                Thread.Sleep(1);
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.WriteLine(Log.LogLevels.Error, "Exception raised in TaskResolveGameActions. Exception:{0}", ex);
-                            }
+                            Log.WriteLine(Log.LogLevels.Debug, "Dequeue, item in queue {0}", _gameActionBlockingCollection.Count);
+                            action();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.WriteLine(Log.LogLevels.Error, "Exception raised in GameActionsTask. Exception:{0}", ex);
                         }
                     }
                 }
+                catch (OperationCanceledException)
+                {
+                    Log.WriteLine(Log.LogLevels.Info, "Taking cancelled");
+                    break;
+                }
             }
+
+            Log.WriteLine(Log.LogLevels.Info, "GameActionsTask stopped");
         }
 
         #endregion
@@ -799,6 +849,8 @@ namespace TetriNET.Server
 
         private void TimeoutTask()
         {
+            Log.WriteLine(Log.LogLevels.Info, "TimeoutTask started");
+
             while (true)
             {
                 // Check sudden death
@@ -851,8 +903,13 @@ namespace TetriNET.Server
 
                 // Stop task if stop event is raised
                 if (_stopBackgroundTaskEvent.WaitOne(10))
+                {
+                    Log.WriteLine(Log.LogLevels.Info, "Stop background task event raised");
                     break;
+                }
             }
+
+            Log.WriteLine(Log.LogLevels.Info, "TimeoutTask stopped");
         }
     }
 }

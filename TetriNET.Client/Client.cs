@@ -378,9 +378,15 @@ namespace TetriNET.Client
             ResetTimeout();
 
             // Reset board action list
-            Action outAction;
-            while (!_boardActionQueue.IsEmpty)
-                _boardActionQueue.TryDequeue(out outAction);
+            //Action outAction;
+            //while (!_boardActionQueue.IsEmpty)
+            //    _boardActionQueue.TryDequeue(out outAction);
+            while (_boardActionBlockingCollection.Count > 0)
+            {
+                Action item;
+                _boardActionBlockingCollection.TryTake(out item);
+            }
+
             // Set state
             State = States.Playing;
             ServerState = ServerStates.Playing;
@@ -422,9 +428,10 @@ namespace TetriNET.Client
             //    Specials.BlockBomb,
             //    Specials.BlockBomb,
             //});
-            // Reset line and level
+            // Reset line, level and score
             LinesCleared = 0;
             Level = Options.StartingLevel;
+            Score = 0;
             // Reset gamer timer interval
             _gameTimer.Interval = ComputeGameTimerInterval(Level);
             // Reset specials
@@ -459,7 +466,7 @@ namespace TetriNET.Client
                 ClientOnGameStarted();
 
             if (_achievementManager != null)
-                _achievementManager.OnGameStarted();
+                _achievementManager.OnGameStarted(Options);
 
             //Log.WriteLine("PIECES:{0}", _pieces.Dump(8));
         }
@@ -484,9 +491,14 @@ namespace TetriNET.Client
             }
 
             // Reset board action list
-            Action outAction;
-            while (!_boardActionQueue.IsEmpty)
-                _boardActionQueue.TryDequeue(out outAction);
+            //Action outAction;
+            //while (!_boardActionQueue.IsEmpty)
+            //    _boardActionQueue.TryDequeue(out outAction);
+            while (_boardActionBlockingCollection.Count > 0)
+            {
+                Action item;
+                _boardActionBlockingCollection.TryTake(out item);
+            }
 
             if (ClientOnGameFinished != null)
                 ClientOnGameFinished();
@@ -726,9 +738,14 @@ namespace TetriNET.Client
             _gameTimer.Stop();
 
             // Reset board action list
-            Action outAction;
-            while (!_boardActionQueue.IsEmpty)
-                _boardActionQueue.TryDequeue(out outAction);
+            //Action outAction;
+            //while (!_boardActionQueue.IsEmpty)
+            //    _boardActionQueue.TryDequeue(out outAction);
+            while (_boardActionBlockingCollection.Count > 0)
+            {
+                Action item;
+                _boardActionBlockingCollection.TryTake(out item);
+            }
 
             //
             State = States.Registered;
@@ -835,8 +852,40 @@ namespace TetriNET.Client
             if (deletedRows > 0)
             {
                 if (ClientOnLinesClearedChanged != null)
-                    ClientOnLinesClearedChanged();
+                    ClientOnLinesClearedChanged(LinesCleared);
                 Log.WriteLine(Log.LogLevels.Debug, "{0} lines deleted -> total {1}", deletedRows, LinesCleared);
+            }
+
+            // Statistics & Scoring
+            switch (deletedRows)
+            {
+                case 0:
+                    // NOP
+                    break;
+                case 1:
+                    _statistics.SingleCount++;
+                    Score += Level*100;
+                    if (ClientOnScoreChanged != null)
+                        ClientOnScoreChanged(Score);
+                    break;
+                case 2:
+                    _statistics.DoubleCount++;
+                    Score += Level * 300;
+                    if (ClientOnScoreChanged != null)
+                        ClientOnScoreChanged(Score);
+                    break;
+                case 3:
+                    _statistics.TripleCount++;
+                    Score += Level * 500;
+                    if (ClientOnScoreChanged != null)
+                        ClientOnScoreChanged(Score);
+                    break;
+                case 4:
+                    _statistics.TetrisCount++;
+                    Score += Level * 800;
+                    if (ClientOnScoreChanged != null)
+                        ClientOnScoreChanged(Score);
+                    break;
             }
 
             // Check level increase
@@ -846,7 +895,7 @@ namespace TetriNET.Client
                 double newInterval = ComputeGameTimerInterval(Level);
                 _gameTimer.Interval = newInterval;
                 if (ClientOnLevelChanged != null)
-                    ClientOnLevelChanged();
+                    ClientOnLevelChanged(Level);
                 Log.WriteLine(Log.LogLevels.Debug, "Level increased: {0}", Level);
             }
 
@@ -879,26 +928,6 @@ namespace TetriNET.Client
                     // special case for Tetris and above
                     addLines = 4;
                 _proxy.SendLines(this, addLines);
-            }
-
-            // Statistics
-            switch (deletedRows)
-            {
-                case 0:
-                    // NOP
-                    break;
-                case 1:
-                    _statistics.SingleCount++;
-                    break;
-                case 2:
-                    _statistics.DoubleCount++;
-                    break;
-                case 3:
-                    _statistics.TripleCount++;
-                    break;
-                case 4:
-                    _statistics.TetrisCount++;
-                    break;
             }
 
             // UI is updated in StartRound
@@ -1000,7 +1029,10 @@ namespace TetriNET.Client
         }
 
         public int LinesCleared { get; private set; }
+
         public int Level { get; private set; }
+
+        public int Score { get; private set; }
 
         public int InventorySize
         {
@@ -1214,6 +1246,13 @@ namespace TetriNET.Client
         {
             add { ClientOnLevelChanged += value; }
             remove { ClientOnLevelChanged -= value; }
+        }
+
+        private event ClientScoreChangedHandler ClientOnScoreChanged;
+        event ClientScoreChangedHandler IClient.OnScoreChanged
+        {
+            add { ClientOnScoreChanged += value; }
+            remove { ClientOnScoreChanged -= value; }
         }
 
         private event ClientSpecialUsedHandler ClientOnSpecialUsed;
@@ -1601,57 +1640,97 @@ namespace TetriNET.Client
 
                 // Stop task if stop event is raised
                 if (_stopBackgroundTaskEvent.WaitOne(10))
+                {
+                    Log.WriteLine(Log.LogLevels.Info, "Stop background task event raised");
                     break;
+                }
             }
         }
 
         #region Board Action Queue
-        private readonly ManualResetEvent _actionEnqueuedEvent = new ManualResetEvent(false);
-        private readonly ConcurrentQueue<Action> _boardActionQueue = new ConcurrentQueue<Action>();
+        //private readonly ManualResetEvent _actionEnqueuedEvent = new ManualResetEvent(false);
+        //private readonly ConcurrentQueue<Action> _boardActionQueue = new ConcurrentQueue<Action>();
+
+        private readonly BlockingCollection<Action> _boardActionBlockingCollection = new BlockingCollection<Action>(new ConcurrentQueue<Action>());
+        private CancellationTokenSource _cancellationTokenSource;
 
         private void EnqueueBoardAction(Action action)
         {
-            _boardActionQueue.Enqueue(action);
-            _actionEnqueuedEvent.Set();
+            //_boardActionQueue.Enqueue(action);
+            //_actionEnqueuedEvent.Set();
+
+            _boardActionBlockingCollection.Add(action);
         }
 
         private void BoardActionTask()
         {
-            WaitHandle[] waitHandles =
-            {
-                _stopBackgroundTaskEvent,
-                _actionEnqueuedEvent
-            };
+            Log.WriteLine(Log.LogLevels.Info, "BoardActionTask started");
+
+            //WaitHandle[] waitHandles =
+            //{
+            //    _stopBackgroundTaskEvent,
+            //    _actionEnqueuedEvent
+            //};
+
+            //while (true)
+            //{
+            //    int handle = WaitHandle.WaitAny(waitHandles, 100);
+            //    if (handle == 0) // _stopBackgroundTaskEvent
+            //        break; // Stop here
+            //    // Even if WaitAny returned WaitHandle.WaitTimeout, we check action queue
+            //    _actionEnqueuedEvent.Reset();
+            //    // Perform board actions
+            //    if (State == States.Playing && !_boardActionQueue.IsEmpty)
+            //    {
+            //        while (!_boardActionQueue.IsEmpty)
+            //        {
+            //            Action action;
+            //            bool dequeue = _boardActionQueue.TryDequeue(out action);
+            //            if (dequeue)
+            //            {
+            //                try
+            //                {
+            //                    action();
+            //                    Thread.Sleep(1);
+            //                }
+            //                catch (Exception ex)
+            //                {
+            //                    Log.WriteLine(Log.LogLevels.Error, "Exception raised in BoardActionTask. Exception:{0}", ex);
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+
+            _cancellationTokenSource = new CancellationTokenSource();
 
             while (true)
             {
-                int handle = WaitHandle.WaitAny(waitHandles, 100);
-                if (handle == 0) // _stopBackgroundTaskEvent
-                    break; // Stop here
-                // Even if WaitAny returned WaitHandle.WaitTimeout, we check action queue
-                _actionEnqueuedEvent.Reset();
-                // Perform board actions
-                if (State == States.Playing && !_boardActionQueue.IsEmpty)
+                try
                 {
-                    while (!_boardActionQueue.IsEmpty)
+                    Action action;
+                    bool taken = _boardActionBlockingCollection.TryTake(out action, 10, _cancellationTokenSource.Token);
+                    if (taken)
                     {
-                        Action action;
-                        bool dequeue = _boardActionQueue.TryDequeue(out action);
-                        if (dequeue)
+                        try
                         {
-                            try
-                            {
-                                action();
-                                Thread.Sleep(1);
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.WriteLine(Log.LogLevels.Error, "Exception raised in BoardActionTask. Exception:{0}", ex);
-                            }
+                            Log.WriteLine(Log.LogLevels.Debug, "Dequeue, item in queue {0}", _boardActionBlockingCollection.Count);
+                            action();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.WriteLine(Log.LogLevels.Error, "Exception raised in BoardActionTask. Exception:{0}", ex);
                         }
                     }
                 }
+                catch (OperationCanceledException)
+                {
+                    Log.WriteLine(Log.LogLevels.Info, "Taking cancelled");
+                    break;
+                }
             }
+
+            Log.WriteLine(Log.LogLevels.Info, "BoardActionTask stopped");
         }
         #endregion
 

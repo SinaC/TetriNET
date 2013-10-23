@@ -49,6 +49,7 @@
     <Compile Include="Achievements\Eliminator.cs" />
     <Compile Include="Achievements\Eradicator.cs" />
     <Compile Include="Achievements\FearMyBrain.cs" />
+    <Compile Include="Achievements\GrandSlam.cs" />
     <Compile Include="Achievements\HHStyle.cs" />
     <Compile Include="Achievements\Looooser.cs" />
     <Compile Include="Achievements\HitchhikersGuide.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Achievements\PhilouStyle.cs" />
     <Compile Include="Achievements\RunBabyRun.cs" />
     <Compile Include="Achievements\SerialBuilder.cs" />
+    <Compile Include="Achievements\Slam.cs" />
     <Compile Include="Achievements\Sniper.cs" />
     <Compile Include="Achievements\SomeLikeItHot.cs" />
     <Compile Include="Achievements\TetrisAce.cs" />

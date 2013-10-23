@@ -37,8 +37,9 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientPlayerPublishMessageHandler(string playerName, string msg);
     public delegate void ClientServerPublishMessageHandler(string msg);
     public delegate void ClientInventoryChangedHandler();
-    public delegate void ClientLinesClearedChangedHandler();
-    public delegate void ClientLevelChangedHandler();
+    public delegate void ClientLinesClearedChangedHandler(int linesCleared);
+    public delegate void ClientLevelChangedHandler(int level);
+    public delegate void ClientScoreChangedHandler(int score);
     public delegate void ClientSpecialUsedHandler(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special);
     public delegate void ClientUseSpecialHandler(int targetId, string targetName, Specials special);
     public delegate void ClientPlayerAddLinesHandler(int playerId, string playerName, int specialId, int count);
@@ -59,6 +60,7 @@ namespace TetriNET.Client.Interfaces
         List<Specials> Inventory { get; }
         int LinesCleared { get; }
         int Level { get; }
+        int Score { get; }
         bool IsRegistered { get; }
         bool IsGamePaused { get; } // Server-state
         bool IsGameStarted { get; } // Server-state
@@ -99,6 +101,7 @@ namespace TetriNET.Client.Interfaces
         event ClientInventoryChangedHandler OnInventoryChanged;
         event ClientLinesClearedChangedHandler OnLinesClearedChanged;
         event ClientLevelChangedHandler OnLevelChanged;
+        event ClientScoreChangedHandler OnScoreChanged;
         event ClientSpecialUsedHandler OnSpecialUsed;
         event ClientUseSpecialHandler OnUseSpecial;
         event ClientPlayerAddLinesHandler OnPlayerAddLines;

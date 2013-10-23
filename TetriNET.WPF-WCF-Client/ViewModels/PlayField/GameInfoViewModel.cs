@@ -118,6 +118,20 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             }
         }
 
+        private int _score;
+        public int Score
+        {
+            get { return _score; }
+            set
+            {
+                if (_score != value)
+                {
+                    _score = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private readonly Timer _timer;
         private DateTime _gameStartTime;
         private TimeSpan _elapsedTime;
@@ -152,23 +166,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             ElapsedTime = DateTime.Now - _gameStartTime;
         }
 
-        private void DisplayLevel()
-        {
-            Level = Client.Level;
-        }
-
-        private void DisplayClearedLines()
-        {
-            LinesCleared = Client.LinesCleared;
-        }
-
         #region ViewModelBase
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnContinuousEffectToggled -= OnContinuousEffectToggled;
-            oldClient.OnLinesClearedChanged -= OnLinesClearedChanged;
-            oldClient.OnLevelChanged -= OnLevelChanged;
+            oldClient.OnLinesClearedChanged -= DisplayClearedLines;
+            oldClient.OnLevelChanged -= DisplayLevel;
+            oldClient.OnScoreChanged -= DisplayScore;
             oldClient.OnGameStarted -= OnGameStarted;
             oldClient.OnGameOver -= StopTimerAndComputeTime;
             oldClient.OnGameFinished -= StopTimerAndComputeTime;
@@ -179,8 +184,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         public override void SubscribeToClientEvents(IClient newClient)
         {
             newClient.OnContinuousEffectToggled += OnContinuousEffectToggled;
-            newClient.OnLinesClearedChanged += OnLinesClearedChanged;
-            newClient.OnLevelChanged += OnLevelChanged;
+            newClient.OnLinesClearedChanged += DisplayClearedLines;
+            newClient.OnLevelChanged += DisplayLevel;
+            newClient.OnScoreChanged += DisplayScore;
             newClient.OnGameStarted += OnGameStarted;
             newClient.OnGameOver += StopTimerAndComputeTime;
             newClient.OnGameFinished += StopTimerAndComputeTime;
@@ -216,22 +222,28 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         private void OnGameStarted()
         {
-            DisplayLevel();
-            DisplayClearedLines();
+            DisplayLevel(0);
+            DisplayClearedLines(0);
+            DisplayScore(0);
             Effects.Clear();
             _gameStartTime = DateTime.Now;
             ElapsedTime = TimeSpan.FromSeconds(0);
             _timer.Start();
         }
 
-        private void OnLevelChanged()
+        private void DisplayLevel(int level)
         {
-            DisplayLevel();
+            Level = level == 0 ? Client.Level : level;
         }
 
-        private void OnLinesClearedChanged()
+        private void DisplayClearedLines(int linesCleared)
         {
-            DisplayClearedLines();
+            LinesCleared = linesCleared == 0 ? Client.LinesCleared : linesCleared;
+        }
+
+        private void DisplayScore(int score)
+        {
+            Score = score == 0 ? Client.Score : score;
         }
 
         #endregion

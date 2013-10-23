@@ -11,7 +11,7 @@ namespace TetriNET.Client.Interfaces
 
         void Reset();
         
-        void OnGameStarted();
+        void OnGameStarted(GameOptions options);
         void OnGameFinished();
         void OnRoundFinished(int deletedRows, int level, int moveCount, IBoard board);
         void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special);

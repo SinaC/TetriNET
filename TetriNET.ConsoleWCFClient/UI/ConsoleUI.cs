@@ -42,6 +42,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             _client.OnRoundFinished += OnRoundFinished;
             _client.OnLinesClearedChanged += OnLinesClearedChanged;
             _client.OnLevelChanged += OnLevelChanged;
+            _client.OnScoreChanged += OnScoreChanged;
             _client.OnSpecialUsed += OnSpecialUsed;
             _client.OnPlayerAddLines += OnPlayerAddLines;
 
@@ -70,23 +71,34 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void OnLevelChanged()
+        private void OnLevelChanged(int level)
         {
             lock (_lock)
             {
                 Console.ResetColor();
                 Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 6);
-                Console.Write("Level: {0}", _client.Level);
+                Console.Write("Level: {0}", level == 0 ? _client.Level : level);
             }
         }
 
-        private void OnLinesClearedChanged()
+        private void OnLinesClearedChanged(int linesCleared)
         {
             lock (_lock)
             {
                 Console.ResetColor();
                 Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 5);
-                Console.Write("#Lines cleared: {0}", _client.LinesCleared);
+                Console.Write("#Lines cleared: {0}", linesCleared == 0 ? _client.LinesCleared : linesCleared);
+            }
+        }
+
+
+        private void OnScoreChanged(int score)
+        {
+            lock (_lock)
+            {
+                Console.ResetColor();
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 7);
+                Console.Write("Score: {0}", score == 0 ? _client.Score : score);
             }
         }
 
@@ -126,8 +138,9 @@ namespace TetriNET.ConsoleWCFClient.UI
 
             OnRedraw();
             DisplayNextPieceColor();
-            OnLinesClearedChanged();
-            OnLevelChanged();
+            OnLinesClearedChanged(0);
+            OnLevelChanged(0);
+            OnScoreChanged(0);
         }
 
         private void OnServerPublishMessage(string msg)

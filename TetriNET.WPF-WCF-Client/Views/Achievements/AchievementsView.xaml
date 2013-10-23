@@ -23,7 +23,7 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Achieved on "/>
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Achieved on"/>
                                 <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,0,0"
                                            Text="{Binding FirstTimeAchieved, StringFormat={}{0:dd MMMM yyyy HH:mm:ss}}"/>
                             </Grid>

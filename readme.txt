@@ -7,12 +7,12 @@ when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 	-> this object is stored in IPlayer and created by createPlayerFunc in host so server or host can ban a player using IPlayer info
 client/server version when registering
 SinaCSpecials: use gravity when board has enough holes or when to high + zebra + clear column + confusion + darkness + immunity + left gravity + mutation
-WPF Client bot: sometimes _handleNextTetriminoEvent is not raised or is forgot
 Confusion could be managed in client instead of GUI
 Add Pentominos (http://en.wikipedia.org/wiki/Pentomino)
 New options: random blocks clear count, mutation count, darkness time, confusion time, immunity time, random spawn orientation
-Solo mode (score, t-spin)
+Solo mode (back-to-back, t-spin)
 Server integrated in WPF client
+in multiplayer game, display some stats about players (#lines, score, ...) when game is finished
 
 Hold: store a piece for later use --> this could lead to problem with server (server checks piece id when receiving PlaceTetrimino msg  line 636)
 
@@ -21,22 +21,19 @@ new server->client API: OnAchievementEarned(playerId, id, title)
 when receiving OnAchievementEarned, display msg in party line chat and in game chat
 
 achievements idea: 
-	Use every available specials in one game (Slam:10)
-	Use on an opponent and be the target of every available specials (Grand Slam:60)
 	Clear a line with 7 different piece's colors (Rainbow warrior:30) [only 5 different colors for the moment]
 	Lose a multiplayer game while having a Nuke and a Gravity and a Switch in inventory (???:30)
 	Win 100 games (???:30)
 	Win 1000 games (???:50)
 
-	title idea: Bright side of life, I'm not dead
-
 bugs:
 why user.config is automatically created with default values in $APPDATA$/Local/SinaC/TetriNET WPF WCF Client/  when recompiling a new version
-tetriminoI appears on row 21 instead of 22
+tetriminoI  should appear on row 21 instead of 22
 FIXED	sometimes bottom line seems to disappear (occurs when lines are added by server) --> GRRRRRR DUMB DEVELOPER
 FIXED	focus on game view is not set properly when starting a game and player is in stat tab or options tab
+WPF Client bot: sometimes _handleNextTetriminoEvent is raised but WaitHandle is not woken up
 chat player list is sometimes wrong (2 times the same player) server not yet started and 2 clients try to connect at the same time
-server sometimes doesn't send next pieces to client or is too slow  (400ms elapsed between PlacePiece and OnNextPiece !!!!!)    maybe it's an event problem (the same as bot one)
+FIXED	server sometimes doesn't send next pieces to client or is too slow  (400ms elapsed between PlacePiece and OnNextPiece !!!!!)    maybe it's an event problem (the same as bot one)
 		Client->Server: PlacePiece(placed piece index, max index in local piece array)
 		Server->Client: OnNextPiece(3 next pieces from max index in local piece array from client)
 	sample of slow behaviour
@@ -240,3 +237,7 @@ custom user settings path
 http://stackoverflow.com/questions/2265271/custom-path-of-the-user-config
 http://stackoverflow.com/questions/175726/c-create-new-settings-at-run-time/1236190#1236190
 http://msdn.microsoft.com/en-us/library/saa62613(v=VS.100).aspx
+
+patterns
+http://www.dofactory.com/Patterns/Patterns.aspx
+http://stackoverflow.com/questions/5645348/under-what-conditions-can-trydequeue-and-similar-system-collections-concurrent-c

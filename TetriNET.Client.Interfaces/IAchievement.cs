@@ -32,6 +32,7 @@ namespace TetriNET.Client.Interfaces
         void Reset();
 
         // Triggers
+        void OnGameStarted(GameOptions options);
         void OnAchievementEarned(IAchievement achievement, IEnumerable<IAchievement> achievements);
         void OnGameWon(double playTime /*in seconds*/, int moveCount, int lineCount, int playerCount);
         void OnGameLost(double playTime /*in seconds*/, int moveCount, int lineCount, int playerCount, int playerLeft, List<Specials> inventory);

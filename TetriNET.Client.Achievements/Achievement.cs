@@ -84,6 +84,10 @@ namespace TetriNET.Client.Achievements
         }
 
         // Triggers
+        public virtual void OnGameStarted(GameOptions options)
+        {
+        }
+
         public virtual void OnAchievementEarned(IAchievement achievement, IEnumerable<IAchievement> achievements)
         {
         }

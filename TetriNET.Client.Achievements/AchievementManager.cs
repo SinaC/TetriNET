@@ -96,11 +96,15 @@ namespace TetriNET.Client.Achievements
                 iter.OnAchievementEarned(achievement, Achievements);
         }
 
-        public void OnGameStarted()
+        public void OnGameStarted(GameOptions options)
         {
             _gameStartTime = DateTime.Now;
-            foreach (IAchievement achievement in Achievements.Where(x => x.ResetOnGameStarted))
-                achievement.Reset();
+            foreach (IAchievement achievement in Achievements)
+            {
+                if (achievement.ResetOnGameStarted)
+                    achievement.Reset();
+                achievement.OnGameStarted(options);
+            }
         }
 
         public void OnGameFinished()
