@@ -18,6 +18,7 @@ namespace TetriNET.Client.Interfaces
         IPiece Clone();
         void CopyFrom(IPiece piece);
 
+        void Move(int x, int y);
         void Translate(int dx, int dy);
         void RotateClockwise();
         void RotateCounterClockwise();

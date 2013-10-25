@@ -10,12 +10,20 @@ namespace TetriNET.Client
         private readonly object _lock = new object();
         private Pieces[] _array;
 
+        public int HighestIndex { get; private set; }
         public int Size { get; private set; }
 
         public PieceArray(int size)
         {
             Size = size;
             _array = new Pieces[Size];
+        }
+
+        public void Reset()
+        {
+            HighestIndex = 0;
+            for(int i = 0; i < Size; i++)
+                _array[i] = Pieces.Invalid;
         }
 
         public Pieces this[int index]
@@ -33,6 +41,8 @@ namespace TetriNET.Client
             {
                 lock (_lock)
                 {
+                    if (index > HighestIndex)
+                        HighestIndex = index;
                     if (index >= Size)
                         Grow(64);
                     _array[index] = value;

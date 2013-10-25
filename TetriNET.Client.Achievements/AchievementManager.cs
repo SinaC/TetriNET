@@ -111,10 +111,10 @@ namespace TetriNET.Client.Achievements
         {
         }
 
-        public void OnRoundFinished(int deletedRows, int level, int moveCount, IBoard board)
+        public void OnRoundFinished(int deletedRows, int level, int moveCount, IBoard board, List<Pieces> collapsedPieces)
         {
             foreach (IAchievement achievement in Achievements.Where(x => x.IsAchievable))
-                achievement.OnRoundFinished(deletedRows, level, moveCount, board);
+                achievement.OnRoundFinished(deletedRows, level, moveCount, board, collapsedPieces);
         }
 
         public void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)

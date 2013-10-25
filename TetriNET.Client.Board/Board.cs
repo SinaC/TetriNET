@@ -180,9 +180,8 @@ namespace TetriNET.Client.Board
         //    return true;
         //}
 
-        public int CollapseCompletedRows(out List<Specials> specials)
+        public int CollapseCompletedRows()
         {
-            specials = new List<Specials>();
             int rows = 0;
             // Scan each row of the current board, starting from the bottom of the pile.
             // If any row is completely filled, then "eliminate" the row by collapsing
@@ -207,12 +206,62 @@ namespace TetriNET.Client.Board
                 {
                     rows++; // A full row is to be collapsed
 
-                    // Get specials from row
+                    // Copy rows
+                    for (int copySourceY = (y + 1); copySourceY <= Height; copySourceY++)
+                        for (int copySourceX = 1; copySourceX <= Width; copySourceX++)
+                        {
+                            byte cellValue = this[copySourceX, copySourceY];
+                            this[copySourceX, copySourceY - 1] = cellValue;
+                        }
+
+                    // Clear top row ("copy" from infinite emptiness above board)
+                    for (int copySourceX = 1; copySourceX <= Width; copySourceX++)
+                        this[copySourceX, Height] = CellHelper.EmptyCell;
+
+                    y--; // Force the same row to be checked again
+                }
+            }
+
+            return rows;
+        }
+
+        public int CollapseCompletedRows(out List<Specials> specials, out List<Pieces> pieces)
+        {
+            specials = new List<Specials>();
+            pieces = new List<Pieces>();
+            int rows = 0;
+            // Scan each row of the current board, starting from the bottom of the pile.
+            // If any row is completely filled, then "eliminate" the row by collapsing
+            // all rows above the complete row down to fill the gap.  Note that we must
+            // check the same row again if we do a collapse.
+            for (int y = 1; y < Height; y++) // bottom-to-top (except top row)
+            {
+                // Check if the row is full
+                bool rowIsFull = true; // hypothesis
+                for (int x = 1; x <= Width; x++)
+                {
+                    byte cellValue = this[x, y];
+                    if (cellValue == CellHelper.EmptyCell)
+                    {
+                        rowIsFull = false;
+                        break;
+                    }
+                }
+
+                // If the row is full, increment count, and collapse pile down
+                if (rowIsFull)
+                {
+                    rows++; // A full row is to be collapsed
+
+                    // Get specials/pieces from row
                     for (int x = 1; x <= Width; x++)
                     {
                         Specials cellSpecial = CellHelper.GetSpecial(this[x, y]);
                         if (cellSpecial != Specials.Invalid)
                             specials.Add(cellSpecial);
+                        Pieces cellPiece = CellHelper.GetColor(this[x, y]);
+                        if (cellPiece != Pieces.Invalid)
+                            pieces.Add(cellPiece);
                     }
 
                     // Copy rows
@@ -474,8 +523,7 @@ namespace TetriNET.Client.Board
                     }
             }
             // Delete completed rows
-            List<Specials> specials;
-            CollapseCompletedRows(out specials);
+            CollapseCompletedRows();
         }
 
         /// <summary>

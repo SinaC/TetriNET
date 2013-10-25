@@ -18,6 +18,8 @@ namespace TetriNET.Client.Interfaces
         RotateClockwise,
         [Description("Rotate counterclockwise")]
         RotateCounterclockwise,
+        [Description("Hold")]
+        Hold,
 
         [Description("Discard special")]
         DiscardFirstSpecial,

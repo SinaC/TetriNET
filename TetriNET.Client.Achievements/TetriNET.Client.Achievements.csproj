@@ -61,6 +61,7 @@
     <Compile Include="Achievements\NewtonsApple.cs" />
     <Compile Include="Achievements\NuclearLaunchDetected.cs" />
     <Compile Include="Achievements\PhilouStyle.cs" />
+    <Compile Include="Achievements\RainbowWarrior.cs" />
     <Compile Include="Achievements\RunBabyRun.cs" />
     <Compile Include="Achievements\SerialBuilder.cs" />
     <Compile Include="Achievements\Slam.cs" />

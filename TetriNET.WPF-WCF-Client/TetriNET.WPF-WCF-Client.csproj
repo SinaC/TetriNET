@@ -95,6 +95,9 @@
     <Compile Include="UserControls\PieceControl.xaml.cs">
       <DependentUpon>PieceControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\ShadowPieceControl.xaml.cs">
+      <DependentUpon>ShadowPieceControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\SensibilityControl.xaml.cs">
       <DependentUpon>SensibilityControl.xaml</DependentUpon>
     </Compile>
@@ -142,6 +145,9 @@
       <DependentUpon>GameInfoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ListBoxExtenders.cs" />
+    <Compile Include="Views\PlayField\HoldNextPiece.xaml.cs">
+      <DependentUpon>HoldNextPiece.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\PlayField\NextPieceView.xaml.cs">
       <DependentUpon>NextPieceView.xaml</DependentUpon>
     </Compile>
@@ -194,6 +200,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\ShadowPieceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\SensibilityControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -219,6 +229,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PlayField\GameInfoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PlayField\HoldNextPiece.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

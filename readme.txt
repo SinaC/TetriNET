@@ -13,104 +13,20 @@ New options: random blocks clear count, mutation count, darkness time, confusion
 Solo mode (back-to-back, t-spin)
 Server integrated in WPF client
 in multiplayer game, display some stats about players (#lines, score, ...) when game is finished
-
-Hold: store a piece for later use --> this could lead to problem with server (server checks piece id when receiving PlaceTetrimino msg  line 636)
-
-new client->server API: EarnAchievement(id, title)  (server doesn't know anything about achievements)
-new server->client API: OnAchievementEarned(playerId, id, title)
-when receiving OnAchievementEarned, display msg in party line chat and in game chat
+achievement earned server message should be replaced with delegate ClientOnAchievementEarned, mouseover achievement should say if we already earned it and click on it should switch to achievement view
+options for Hold
 
 achievements idea: 
-	Clear a line with 7 different piece's colors (Rainbow warrior:30) [only 5 different colors for the moment]
 	Lose a multiplayer game while having a Nuke and a Gravity and a Switch in inventory (???:30)
+	x points in a game
 	Win 100 games (???:30)
 	Win 1000 games (???:50)
 
 bugs:
 why user.config is automatically created with default values in $APPDATA$/Local/SinaC/TetriNET WPF WCF Client/  when recompiling a new version
 tetriminoI  should appear on row 21 instead of 22
-FIXED	sometimes bottom line seems to disappear (occurs when lines are added by server) --> GRRRRRR DUMB DEVELOPER
-FIXED	focus on game view is not set properly when starting a game and player is in stat tab or options tab
 WPF Client bot: sometimes _handleNextTetriminoEvent is raised but WaitHandle is not woken up
 chat player list is sometimes wrong (2 times the same player) server not yet started and 2 clients try to connect at the same time
-FIXED	server sometimes doesn't send next pieces to client or is too slow  (400ms elapsed between PlacePiece and OnNextPiece !!!!!)    maybe it's an event problem (the same as bot one)
-		Client->Server: PlacePiece(placed piece index, max index in local piece array)
-		Server->Client: OnNextPiece(3 next pieces from max index in local piece array from client)
-	sample of slow behaviour
-		2013-10-18 09:54:19.5323 6 DEBUG PlacePiece 42 TetriminoI 2 5,6 56							<-- PlecePiece(42) received
-		2013-10-18 09:54:19.5323 6 DEBUG SendLines 1
-		2013-10-18 09:54:19.5479 3 INFO ModifyGrid[CONSOLE_5d6c1]
-		2013-10-18 09:54:19.5635 3 INFO PlacePiece[CONSOLE_5d6c1]31:TetriminoL 4 at 12,4 19
-		2013-10-18 09:54:19.5635 6 DEBUG PlacePiece 33 TetriminoZ 2 5,11 52
-		2013-10-18 09:54:19.5791 3 INFO UseSpecial[CONSOLE_08927][CONSOLE_f6a92]BlockBomb
-		2013-10-18 09:54:19.5791 6 DEBUG PlacePiece 34 TetriminoT 3 4,4 53
-		2013-10-18 09:54:19.5947 3 INFO PlacePiece[CONSOLE_92e1d]30:TetriminoO 1 at 2,5 41
-		2013-10-18 09:54:19.5947 6 DEBUG PlacePiece 33 TetriminoZ 4 10,3 27
-		2013-10-18 09:54:19.6103 6 DEBUG ModifyGrid 27
-		2013-10-18 09:54:19.6103 3 INFO PlacePiece[CONSOLE_f6a92]30:TetriminoO 1 at 4,4 27
-		2013-10-18 09:54:19.6103 6 DEBUG PlacePiece 43 TetriminoI 4 8,5 48							<-- PlecePiece(43) received
-		2013-10-18 09:54:19.6103 6 DEBUG PlacePiece 35 TetriminoL 1 9,3 34
-		2013-10-18 09:54:19.6259 3 INFO UseSpecial[CONSOLE_f6a92][CONSOLE_92e1d]ClearSpecialBlocks
-		2013-10-18 09:54:19.6259 6 DEBUG ModifyGrid 52
-		2013-10-18 09:54:19.6415 3 INFO PlacePiece[Joel]39:TetriminoZ 4 at 10,6 68
-		2013-10-18 09:54:19.6571 3 INFO PlacePiece[CONSOLE_d489b]30:TetriminoO 1 at 2,8 64
-		2013-10-18 09:54:19.6571 6 DEBUG PlacePiece 34 TetriminoZ 1 10,5 56
-		2013-10-18 09:54:19.6727 3 INFO ModifyGrid[CONSOLE_5d6c1]
-		2013-10-18 09:54:19.6727 6 DEBUG PlacePiece 33 TetriminoI 4 12,8 76
-		2013-10-18 09:54:19.6883 3 INFO PlacePiece[CONSOLE_92e1d]31:TetriminoL 3 at 4,4 45
-		2013-10-18 09:54:19.6883 6 DEBUG PlacePiece 44 TetriminoO 1 9,6 52							<-- PlecePiece(44) received
-		2013-10-18 09:54:19.7039 3 INFO PlacePiece[CONSOLE_5d6c1]32:TetriminoI 2 at 1,6 22
-		2013-10-18 09:54:19.7039 6 DEBUG PlacePiece 35 TetriminoL 4 10,5 57
-		2013-10-18 09:54:19.7195 3 INFO PlacePiece[CONSOLE_08927]32:TetriminoI 4 at 13,8 45
-		2013-10-18 09:54:19.7195 6 DEBUG PlacePiece 36 TetriminoO 1 6,2 26
-		2013-10-18 09:54:19.7351 3 INFO PlacePiece[CONSOLE_f6a92]31:TetriminoL 4 at 12,4 31
-		2013-10-18 09:54:19.7507 3 INFO PlacePiece[CONSOLE_d489b]31:TetriminoL 3 at 10,5 68
-		2013-10-18 09:54:19.7507 6 DEBUG PlacePiece 34 TetriminoZ 4 11,4 31
-		2013-10-18 09:54:19.7507 17 DEBUG PlacePiece 35 TetriminoZ 1 9,6 60
-		2013-10-18 09:54:19.7663 3 INFO PlacePiece[Joel]40:TetriminoL 2 at 1,6 72
-		2013-10-18 09:54:19.7819 3 INFO UseSpecial[CONSOLE_f6a92][CONSOLE_92e1d]ClearSpecialBlocks
-		2013-10-18 09:54:19.7819 17 DEBUG PlacePiece 34 TetriminoT 4 10,7 80
-		2013-10-18 09:54:19.7975 3 INFO PlacePiece[CONSOLE_5d6c1]33:TetriminoI 2 at 2,6 26
-		2013-10-18 09:54:19.7975 17 DEBUG PlacePiece 36 TetriminoO 1 7,4 49
-		2013-10-18 09:54:19.8131 3 INFO PlacePiece[Joel]41:TetriminoO 1 at 2,9 76
-		2013-10-18 09:54:19.8131 17 DEBUG PlacePiece 45 TetriminoZ 4 11,4 56
-		2013-10-18 09:54:19.8287 3 INFO PlacePiece[CONSOLE_92e1d]32:TetriminoI 4 at 13,7 49
-		2013-10-18 09:54:19.8287 6 DEBUG PlacePiece 37 TetriminoO 1 4,3 30
-		2013-10-18 09:54:19.8443 3 INFO PlacePiece[CONSOLE_08927]33:TetriminoI 4 at 12,8 49
-		2013-10-18 09:54:19.8599 3 INFO PlacePiece[CONSOLE_f6a92]32:TetriminoZ 4 at 9,3 23
-		2013-10-18 09:54:19.8599 17 DEBUG PlacePiece 35 TetriminoZ 1 2,3 23
-		2013-10-18 09:54:19.8755 3 INFO ModifyGrid[CONSOLE_92e1d]
-		2013-10-18 09:54:19.8911 3 INFO PlacePiece[CONSOLE_d489b]32:TetriminoI 4 at 13,10 72
-		2013-10-18 09:54:19.8911 17 DEBUG ModifyGrid 60
-		2013-10-18 09:54:19.8911 17 DEBUG PlacePiece 35 TetriminoL 4 6,7 72
-		2013-10-18 09:54:19.9067 3 INFO PlacePiece[CONSOLE_5d6c1]34:TetriminoT 1 at 8,2 30
-		2013-10-18 09:54:19.9067 17 DEBUG PlacePiece 37 TetriminoO 1 6,5 53
-		2013-10-18 09:54:19.9067 17 DEBUG PlacePiece 46 TetriminoZ 2 5,5 48
-		2013-10-18 09:54:19.9223 3 INFO PlacePiece[Joel]42:TetriminoI 2 at 5,6 56				<-- PlacePiece(42) dequeued from game action queue
-		2013-10-18 09:54:19.9223 17 DEBUG PlacePiece 36 TetriminoZ 4 11,7 64
-		2013-10-18 09:54:19.9379 3 INFO SendLines[Joel]:1
-		2013-10-18 09:54:19.9379 6 DEBUG ModifyGrid 34
-		2013-10-18 09:54:19.9379 17 DEBUG ModifyGrid 64
-		2013-10-18 09:54:19.9379 6 DEBUG ModifyGrid 83
-		2013-10-18 09:54:19.9535 3 INFO PlacePiece[CONSOLE_92e1d]33:TetriminoZ 2 at 5,11 52
-		2013-10-18 09:54:19.9535 14 DEBUG ModifyGrid 75
-		2013-10-18 09:54:19.9691 3 INFO PlacePiece[CONSOLE_08927]34:TetriminoT 3 at 4,4 53
-		2013-10-18 09:54:19.9691 14 DEBUG PlacePiece 36 TetriminoZ 1 7,4 38
-		2013-10-18 09:54:19.9847 3 INFO PlacePiece[CONSOLE_f6a92]33:TetriminoZ 4 at 10,3 27
-		2013-10-18 09:54:19.9847 14 DEBUG PlacePiece 38 TetriminoI 4 13,6 34
-		2013-10-18 09:54:20.0003 3 INFO ModifyGrid[CONSOLE_f6a92]
-		2013-10-18 09:54:20.0003 14 DEBUG ModifyGrid 45
-		2013-10-18 09:54:20.0003 14 DEBUG PlacePiece 36 TetriminoO 1 8,8 87
-		2013-10-18 09:54:20.0159 3 INFO PlacePiece[Joel]43:TetriminoI 4 at 8,5 48				<-- PlacePiece(43) dequeued from game action queue
-		2013-10-18 09:54:20.0315 3 INFO PlacePiece[CONSOLE_5d6c1]35:TetriminoL 1 at 9,3 34
-		2013-10-18 09:54:20.0471 3 INFO ModifyGrid[CONSOLE_92e1d]
-		2013-10-18 09:54:20.0627 3 INFO PlacePiece[CONSOLE_92e1d]34:TetriminoZ 1 at 10,5 56
-		2013-10-18 09:54:20.0627 6 DEBUG PlacePiece 37 TetriminoZ 1 5,4 42
-		2013-10-18 09:54:20.0627 17 DEBUG PlacePiece 37 TetriminoZ 2 3,7 79
-		2013-10-18 09:54:20.0627 17 DEBUG PlacePiece 47 TetriminoI 4 13,6 52
-		2013-10-18 09:54:20.0783 3 INFO PlacePiece[CONSOLE_d489b]33:TetriminoI 4 at 12,8 76
-		2013-10-18 09:54:20.0783 17 DEBUG PlacePiece 38 TetriminoI 2 1,9 68
-		2013-10-18 09:54:20.0939 3 INFO PlacePiece[Joel]44:TetriminoO 1 at 9,6 52				<-- PlacePiece(44) dequeued from game action queue
 
 wcf + jquery
 http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-with-nettcpbinding
@@ -203,6 +119,7 @@ http://www.asp.net/signalr/overview/getting-started/tutorial-signalr-self-host
 
 Tetrinet original description
 http://gtetrinet.sourceforge.net/tetrinet.txt
+https://github.com/xale/iTetrinet/wiki/tetrinet-protocol%3A-client-to-server-messages
 
 bot
 http://luckytoilet.wordpress.com/2011/05/27/coding-a-tetris-ai-using-a-genetic-algorithm/

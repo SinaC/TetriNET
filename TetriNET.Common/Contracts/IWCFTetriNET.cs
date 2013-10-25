@@ -3,7 +3,6 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Common.Contracts
 {
-    //https://github.com/xale/iTetrinet/wiki/tetrinet-protocol%3A-client-to-server-messages
     [ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(ITetriNETCallback))]
     public interface IWCFTetriNET
     {
@@ -17,43 +16,46 @@ namespace TetriNET.Common.Contracts
         [OperationContract(IsOneWay = true)]
         void Heartbeat();
 
-        [OperationContract(IsOneWay = true)] // Team Name
+        [OperationContract(IsOneWay = true)]
         void PlayerTeam(string team);
 
         // Chat
-        [OperationContract(IsOneWay = true)] // Partyline Chat Message
+        [OperationContract(IsOneWay = true)]
         void PublishMessage(string msg);
 
         // In-game
         [OperationContract(IsOneWay = true)]
-        void PlacePiece(int index, Pieces piece, int orientation, int posX, int posY, byte[] grid);
+        void PlacePiece(int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid);
 
-        [OperationContract(IsOneWay = true)] // Field Update
+        [OperationContract(IsOneWay = true)]
         void ModifyGrid(byte[] grid);
 
         [OperationContract(IsOneWay = true)]
-        void UseSpecial(int targetId, Specials special); // Send Special
+        void UseSpecial(int targetId, Specials special);
 
-        [OperationContract(IsOneWay = true)] // Send Classic-Style Add-Lines
+        [OperationContract(IsOneWay = true)]
         void SendLines(int count);
 
-        [OperationContract(IsOneWay = true)] // Player Lost
+        [OperationContract(IsOneWay = true)]
         void GameLost();
 
         [OperationContract(IsOneWay = true)]
         void FinishContinuousSpecial(Specials special);
 
-        // Server management
-        [OperationContract(IsOneWay = true)] // Start Game
+        [OperationContract(IsOneWay = true)]
+        void EarnAchievement(int achievementId, string achievementTitle);
+
+        // Server master commands
+        [OperationContract(IsOneWay = true)]
         void StartGame();
 
-        [OperationContract(IsOneWay = true)] // Stop Game
+        [OperationContract(IsOneWay = true)]
         void StopGame();
 
-        [OperationContract(IsOneWay = true)] // Pause Game
+        [OperationContract(IsOneWay = true)]
         void PauseGame();
 
-        [OperationContract(IsOneWay = true)] // Resume Game
+        [OperationContract(IsOneWay = true)]
         void ResumeGame();
 
         [OperationContract(IsOneWay = true)]

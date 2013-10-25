@@ -149,9 +149,9 @@ namespace TetriNET.Client.WCFProxy
             ExceptionFreeAction(() => _proxy.PublishMessage(msg), "PublishMessage");
         }
 
-        public void PlacePiece(ITetriNETCallback callback, int index, Pieces piece, int orientation, int posX, int posY, byte[] grid)
+        public void PlacePiece(ITetriNETCallback callback, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid)
         {
-            ExceptionFreeAction(() => _proxy.PlacePiece(index, piece, orientation, posX, posY, grid), "PlacePiece");
+            ExceptionFreeAction(() => _proxy.PlacePiece(pieceIndex, highestIndex, piece, orientation, posX, posY, grid), "PlacePiece");
         }
 
         public void ModifyGrid(ITetriNETCallback callback, byte[] grid)
@@ -217,6 +217,11 @@ namespace TetriNET.Client.WCFProxy
         public void ResetWinList(ITetriNETCallback callback)
         {
             ExceptionFreeAction(_proxy.ResetWinList, "ResetWinList");
+        }
+
+        public void EarnAchievement(ITetriNETCallback callback, int achievementId, string achievementTitle)
+        {
+            ExceptionFreeAction(() => _proxy.EarnAchievement(achievementId, achievementTitle), "EarnAchievement");
         }
 
         #endregion

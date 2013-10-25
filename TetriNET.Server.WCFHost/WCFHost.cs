@@ -31,7 +31,7 @@ namespace TetriNET.Server.WCFHost
                 if (String.IsNullOrEmpty(Port) || Port.ToLower() == "auto")
                     baseAddress = DiscoveryHelper.AvailableTcpBaseAddress;
                 else
-                    baseAddress = new Uri("net.tcp://localhost:" + Port + "/TetriNETv2");
+                    baseAddress = new Uri("net.tcp://localhost:" + Port + "/TetriNET");
 
                 _serviceHost = new ServiceHost(this, baseAddress);
                 _serviceHost.AddServiceEndpoint(typeof(IWCFTetriNET), new NetTcpBinding(SecurityMode.None), "");
@@ -80,9 +80,9 @@ namespace TetriNET.Server.WCFHost
                 _host.PublishMessage(Callback, msg);
             }
 
-            public void PlacePiece(int index, Pieces piece, int orientation, int posX, int posY, byte[] grid)
+            public void PlacePiece(int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid)
             {
-                _host.PlacePiece(Callback, index, piece, orientation, posX, posY, grid);
+                _host.PlacePiece(Callback, pieceIndex, highestIndex, piece, orientation, posX, posY, grid);
             }
 
             public void UseSpecial(int targetId, Specials special)
@@ -148,6 +148,11 @@ namespace TetriNET.Server.WCFHost
             public void ResetWinList()
             {
                 _host.ResetWinList(Callback);
+            }
+
+            public void EarnAchievement(int achievementId, string achievementTitle)
+            {
+                _host.EarnAchievement(Callback, achievementId, achievementTitle);
             }
 
             #endregion

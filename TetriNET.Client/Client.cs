@@ -70,6 +70,7 @@ namespace TetriNET.Client
         private DateTime _confusionEndTime;
         private DateTime _immunityEndTime;
         private int _mutationCount;
+        private bool _holdAlreadyUsed;
 
         private PlayerData Player
         {
@@ -132,13 +133,17 @@ namespace TetriNET.Client
 
         private void AchievementEarned(IAchievement achievement, bool firstTime)
         {
-            // TODO: dedicated client->server API such as EarnAchievement(achievement title, bool firstTime)
             if (firstTime)
-                _proxy.PublishMessage(this, String.Format("has earned the achievement [{0}]", achievement.Title));
+            {
+                _proxy.EarnAchievement(this, achievement.Id, achievement.Title);
+                string msg = String.Format("You have earned [{0}]", achievement.Title);
+                ClientOnServerPublishMessage(msg);
+            }
 
             if (ClientOnAchievementEarned != null)
                 ClientOnAchievementEarned(achievement, firstTime);
         }
+        
         #endregion
 
         #region IProxy event handler
@@ -371,9 +376,9 @@ namespace TetriNET.Client
             }
         }
 
-        public void OnGameStarted(Pieces firstPiece, Pieces secondPiece, Pieces thirdPiece, GameOptions options)
+        public void OnGameStarted(List<Pieces> pieces, GameOptions options)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Game started with {0} {1} {2}", firstPiece, secondPiece, thirdPiece);
+            Log.WriteLine(Log.LogLevels.Debug, "Game started with {0}", pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
 
             ResetTimeout();
 
@@ -395,16 +400,16 @@ namespace TetriNET.Client
             // Reset options
             Options = options;
             // Reset pieces
-            _pieces[0] = firstPiece;
-            _pieces[1] = secondPiece;
-            _pieces[2] = thirdPiece;
+            _pieces.Reset();
+            for (int i = 0; i < pieces.Count; i++)
+                _pieces[i] = pieces[i];
             _pieceIndex = 0;
-            CurrentPiece = _createPieceFunc(firstPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, 0, false);
+            CurrentPiece = _createPieceFunc(_pieces[0], Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, 0, false);
             //MoveDownUntilTotallyInBoard(CurrentPiece);
-            NextPiece = _createPieceFunc(secondPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, 1, false);
+            NextPiece = _createPieceFunc(_pieces[1], Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, 1, false);
             // Update statistics
-            if (_statistics.PieceCount.ContainsKey(firstPiece))
-                _statistics.PieceCount[firstPiece]++;
+            if (_statistics.PieceCount.ContainsKey(_pieces[0]))
+                _statistics.PieceCount[_pieces[0]]++;
             // Reset inventory
             _inventory.Reset(Options.InventorySize);
             //_inventory.Enqueue(new List<Specials>
@@ -439,6 +444,9 @@ namespace TetriNET.Client
             _isDarknessActive = false;
             _isImmunityActive = false;
             _mutationCount = 0;
+            // Reset hold
+            _holdAlreadyUsed = false;
+            HoldPiece = null;
             // Reset boards
             PlayingOpponentsInCurrentGame = 0;
             for (int i = 0; i < MaxPlayers; i++)
@@ -620,13 +628,17 @@ namespace TetriNET.Client
             //}
         }
 
-        public void OnNextPiece(int index, Pieces piece)
+        public void OnNextPiece(int index, List<Pieces> pieces)
         {
+            Log.WriteLine(Log.LogLevels.Debug, "Next piece: {0} {1}", index, pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
+
             ResetTimeout();
 
             if (State == States.Playing)
             {
-                _pieces[index] = piece;
+                //_pieces[index] = piece;
+                for (int i = 0; i < pieces.Count; i++)
+                    _pieces[index + i] = pieces[i];
             }
         }
 
@@ -693,6 +705,25 @@ namespace TetriNET.Client
                 }
                 if (ClientOnContinuousSpecialFinished != null)
                     ClientOnContinuousSpecialFinished(playerId, special);
+            }
+        }
+
+        public void OnAchievementEarned(int playerId, int achievementId, string achievementTitle)
+        {
+            Log.WriteLine(Log.LogLevels.Debug, "Achievement {0}|{1} earned by {2}", playerId, achievementId, achievementTitle);
+
+            ResetTimeout();
+            if (playerId != _clientPlayerId)
+            {
+                if (ClientOnServerPublishMessage != null)
+                {
+                    PlayerData player = GetPlayer(playerId);
+                    if (player != null)
+                    {
+                        string msg = String.Format("{0} has earned [{1}]", player.Name, achievementTitle);
+                        ClientOnServerPublishMessage(msg);
+                    }
+                }
             }
         }
 
@@ -797,36 +828,39 @@ namespace TetriNET.Client
                 _mutationCount--;
             }
             else
+            {
                 CurrentPiece = NextPiece;
-            // Update statistics
-            if (_statistics.PieceCount.ContainsKey(CurrentPiece.Value))
+                CurrentPiece.Move(Board.PieceSpawnX, Board.PieceSpawnY);
+            }
+            //
+            if (_statistics.PieceCount.ContainsKey(CurrentPiece.Value)) // Update statistics
                 _statistics.PieceCount[CurrentPiece.Value]++;
             //
-            //MoveDownUntilTotallyInBoard(CurrentPiece);
             _pieceIndex++;
             Pieces nextPiece = Pieces.TetriminoS;
             if (_pieceIndex + 1 < _pieces.Size)
                 nextPiece = _pieces[_pieceIndex + 1];
             else
             {
-                Log.WriteLine(Log.LogLevels.Warning, "End of PieceArray reached, server is definitively too slow or we are too fast");
+                Log.WriteLine(Log.LogLevels.Warning, "End of PieceArray reached, server is definitively too slow or we are too fast {0}", _pieceIndex+1);
                 _statistics.EndOfPieceQueueReached++;
             }
             if (nextPiece == Pieces.Invalid)
             {
-                Log.WriteLine(Log.LogLevels.Warning, "Next piece not yet received from server, server is definitively too slow or we are too fast");
+                Log.WriteLine(Log.LogLevels.Warning, "Next piece not yet received from server, server is definitively too slow or we are too fast {0}", _pieceIndex + 1);
                 _statistics.NextPieceNotYetReceived++;
             }
             NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, _pieceIndex + 1, _mutationCount > 0);
-            //if (ClientOnPieceMoved != null)
-            //    ClientOnPieceMoved();
+
+            if (ClientOnNextPieceModified != null)
+                ClientOnNextPieceModified();
+
             // Inform UI
             if (ClientOnRedraw != null)
                 ClientOnRedraw();
 
             //Log.WriteLine("New piece {0} {1}  next {2}", CurrentPiece.PieceValue, _pieceIndex, NextPiece.PieceValue);
             // Check game over (if current piece has conflict with another piece)
-            //if (!Board.CheckNoConflict(CurrentPiece))
             if (!Board.CheckNoConflict(CurrentPiece))
                 EndGame();
             else
@@ -842,12 +876,15 @@ namespace TetriNET.Client
         private void FinishRound()
         {
             //Log.WriteLine("Round finished with piece {0} {1}  next {2}", CurrentPiece.PieceValue, _pieceIndex, NextPiece.PieceValue);
-            // Stop game
+            // Reset hold
+            _holdAlreadyUsed = false;
+
+            // Stop game timer
             _gameTimer.Stop();
-            //Log.WriteLine("PIECES:{0}", _pieces.Dump(8));
-            // Delete rows and get specials
+            // Delete rows, get specials and pieces
             List<Specials> specials;
-            int deletedRows = DeleteRows(out specials);
+            List<Pieces> collapsedPieces;
+            int deletedRows = DeleteRows(out specials, out collapsedPieces);
             LinesCleared += deletedRows;
             if (deletedRows > 0)
             {
@@ -918,7 +955,7 @@ namespace TetriNET.Client
             }
 
             // Send piece places to server
-            _proxy.PlacePiece(this, _pieceIndex, CurrentPiece.Value, CurrentPiece.Orientation, CurrentPiece.PosX, CurrentPiece.PosY, Board.Cells);
+            _proxy.PlacePiece(this, _pieceIndex, _pieces.HighestIndex+1, CurrentPiece.Value, CurrentPiece.Orientation, CurrentPiece.PosX, CurrentPiece.PosY, Board.Cells);
 
             // Send lines if classic style
             if (Options.ClassicStyleMultiplayerRules && deletedRows > 1)
@@ -937,15 +974,15 @@ namespace TetriNET.Client
                 ClientOnRoundFinished(deletedRows);
 
             if (_achievementManager != null)
-                _achievementManager.OnRoundFinished(deletedRows, Level, _statistics.MoveCount, Board);
+                _achievementManager.OnRoundFinished(deletedRows, Level, _statistics.MoveCount, Board, collapsedPieces);
 
             // Start next round
             StartRound();
         }
 
-        private int DeleteRows(out List<Specials> specials)
+        private int DeleteRows(out List<Specials> specials, out List<Pieces> pieces)
         {
-            return Board.CollapseCompletedRows(out specials);
+            return Board.CollapseCompletedRows(out specials, out pieces);
         }
 
         private void Disconnect()
@@ -984,7 +1021,10 @@ namespace TetriNET.Client
         }
 
         public IPiece CurrentPiece { get; private set; }
+
         public IPiece NextPiece { get; private set; }
+
+        public IPiece HoldPiece { get; private set; }
 
         public IBoard Board
         {
@@ -1148,6 +1188,20 @@ namespace TetriNET.Client
         {
             add { ClientOnPieceMoved += value; }
             remove { ClientOnPieceMoved -= value; }
+        }
+
+        private event ClientNextPieceModifiedHandler ClientOnNextPieceModified;
+        event ClientNextPieceModifiedHandler IClient.OnNextPieceModified
+        {
+            add { ClientOnNextPieceModified += value; }
+            remove { ClientOnNextPieceModified -= value; }
+        }
+
+        private event ClientHoldPieceModifiedHandler ClientOnHoldPieceModified;
+        event ClientHoldPieceModifiedHandler IClient.OnHoldPieceModified
+        {
+            add { ClientOnHoldPieceModified += value; }
+            remove { ClientOnHoldPieceModified -= value; }
         }
 
         private event ClientPlayerRegisteredHandler ClientOnPlayerRegistered;
@@ -1442,6 +1496,17 @@ namespace TetriNET.Client
         {
             if (State == States.Registered || State == States.Playing)
                 _proxy.PublishMessage(this, msg);
+        }
+
+        public void Hold()
+        {
+            if (State != States.Playing)
+                return;
+
+            if (_holdAlreadyUsed)
+                return;
+
+            EnqueueBoardAction(HoldAction);
         }
 
         public void Drop()
@@ -1788,6 +1853,68 @@ namespace TetriNET.Client
                     LeftGravity();
                     break;
             }
+        }
+
+        private void HoldAction()
+        {
+            if (_holdAlreadyUsed)
+                return;
+
+            //
+            _gameTimer.Stop();
+
+            // Hide current piece
+            if (ClientOnPieceMoving != null)
+                ClientOnPieceMoving();
+
+            // If Hold doesn't exist, set Hold to Current, set Current to Next and set Next to Next's next
+            // Else, swap Hold and Current
+            if (HoldPiece == null)
+            {
+                HoldPiece = CurrentPiece;
+                CurrentPiece = NextPiece;
+
+                _pieceIndex++;
+                Pieces nextPiece = Pieces.TetriminoS;
+                if (_pieceIndex + 1 < _pieces.Size)
+                    nextPiece = _pieces[_pieceIndex + 1];
+                else
+                {
+                    Log.WriteLine(Log.LogLevels.Warning, "End of PieceArray reached, server is definitively too slow or we are too fast {0}", _pieceIndex + 1);
+                    _statistics.EndOfPieceQueueReached++;
+                }
+                if (nextPiece == Pieces.Invalid)
+                {
+                    Log.WriteLine(Log.LogLevels.Warning, "Next piece not yet received from server, server is definitively too slow or we are too fast {0}", _pieceIndex + 1);
+                    _statistics.NextPieceNotYetReceived++;
+                }
+                NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, _pieceIndex + 1, _mutationCount > 1);
+
+                if (ClientOnNextPieceModified != null)
+                    ClientOnNextPieceModified();
+            }
+            else
+            {
+                IPiece swap = CurrentPiece;
+                CurrentPiece = HoldPiece;
+                HoldPiece = swap;
+            }
+
+            // Move Current to Spawn location
+            CurrentPiece.Move(Board.PieceSpawnX, Board.PieceSpawnY);
+
+            if (ClientOnHoldPieceModified != null)
+                ClientOnHoldPieceModified();
+
+            // Display current piece
+            if (ClientOnPieceMoved != null)
+                ClientOnPieceMoved();
+
+            //
+            _gameTimer.Start();
+
+            //
+            _holdAlreadyUsed = true;
         }
 
         private void DropAction()

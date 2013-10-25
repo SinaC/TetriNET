@@ -1,4 +1,6 @@
-﻿using TetriNET.Client.Interfaces;
+﻿using System.Collections.Generic;
+using TetriNET.Client.Interfaces;
+using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
@@ -14,7 +16,7 @@ namespace TetriNET.Client.Achievements.Achievements
             Description = "Clear 50 lines on level 100";
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board, List<Pieces> collapsedPieces)
         {
             if (level >= 100)
                 _count += lineCompleted;

@@ -41,7 +41,7 @@
         
         <GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Header="Controls">
             <ItemsControl
-                Grid.IsSharedSizeScope="True" MaxHeight="160"
+                Grid.IsSharedSizeScope="True" MaxHeight="180"
                 ItemsSource="{Binding KeySettings}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

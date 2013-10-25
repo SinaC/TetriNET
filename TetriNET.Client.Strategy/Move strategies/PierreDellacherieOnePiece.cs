@@ -249,8 +249,7 @@ namespace TetriNET.Client.Strategy
                 int countPieceCellsEliminated = BoardHelper.CountPieceCellsEliminated(board, piece, true);
 
                 // Now it's okay to collapse completed rows
-                List<Specials> specials;
-                board.CollapseCompletedRows(out specials);
+                board.CollapseCompletedRows();
 
                 // Weight eroded cells by completed rows
                 erodedPieceCellsMetric = (completedRows * countPieceCellsEliminated);

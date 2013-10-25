@@ -25,6 +25,8 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientRedrawBoardHandler(int playerId, IBoard board);
     public delegate void ClientPieceMovingHandler();
     public delegate void ClientPieceMovedHandler();
+    public delegate void ClientNextPieceModifiedHandler();
+    public delegate void ClientHoldPieceModifiedHandler();
     public delegate void ClientPlayerRegisteredHandler(RegistrationResults result, int playerId, bool isServerMaster);
     public delegate void ClientPlayerUnregisteredHandler();
     public delegate void ClientWinListModifiedHandler(List<WinEntry> winList);
@@ -56,6 +58,7 @@ namespace TetriNET.Client.Interfaces
         int MaxPlayersCount { get; }
         IPiece CurrentPiece { get; }
         IPiece NextPiece { get; }
+        IPiece HoldPiece { get; }
         IBoard Board { get; }
         List<Specials> Inventory { get; }
         int LinesCleared { get; }
@@ -87,6 +90,8 @@ namespace TetriNET.Client.Interfaces
         event ClientRedrawBoardHandler OnRedrawBoard;
         event ClientPieceMovingHandler OnPieceMoving;
         event ClientPieceMovedHandler OnPieceMoved;
+        event ClientNextPieceModifiedHandler OnNextPieceModified;
+        event ClientHoldPieceModifiedHandler OnHoldPieceModified;
         event ClientPlayerRegisteredHandler OnPlayerRegistered;
         event ClientPlayerUnregisteredHandler OnPlayerUnregistered;
         event ClientWinListModifiedHandler OnWinListModified;
@@ -131,6 +136,7 @@ namespace TetriNET.Client.Interfaces
         void PublishMessage(string msg);
 
         // Game controller
+        void Hold();
         void Drop();
         void MoveDown(bool automatic = false);
         void MoveLeft();

@@ -57,7 +57,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private void GameView_KeyDown(object sender, KeyEventArgs e)
         {
             PlayFieldViewModel vm = DataContext as PlayFieldViewModel;
-            if (e.Key == Key.S )
+            if (e.Key == Key.S)
             {
                 if (vm != null)
                     vm.Client.StartGame();
@@ -112,6 +112,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 return keySetting.Command;
             switch (key)
             {
+                case Key.H:
+                    return Client.Interfaces.Commands.Hold;
                 case Key.Space:
                     return Client.Interfaces.Commands.Drop;
                 case Key.Down:
@@ -178,6 +180,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             // Set new client
             Inventory.Client = newClient;
             NextPiece.Client = newClient;
+            HoldPiece.Client = newClient;
             // Add new handlers
             if (newClient != null)
             {

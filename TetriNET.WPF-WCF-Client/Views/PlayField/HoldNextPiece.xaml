@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="TetriNET.WPF_WCF_Client.Views.PlayField.NextPieceView"
+﻿<UserControl x:Class="TetriNET.WPF_WCF_Client.Views.PlayField.HoldNextPiece"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -10,7 +10,7 @@
             <RowDefinition Height="24"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="Next Piece" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+        <TextBlock Grid.Row="0" Text="Hold" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
         <!--<Canvas x:Name="Canvas" Grid.Row="1" Background="Black"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="64" Height="64">
             
         </Canvas>-->

@@ -6,14 +6,14 @@ using TetriNET.WPF_WCF_Client.Helpers;
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
 {
     /// <summary>
-    /// Interaction logic for NextPieceView.xaml
+    /// Interaction logic for HoldNextPiece.xaml
     /// </summary>
-    public partial class NextPieceView : UserControl
+    public partial class HoldNextPiece : UserControl
     {
         public static readonly DependencyProperty ClientProperty = DependencyProperty.Register(
-            "NextPieceClientProperty", 
-            typeof(IClient), 
-            typeof(NextPieceView), 
+            "HoldPieceClientProperty",
+            typeof(IClient),
+            typeof(HoldNextPiece),
             new PropertyMetadata(Client_Changed));
         public IClient Client
         {
@@ -21,12 +21,12 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             set { SetValue(ClientProperty, value); }
         }
 
-        public NextPieceView()
+        public HoldNextPiece()
         {
             InitializeComponent();
         }
 
-        private void DrawNextPiece()
+        private void DrawHoldPiece()
         {
             if (Client == null)
                 return;
@@ -34,12 +34,12 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             if (board == null)
                 return;
 
-            PieceControl.DrawPiece(Client.NextPiece, board.Height);
+            PieceControl.DrawPiece(Client.HoldPiece, board.Height);
         }
 
         private static void Client_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
-            NextPieceView @this = sender as NextPieceView;
+            HoldNextPiece @this = sender as HoldNextPiece;
 
             if (@this != null)
             {
@@ -48,7 +48,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 if (oldClient != null)
                 {
                     oldClient.OnGameStarted -= @this.OnGameStarted;
-                    oldClient.OnNextPieceModified -= @this.OnNextPieceModified;
+                    oldClient.OnHoldPieceModified -= @this.OnHoldPieceModified;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
@@ -57,7 +57,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 if (newClient != null)
                 {
                     newClient.OnGameStarted += @this.OnGameStarted;
-                    newClient.OnNextPieceModified += @this.OnNextPieceModified;
+                    newClient.OnHoldPieceModified += @this.OnHoldPieceModified;
                 }
             }
         }
@@ -65,12 +65,12 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         #region IClient events handler
         private void OnGameStarted()
         {
-            ExecuteOnUIThread.Invoke(DrawNextPiece);
+            ExecuteOnUIThread.Invoke(DrawHoldPiece);
         }
 
-        private void OnNextPieceModified()
+        private void OnHoldPieceModified()
         {
-            ExecuteOnUIThread.Invoke(DrawNextPiece);
+            ExecuteOnUIThread.Invoke(DrawHoldPiece);
         }
         #endregion
     }

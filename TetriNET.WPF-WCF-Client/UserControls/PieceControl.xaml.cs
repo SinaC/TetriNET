@@ -1,9 +1,8 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using TetriNET.Client.Interfaces;
-using TetriNET.Client.Pieces;
 using TetriNET.Common.DataContracts;
 
 namespace TetriNET.WPF_WCF_Client.UserControls
@@ -13,73 +12,69 @@ namespace TetriNET.WPF_WCF_Client.UserControls
     /// </summary>
     public partial class PieceControl : UserControl
     {
-        private static readonly SolidColorBrush PieceColor = new SolidColorBrush(Colors.Gray);
-        private const int CellSize = 8;
+        private const int CellWidth = 16;
+        private const int CellHeight = 16;
+        private const int MarginWidth = 0;
+        private const int MarginHeight = 0;
 
-        public static readonly DependencyProperty PieceValueProperty =
-            DependencyProperty.Register(
-                "PieceValue",
-                typeof(Pieces),
-                typeof(PieceControl),
-                new PropertyMetadata(Pieces.Invalid, PieceValuePropertyChangedCallback));
+        private static readonly SolidColorBrush TransparentColor = new SolidColorBrush(Colors.Transparent);
 
-        private static void PieceValuePropertyChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
-        {
-            PieceControl ctrl = dependencyObject as PieceControl;
-            if (ctrl != null)
-            {
-                Pieces piece = (Pieces) e.NewValue;
-                ctrl.DrawPiece(piece);
-            }
-        }
-
-        public Pieces PieceValue
-        {
-            get
-            {
-                return (Pieces)GetValue(PieceValueProperty);
-            }
-
-            set
-            {
-                SetValue(PieceValueProperty, value);
-                DrawPiece(value);
-            }
-        }
+        private readonly List<Rectangle> _grid = new List<Rectangle>();
 
         public PieceControl()
         {
             InitializeComponent();
+
+            for (int y = 0; y < 4; y++)
+                for (int x = 0; x < 4; x++)
+                {
+                    int canvasLeft = x * (CellWidth + MarginWidth);
+                    int canvasTop = y * (CellHeight + MarginHeight);
+                    // Rectangle
+                    Rectangle rect = new Rectangle
+                    {
+                        Width = CellWidth,
+                        Height = CellHeight,
+                        Fill = TransparentColor,
+                    };
+                    _grid.Add(rect);
+                    Canvas.Children.Add(rect);
+                    Canvas.SetLeft(rect, canvasLeft);
+                    Canvas.SetTop(rect, canvasTop);
+                }
         }
 
-        private void DrawPiece(Pieces piece)
+        public void DrawPiece(IPiece piece, int boardHeight)
         {
-            Canvas.Children.Clear();
+            // Clear
+            foreach (Rectangle rect in _grid)
+                rect.Fill = TransparentColor;
 
-            IPiece temp = Piece.CreatePiece(piece, 0, 0, 1, 0);
+            if (piece == null)
+                return;
+            // Draw
+            IPiece temp = piece.Clone();
             int minX, minY, maxX, maxY;
             temp.GetAbsoluteBoundingRectangle(out minX, out minY, out maxX, out maxY);
-            temp.Translate(-minX, -minY);
+            // Move to top, left
+            temp.Translate(-minX, 0);
+            temp.Translate(0, boardHeight - maxY);
+            Pieces cellPiece = temp.Value;
             for (int i = 1; i <= temp.TotalCells; i++)
             {
                 int x, y;
                 temp.GetCellAbsolutePosition(i, out x, out y); // 1->Width x 1->Height
+                int cellY = boardHeight - y;
+                int cellX = x;
 
-                // TODO: move into screen  posX + x must be == 0  same for y
-
-                Rectangle rectangle = new Rectangle
-                {
-                    Width = CellSize,
-                    Height = CellSize,
-                    Fill = PieceColor
-                };
-                Canvas.Children.Add(rectangle);
-                Canvas.SetLeft(rectangle, x * (CellSize+1));
-                Canvas.SetTop(rectangle, y * (CellSize+1));
+                Rectangle uiPart = GetControl(cellX, cellY);
+                uiPart.Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigPiece(cellPiece);
             }
+        }
 
-            Canvas.Width = (CellSize + 1) * (maxX - minX + 1);
-            Canvas.Height = (CellSize + 1) * (maxY - minY + 1);
+        private Rectangle GetControl(int cellX, int cellY)
+        {
+            return _grid[cellX + cellY * 4];
         }
     }
 }

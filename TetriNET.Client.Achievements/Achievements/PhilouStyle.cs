@@ -1,4 +1,7 @@
-﻿namespace TetriNET.Client.Achievements.Achievements
+﻿using System.Collections.Generic;
+using TetriNET.Common.DataContracts;
+
+namespace TetriNET.Client.Achievements.Achievements
 {
     internal class PhilouStyle : Achievement
     {
@@ -18,7 +21,7 @@
             base.Reset();
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, Interfaces.IBoard board)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, Interfaces.IBoard board, List<Pieces> collapsedPieces)
         {
             _roundCount++;
             if (_roundCount <= 5 && moveCount > 0)

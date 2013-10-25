@@ -122,6 +122,10 @@ namespace TetriNET.ConsoleWCFClient
                             controller.KeyDown(Commands.Down);
                             controller.KeyUp(Commands.Down);
                             break;
+                        case ConsoleKey.H:
+                            controller.KeyDown(Commands.Hold);
+                            controller.KeyUp(Commands.Hold);
+                            break;
                         case ConsoleKey.Spacebar:
                             controller.KeyDown(Commands.Drop);
                             controller.KeyUp(Commands.Drop);

@@ -1,4 +1,6 @@
-﻿using TetriNET.Client.Interfaces;
+﻿using System.Collections.Generic;
+using TetriNET.Client.Interfaces;
+using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
@@ -20,9 +22,8 @@ namespace TetriNET.Client.Achievements.Achievements
             base.Reset();
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board, List<Pieces> collapsedPieces)
         {
-            //if line completed == 4 and active == true -> VALIDATED; if line completed == 4 and active == false, active = true; if line completed < 4 -> active = false
             if (lineCompleted == 4 && _active)
                 Achieve();
             else if (lineCompleted == 4)

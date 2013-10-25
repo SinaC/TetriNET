@@ -118,9 +118,9 @@ namespace TetriNET.ConsoleWCFServer.Player
             ExceptionFreeAction(() => Callback.OnPlayerWon(playerId), "OnPlayerWon");
         }
 
-        public void OnGameStarted(Pieces firstPiece, Pieces secondPiece, Pieces thirdPiece, GameOptions options)
+        public void OnGameStarted(List<Pieces> pieces, GameOptions options)
         {
-            ExceptionFreeAction(() => Callback.OnGameStarted(firstPiece, secondPiece, thirdPiece, options), "OnGameStarted");
+            ExceptionFreeAction(() => Callback.OnGameStarted(pieces, options), "OnGameStarted");
         }
 
         public void OnGameFinished()
@@ -163,9 +163,9 @@ namespace TetriNET.ConsoleWCFServer.Player
             ExceptionFreeAction(() => Callback.OnSpecialUsed(specialId, playerId, targetId, special), "OnSpecialUsed");
         }
 
-        public void OnNextPiece(int index, Pieces piece)
+        public void OnNextPiece(int index, List<Pieces> pieces)
         {
-            ExceptionFreeAction(() => Callback.OnNextPiece(index, piece), "OnNextPiece");
+            ExceptionFreeAction(() => Callback.OnNextPiece(index, pieces), "OnNextPiece");
         }
 
         public void OnGridModified(int playerId, byte[] grid)
@@ -186,6 +186,11 @@ namespace TetriNET.ConsoleWCFServer.Player
         public void OnContinuousSpecialFinished(int playerId, Specials special)
         {
             ExceptionFreeAction(() => Callback.OnContinuousSpecialFinished(playerId, special), "OnContinuousSpecialFinished");
+        }
+
+        public void OnAchievementEarned(int playerId, int achievementId, string achievementTitle)
+        {
+            ExceptionFreeAction(() => Callback.OnAchievementEarned(playerId, achievementId, achievementTitle), "OnAchievementEarned");
         }
 
         #endregion

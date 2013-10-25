@@ -35,7 +35,8 @@
         <playField:OpponentGridView x:Name="OpponentGrid5" Grid.Row="2" Grid.RowSpan="2" Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Top" DataContext="{Binding OpponentsViewModel[4]}" />
         
         <playField:NextPieceView x:Name="NextPiece" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-        <!-- TODO: HOLD piece -->
+        <playField:HoldNextPiece x:Name="HoldPiece" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        
         <playField:GameInfoView Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="8,0,0,12" DataContext="{Binding GameInfoViewModel}" d:DataContext="{d:DesignInstance viewModels:GameInfoViewModelDesignData, IsDesignTimeCreatable=True}"/>
 
         <playField:InGameChatView Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Top" DataContext="{Binding InGameChatViewModel}" d:DataContext="{d:DesignInstance viewModels:InGameChatViewModelDesignData, IsDesignTimeCreatable=True}"/>

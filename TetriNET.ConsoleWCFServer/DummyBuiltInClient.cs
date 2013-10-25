@@ -108,7 +108,7 @@ namespace TetriNET.ConsoleWCFServer
                             Proxy.PublishMessage(this, "I'll kill you");
                             break;
                         case 1:
-                            Proxy.PlacePiece(this, PieceIndex, Pieces.TetriminoI, 1, 5, 3, PlayerGrid);
+                            Proxy.PlacePiece(this, PieceIndex, PieceIndex, Pieces.TetriminoI, 1, 5, 3, PlayerGrid);
                             PieceIndex++;
                             break;
                         case 2:
@@ -223,9 +223,9 @@ namespace TetriNET.ConsoleWCFServer
             ResetTimeout();
         }
 
-        public void OnGameStarted(Pieces firstPiece, Pieces secondPiece, Pieces thirdPiece, GameOptions options)
+        public void OnGameStarted(List<Pieces> pieces, GameOptions options)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnGameStarted[{0}]:{1} {2} {3}", PlayerName, firstPiece, secondPiece, thirdPiece);
+            Log.WriteLine(Log.LogLevels.Info, "OnGameStarted[{0}]:{1}", PlayerName, pieces.Select(x => x.ToString()).Aggregate((n,i) => n + "," + i));
             ResetTimeout();
             if (State == States.WaitingStartGame)
             {
@@ -291,9 +291,9 @@ namespace TetriNET.ConsoleWCFServer
             ResetTimeout();
         }
 
-        public void OnNextPiece(int index, Pieces piece)
+        public void OnNextPiece(int index, List<Pieces> pieces)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnNextPiece[{0}]:{1} {2}", PlayerName, index, piece);
+            Log.WriteLine(Log.LogLevels.Info, "OnNextPiece[{0}]:{1} {2}", PlayerName, index, pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
             ResetTimeout();
         }
 
@@ -312,14 +312,19 @@ namespace TetriNET.ConsoleWCFServer
 
         public void OnWinListModified(List<WinEntry> winList)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnWinListModified:{0}", winList.Any() ? winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i) : "");
+            Log.WriteLine(Log.LogLevels.Info, "OnWinListModified[{0}]:{1}", PlayerName, winList.Any() ? winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i) : "");
             ResetTimeout();
         }
 
         public void OnContinuousSpecialFinished(int playerId, Specials special)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnContinuousSpecialFinished:{0} {1}", playerId, special);
+            Log.WriteLine(Log.LogLevels.Info, "OnContinuousSpecialFinished[{0}]:{1} {2}", PlayerName, playerId, special);
             ResetTimeout();    
+        }
+
+        public void OnAchievementEarned(int playerId, int achievementId, string achievementTitle)
+        {
+            Log.WriteLine(Log.LogLevels.Info, "OnAchievementEarned[{0}]:{1} {2} {3}", PlayerName, playerId, achievementId, achievementTitle);
         }
 
         #endregion

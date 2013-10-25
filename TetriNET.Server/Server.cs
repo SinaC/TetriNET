@@ -29,6 +29,8 @@ namespace TetriNET.Server
             GamePaused, // -> GameStarted
         }
 
+        private const int PiecesSendOnGameStarted = 5;
+        private const int PiecesSendOnPlacePiece = 4;
         private const int HeartbeatDelay = 300; // in ms
         private const int TimeoutDelay = 500; // in ms
         private const int MaxTimeoutCountBeforeDisconnection = 3;
@@ -84,6 +86,7 @@ namespace TetriNET.Server
                 host.OnBanPlayer += BanPlayerHandler;
                 host.OnResetWinList += ResetWinListHandler;
                 host.OnFinishContinuousSpecial += FinishContinuousSpecialHandler;
+                host.OnEarnAchievement += EarnAchievementHandler;
 
                 host.OnPlayerLeft += PlayerLeftHandler;
 
@@ -159,11 +162,15 @@ namespace TetriNET.Server
 
                 // Reset Piece Queue
                 _pieceQueue.Reset(); // TODO: random seed
-                Pieces firstPiece = _pieceQueue[0];
-                Pieces secondPiece = _pieceQueue[1];
-                Pieces thirdPiece = _pieceQueue[2];
+                //Pieces firstPiece = _pieceQueue[0];
+                //Pieces secondPiece = _pieceQueue[1];
+                //Pieces thirdPiece = _pieceQueue[2];
+                //Log.WriteLine(Log.LogLevels.Info, "Starting game with {0} {1} {2}", firstPiece, secondPiece, thirdPiece);
 
-                Log.WriteLine(Log.LogLevels.Info, "Starting game with {0} {1} {2}", firstPiece, secondPiece, thirdPiece);
+                List<Pieces> pieces = new List<Pieces>();
+                for (int i = 0; i < PiecesSendOnGameStarted; i++)
+                    pieces.Add(_pieceQueue[i]);
+                Log.WriteLine(Log.LogLevels.Info, "Starting game with {0}", pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
 
                 // Reset sudden death
                 _isSuddenDeathActive = false;
@@ -180,7 +187,8 @@ namespace TetriNET.Server
                     p.PieceIndex = 0;
                     p.State = PlayerStates.Playing;
                     p.LossTime = DateTime.MaxValue;
-                    p.OnGameStarted(firstPiece, secondPiece, thirdPiece, _options);
+                    //p.OnGameStarted(firstPiece, secondPiece, thirdPiece, _options);
+                    p.OnGameStarted(pieces, _options);
                 }
                 State = States.GameStarted;
 
@@ -382,9 +390,9 @@ namespace TetriNET.Server
                 p.OnPublishPlayerMessage(player.Name, msg);
         }
 
-        private void PlacePieceHandler(IPlayer player, int index, Pieces piece, int orientation, int posX, int posY, byte[] grid)
+        private void PlacePieceHandler(IPlayer player, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid)
         {
-            EnqueueAction(() => PlacePiece(player, index, piece, orientation, posX, posY, grid));
+            EnqueueAction(() => PlacePiece(player, pieceIndex, highestIndex, piece, orientation, posX, posY, grid));
         }
 
         private void UseSpecialHandler(IPlayer player, IPlayer target, Specials special)
@@ -534,6 +542,15 @@ namespace TetriNET.Server
             EnqueueAction(() => FinishContinuousSpecial(player, special));
         }
 
+        private void EarnAchievementHandler(IPlayer player, int achievementId, string achievementTitle)
+        {
+            Log.WriteLine(Log.LogLevels.Info, "EarnAchievementHandler:{0} {1} {2}", player.Name, achievementId, achievementTitle);
+
+            int id = _playerManager.GetId(player);
+            foreach(IPlayer p in _playerManager.Players.Where(x => x != player))
+                p.OnAchievementEarned(id, achievementId, achievementTitle);
+        }
+
         private void PlayerLeftHandler(IPlayer player, LeaveReasons reason)
         {
             Log.WriteLine(Log.LogLevels.Info, "Player left:{0} {1}", player.Name, reason);
@@ -680,19 +697,23 @@ namespace TetriNET.Server
 
         #region Game actions
 
-        private void PlacePiece(IPlayer player, int index, Pieces piece, int orientation, int posX, int posY, byte[] grid)
+        private void PlacePiece(IPlayer player, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid)
         {
-            Log.WriteLine(Log.LogLevels.Info, "PlacePiece[{0}]{1}:{2} {3} at {4},{5} {6}", player.Name, index, piece, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
+            Log.WriteLine(Log.LogLevels.Info, "PlacePiece[{0}]{1}:{2} {3} {4} at {5},{6} {7}", player.Name, pieceIndex, highestIndex, piece, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
 
-            if (index != player.PieceIndex)
-                Log.WriteLine(Log.LogLevels.Error, "!!!! piece index different for player {0} local {1} remote {2}", player.Name, player.PieceIndex, index);
+            //if (index != player.PieceIndex)
+            //    Log.WriteLine(Log.LogLevels.Error, "!!!! piece index different for player {0} local {1} remote {2}", player.Name, player.PieceIndex, index);
 
             // Set grid
             player.Grid = grid;
             // Get next piece
-            player.PieceIndex++;
-            int indexToSend = player.PieceIndex + 2; // indices 0, 1 and 2 have been sent when starting game
-            Pieces nextPieceToSend = _pieceQueue[indexToSend];
+            //player.PieceIndex++;
+            player.PieceIndex = pieceIndex;
+            //int indexToSend = player.PieceIndex + 2; // indices 0, 1 and 2 have been sent when starting game
+            //Pieces nextPieceToSend = _pieceQueue[indexToSend];
+            List<Pieces> nextPiecesToSend = new List<Pieces>();
+            for (int i = 0; i < PiecesSendOnPlacePiece; i++)
+                nextPiecesToSend.Add(_pieceQueue[highestIndex + i]);
 
             // Send grid to other playing players
             int playerId = _playerManager.GetId(player);
@@ -701,8 +722,12 @@ namespace TetriNET.Server
                 p.OnGridModified(playerId, grid);
 
             //Logger.Log.WriteLine("Send next piece {0} {1} to {2}", nextPieceToSend, indexToSend, player.Name);
-            // Send next piece
-            player.OnNextPiece(indexToSend, nextPieceToSend);
+            //// Send next piece
+            //player.OnNextPiece(indexToSend, nextPieceToSend);
+            Log.WriteLine(Log.LogLevels.Debug, "Send next piece {0} {1} {2}", highestIndex, nextPiecesToSend.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
+            // Send next pieces
+            player.OnNextPiece(highestIndex, nextPiecesToSend);
+
         }
 
         private void Special(IPlayer player, IPlayer target, Specials special)

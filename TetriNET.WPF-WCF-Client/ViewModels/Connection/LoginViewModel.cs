@@ -54,13 +54,18 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                     _serverAddress = value;
                     if (String.IsNullOrWhiteSpace(_serverAddress))
                         _serverAddress = "localhost:8765";
-                    // net.tcp://[ip|machine name]:[port]/TetriNETv2
+                    // net.tcp://[ip|machine name]:[port]/TetriNET
                     if (!_serverAddress.StartsWith("net.tcp://"))
                         _serverAddress = "net.tcp://" + _serverAddress;
-                    if (ServerAddress.EndsWith("/TetriNET"))
-                        _serverAddress = _serverAddress.Replace("/TetriNET", ""); // remove old endpoint
-                    if (!_serverAddress.EndsWith("/TetriNETv2"))
-                        _serverAddress = _serverAddress + "/TetriNETv2";
+                    //if (ServerAddress.EndsWith("/TetriNET"))
+                    //    _serverAddress = _serverAddress.Replace("/TetriNET", ""); // remove old endpoint
+                    //if (!_serverAddress.EndsWith("/TetriNETv2"))
+                    //    _serverAddress = _serverAddress + "/TetriNETv2";
+
+                    if (ServerAddress.EndsWith("/TetriNETv2"))
+                        _serverAddress = _serverAddress.Replace("/TetriNETv2", ""); // remove old endpoint
+                    if (!_serverAddress.EndsWith("/TetriNET"))
+                        _serverAddress = _serverAddress + "/TetriNET";
 
                     OnPropertyChanged();
                     OnPropertyChanged("ServerCompleteAddress");
@@ -85,7 +90,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         public string ServerCompleteAddress
         {
-            get { return "net.tcp://" + ServerAddress + ":" + ServerPort + "/TetriNETv2"; }
+            get { return "net.tcp://" + ServerAddress + ":" + ServerPort + "/TetriNET"; }
         }
 
         public string ConnectDisconnectLabel

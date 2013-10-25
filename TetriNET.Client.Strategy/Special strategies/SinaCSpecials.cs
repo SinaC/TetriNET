@@ -31,7 +31,7 @@ namespace TetriNET.Client.Strategy
             //          empty inventory by sending offensive specials to weakest opponent (highest board) + sending ClearLine to ourself -> not saved
             // If we are saved,
             //  if there is only one player left, and we have enough AddLines to kill him, drop everything except AddLines, Quake, Confusion, Darkness and send them to last opponent
-            //  if first special is Switch, destroy own board and switch with strongest opponent
+            //  if first special is Switch, destroy own board and switch with strongest opponent (TODO)
             //  if first special is Nuke or Gravity, NOP
             //  if first special is AddLines, send to strongest opponent
             //  if first special is Bomb, 

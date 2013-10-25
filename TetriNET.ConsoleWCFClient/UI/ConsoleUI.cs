@@ -16,6 +16,8 @@ namespace TetriNET.ConsoleWCFClient.UI
         private readonly object _lock = new object();
         private readonly IClient _client;
 
+        private bool _immunity;
+
         public ConsoleUI(IClient client)
         {
             if (client == null)
@@ -45,12 +47,13 @@ namespace TetriNET.ConsoleWCFClient.UI
             _client.OnScoreChanged += OnScoreChanged;
             _client.OnSpecialUsed += OnSpecialUsed;
             _client.OnPlayerAddLines += OnPlayerAddLines;
+            _client.OnContinuousEffectToggled += OnContinuousEffectToggled;
 
             Console.SetWindowSize(80, 30);
             Console.BufferWidth = 80;
             Console.BufferHeight = 30;
         }
-
+        
         private void OnPlayerAddLines(int playerId, string playerName, int specialId, int count)
         {
             lock (_lock)
@@ -98,7 +101,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             {
                 Console.ResetColor();
                 Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 7);
-                Console.Write("Score: {0}", score == 0 ? _client.Score : score);
+                Console.Write("Score: {0:#,0}", score == 0 ? _client.Score : score);
             }
         }
 
@@ -135,6 +138,8 @@ namespace TetriNET.ConsoleWCFClient.UI
                 Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 4);
                 Console.Write("Game started");
             }
+
+            _immunity = false;
 
             OnRedraw();
             DisplayNextPieceColor();
@@ -253,6 +258,15 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
+        private void OnContinuousEffectToggled(Specials special, bool active, double durationLeftInSeconds)
+        {
+            if (special == Specials.Immunity)
+            {
+                _immunity = active;
+                DisplayBoardColor();
+            }
+        }
+
         private void OnPieceMoved()
         {
             DisplayCurrentPieceColor();
@@ -286,7 +300,7 @@ namespace TetriNET.ConsoleWCFClient.UI
                 for (int y = _client.Board.Height; y >= 1; y--)
                 {
                     Console.SetCursorPosition(0 + BoardStartX, _client.Board.Height - y + BoardStartY);
-                    Console.Write("|");
+                    Console.Write(_immunity ? "*" : "|");
 
                     for (int x = 1; x <= _client.Board.Width; x++)
                     {
@@ -310,10 +324,10 @@ namespace TetriNET.ConsoleWCFClient.UI
                         }
                     }
                     Console.SetCursorPosition(_client.Board.Width + 1 + BoardStartX, _client.Board.Height - y + BoardStartY);
-                    Console.Write("|");
+                    Console.Write(_immunity ? "*" : "|");
                 }
                 Console.SetCursorPosition(0 + BoardStartX, _client.Board.Height + BoardStartY);
-                Console.Write("".PadLeft(_client.Board.Width + 2, '-'));
+                Console.Write("".PadLeft(_client.Board.Width + 2, _immunity ? '*' : '-'));
             }
         }
 

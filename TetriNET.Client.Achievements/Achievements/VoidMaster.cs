@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using TetriNET.Client.Interfaces;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 
 namespace TetriNET.Client.Achievements.Achievements
@@ -14,7 +16,7 @@ namespace TetriNET.Client.Achievements.Achievements
             Description = "Clear whole board by clearing lines";
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board, List<Pieces> collapsedPieces)
         {
             if (board.Cells.All(x => x == CellHelper.EmptyCell))
                 Achieve();

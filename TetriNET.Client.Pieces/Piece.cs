@@ -39,6 +39,12 @@ namespace TetriNET.Client.Pieces
             Value = piece.Value;
         }
 
+        public void Move(int x, int y)
+        {
+            PosX = x;
+            PosY = y;
+        }
+
         public void Translate(int dx, int dy)
         {
             PosX += dx;

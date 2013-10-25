@@ -50,7 +50,8 @@ namespace TetriNET.Server.GenericHost
         public event HostKickPlayerHandler OnKickPlayer;
         public event HostBanPlayerHandler OnBanPlayer;
         public event HostResetWinListHandler OnResetWinList;
-        public event HostFinishContinuousSpecial OnFinishContinuousSpecial;
+        public event HostFinishContinuousSpecialHandler OnFinishContinuousSpecial;
+        public event HostEarnAchievementHandler OnEarnAchievement;
 
         public event PlayerLeftHandler OnPlayerLeft;
 
@@ -189,9 +190,9 @@ namespace TetriNET.Server.GenericHost
             }
         }
 
-        public virtual void PlacePiece(ITetriNETCallback callback, int index, Pieces piece, int orientation, int posX, int posY, byte[] grid)
+        public virtual void PlacePiece(ITetriNETCallback callback, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "PlacePiece {0} {1} {2} {3},{4} {5}", index, piece, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
+            Log.WriteLine(Log.LogLevels.Debug, "PlacePiece {0} {1} {2} {3} {4},{5} {6}", pieceIndex, highestIndex, piece, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -199,7 +200,7 @@ namespace TetriNET.Server.GenericHost
                 player.ResetTimeout(); // player alive
                 //
                 if (OnPiecePlaced != null)
-                    OnPiecePlaced(player, index, piece, orientation, posX, posY, grid);
+                    OnPiecePlaced(player, pieceIndex, highestIndex, piece, orientation, posX, posY, grid);
             }
             else
             {
@@ -458,6 +459,25 @@ namespace TetriNET.Server.GenericHost
             else
             {
                 Log.WriteLine(Log.LogLevels.Warning, "ResetWinList from unknown player");
+            }
+        }
+
+        public virtual void EarnAchievement(ITetriNETCallback callback, int achievementId, string achievementTitle)
+        {
+            Log.WriteLine(Log.LogLevels.Debug, "EarnAchievement {0} {1}", achievementId, achievementTitle);
+
+            IPlayer player = PlayerManager[callback];
+            if (player != null)
+            {
+                //
+                player.ResetTimeout(); // player alive
+                //
+                if (OnEarnAchievement != null)
+                    OnEarnAchievement(player, achievementId, achievementTitle);
+            }
+            else
+            {
+                Log.WriteLine(Log.LogLevels.Warning, "EarnAchievement from unknown player");
             }
         }
 

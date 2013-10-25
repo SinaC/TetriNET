@@ -110,5 +110,8 @@
     <Setting Name="Achievements" Type="TetriNET.WPF_WCF_Client.CustomSettings.AchievementsSettings" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="Hold" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">51</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

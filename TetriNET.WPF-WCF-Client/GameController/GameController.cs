@@ -96,6 +96,9 @@ namespace TetriNET.WPF_WCF_Client.GameController
                     return;
                 switch (cmd)
                 {
+                    case TetriNET.Client.Interfaces.Commands.Hold:
+                        Client.Hold();
+                        break;
                     case TetriNET.Client.Interfaces.Commands.Drop:
                         Client.Drop();
                         break;

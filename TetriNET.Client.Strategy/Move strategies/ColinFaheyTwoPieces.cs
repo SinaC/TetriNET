@@ -150,8 +150,7 @@ namespace TetriNET.Client.Strategy
                             // Drop piece
                             tempBoard.DropAndCommit(tempPiece);
 
-                            List<Specials> specials;
-                            tempBoard.CollapseCompletedRows(out specials);
+                            tempBoard.CollapseCompletedRows();
 
                             double trialRating = 0;
                             trialRating += -0.65*BoardHelper.GetTotalShadowedHoles(board);

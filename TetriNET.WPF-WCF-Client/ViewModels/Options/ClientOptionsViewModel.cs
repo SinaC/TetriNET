@@ -204,6 +204,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             SetKeySetting(Settings.Default.Right, TetriNET.Client.Interfaces.Commands.Right);
             SetKeySetting(Settings.Default.RotateClockwise, TetriNET.Client.Interfaces.Commands.RotateClockwise);
             SetKeySetting(Settings.Default.RotateCounterclockwise, TetriNET.Client.Interfaces.Commands.RotateCounterclockwise);
+            SetKeySetting(Settings.Default.Hold, TetriNET.Client.Interfaces.Commands.Hold);
             SetKeySetting(Settings.Default.DiscardFirstSpecial, TetriNET.Client.Interfaces.Commands.DiscardFirstSpecial);
             SetKeySetting(Settings.Default.UseSpecialOn1, TetriNET.Client.Interfaces.Commands.UseSpecialOn1);
             SetKeySetting(Settings.Default.UseSpecialOn2, TetriNET.Client.Interfaces.Commands.UseSpecialOn2);
@@ -293,6 +294,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
                     new KeySetting(Key.PageUp, TetriNET.Client.Interfaces.Commands.RotateClockwise),
                     new KeySetting(Key.Left, TetriNET.Client.Interfaces.Commands.Left),
                     new KeySetting(Key.Right, TetriNET.Client.Interfaces.Commands.Right),
+                    new KeySetting(Key.H, TetriNET.Client.Interfaces.Commands.Hold),
                     new KeySetting(Key.D, TetriNET.Client.Interfaces.Commands.DiscardFirstSpecial),
                     new KeySetting(Key.D1, TetriNET.Client.Interfaces.Commands.UseSpecialOn1),
                     new KeySetting(Key.D2, TetriNET.Client.Interfaces.Commands.UseSpecialOn2),

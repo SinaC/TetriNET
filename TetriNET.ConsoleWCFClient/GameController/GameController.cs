@@ -51,6 +51,9 @@ namespace TetriNET.ConsoleWCFClient.GameController
                     return;
                 switch (cmd)
                 {
+                    case Commands.Hold:
+                        Client.Hold();
+                        break;
                     case Commands.Drop:
                         Client.Drop();
                         break;
