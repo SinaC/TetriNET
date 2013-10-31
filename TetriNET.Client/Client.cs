@@ -420,18 +420,14 @@ namespace TetriNET.Client
             //    //Specials.Darkness,
             //    //Specials.Immunity,
             //    //Specials.Immunity,
-            //    //Specials.SwitchFields,
-            //    //Specials.SwitchFields,
-            //    //Specials.SwitchFields,
-            //    //Specials.SwitchFields,
             //    //Specials.NukeField,
             //    //Specials.NukeField,
             //    //Specials.NukeField,
             //    //Specials.NukeField,
-            //    Specials.BlockBomb,
-            //    Specials.BlockBomb,
-            //    Specials.BlockBomb,
-            //    Specials.BlockBomb,
+            //    //Specials.BlockBomb,
+            //    //Specials.BlockBomb,
+            //    //Specials.BlockBomb,
+            //    //Specials.BlockBomb,
             //});
             // Reset line, level and score
             LinesCleared = 0;
@@ -2012,6 +2008,8 @@ namespace TetriNET.Client
         {
             Player.Board.SetCells(cells);
             Board.RemoveCellsHigherThan(16);
+            _proxy.ModifyGrid(this, Player.Board.Cells);
+
             if (ClientOnRedraw != null)
                 ClientOnRedraw();
         }

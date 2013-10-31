@@ -107,7 +107,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private Client.Interfaces.Commands MapKeyToCommand(Key key)
         {
-            KeySetting keySetting = ClientOptionsViewModel.Instance.KeySettings.FirstOrDefault(x => x.Key == key);
+            KeySettingViewModel keySetting = ClientOptionsViewModel.Instance.KeySettings.FirstOrDefault(x => x.Key == key);
             if (keySetting != null)
                 return keySetting.Command;
             switch (key)

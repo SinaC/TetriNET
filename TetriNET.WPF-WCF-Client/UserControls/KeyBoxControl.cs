@@ -23,7 +23,7 @@ namespace TetriNET.WPF_WCF_Client.UserControls
         {
             FontStyle = FontStyles.Normal;
             Foreground = new SolidColorBrush(Colors.Black);
-            KeySetting keySetting = DataContext as KeySetting;
+            KeySettingViewModel keySetting = DataContext as KeySettingViewModel;
             if (keySetting != null)
                 Text = keySetting.KeyDescription;
         }
@@ -36,7 +36,7 @@ namespace TetriNET.WPF_WCF_Client.UserControls
         private void OnPreviewKeyDown(object sender, KeyEventArgs keyEventArgs)
         {
             keyEventArgs.Handled = true;
-            KeySetting keySetting = DataContext as KeySetting;
+            KeySettingViewModel keySetting = DataContext as KeySettingViewModel;
             if (keySetting != null)
                 keySetting.Key = keyEventArgs.Key;
             DisplayKey(); // Needed because PropertyChanged doesn't work on Key :/

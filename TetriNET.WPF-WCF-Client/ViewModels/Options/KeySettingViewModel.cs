@@ -7,7 +7,7 @@ using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 {
-    public class KeySetting : INotifyPropertyChanged
+    public class KeySettingViewModel : INotifyPropertyChanged
     {
         private Key _key;
         public Key Key
@@ -61,7 +61,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         }
 
 
-        public KeySetting(Key key, Client.Interfaces.Commands command)
+        public KeySettingViewModel(Key key, Client.Interfaces.Commands command)
         {
             Key = key;
             Command = command;

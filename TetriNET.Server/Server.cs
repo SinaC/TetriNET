@@ -755,14 +755,20 @@ namespace TetriNET.Server
                 //target.OnGridModified(playerId, player.Grid);
                 //player.OnGridModified(targetId, target.Grid);
 
-                // Send switched grid to everyone
-                foreach (IPlayer p in _playerManager.Players)
-                {
-                    //if (p != player)
-                        p.OnGridModified(playerId, player.Grid);
-                    //if (p != target)
-                        p.OnGridModified(targetId, target.Grid);
-                }
+                //// Send switched grid to everyone
+                //foreach (IPlayer p in _playerManager.Players)
+                //{
+                //    //if (p != player)
+                //        p.OnGridModified(playerId, player.Grid);
+                //    //if (p != target)
+                //        p.OnGridModified(targetId, target.Grid);
+                //}
+                
+                // Send switched grid to player and target
+                player.OnGridModified(playerId, player.Grid);
+                if (player != target)
+                    target.OnGridModified(targetId, target.Grid);
+                // They will send their grid when receiving them (with an optional capping)
             }
             // Inform about special use
             foreach (IPlayer p in _playerManager.Players)

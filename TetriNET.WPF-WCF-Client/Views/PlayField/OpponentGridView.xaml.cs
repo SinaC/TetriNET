@@ -150,7 +150,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 OpponentViewModel vm = DataContext as OpponentViewModel;
                 if (vm == null)
                     return;
-                if (targetId == vm.PlayerId && special == Specials.Immunity)
+                if (targetId == vm.PlayerId && special == Specials.Immunity && (vm.Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying))
                     SetImmunity();
             });
         }

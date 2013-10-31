@@ -128,7 +128,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #region Key settings
 
-        public ObservableCollection<KeySetting> KeySettings { get; private set; }
+        public ObservableCollection<KeySettingViewModel> KeySettings { get; private set; }
 
         #endregion
 
@@ -196,7 +196,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             LeftSensibilityViewModel = new SensibilityViewModel("LeftSensibility");
             RightSensibilityViewModel = new SensibilityViewModel("RightSensibility");
 
-            KeySettings = new ObservableCollection<KeySetting>();
+            KeySettings = new ObservableCollection<KeySettingViewModel>();
 
             SetKeySetting(Settings.Default.Down, TetriNET.Client.Interfaces.Commands.Down);
             SetKeySetting(Settings.Default.Drop, TetriNET.Client.Interfaces.Commands.Drop);
@@ -272,37 +272,37 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         private void SetKeySetting(int key, Client.Interfaces.Commands cmd)
         {
-            KeySetting keySetting = KeySettings.FirstOrDefault(x => x.Command == cmd);
+            KeySettingViewModel keySetting = KeySettings.FirstOrDefault(x => x.Command == cmd);
             if (keySetting != null)
                 keySetting.Key = (Key) key;
             else
-                KeySettings.Add(new KeySetting((Key) key, cmd));
+                KeySettings.Add(new KeySettingViewModel((Key) key, cmd));
         }
     }
 
     public class ClientOptionsViewModelDesignData : ClientOptionsViewModel
     {
-        public new ObservableCollection<KeySetting> KeySettings { get; private set; }
+        public new ObservableCollection<KeySettingViewModel> KeySettings { get; private set; }
 
         public ClientOptionsViewModelDesignData()
         {
-            KeySettings = new ObservableCollection<KeySetting>
+            KeySettings = new ObservableCollection<KeySettingViewModel>
                 {
-                    new KeySetting(Key.Space, TetriNET.Client.Interfaces.Commands.Drop),
-                    new KeySetting(Key.Down, TetriNET.Client.Interfaces.Commands.Down),
-                    new KeySetting(Key.Up, TetriNET.Client.Interfaces.Commands.RotateCounterclockwise),
-                    new KeySetting(Key.PageUp, TetriNET.Client.Interfaces.Commands.RotateClockwise),
-                    new KeySetting(Key.Left, TetriNET.Client.Interfaces.Commands.Left),
-                    new KeySetting(Key.Right, TetriNET.Client.Interfaces.Commands.Right),
-                    new KeySetting(Key.H, TetriNET.Client.Interfaces.Commands.Hold),
-                    new KeySetting(Key.D, TetriNET.Client.Interfaces.Commands.DiscardFirstSpecial),
-                    new KeySetting(Key.D1, TetriNET.Client.Interfaces.Commands.UseSpecialOn1),
-                    new KeySetting(Key.D2, TetriNET.Client.Interfaces.Commands.UseSpecialOn2),
-                    new KeySetting(Key.D3, TetriNET.Client.Interfaces.Commands.UseSpecialOn3),
-                    new KeySetting(Key.D4, TetriNET.Client.Interfaces.Commands.UseSpecialOn4),
-                    new KeySetting(Key.D5, TetriNET.Client.Interfaces.Commands.UseSpecialOn5),
-                    new KeySetting(Key.D6, TetriNET.Client.Interfaces.Commands.UseSpecialOn6),
-                    new KeySetting(Key.Enter, TetriNET.Client.Interfaces.Commands.UseSpecialOnSelf)
+                    new KeySettingViewModel(Key.Space, TetriNET.Client.Interfaces.Commands.Drop),
+                    new KeySettingViewModel(Key.Down, TetriNET.Client.Interfaces.Commands.Down),
+                    new KeySettingViewModel(Key.Up, TetriNET.Client.Interfaces.Commands.RotateCounterclockwise),
+                    new KeySettingViewModel(Key.PageUp, TetriNET.Client.Interfaces.Commands.RotateClockwise),
+                    new KeySettingViewModel(Key.Left, TetriNET.Client.Interfaces.Commands.Left),
+                    new KeySettingViewModel(Key.Right, TetriNET.Client.Interfaces.Commands.Right),
+                    new KeySettingViewModel(Key.H, TetriNET.Client.Interfaces.Commands.Hold),
+                    new KeySettingViewModel(Key.D, TetriNET.Client.Interfaces.Commands.DiscardFirstSpecial),
+                    new KeySettingViewModel(Key.D1, TetriNET.Client.Interfaces.Commands.UseSpecialOn1),
+                    new KeySettingViewModel(Key.D2, TetriNET.Client.Interfaces.Commands.UseSpecialOn2),
+                    new KeySettingViewModel(Key.D3, TetriNET.Client.Interfaces.Commands.UseSpecialOn3),
+                    new KeySettingViewModel(Key.D4, TetriNET.Client.Interfaces.Commands.UseSpecialOn4),
+                    new KeySettingViewModel(Key.D5, TetriNET.Client.Interfaces.Commands.UseSpecialOn5),
+                    new KeySettingViewModel(Key.D6, TetriNET.Client.Interfaces.Commands.UseSpecialOn6),
+                    new KeySettingViewModel(Key.Enter, TetriNET.Client.Interfaces.Commands.UseSpecialOnSelf)
                 };
         }
     }

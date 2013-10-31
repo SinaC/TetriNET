@@ -31,7 +31,7 @@
         <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding AutomaticallySwitchToPlayFieldOnGameStarted, Mode=TwoWay}">Switch on start/stop game</CheckBox>
         <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding DisplayDropLocation, Mode=TwoWay}">Display drop location</CheckBox>
         
-        <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding DisplayOpponentsFieldEvenWhenNotPlaying, Mode=TwoWay}">Always show opponents field</CheckBox>
+        <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding DisplayOpponentsFieldEvenWhenNotPlaying, Mode=TwoWay}">Show opponents even if not playing</CheckBox>
         <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsColorSchemeUsed, Mode=TwoWay}">Player color mode (restart required)</CheckBox>
         
         <CheckBox Grid.Row="0" Grid.Column="2" IsChecked="{Binding IsDeveloperModeActivated, Mode=TwoWay}">Developer mode</CheckBox>

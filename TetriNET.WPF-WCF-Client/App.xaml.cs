@@ -31,14 +31,6 @@ namespace TetriNET.WPF_WCF_Client
 
             //// TODO: if PortableSettingsProvider file doesn't exist, copy config.FilePath to PortableSettingsProvider path
 
-            //// Get settings from old version if needed
-            //if (Settings.Default.UpgradeRequired)
-            //{
-            //    Settings.Default.Upgrade();
-            //    Settings.Default.UpgradeRequired = false;
-            //    Settings.Default.Save();
-            //}
-
             // If new config file doesn't exist, rename user.config or copy old one
             try
             {
