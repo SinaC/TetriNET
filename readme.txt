@@ -10,11 +10,11 @@ SinaCSpecials: use gravity when board has enough holes or when to high + zebra +
 Confusion could be managed in client instead of GUI
 Add Pentominos (http://en.wikipedia.org/wiki/Pentomino)
 New options: random blocks clear count, mutation count, darkness time, confusion time, immunity time, random spawn orientation
-Solo mode (back-to-back, t-spin)
+Solo mode (extra points for back-to-back, t-spin)
 Server integrated in WPF client
 in multiplayer game, display some stats about players (#lines, score, ...) when game is finished
-achievement earned server message should be replaced with delegate ClientOnAchievementEarned, mouseover achievement should say if we already earned it and click on it should switch to achievement view
-options for Hold
+mouseover on chat achievement msg should say if we already earned it and click on it should switch to achievement view
+--^
 
 achievements idea: 
 	Lose a multiplayer game while having a Nuke and a Gravity and a Switch in inventory (???:30)

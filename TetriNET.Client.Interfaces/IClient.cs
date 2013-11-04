@@ -49,6 +49,7 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientContinuousSpecialFinishedHandler(int playerId, Specials special);
 
     public delegate void ClientAchievementEarnedHandler(IAchievement achievement, bool firstTime);
+    public delegate void ClientPlayerAchievementEarnedHandler(int playerId, string playerName, int achievementId, string achievementTitle);
 
     public interface IClient
     {
@@ -114,6 +115,7 @@ namespace TetriNET.Client.Interfaces
         event ClientContinuousSpecialFinishedHandler OnContinuousSpecialFinished; // on opponent
 
         event ClientAchievementEarnedHandler OnAchievementEarned;
+        event ClientPlayerAchievementEarnedHandler OnPlayerAchievementEarned;
 
         //bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc);
         //bool Disconnect();

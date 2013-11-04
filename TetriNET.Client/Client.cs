@@ -136,8 +136,8 @@ namespace TetriNET.Client
             if (firstTime)
             {
                 _proxy.EarnAchievement(this, achievement.Id, achievement.Title);
-                string msg = String.Format("You have earned [{0}]", achievement.Title);
-                ClientOnServerPublishMessage(msg);
+                //string msg = String.Format("You have earned [{0}]", achievement.Title);
+                //ClientOnServerPublishMessage(msg);
             }
 
             if (ClientOnAchievementEarned != null)
@@ -711,14 +711,19 @@ namespace TetriNET.Client
             ResetTimeout();
             if (playerId != _clientPlayerId)
             {
-                if (ClientOnServerPublishMessage != null)
+                //if (ClientOnServerPublishMessage != null)
+                //{
+                //    PlayerData player = GetPlayer(playerId);
+                //    if (player != null)
+                //    {
+                //        string msg = String.Format("{0} has earned [{1}]", player.Name, achievementTitle);
+                //        ClientOnServerPublishMessage(msg);
+                //    }
+                //}
+                if (ClientOnPlayerAchievementEarned != null)
                 {
                     PlayerData player = GetPlayer(playerId);
-                    if (player != null)
-                    {
-                        string msg = String.Format("{0} has earned [{1}]", player.Name, achievementTitle);
-                        ClientOnServerPublishMessage(msg);
-                    }
+                    ClientOnPlayerAchievementEarned(playerId, player == null ? "???" : player.Name, achievementId, achievementTitle);
                 }
             }
         }
@@ -1345,6 +1350,13 @@ namespace TetriNET.Client
         {
             add { ClientOnAchievementEarned += value; }
             remove { ClientOnAchievementEarned -= value; }
+        }
+
+        private event ClientPlayerAchievementEarnedHandler ClientOnPlayerAchievementEarned;
+        event ClientPlayerAchievementEarnedHandler IClient.OnPlayerAchievementEarned
+        {
+            add { ClientOnPlayerAchievementEarned += value; }
+            remove { ClientOnPlayerAchievementEarned -= value; }
         }
 
         public void Dump()

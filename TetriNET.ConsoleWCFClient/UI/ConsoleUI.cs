@@ -48,12 +48,34 @@ namespace TetriNET.ConsoleWCFClient.UI
             _client.OnSpecialUsed += OnSpecialUsed;
             _client.OnPlayerAddLines += OnPlayerAddLines;
             _client.OnContinuousEffectToggled += OnContinuousEffectToggled;
+            _client.OnAchievementEarned += OnAchievementEarned;
+            _client.OnPlayerAchievementEarned += OnPlayerAchievementEarned;
 
             Console.SetWindowSize(80, 30);
             Console.BufferWidth = 80;
             Console.BufferHeight = 30;
         }
-        
+
+        private void OnPlayerAchievementEarned(int playerId, string playerName, int achievementId, string achievementTitle)
+        {
+            lock (_lock)
+            {
+                Console.ResetColor();
+                Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 0);
+                Console.Write("{0} has earned [{1}]", playerName, achievementTitle);
+            }
+        }
+
+        private void OnAchievementEarned(IAchievement achievement, bool firstTime)
+        {
+           lock (_lock)
+           {
+               Console.ResetColor();
+               Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 0);
+               Console.Write("You have earned [{0}]", achievement.Title);
+           }
+        }
+
         private void OnPlayerAddLines(int playerId, string playerName, int specialId, int count)
         {
             lock (_lock)

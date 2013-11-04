@@ -13,10 +13,61 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
-                    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+                    <converters:ChatColorBrushConverter x:Key="ChatColorBrushConverter"/>
                 </ResourceDictionary>
                 <ResourceDictionary>
-                    <converters:ChatColorBrushConverter x:Key="ChatColorBrushConverter"/>
+                    <DataTemplate x:Key="PlayerMessageDataTemplate" DataType="{x:Type partyLine:ChatEntry}">
+                        <WrapPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding PlayerName, StringFormat=&lt;{0}&gt;}" TextDecorations="Underline" FontWeight="Bold" Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" />
+                            <TextBlock Text="{Binding Msg}" Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" />
+                        </WrapPanel>
+                    </DataTemplate>
+                </ResourceDictionary>
+                <ResourceDictionary>
+                    <DataTemplate x:Key="ServerMessageDataTemplate" DataType="{x:Type partyLine:ChatEntry}">
+                        <WrapPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Msg}" Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" />
+                        </WrapPanel>
+                    </DataTemplate>
+                </ResourceDictionary>
+                <ResourceDictionary>
+                    <DataTemplate x:Key="SelfAchievementDataTemplate" DataType="{x:Type partyLine:ChatEntry}">
+                        <WrapPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Achievement.Title, StringFormat=You have earned [{0}]}" Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" />
+                        </WrapPanel>
+                    </DataTemplate>
+                </ResourceDictionary>
+                <ResourceDictionary>
+                    <DataTemplate x:Key="OtherAchievementDataTemplate" DataType="{x:Type partyLine:ChatEntry}">
+                        <WrapPanel Orientation="Horizontal">
+                            <TextBlock Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} has earned [{1}]">
+                                        <MultiBinding.Bindings>
+                                            <Binding Path="PlayerName"/>
+                                            <Binding Path="Achievement.Title"/>
+                                        </MultiBinding.Bindings>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </WrapPanel>
+                    </DataTemplate>
+                </ResourceDictionary>
+                <ResourceDictionary>
+                    <DataTemplate x:Key="InvalidAchievementDataTemplate" DataType="{x:Type partyLine:ChatEntry}">
+                        <WrapPanel Orientation="Horizontal">
+                            <TextBlock Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0} has earned [{1}]">
+                                        <MultiBinding.Bindings>
+                                            <Binding Path="PlayerName"/>
+                                            <Binding Path="AchievementTitle"/>
+                                        </MultiBinding.Bindings>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </WrapPanel>
+                    </DataTemplate>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -29,14 +80,51 @@
         <ListBox 
             Grid.Row="0" helpers:ListBoxExtenders.AutoScrollToEnd="True"
             ItemsSource="{Binding ChatEntries}">
-            <ListBox.ItemTemplate>
+            <!--<ListBox.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
                         <TextBlock Text="{Binding PlayerName, StringFormat=&lt;{0}&gt;}" TextDecorations="Underline" FontWeight="Bold" Visibility="{Binding IsPlayerVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" />
                         <TextBlock Text="{Binding Msg}" Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" />
                     </WrapPanel>
                 </DataTemplate>
-            </ListBox.ItemTemplate>            
+            </ListBox.ItemTemplate>-->      
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type partyLine:ChatEntry}">
+                    <ContentControl Content="{Binding}" IsTabStop="False">
+                        <ContentControl.Style>
+                            <Style TargetType="{x:Type ContentControl}">
+                                <!--<Setter Property="ContentTemplate" Value="{StaticResource OtherAchievementDataTemplate}"/>-->
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ChatType}" Value="{x:Static partyLine:ChatEntry+ChatTypes.PlayerMessage}">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource PlayerMessageDataTemplate}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ChatType}" Value="{x:Static partyLine:ChatEntry+ChatTypes.ServerMessage}">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource ServerMessageDataTemplate}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ChatType}" Value="{x:Static partyLine:ChatEntry+ChatTypes.SelfAchievement}">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource SelfAchievementDataTemplate}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ChatType}" Value="{x:Static partyLine:ChatEntry+ChatTypes.OtherAchievement}">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource OtherAchievementDataTemplate}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ChatType}" Value="{x:Static partyLine:ChatEntry+ChatTypes.InvalidAchievement}">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource InvalidAchievementDataTemplate}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                                <!--<Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsAchieved}" Value="True"/>
+                                            <Condition Binding="{Binding AchieveCount}" Value="1"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="ContentTemplate" Value="{StaticResource AchievedOnlyOnceDataTemplate}"/>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>-->
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
         <TextBox 
             x:Name="TxtInputChat" Grid.Row="1" HorizontalAlignment="Stretch" FontSize="10"
