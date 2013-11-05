@@ -13,7 +13,7 @@ using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
 {
-    public class AchievementsViewModel : ViewModelBase
+    public class AchievementsViewModel : ViewModelBase, ITabIndex
     {
         private ObservableCollection<IAchievement> _achievements;
 
@@ -53,6 +53,30 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
             ResetAchievementsCommand = new RelayCommand(Reset);
 
             ClientChanged += OnClientChanged;
+        }
+
+        private IAchievement _selectedItem;
+        public IAchievement SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                if (_selectedItem != value)
+                {
+                    _selectedItem = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public void Select(int achievementId)
+        {
+            SelectedItem = Achievements.FirstOrDefault(x => x.Id == achievementId);
+            //if (achievement != null)
+            //{
+            //    int index = Achievements.IndexOf(achievement);
+            //    SelectedIndex = index;
+            //}
         }
 
         private void Reset()
@@ -145,6 +169,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
         #region Commands
 
         public ICommand ResetAchievementsCommand { get; private set; }
+
+        #endregion
+
+        #region ITabIndex
+
+        public int TabIndex { get { return 5; } }
 
         #endregion
     }

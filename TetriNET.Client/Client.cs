@@ -975,7 +975,7 @@ namespace TetriNET.Client
                 ClientOnRoundFinished(deletedRows);
 
             if (_achievementManager != null)
-                _achievementManager.OnRoundFinished(deletedRows, Level, _statistics.MoveCount, Board, collapsedPieces);
+                _achievementManager.OnRoundFinished(deletedRows, Level, _statistics.MoveCount, Score, Board, collapsedPieces);
 
             // Start next round
             StartRound();

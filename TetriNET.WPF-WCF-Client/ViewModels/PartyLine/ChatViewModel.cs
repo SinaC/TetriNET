@@ -28,6 +28,32 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         public ChatColor Color { get; set; }
         public IAchievement Achievement { get; set; }
         public string AchievementTitle { get; set; }
+
+        public IClient Client { get; set; }
+
+        public bool IsEarned
+        {
+            get
+            {
+                if (Achievement != null && Client != null && Client.Achievements != null)
+                    return Client.Achievements.Any(x => x.Id == Achievement.Id && x.IsAchieved);
+                return false;
+            }
+        }
+
+        public DateTime FirstTimeAchieved
+        {
+            get
+            {
+                if (Achievement != null && Client != null && Client.Achievements != null)
+                {
+                    IAchievement achievement = Client.Achievements.FirstOrDefault(x => x.Id == Achievement.Id && x.IsAchieved);
+                    if (achievement != null)
+                        return achievement.FirstTimeAchieved;
+                }
+                return DateTime.MinValue;
+            }
+        }
     }
 
     public class ChatViewModel : ViewModelBase
@@ -117,6 +143,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         {
             AddEntry(new ChatEntry
             {
+                Client = Client,
                 ChatType = ChatEntry.ChatTypes.SelfAchievement,
                 Color = color,
                 Achievement = achievement,
@@ -127,6 +154,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         {
             AddEntry(new ChatEntry
             {
+                Client = Client,
                 ChatType = ChatEntry.ChatTypes.OtherAchievement,
                 Color = color,
                 PlayerName = playerName,
@@ -138,6 +166,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         {
             AddEntry(new ChatEntry
             {
+                Client = Client,
                 ChatType = ChatEntry.ChatTypes.InvalidAchievement,
                 Color = color,
                 PlayerName = playerName,

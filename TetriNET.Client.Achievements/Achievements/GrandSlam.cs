@@ -24,7 +24,7 @@ namespace TetriNET.Client.Achievements.Achievements
         public GrandSlam()
         {
             Id = 34;
-            Points = 50;
+            Points = 70;
             Title = "Grand Slam";
             Description = "Use on an opponent and be the target of every available specials";
         }

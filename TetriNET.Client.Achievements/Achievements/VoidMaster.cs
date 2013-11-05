@@ -16,7 +16,7 @@ namespace TetriNET.Client.Achievements.Achievements
             Description = "Clear whole board by clearing lines";
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board, List<Pieces> collapsedPieces)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)
         {
             if (board.Cells.All(x => x == CellHelper.EmptyCell))
                 Achieve();

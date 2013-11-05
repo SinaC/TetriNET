@@ -16,7 +16,7 @@ namespace TetriNET.Client.Achievements.Achievements
             Description = "Clear 50 lines on level 100";
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board, List<Pieces> collapsedPieces)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)
         {
             if (level >= 100)
                 _count += lineCompleted;

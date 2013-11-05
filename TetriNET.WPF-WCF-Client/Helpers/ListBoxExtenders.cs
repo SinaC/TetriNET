@@ -1,6 +1,7 @@
 ﻿using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace TetriNET.WPF_WCF_Client.Helpers
 {
@@ -9,39 +10,67 @@ namespace TetriNET.WPF_WCF_Client.Helpers
     /// </summary>
     public class ListBoxExtenders : DependencyObject
     {
-        public static readonly DependencyProperty AutoScrollToEndProperty = 
-            DependencyProperty.RegisterAttached(
-                "AutoScrollToEnd", 
-                typeof(bool), 
-                typeof(ListBoxExtenders), 
-                new UIPropertyMetadata(default(bool), OnAutoScrollToEndChanged));
+        #region AutoScroll to SelectedItem
 
-        /// <summary>
-        /// Returns the value of the AutoScrollToEndProperty
-        /// </summary>
-        /// <param name="obj">The dependency-object whichs value should be returned</param>
-        /// <returns>The value of the given property</returns>
-        public static bool GetAutoScrollToEnd(DependencyObject obj)
+        public static readonly DependencyProperty AutoScrollToSelectedItemProperty =
+            DependencyProperty.RegisterAttached(
+                "AutoScrollToSelectedItem",
+                typeof (bool),
+                typeof (ListBoxExtenders),
+                new UIPropertyMetadata(default(bool), OnAutoScrollToSelectedItemChanged));
+
+        public static bool GetAutoScrollToSelectedItem(DependencyObject obj)
         {
-            return (bool)obj.GetValue(AutoScrollToEndProperty);
+            return (bool) obj.GetValue(AutoScrollToSelectedItemProperty);
         }
 
-        /// <summary>
-        /// Sets the value of the AutoScrollToEndProperty
-        /// </summary>
-        /// <param name="obj">The dependency-object whichs value should be set</param>
-        /// <param name="value">The value which should be assigned to the AutoScrollToEndProperty</param>
+        public static void SetAutoScrollToSelectedItem(DependencyObject obj, bool value)
+        {
+            obj.SetValue(AutoScrollToSelectedItemProperty, value);
+        }
+
+        public static void OnAutoScrollToSelectedItemChanged(DependencyObject s, DependencyPropertyChangedEventArgs e)
+        {
+            var listBox = s as ListBox;
+            if (listBox != null)
+            {
+                var scrollToSelectionHandler = new SelectionChangedEventHandler(
+                    (sender, args) => ExecuteOnUIThread.InvokeAsync(() =>
+                        {
+                            //listBox.UpdateLayout();
+                            listBox.Focus(); // set focus to display selected item in blue instead of gray because list is not focused
+                            if (listBox.SelectedItem != null)
+                                listBox.ScrollIntoView(listBox.SelectedItem);
+                        }, DispatcherPriority.ContextIdle));
+
+                if ((bool) e.NewValue)
+                    listBox.SelectionChanged += scrollToSelectionHandler;
+                else
+                    listBox.SelectionChanged -= scrollToSelectionHandler;
+            }
+        }
+
+        #endregion
+
+        #region AutoScroll to end
+
+        public static readonly DependencyProperty AutoScrollToEndProperty =
+            DependencyProperty.RegisterAttached(
+                "AutoScrollToEnd",
+                typeof (bool),
+                typeof (ListBoxExtenders),
+                new UIPropertyMetadata(default(bool), OnAutoScrollToEndChanged));
+
+        public static bool GetAutoScrollToEnd(DependencyObject obj)
+        {
+            return (bool) obj.GetValue(AutoScrollToEndProperty);
+        }
+
         public static void SetAutoScrollToEnd(DependencyObject obj, bool value)
         {
             obj.SetValue(AutoScrollToEndProperty, value);
         }
 
-        /// <summary>
-        /// This method will be called when the AutoScrollToEnd
-        /// property was changed
-        /// </summary>
-        /// <param name="s">The sender (the ListBox)</param>
-        /// <param name="e">Some additional information</param>
         public static void OnAutoScrollToEndChanged(DependencyObject s, DependencyPropertyChangedEventArgs e)
         {
             var listBox = s as ListBox;
@@ -52,16 +81,19 @@ namespace TetriNET.WPF_WCF_Client.Helpers
 
                 var scrollToEndHandler = new NotifyCollectionChangedEventHandler(
                     (s1, e1) =>
-                    {
-                        if (listBox.Items.Count > 0)
                         {
-                            //object lastItem = listBox.Items[listBox.Items.Count - 1];
-                            //listBoxItems.MoveCurrentTo(lastItem);
-                            //listBox.ScrollIntoView(lastItem);
-                            ScrollViewer scrollViewer = VisualTree.GetDescendantByType<ScrollViewer>(listBox);
-                            scrollViewer.ScrollToEnd();
-                        }
-                    });
+                            if (listBox.Items.Count > 0)
+                            {
+                                //object lastItem = listBox.Items[listBox.Items.Count - 1];
+                                //listBoxItems.MoveCurrentTo(lastItem);
+                                //listBox.ScrollIntoView(lastItem);
+                                ExecuteOnUIThread.Invoke(() =>
+                                    {
+                                        ScrollViewer scrollViewer = VisualTree.GetDescendantByType<ScrollViewer>(listBox);
+                                        scrollViewer.ScrollToEnd();
+                                    });
+                            }
+                        });
 
                 if (data != null)
                 {
@@ -72,5 +104,7 @@ namespace TetriNET.WPF_WCF_Client.Helpers
                 }
             }
         }
+
+        #endregion
     }
 }

@@ -33,14 +33,17 @@
                 <ResourceDictionary>
                     <DataTemplate x:Key="SelfAchievementDataTemplate" DataType="{x:Type partyLine:ChatEntry}">
                         <WrapPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Achievement.Title, StringFormat=You have earned [{0}]}" Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" />
+                            <TextBlock Text="{Binding Achievement.Title, StringFormat={}You have earned [{0}]}" Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" />
                         </WrapPanel>
                     </DataTemplate>
                 </ResourceDictionary>
                 <ResourceDictionary>
                     <DataTemplate x:Key="OtherAchievementDataTemplate" DataType="{x:Type partyLine:ChatEntry}">
-                        <WrapPanel Orientation="Horizontal">
-                            <TextBlock Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}">
+                        <WrapPanel Orientation="Horizontal" ToolTipService.IsEnabled="{Binding IsEarned}">
+                            <WrapPanel.ToolTip>
+                                <TextBlock Text="{Binding FirstTimeAchieved, StringFormat={}You achieved it on {0:dd MMMM yyyy}}" />
+                            </WrapPanel.ToolTip>
+                            <TextBlock Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" Tag="{Binding}" MouseLeftButtonDown="TextBlock_MouseLeftButtonDown">
                                 <TextBlock.Text>
                                     <MultiBinding StringFormat="{}{0} has earned [{1}]">
                                         <MultiBinding.Bindings>
@@ -76,9 +79,14 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="20"/>
+            <!--<RowDefinition Height="20"/>-->
         </Grid.RowDefinitions>
+        
+        <!--<Button Grid.Row="2" Content="TEST" Click="Button_Click_1" />-->
+        
         <ListBox 
-            Grid.Row="0" helpers:ListBoxExtenders.AutoScrollToEnd="True"
+            Grid.Row="0" 
+            helpers:ListBoxExtenders.AutoScrollToEnd="True"
             ItemsSource="{Binding ChatEntries}">
             <!--<ListBox.ItemTemplate>
                 <DataTemplate>

@@ -22,7 +22,7 @@ namespace TetriNET.Client.Achievements.Achievements
             base.Reset();
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board, List<Pieces> collapsedPieces)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)
         {
             if (lineCompleted == 4 && _active)
                 Achieve();

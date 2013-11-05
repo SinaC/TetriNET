@@ -108,7 +108,7 @@ namespace TetriNET.Client.Achievements
         {
         }
 
-        public virtual void OnRoundFinished(int lineCompleted, int level, int moveCount, IBoard board, List<Pieces> collapsedPieces)
+        public virtual void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)
         {
         }
     }

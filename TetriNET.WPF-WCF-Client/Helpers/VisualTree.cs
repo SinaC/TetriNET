@@ -25,5 +25,16 @@ namespace TetriNET.WPF_WCF_Client.Helpers
             }
             return foundElement;
         }
+
+        public static TAncestor FindAncestor<TAncestor>(DependencyObject current) where TAncestor : DependencyObject
+        {
+            do
+            {
+                if (current is TAncestor)
+                    return current as TAncestor;
+                current = VisualTreeHelper.GetParent(current);
+            } while (current != null);
+            return null;
+        }
     }
 }

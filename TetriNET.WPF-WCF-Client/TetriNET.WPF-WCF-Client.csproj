@@ -103,8 +103,8 @@
     </Compile>
     <Compile Include="Validators\StringValidationRule.cs" />
     <Compile Include="ViewModels\Achievements\AchievementsViewModel.cs" />
-    <Compile Include="ViewModels\Options\KeySettingViewModel.cs" />
     <Compile Include="ViewModels\ITabIndex.cs" />
+    <Compile Include="ViewModels\Options\KeySettingViewModel.cs" />
     <Compile Include="TextureManager\ITextureManager.cs" />
     <Compile Include="ViewModels\Connection\LoginViewModel.cs" />
     <Compile Include="ViewModels\Connection\ConnectionViewModel.cs" />

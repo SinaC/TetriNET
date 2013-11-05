@@ -13,14 +13,10 @@ New options: random blocks clear count, mutation count, darkness time, confusion
 Solo mode (extra points for back-to-back, t-spin)
 Server integrated in WPF client
 in multiplayer game, display some stats about players (#lines, score, ...) when game is finished
-mouseover on chat achievement msg should say if we already earned it and click on it should switch to achievement view
---^
+right click on player in players manager to display achievements
 
 achievements idea: 
-	Lose a multiplayer game while having a Nuke and a Gravity and a Switch in inventory (???:30)
-	x points in a game
-	Win 100 games (???:30)
-	Win 1000 games (???:50)
+	Lose a multiplayer game while having a Nuke, a Gravity and a Switch in inventory Wall of shame:30)
 
 bugs:
 why user.config is automatically created with default values in $APPDATA$/Local/SinaC/TetriNET WPF WCF Client/  when recompiling a new version

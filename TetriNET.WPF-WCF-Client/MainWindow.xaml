@@ -64,25 +64,39 @@
             KeyboardNavigation.TabNavigation="None"
             SelectedIndex="{Binding ActiveTabItemIndex}">
             <TabItem Header="Connect" IsTabStop="False">
-                <connection:ConnectionView DataContext="{Binding Path=ConnectionViewModel}" d:DataContext="{d:DesignInstance connectionViewModels:ConnectionViewModelDesignData, IsDesignTimeCreatable=True}"/>
+                <connection:ConnectionView 
+                    DataContext="{Binding Path=ConnectionViewModel}" 
+                    d:DataContext="{d:DesignInstance connectionViewModels:ConnectionViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
             <TabItem Header="Options" IsTabStop="False">
-                <options:OptionsView DataContext="{Binding Path=OptionsViewModel}" d:DataContext="{d:DesignInstance optionsViewModels:OptionsViewModelDesignData, IsDesignTimeCreatable=True}"/>
+                <options:OptionsView 
+                    DataContext="{Binding Path=OptionsViewModel}" 
+                    d:DataContext="{d:DesignInstance optionsViewModels:OptionsViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
             <TabItem Header="Win list" IsTabStop="False">
-                <winList:WinListView DataContext="{Binding Path=WinListViewModel}" d:DataContext="{d:DesignInstance winListViewModels:WinListViewModelDesignData, IsDesignTimeCreatable=True }" />
+                <winList:WinListView 
+                    DataContext="{Binding Path=WinListViewModel}" 
+                    d:DataContext="{d:DesignInstance winListViewModels:WinListViewModelDesignData, IsDesignTimeCreatable=True }" />
             </TabItem>
             <TabItem Header="Party line" IsTabStop="False">
-                <partyLine:PartyLineView DataContext="{Binding Path=PartyLineViewModel}" d:DataContext="{d:DesignInstance partyLineViewModels:PartyLineViewModelDesignData, IsDesignTimeCreatable=True}"/>
+                <partyLine:PartyLineView 
+                    DataContext="{Binding Path=PartyLineViewModel}" 
+                    d:DataContext="{d:DesignInstance partyLineViewModels:PartyLineViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
             <TabItem Header="Play fields" IsTabStop="False">
-                <playField:PlayFieldView DataContext="{Binding Path=PlayFieldViewModel}" d:DataContext="{d:DesignInstance playFieldViewModels:PlayFieldViewModelDesignData, IsDesignTimeCreatable=True}"/>
+                <playField:PlayFieldView 
+                    DataContext="{Binding Path=PlayFieldViewModel}" 
+                    d:DataContext="{d:DesignInstance playFieldViewModels:PlayFieldViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
             <TabItem Header="Achievements" IsTabStop="False">
-                <achievements:AchievementsView DataContext="{Binding Path=AchievementsViewModel}" d:DataContext="{d:DesignInstance achievementsViewModels:AchievementsViewModelDesignData, IsDesignTimeCreatable=True}"/>
+                <achievements:AchievementsView 
+                    DataContext="{Binding Path=AchievementsViewModel}" 
+                    d:DataContext="{d:DesignInstance achievementsViewModels:AchievementsViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
             <TabItem Header="Statistics" IsTabStop="False">
-                <statistics:ClientStatisticsView DataContext="{Binding Path=ClientStatisticsViewModel}" d:DataContext="{d:DesignInstance statisticsViewModels:ClientStatisticsViewModelDesignData, IsDesignTimeCreatable=True}"/>
+                <statistics:ClientStatisticsView 
+                    DataContext="{Binding Path=ClientStatisticsViewModel}" 
+                    d:DataContext="{d:DesignInstance statisticsViewModels:ClientStatisticsViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
             <TabItem Header="Textures test" IsTabStop="False" Visibility="{Binding Path=OptionsViewModel.ClientOptionsViewModel.IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <test:TestView />

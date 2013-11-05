@@ -51,12 +51,15 @@
     <Compile Include="Achievements\FearMyBrain.cs" />
     <Compile Include="Achievements\GrandSlam.cs" />
     <Compile Include="Achievements\HHStyle.cs" />
+    <Compile Include="Achievements\LikeEmperor.cs" />
+    <Compile Include="Achievements\LikeKing.cs" />
     <Compile Include="Achievements\Looooser.cs" />
     <Compile Include="Achievements\HitchhikersGuide.cs" />
     <Compile Include="Achievements\JustInTime.cs" />
     <Compile Include="Achievements\Magician.cs" />
     <Compile Include="Achievements\MartyIsInDaPlace.cs" />
     <Compile Include="Achievements\Millenium.cs" />
+    <Compile Include="Achievements\MillionDollarBaby.cs" />
     <Compile Include="Achievements\NeedForSpeed.cs" />
     <Compile Include="Achievements\NewtonsApple.cs" />
     <Compile Include="Achievements\NuclearLaunchDetected.cs" />

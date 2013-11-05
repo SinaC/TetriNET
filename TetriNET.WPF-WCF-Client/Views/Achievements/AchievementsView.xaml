@@ -5,8 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:achievements="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Achievements"
              xmlns:interfaces="clr-namespace:TetriNET.Client.Interfaces;assembly=TetriNET.Client.Interfaces"
+             xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers" 
              IsTabStop="False"
              mc:Ignorable="d" 
+             d:DesignHeight="400"
              d:DataContext="{d:DesignInstance achievements:AchievementsViewModelDesignData, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -127,10 +129,25 @@
         </Grid.RowDefinitions>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="0">
-            <ItemsControl 
-                HorizontalAlignment="Stretch" Background="Transparent"
+            <ListBox
+                HorizontalAlignment="Stretch"
+                Background="Transparent" BorderThickness="0"
+                HorizontalContentAlignment="Stretch"
+                helpers:ListBoxExtenders.AutoScrollToSelectedItem="True"
+                SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                SelectionMode="Single"
                 ItemsSource="{Binding Achievements}">
-                <ItemsControl.ItemTemplate>
+                <!--<ListBox.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="{x:Static SystemColors.HighlightColor}" />
+                    <Style TargetType="ListBoxItem">
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.Resources>-->
+                <ListBox.ItemTemplate>
                     <DataTemplate DataType="{x:Type interfaces:IAchievement}">
                         <ContentControl Content="{Binding}" IsTabStop="False">
                             <ContentControl.Style>
@@ -169,8 +186,8 @@
                             </ContentControl.Style>
                         </ContentControl>
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </ScrollViewer>
 
         <Button Grid.Row="1" Width="Auto" HorizontalAlignment="Left" Margin="2,4,2,2"

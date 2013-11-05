@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class RainbowWarrior : Achievement
+    internal class MillionDollarBaby : Achievement
     {
-        public RainbowWarrior()
+        public MillionDollarBaby()
         {
-            Id = 35;
-            Points = 15;
-            Title = "Rainbow Warrior";
-            Description = "Clear a line with 7 different piece's colors";
+            Id = 36;
+            Points = 50;
+            Title = "Million Dollar Baby";
+            Description = "Get 1,000,000 points in one game";
         }
 
         public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, Interfaces.IBoard board, List<Common.DataContracts.Pieces> collapsedPieces)
         {
-            if (collapsedPieces != null && collapsedPieces.Distinct().Count() == 7)
+            if (score >= 1000000)
                 Achieve();
         }
     }
