@@ -15,6 +15,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         public string Target { get; set; }
         public int TargetId { get; set; }
         public int LinesAdded { get; set; }
+        public bool IsSelf { get; set; }
 
         public bool IsColorSchemeUsed
         {
@@ -62,7 +63,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             get { return _entries; }
         }
 
-        public void AddEntry(int id, Specials special, string source, int sourceId, string target, int targetId)
+        public void AddEntry(int id, Specials special, string source, int sourceId, string target, int targetId, bool isSelf)
         {
             ExecuteOnUIThread.Invoke(() =>
                 {
@@ -74,6 +75,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                             SourceId = sourceId,
                             Target = target,
                             TargetId = targetId,
+                            IsSelf = isSelf,
                         });
                     if (Entries.Count > MaxEntries)
                         Entries.RemoveAt(0);
@@ -135,7 +137,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         private void OnSpecialUsed(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special)
         {
             if (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
-                AddEntry(specialId + 1, special, playerName, playerId, targetName, targetId);
+                AddEntry(specialId + 1, special, playerName, playerId, targetName, targetId, targetId == Client.PlayerId);
         }
 
         #endregion
@@ -167,6 +169,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                 Source = "TSEKWA01234567890123",
                 SourceId = 5,
                 LinesAdded = 4,
+            });
+            Entries.Add(new InGameChatEntry
+            {
+                Id = 4,
+                Source = "JOEL0123456789012345",
+                SourceId = 1,
+                Target = "JOEL0123456789012345",
+                TargetId = 1,
+                Special = Specials.SwitchFields,
+                IsSelf = true,
             });
         }
     }

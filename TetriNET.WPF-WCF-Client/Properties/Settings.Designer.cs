@@ -443,6 +443,21 @@ namespace TetriNET.WPF_WCF_Client.Properties {
                 this["UseSpecialOnSelf"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("34")]
+        public int UseSpecialOnRandomOpponent
+        {
+            get
+            {
+                return ((int)(this["UseSpecialOnRandomOpponent"]));
+            }
+            set
+            {
+                this["UseSpecialOnRandomOpponent"] = value;
+            }
+        }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

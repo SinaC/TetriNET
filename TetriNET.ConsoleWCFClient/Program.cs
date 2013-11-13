@@ -16,8 +16,11 @@ namespace TetriNET.ConsoleWCFClient
     {
         private static void DisplayBotName(IBot bot)
         {
-            Console.SetCursorPosition(40, 29);
-            Console.Write("Bot:{0}", bot.Name);
+            Console.SetCursorPosition(20, 29);
+            if (bot.Activated)
+                Console.Write("Bot:{0} {1}", bot.Name, bot.SleepTime);
+            else
+                Console.Write("NO BOT ACTIVATED");
         }
 
         static void Main(string[] args)
@@ -94,12 +97,18 @@ namespace TetriNET.ConsoleWCFClient
                             break;
 
                         // Bot
+                        case ConsoleKey.Add:
+                            bot.SleepTime += 100;
+                            DisplayBotName(bot);
+                            break;
+                        case ConsoleKey.Subtract:
+                            bot.SleepTime -= 100;
+                            DisplayBotName(bot);
+                            break;
                         case ConsoleKey.A:
                             bot.Activated = !bot.Activated;
                             break;
-
-                        // Switch bot strategy
-                        case ConsoleKey.Tab:
+                        case ConsoleKey.Z:
                             bot.Activated = false;
                             if (bot == bot1)
                                 bot = bot2;
@@ -171,6 +180,10 @@ namespace TetriNET.ConsoleWCFClient
                         case ConsoleKey.Enter:
                             controller.KeyDown(Commands.UseSpecialOnSelf);
                             controller.KeyUp(Commands.UseSpecialOnSelf);
+                            break;
+                        case ConsoleKey.Tab:
+                            controller.KeyDown(Commands.UseSpecialOnRandomOpponent);
+                            controller.KeyUp(Commands.UseSpecialOnRandomOpponent);
                             break;
                     }
                 }

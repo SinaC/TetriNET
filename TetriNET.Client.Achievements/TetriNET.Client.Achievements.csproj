@@ -74,6 +74,7 @@
     <Compile Include="Achievements\TooEasyForMe.cs" />
     <Compile Include="Achievements\TooGoodForYou.cs" />
     <Compile Include="Achievements\VoidMaster.cs" />
+    <Compile Include="Achievements\WallOfShame.cs" />
     <Compile Include="Achievements\WhoIsYourDaddy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

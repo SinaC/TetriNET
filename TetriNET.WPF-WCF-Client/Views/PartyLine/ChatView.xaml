@@ -33,7 +33,7 @@
                 <ResourceDictionary>
                     <DataTemplate x:Key="SelfAchievementDataTemplate" DataType="{x:Type partyLine:ChatEntry}">
                         <WrapPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Achievement.Title, StringFormat={}You have earned [{0}]}" Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" />
+                            <TextBlock Text="{Binding Achievement.Title, StringFormat={}You have earned [{0}]}" Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" MouseLeftButtonDown="TextBlock_MouseLeftButtonDown" />
                         </WrapPanel>
                     </DataTemplate>
                 </ResourceDictionary>

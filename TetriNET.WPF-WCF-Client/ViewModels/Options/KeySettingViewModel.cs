@@ -116,6 +116,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
                 case Client.Interfaces.Commands.UseSpecialOnSelf:
                     Settings.Default.UseSpecialOnSelf = (int) Key;
                     break;
+                case Client.Interfaces.Commands.UseSpecialOnRandomOpponent:
+                    Settings.Default.UseSpecialOnRandomOpponent = (int) Key;
+                    break;
             }
             Settings.Default.Save();
         }

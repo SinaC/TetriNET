@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Configuration;
 using System.IO;
-using System.Reflection;
 using System.Windows;
 using TetriNET.Common.Logger;
 using TetriNET.WPF_WCF_Client.CustomSettings;
 using TetriNET.WPF_WCF_Client.Helpers;
-using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client
 {

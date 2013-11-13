@@ -405,7 +405,7 @@ namespace TetriNET.Client
                 _pieces[i] = pieces[i];
             _pieceIndex = 0;
             CurrentPiece = _createPieceFunc(_pieces[0], Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, 0, false);
-            //MoveDownUntilTotallyInBoard(CurrentPiece);
+            MoveCurrentPieceToBoardTop();
             NextPiece = _createPieceFunc(_pieces[1], Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, 1, false);
             // Update statistics
             if (_statistics.PieceCount.ContainsKey(_pieces[0]))
@@ -834,9 +834,11 @@ namespace TetriNET.Client
                 CurrentPiece.Move(Board.PieceSpawnX, Board.PieceSpawnY);
             }
             //
+            MoveCurrentPieceToBoardTop();
+            // Statistics
             if (_statistics.PieceCount.ContainsKey(CurrentPiece.Value)) // Update statistics
                 _statistics.PieceCount[CurrentPiece.Value]++;
-            //
+            // Get next piece
             _pieceIndex++;
             Pieces nextPiece = Pieces.TetriminoS;
             if (_pieceIndex + 1 < _pieces.Size)
@@ -1003,6 +1005,15 @@ namespace TetriNET.Client
             {
                 MoveDown(true);
             }
+        }
+
+        private void MoveCurrentPieceToBoardTop()
+        {
+            // Move CurrentPiece to top of board (even if SpawnY is not top board or piece cells are not topped)
+            int minX, minY, maxX, maxY;
+            CurrentPiece.GetAbsoluteBoundingRectangle(out minX, out minY, out maxX, out maxY);
+            if (maxY < Board.Height)
+                CurrentPiece.Translate(0, Board.Height - maxY);
         }
 
         #region IClient
@@ -1910,6 +1921,8 @@ namespace TetriNET.Client
 
             // Move Current to Spawn location
             CurrentPiece.Move(Board.PieceSpawnX, Board.PieceSpawnY);
+            // Move to Board top
+            MoveCurrentPieceToBoardTop();
 
             if (ClientOnHoldPieceModified != null)
                 ClientOnHoldPieceModified();

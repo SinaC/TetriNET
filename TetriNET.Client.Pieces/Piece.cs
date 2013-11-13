@@ -105,6 +105,7 @@ namespace TetriNET.Client.Pieces
 
         public static IPiece CreatePiece(Common.DataContracts.Pieces piece, int spawnX, int spawnY, int spawnOrientation, int index)
         {
+            //return new SRS.TetriminoI(spawnX, spawnY, spawnOrientation, index);
             switch (piece)
             {
                 case Common.DataContracts.Pieces.TetriminoI:

@@ -22,6 +22,17 @@
                     <TextBlock Text="{Binding Source}" Foreground="Blue" FontSize="10"/>
                 </WrapPanel>
             </DataTemplate>
+            <DataTemplate x:Key="SelfSpecialDataTemplate" DataType="{x:Type playField:InGameChatEntry}">
+                <WrapPanel>
+                    <TextBlock Text="{Binding Id}" Foreground="Black" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="." Foreground="Black" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="{Binding Special, Converter={StaticResource SpecialToStringConverter}}" Foreground="DarkMagenta" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="on" Foreground="Black" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="{Binding Target}" Foreground="Blue" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="from" Foreground="Black" FontSize="10" FontWeight="Bold" Margin="0,0,2,0"/>
+                    <TextBlock Text="{Binding Source}" Foreground="Blue" FontWeight="Bold" FontSize="10"/>
+                </WrapPanel>
+            </DataTemplate>
             <DataTemplate x:Key="AddOneLineDataTemplate" DataType="{x:Type playField:InGameChatEntry}">
                 <WrapPanel>
                     <TextBlock Text="{Binding Id}" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
@@ -93,6 +104,9 @@
                             <Style TargetType="{x:Type ContentControl}">
                                 <Setter Property="ContentTemplate" Value="{StaticResource SpecialDataTemplate}" />
                                 <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSelf}" Value="True">
+                                        <Setter Property="ContentTemplate" Value="{StaticResource SelfSpecialDataTemplate}" />
+                                    </DataTrigger>
                                     <DataTrigger Binding="{Binding IsAddOneLine}" Value="True">
                                         <Setter Property="ContentTemplate" Value="{StaticResource AddOneLineDataTemplate}" />
                                     </DataTrigger>

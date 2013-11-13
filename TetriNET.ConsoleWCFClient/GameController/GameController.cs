@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Timers;
 using TetriNET.Client.Interfaces;
 
@@ -96,6 +97,13 @@ namespace TetriNET.ConsoleWCFClient.GameController
                         break;
                     case Commands.UseSpecialOnSelf:
                         Client.UseSpecial(Client.PlayerId);
+                        break;
+                    case Commands.UseSpecialOnRandomOpponent:
+                        {
+                            IOpponent opponent = Client.Opponents.FirstOrDefault();
+                            if (opponent != null)
+                                Client.UseSpecial(opponent.PlayerId);
+                        }
                         break;
                 }
                 if (_timers.ContainsKey(cmd))
