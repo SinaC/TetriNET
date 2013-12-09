@@ -13,10 +13,9 @@ New options: random blocks clear count, mutation count, darkness time, confusion
 Solo mode (extra points for back-to-back, t-spin)
 Server integrated in WPF client
 in multiplayer game, display some stats about players (#lines, score, who attacked who, ...) when game is finished
-right click on player in players manager to display achievements
-
-achievements idea: 
-	Lose a multiplayer game while having a Nuke, a Gravity and a Switch in inventory (Wall of shame:30)
+right-click on player in players manager to display achievements
+Register: Name + Team
+Spectator mode: new endpoint + new contract/callback (spectator can received every message from server but can only register/unregister + send message)
 
 bugs:
 why user.config is automatically created with default values in $APPDATA$/Local/SinaC/TetriNET WPF WCF Client/  when recompiling a new version

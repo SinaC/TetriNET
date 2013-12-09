@@ -26,11 +26,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             get { return Client == null || !Client.IsRegistered ? "Not registered" : Client.Name; }
         }
 
-        public bool IsColorSchemeUsed
-        {
-            get { return ClientOptionsViewModel.Instance == null || ClientOptionsViewModel.Instance.IsColorSchemeUsed; } // true if no instance (aka in designer mode)
-        }
-
         private string _team;
         public string Team
         {

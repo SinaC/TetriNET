@@ -32,13 +32,10 @@
         <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding DisplayDropLocation, Mode=TwoWay}">Display drop location</CheckBox>
         
         <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding DisplayOpponentsFieldEvenWhenNotPlaying, Mode=TwoWay}">Show opponents even if not playing</CheckBox>
-        <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsColorSchemeUsed, Mode=TwoWay}">Player color mode (restart required)</CheckBox>
         
         <CheckBox Grid.Row="0" Grid.Column="2" IsChecked="{Binding IsDeveloperModeActivated, Mode=TwoWay}">Developer mode</CheckBox>
         <CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding DisplayPieceAnchor, Mode=TwoWay}" Visibility="{Binding IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">Display piece center</CheckBox>
 
-        <xctk:ColorPicker Grid.Row="2" Grid.Column="2" ShowAdvancedButton="True" SelectedColor="{Binding TestColor}" Visibility="Collapsed"/> <!-- TEST -->
-        
         <GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Header="Controls">
             <ItemsControl
                 Grid.IsSharedSizeScope="True" MaxHeight="180"

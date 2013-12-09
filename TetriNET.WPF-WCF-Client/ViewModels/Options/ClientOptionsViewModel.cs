@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows.Input;
 using TetriNET.Client.Interfaces;
-using TetriNET.WPF_WCF_Client.Models;
 using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Options
@@ -141,42 +140,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #endregion
 
-        #region Player colors
-
-        private string _testColor;
-        public string TestColor
-        {
-            get { return _testColor; }
-            set
-            {
-                if (_testColor != value)
-                {
-                    _testColor = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private bool _isColorSchemeUsed;
-        public bool IsColorSchemeUsed
-        {
-            get { return _isColorSchemeUsed; }
-            set
-            {
-                if (_isColorSchemeUsed != value)
-                {
-                    _isColorSchemeUsed = value;
-                    OnPropertyChanged();
-                    Settings.Default.IsColorSchemeUsed = _isColorSchemeUsed;
-                    Settings.Default.Save();
-                }
-            }
-        }
-
-        public ObservableCollection<ChatColor> PlayerColors { get; set; }
-
-        #endregion
-
         public ClientOptionsViewModel()
         {
             Instance = this;
@@ -214,17 +177,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             SetKeySetting(Settings.Default.UseSpecialOn6, TetriNET.Client.Interfaces.Commands.UseSpecialOn6);
             SetKeySetting(Settings.Default.UseSpecialOnSelf, TetriNET.Client.Interfaces.Commands.UseSpecialOnSelf);
             SetKeySetting(Settings.Default.UseSpecialOnRandomOpponent, TetriNET.Client.Interfaces.Commands.UseSpecialOnRandomOpponent);
-
-            IsColorSchemeUsed = Settings.Default.IsColorSchemeUsed;
-            PlayerColors = new ObservableCollection<ChatColor>
-            {
-                ChatColor.LightSeaGreen, // 1
-                ChatColor.PaleVioletRed, // 2
-                ChatColor.Gold, // 3
-                ChatColor.MediumSlateBlue, // 4
-                ChatColor.LightGray, // 5
-                ChatColor.DodgerBlue, // 6
-            };
         }
 
         #region ViewModelBase

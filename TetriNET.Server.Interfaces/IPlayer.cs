@@ -3,28 +3,30 @@ using TetriNET.Common.Contracts;
 
 namespace TetriNET.Server.Interfaces
 {
-    public delegate void PlayerConnectionLostHandler(IPlayer player);
-
     public enum PlayerStates
     {
         Registered,
         Playing,
-        GameLost,
+        GameLost
     };
+
+    public delegate void ConnectionLostHandler(IPlayer player);
 
     public interface IPlayer : ITetriNETCallback
     {
-        event PlayerConnectionLostHandler OnConnectionLost;
+        event ConnectionLostHandler OnConnectionLost;
 
         string Name { get; }
         string Team { get; set; }
         int PieceIndex { get; set; }
         byte[] Grid { get; set; }
-        //
-        ITetriNETCallback Callback { get; } // should never be used by anything else then IPlayerManager and IPlayer
+
         //
         PlayerStates State { get; set; }
         DateTime LossTime { get; set; }
+
+        //
+        ITetriNETCallback Callback { get; } // should never be used by anything else then IPlayerManager/ISpectatorManager and IPlayer/ISpectator
 
         // Heartbeat management
         DateTime LastActionToClient { get; } // used to check if heartbeat is needed
@@ -35,5 +37,6 @@ namespace TetriNET.Server.Interfaces
 
         void ResetTimeout();
         void SetTimeout();
+
     }
 }

@@ -43,7 +43,7 @@ namespace TetriNET.ConsoleWCFServer.Player
 
         #region IPlayer
 
-        public event PlayerConnectionLostHandler OnConnectionLost;
+        public event ConnectionLostHandler OnConnectionLost;
 
         public string Name { get; private set; }
         public string Team { get; set; }

@@ -12,19 +12,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-            <converters:PlayerIdToBrushConverter x:Key="PlayerIdToBrushConverter"/>
             <ControlTemplate x:Key="PlayerDataTemplate" TargetType="ContentControl">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="[L]" Visibility="{Binding HasLost, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,2,0"/>
-                    <TextBlock Text="{Binding DisplayPlayerId}" Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    <TextBlock Text="." Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,2,0"/>
-                    <TextBlock Text="{Binding PlayerName}"/>
-                    <TextBlock Text="-" Visibility="{Binding IsPlayerInTeam, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2,0,2,0"/>
-                    <TextBlock Text="{Binding Team}" Visibility="{Binding IsPlayerInTeam, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                </StackPanel>
-            </ControlTemplate>
-            <ControlTemplate x:Key="PlayerColorDataTemplate" TargetType="ContentControl">
-                <StackPanel Orientation="Horizontal" Background="{Binding PlayerId, Converter={StaticResource PlayerIdToBrushConverter}}">
                     <TextBlock Text="[L]" Visibility="{Binding HasLost, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,2,0"/>
                     <TextBlock Text="{Binding DisplayPlayerId}" Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     <TextBlock Text="." Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,2,0"/>
@@ -40,15 +29,6 @@
             <RowDefinition Height="16"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid.Style>
-            <Style TargetType="Grid">
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsColorSchemeUsed}" Value="True">
-                        <Setter Property="Background" Value="{Binding PlayerId, Converter={StaticResource PlayerIdToBrushConverter}}" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-        </Grid.Style>
         <!-- http://stackoverflow.com/questions/11558298/contentpresenter-in-usercontrol -->
         <!-- http://www.codeproject.com/Articles/82464/How-to-Embed-Arbitrary-Content-in-a-WPF-Control -->
         <!-- http://stackoverflow.com/questions/5771362/wpf-how-to-set-the-data-template-trigger-for-content-control-->
@@ -56,29 +36,9 @@
             <ContentControl.Style>
                 <Style TargetType="ContentControl">
                     <Setter Property="Template" Value="{StaticResource PlayerDataTemplate}" />
-                    <!--<Style.Triggers>
-                        <DataTrigger Binding="{Binding IsColorSchemeUsed}" Value="True">
-                            <Setter Property="Template" Value="{StaticResource PlayerColorDataTemplate}" />
-                        </DataTrigger>
-                    </Style.Triggers>-->
                 </Style>
             </ContentControl.Style>
         </ContentControl>
-        <!--<StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" MaxWidth="192">
-            <TextBlock Text="[L]" Visibility="{Binding HasLost, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,2,0"/>
-            <TextBlock Text="{Binding DisplayPlayerId}" Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-            <TextBlock Text="." Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,2,0"/>
-            <TextBlock Text="{Binding PlayerName}"/>
-            <TextBlock Text="-" Visibility="{Binding IsPlayerInTeam, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2,0,2,0"/>
-            <TextBlock Text="{Binding Team}" Visibility="{Binding IsPlayerInTeam, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-        </StackPanel>-->
-        <!--<TextBlock HorizontalAlignment="Center" MaxWidth="192">
-            <TextBlock Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Run Text="{Binding DisplayPlayerId}"/>
-                <Run Text=". "/>
-            </TextBlock>
-            <Run Text="{Binding PlayerName}"/>
-        </TextBlock>-->
         <Border x:Name="Border" Grid.Row="1" Background="Green" BorderThickness="4">
             <Canvas x:Name="Canvas" VerticalAlignment="Top" HorizontalAlignment="Left" Width="192" Height="352">
                 <!-- will be filled with controls in ctor -->

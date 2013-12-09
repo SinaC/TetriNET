@@ -36,6 +36,7 @@ namespace TetriNET.ConsoleWCFServer
         private DateTime _lastHeartbeat;
 
         public string PlayerName { get; private set; }
+        public bool IsSpectator { get; private set; }
         public States State { get; private set; }
         public int PlayerId { get; private set; }
         public bool IsServerMaster { get; private set; }

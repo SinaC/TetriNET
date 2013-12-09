@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
@@ -6,7 +7,25 @@ using TetriNET.WPF_WCF_Client.ViewModels.Options;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
-    public class InGameChatEntry
+    public abstract class InGameChatEntry
+    {
+    }
+
+    public class PlayerLostEntry : InGameChatEntry
+    {
+        public int PlayerId { get; set; }
+        public string PlayerName { get; set; }
+    }
+
+    public class SelfSpecialEntry : InGameChatEntry
+    {
+        public int Id { get; set; }
+        public Specials Special { get; set; }
+        public int PlayerId { get; set; }
+        public string PlayerName { get; set; }
+    }
+
+    public class SpecialEntry : InGameChatEntry
     {
         public int Id { get; set; }
         public Specials Special { get; set; }
@@ -14,48 +33,38 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         public int SourceId { get; set; }
         public string Target { get; set; }
         public int TargetId { get; set; }
+    }
+
+    public class OneLineAddedEntry : InGameChatEntry
+    {
+        public int Id { get; set; }
+        public string Source { get; set; }
+        public int SourceId { get; set; }
+    }
+
+    public class MultiLineAddedEntry : InGameChatEntry
+    {
+        public int Id { get; set; }
+        public string Source { get; set; }
+        public int SourceId { get; set; }
         public int LinesAdded { get; set; }
-        public bool IsSelf { get; set; }
+    }
 
-        public bool IsColorSchemeUsed
-        {
-            get { return ClientOptionsViewModel.Instance == null || ClientOptionsViewModel.Instance.IsColorSchemeUsed; } // true if no instance (aka in designer mode)
-        }
+    public class AchievementEarnedEntry : InGameChatEntry
+    {
+        public int PlayerId { get; set; }
+        public string PlayerName { get; set; }
+        public string AchievementTitle { get; set; }
+    }
 
-        public bool IsAddOneLine
-        {
-            get { return LinesAdded == 1 && !IsColorSchemeUsed; }
-        }
-
-        public bool IsMoreThanOneLine
-        {
-            get { return LinesAdded > 1 && !IsColorSchemeUsed; }
-        }
-
-        public bool IsSpecial
-        {
-            get { return LinesAdded == 0 && !IsColorSchemeUsed; }
-        }
-
-        public bool IsColorAddOneLine
-        {
-            get { return LinesAdded == 1 && IsColorSchemeUsed; }
-        }
-
-        public bool IsColorMoreThanOneLine
-        {
-            get { return LinesAdded > 1 && IsColorSchemeUsed; }
-        }
-
-        public bool IsColorSpecial
-        {
-            get { return LinesAdded == 0 && IsColorSchemeUsed; }
-        }
+    public class SelfAchievementEarnedEntry : InGameChatEntry
+    {
+        public string AchievementTitle { get; set; }
     }
 
     public class InGameChatViewModel : ViewModelBase
     {
-        private const int MaxEntries = 12;
+        private const int MaxEntries = 100;
 
         private readonly ObservableCollection<InGameChatEntry> _entries = new ObservableCollection<InGameChatEntry>();
         public ObservableCollection<InGameChatEntry> Entries
@@ -63,39 +72,71 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             get { return _entries; }
         }
 
-        public void AddEntry(int id, Specials special, string source, int sourceId, string target, int targetId, bool isSelf)
+        public InGameChatViewModel()
+        {
+            Entries.Add(new OneLineAddedEntry
+            {
+                Id = 1,
+                Source = "JOEL0123456789012345",
+                SourceId = 1,
+            });
+            Entries.Add(new SpecialEntry
+            {
+                Id = 2,
+                Special = Specials.SwitchFields,
+                Source = "JOEL0123456789012345",
+                SourceId = 1,
+                Target = "SOMEONE0123456789012",
+                TargetId = 4,
+            });
+            Entries.Add(new MultiLineAddedEntry
+            {
+                Id = 3,
+                Source = "TSEKWA01234567890123",
+                SourceId = 5,
+                LinesAdded = 4,
+            });
+            Entries.Add(new SelfSpecialEntry
+            {
+                Id = 4,
+                Special = Specials.SwitchFields,
+                PlayerId = 1,
+                PlayerName = "TSEKWA01234567890123"
+            });
+            Entries.Add(new PlayerLostEntry
+            {
+                PlayerName = "JOEL0123456789012345"
+            });
+            Entries.Add(new AchievementEarnedEntry
+                {
+                    PlayerId = 1,
+                    PlayerName = "JOEL0123456789012345",
+                    AchievementTitle = "Sniper",
+                });
+            Entries.Add(new SelfAchievementEarnedEntry
+            {
+                AchievementTitle = "Run baby, Run",
+            });
+            for (int i = 5; i < 30; i++)
+            {
+                Entries.Add(new SelfSpecialEntry
+                {
+                    Id = i,
+                    Special = Specials.SwitchFields,
+                    PlayerId = i,
+                    PlayerName = String.Format("JOEL{0}", i),
+                });
+            }
+        }
+
+        public void AddEntry(InGameChatEntry entry)
         {
             ExecuteOnUIThread.Invoke(() =>
                 {
-                    Entries.Add(new InGameChatEntry
-                        {
-                            Id = id,
-                            Special = special,
-                            Source = source,
-                            SourceId = sourceId,
-                            Target = target,
-                            TargetId = targetId,
-                            IsSelf = isSelf,
-                        });
+                    Entries.Add(entry);
                     if (Entries.Count > MaxEntries)
                         Entries.RemoveAt(0);
                 });
-        }
-
-        public void AddEntry(int id, int linesAdded, string source, int sourceId)
-        {
-            ExecuteOnUIThread.Invoke(() =>
-            {
-                Entries.Add(new InGameChatEntry
-                {
-                    Id = id,
-                    LinesAdded = linesAdded,
-                    Source = source,
-                    SourceId = sourceId,
-                });
-                if (Entries.Count > MaxEntries)
-                    Entries.RemoveAt(0);
-            });
         }
 
         private void ClearEntries()
@@ -110,6 +151,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             oldClient.OnGameStarted -= OnGameStarted;
             oldClient.OnPlayerAddLines -= OnPlayerAddLines;
             oldClient.OnSpecialUsed -= OnSpecialUsed;
+            oldClient.OnPlayerLost -= OnPlayerLost;
+            oldClient.OnPlayerAchievementEarned -= OnPlayerAchievementEarned;
+            oldClient.OnAchievementEarned -= OnAchievementEarned;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
@@ -117,6 +161,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             newClient.OnGameStarted += OnGameStarted;
             newClient.OnPlayerAddLines += OnPlayerAddLines;
             newClient.OnSpecialUsed += OnSpecialUsed;
+            newClient.OnPlayerLost += OnPlayerLost;
+            newClient.OnPlayerAchievementEarned += OnPlayerAchievementEarned;
+            newClient.OnAchievementEarned += OnAchievementEarned;
         }
 
         #endregion
@@ -131,13 +178,84 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         private void OnPlayerAddLines(int playerId, string playerName, int specialId, int count)
         {
             if (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
-                AddEntry(specialId + 1, count, playerName, playerId);
+            {
+                if (count == 1)
+                    AddEntry(new OneLineAddedEntry
+                        {
+                            Id = specialId + 1,
+                            SourceId = playerId,
+                            Source = playerName,
+                        });
+                else
+                    AddEntry(new MultiLineAddedEntry
+                        {
+                            Id = specialId + 1,
+                            SourceId = playerId,
+                            Source = playerName,
+                            LinesAdded = count,
+                        });
+            }
         }
 
         private void OnSpecialUsed(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special)
         {
             if (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
-                AddEntry(specialId + 1, special, playerName, playerId, targetName, targetId, targetId == Client.PlayerId);
+            {
+                if (targetId == Client.PlayerId)
+                    AddEntry(new SelfSpecialEntry
+                        {
+                            Id = specialId + 1,
+                            Special = special,
+                            PlayerId = targetId,
+                            PlayerName = targetName,
+                        });
+                else
+                    AddEntry(new SpecialEntry
+                        {
+                            Id = specialId + 1,
+                            Special = special,
+                            SourceId = playerId,
+                            Source = playerName,
+                            TargetId = targetId,
+                            Target = targetName,
+                        });
+            }
+        }
+
+        private void OnPlayerLost(int playerId, string playerName)
+        {
+            if (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
+            {
+                AddEntry(new PlayerLostEntry
+                    {
+                        PlayerId = playerId,
+                        PlayerName = playerName,
+                    });
+            }
+        }
+
+        private void OnPlayerAchievementEarned(int playerId, string playerName, int achievementId, string achievementTitle)
+        {
+            if (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
+            {
+                AddEntry(new AchievementEarnedEntry
+                    {
+                        PlayerId = playerId,
+                        PlayerName = playerName,
+                        AchievementTitle = achievementTitle,
+                    });
+            }
+        }
+
+        private void OnAchievementEarned(IAchievement achievement, bool firstTime)
+        {
+            if (achievement != null && firstTime && (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying))
+            {
+                AddEntry(new SelfAchievementEarnedEntry
+                    {
+                        AchievementTitle = achievement.Title
+                    });
+            }
         }
 
         #endregion
@@ -147,39 +265,59 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
     {
         public InGameChatViewModelDesignData()
         {
-            Entries.Add(new InGameChatEntry
+            Entries.Add(new OneLineAddedEntry
             {
                 Id = 1,
                 Source = "JOEL0123456789012345",
                 SourceId = 1,
-                LinesAdded = 1,
             });
-            Entries.Add(new InGameChatEntry
+            Entries.Add(new SpecialEntry
             {
                 Id = 2,
+                Special = Specials.SwitchFields,
                 Source = "JOEL0123456789012345",
                 SourceId = 1,
                 Target = "SOMEONE0123456789012",
                 TargetId = 4,
-                Special = Specials.SwitchFields,
             });
-            Entries.Add(new InGameChatEntry
+            Entries.Add(new MultiLineAddedEntry
             {
                 Id = 3,
                 Source = "TSEKWA01234567890123",
                 SourceId = 5,
                 LinesAdded = 4,
             });
-            Entries.Add(new InGameChatEntry
+            Entries.Add(new SelfSpecialEntry
             {
                 Id = 4,
-                Source = "JOEL0123456789012345",
-                SourceId = 1,
-                Target = "JOEL0123456789012345",
-                TargetId = 1,
                 Special = Specials.SwitchFields,
-                IsSelf = true,
+                PlayerId = 1,
+                PlayerName = "TSEKWA01234567890123"
             });
+            Entries.Add(new PlayerLostEntry
+            {
+                PlayerName = "JOEL0123456789012345"
+            });
+            Entries.Add(new AchievementEarnedEntry
+                {
+                    PlayerId = 1,
+                    PlayerName = "JOEL0123456789012345",
+                    AchievementTitle = "Sniper",
+                });
+            Entries.Add(new SelfAchievementEarnedEntry
+            {
+                AchievementTitle = "Run baby, Run",
+            });
+            for (int i = 5; i < 30; i++)
+            {
+                Entries.Add(new SelfSpecialEntry
+                {
+                    Id = i,
+                    Special = Specials.SwitchFields,
+                    PlayerId = i,
+                    PlayerName = String.Format("JOEL{0}", i),
+                });
+            }
         }
     }
 }

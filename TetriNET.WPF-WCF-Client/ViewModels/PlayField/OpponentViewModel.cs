@@ -21,11 +21,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             get { return !string.IsNullOrWhiteSpace(Team); }
         }
 
-        public bool IsColorSchemeUsed
-        {
-            get { return ClientOptionsViewModel.Instance == null || ClientOptionsViewModel.Instance.IsColorSchemeUsed; } // true if no instance (aka in designer mode)
-        }
-
         private string _playerName;
         public string PlayerName
         {

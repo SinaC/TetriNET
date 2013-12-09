@@ -90,7 +90,8 @@ namespace TetriNET.WPF_WCF_Client.Helpers
                                 ExecuteOnUIThread.Invoke(() =>
                                     {
                                         ScrollViewer scrollViewer = VisualTree.GetDescendantByType<ScrollViewer>(listBox);
-                                        scrollViewer.ScrollToEnd();
+                                        if (scrollViewer != null)
+                                            scrollViewer.ScrollToEnd();
                                     });
                             }
                         });
