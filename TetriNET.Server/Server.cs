@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -39,6 +38,7 @@ namespace TetriNET.Server
         private readonly PieceQueue _pieceQueue;
         private readonly ManualResetEvent _stopBackgroundTaskEvent = new ManualResetEvent(false);
         private readonly IPlayerManager _playerManager;
+        private readonly ISpectatorManager _spectatorManager;
         private readonly List<IHost> _hosts;
 
         private GameOptions _options;
@@ -51,7 +51,7 @@ namespace TetriNET.Server
         public int SpecialId { get; private set; }
         public List<WinEntry> WinList { get; private set; }
 
-        public Server(IPlayerManager playerManager, params IHost[] hosts)
+        public Server(IPlayerManager playerManager, ISpectatorManager spectatorManager, params IHost[] hosts)
         {
             if (playerManager == null)
                 throw new ArgumentNullException("playerManager");
@@ -62,6 +62,7 @@ namespace TetriNET.Server
 
             _pieceQueue = new PieceQueue(() => RangeRandom.Random(_options.PieceOccurancies));
             _playerManager = playerManager;
+            _spectatorManager = spectatorManager;
             _hosts = hosts.ToList();
             
             WinList = new List<WinEntry>();
@@ -87,8 +88,12 @@ namespace TetriNET.Server
                 host.OnResetWinList += ResetWinListHandler;
                 host.OnFinishContinuousSpecial += FinishContinuousSpecialHandler;
                 host.OnEarnAchievement += EarnAchievementHandler;
+                host.OnSpectatorRegistered += RegisterSpectatorHandler;
+                host.OnSpectatorUnregistered += UnregisterSpectatorHandler;
+                host.OnSpectatorMessagePublished += PublishSpectatorMessageHandler;
 
                 host.OnPlayerLeft += PlayerLeftHandler;
+                host.OnSpectatorLeft += SpectatorLeftHandler;
 
                 Debug.Assert(Check.CheckEvents(host), "Every host events must be handled");
             }
@@ -125,9 +130,11 @@ namespace TetriNET.Server
             _stopBackgroundTaskEvent.Set();
             _cancellationTokenSource.Cancel();
 
-            // Inform players
-            foreach (IPlayer p in _playerManager.Players)
-                p.OnServerStopped();
+            // Inform players and spectators
+            //foreach (IPlayer p in _playerManager.Players)
+            //    p.OnServerStopped();
+            foreach (IEntity callback in Entities)
+                callback.OnServerStopped();
 
             // Stop hosts
             foreach (IHost host in _hosts)
@@ -181,7 +188,7 @@ namespace TetriNET.Server
                     Log.WriteLine(Log.LogLevels.Info, "Sudden death will be activated after {0} minutes and send lines every {1} seconds", _options.DelayBeforeSuddenDeath, _options.SuddenDeathTick);
                 }
 
-                // Send start game to every connected player
+                // Send game started to players
                 foreach (IPlayer p in _playerManager.Players)
                 {
                     p.PieceIndex = 0;
@@ -190,6 +197,10 @@ namespace TetriNET.Server
                     //p.OnGameStarted(firstPiece, secondPiece, thirdPiece, _options);
                     p.OnGameStarted(pieces, _options);
                 }
+                // Send game started to spectators
+                foreach(ISpectator s in _spectatorManager.Spectators)
+                    s.OnGameStarted(pieces, _options);
+
                 State = States.GameStarted;
 
                 Log.WriteLine(Log.LogLevels.Info, "Game started");
@@ -206,9 +217,10 @@ namespace TetriNET.Server
             {
                 State = States.GameFinished;
 
-                // Send start game to every connected player
-                foreach (IPlayer p in _playerManager.Players)
-                    p.OnGameFinished();
+                // Send game finished to players and spectators
+                //foreach (IPlayer p in _playerManager.Players)
+                foreach (IEntity callback in Entities)
+                    callback.OnGameFinished();
 
                 State = States.WaitingStartGame;
 
@@ -226,9 +238,10 @@ namespace TetriNET.Server
             {
                 State = States.GamePaused;
 
-                // Send pause to players
-                foreach (IPlayer p in _playerManager.Players)
-                    p.OnGamePaused();
+                // Send game paused to players and spectators
+                //foreach (IPlayer p in _playerManager.Players)
+                foreach (IEntity callback in Entities)
+                    callback.OnGamePaused();
 
                 Log.WriteLine(Log.LogLevels.Info, "Game paused");
             }
@@ -246,9 +259,10 @@ namespace TetriNET.Server
                 // Reset sudden death
                 _lastSuddenDeathAddLines = DateTime.Now; // TODO: a player, could pause<->resume forever to avoid sudden death
 
-                // Send resume to players
-                foreach (IPlayer p in _playerManager.Players)
-                    p.OnGameResumed();
+                // Send game resumed to players and spectators
+                //foreach (IPlayer p in _playerManager.Players)
+                foreach (IEntity callback in Entities)
+                    callback.OnGameResumed();
 
                 Log.WriteLine(Log.LogLevels.Info, "Game resumed");
             }
@@ -267,10 +281,11 @@ namespace TetriNET.Server
 
                 // Inform player
                 IPlayer serverMaster = _playerManager.ServerMaster;
-                foreach (IPlayer p in _playerManager.Players)
+                //foreach (IPlayer p in _playerManager.Players)
+                foreach (IEntity callback in Entities)
                 {
-                    p.OnPublishServerMessage(String.Format("Win list resetted by {0}", serverMaster == null ? "SERVER" : serverMaster.Name));
-                    p.OnWinListModified(WinList);
+                    callback.OnPublishServerMessage(String.Format("Win list resetted by {0}", serverMaster == null ? "SERVER" : serverMaster.Name));
+                    callback.OnWinListModified(WinList);
                 }
                 Log.WriteLine(Log.LogLevels.Info, "Win list resetted");
             }
@@ -318,6 +333,11 @@ namespace TetriNET.Server
             entry.Score += score;
         }
 
+        private IEnumerable<IEntity> Entities
+        {
+            get { return _playerManager.Players.Cast<IEntity>().Union(_spectatorManager.Spectators); }
+        }
+
         #region IHost event handler
 
         private void RegisterPlayerHandler(IPlayer player, int playerId)
@@ -335,13 +355,21 @@ namespace TetriNET.Server
                 if (!String.IsNullOrWhiteSpace(p.Team))
                     player.OnPlayerTeamChanged(id, p.Team);
             }
-
-            // Inform players about new played connected
-            foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+            // Inform new player about spectators
+            foreach (ISpectator s in _spectatorManager.Spectators)
             {
-                p.OnPlayerJoined(playerId, player.Name);
-                //p.OnPlayerTeamChanged(playerId, player.Team); player has not team yet
+                int id = _spectatorManager.GetId(s);
+                player.OnSpectatorJoined(id, s.Name);
             }
+
+            // Inform other players and spectators about new player connected
+            //foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+            //{
+            //    p.OnPlayerJoined(playerId, player.Name);
+            //    //p.OnPlayerTeamChanged(playerId, player.Team); player has not team yet
+            //}
+            foreach (IEntity callback in Entities.Where(x => x != player))
+                callback.OnPlayerJoined(playerId, player.Name);
 
             // Server master
             IPlayer serverMaster = _playerManager.ServerMaster;
@@ -374,20 +402,24 @@ namespace TetriNET.Server
             if (String.IsNullOrWhiteSpace(team))
                 team = null;
             player.Team = team;
-            // Send message to players
+            // Send message to players and spectators
             int id = _playerManager.GetId(player);
-            foreach(IPlayer p in _playerManager.Players)
-                p.OnPlayerTeamChanged(id, team);
+            //foreach(IPlayer p in _playerManager.Players)
+            //    p.OnPlayerTeamChanged(id, team);
+            foreach (IEntity callback in Entities)
+                callback.OnPlayerTeamChanged(id, team);
         }
 
         private void PublishMessageHandler(IPlayer player, string msg)
         {
             Log.WriteLine(Log.LogLevels.Info, "PublishMessage:{0}:{1}", player.Name, msg);
 
-            // Send message to players
+            // Send message to players and spectators
             //foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
-            foreach (IPlayer p in _playerManager.Players)
-                p.OnPublishPlayerMessage(player.Name, msg);
+            //foreach (IPlayer p in _playerManager.Players)
+            //    p.OnPublishPlayerMessage(player.Name, msg);
+            foreach (IEntity callback in Entities)
+                callback.OnPublishPlayerMessage(player.Name, msg);
         }
 
         private void PlacePieceHandler(IPlayer player, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid)
@@ -547,8 +579,60 @@ namespace TetriNET.Server
             Log.WriteLine(Log.LogLevels.Info, "EarnAchievementHandler:{0} {1} {2}", player.Name, achievementId, achievementTitle);
 
             int id = _playerManager.GetId(player);
-            foreach(IPlayer p in _playerManager.Players.Where(x => x != player))
-                p.OnAchievementEarned(id, achievementId, achievementTitle);
+            //foreach(IPlayer p in _playerManager.Players.Where(x => x != player))
+            //    p.OnAchievementEarned(id, achievementId, achievementTitle);
+            foreach (IEntity callback in Entities.Where(x => x != player))
+                callback.OnAchievementEarned(id, achievementId, achievementTitle);
+        }
+
+        private void RegisterSpectatorHandler(ISpectator spectator, int spectatorId)
+        {
+            Log.WriteLine(Log.LogLevels.Info, "New spectator:[{0}]{1}", spectatorId, spectator.Name);
+
+            // Send spectator id back to spectator
+            spectator.OnSpectatorRegistered(RegistrationResults.RegistrationSuccessful, spectatorId, State == States.GameStarted || State == States.GamePaused);
+
+            // Inform new spectator about players
+            foreach (IPlayer p in _playerManager.Players)
+            {
+                int id = _playerManager.GetId(p);
+                spectator.OnPlayerJoined(id, p.Name);
+                if (!String.IsNullOrWhiteSpace(p.Team))
+                    spectator.OnPlayerTeamChanged(id, p.Team);
+            }
+            // Inform new spectator about other spectators
+            foreach(ISpectator s in _spectatorManager.Spectators.Where(x => x != spectator))
+            {
+                int id = _spectatorManager.GetId(s);
+                spectator.OnSpectatorJoined(id, s.Name);
+            }
+
+            // Inform players and other spectators about new spectator connected
+            //foreach (IPlayer p in _playerManager.Players)
+            //    p.OnSpectatorJoined(spectatorId, spectator.Name);
+            foreach (IEntity callback in Entities.Where(x => x != spectator))
+                callback.OnSpectatorJoined(spectatorId, spectator.Name);
+
+            // Send win list
+            spectator.OnWinListModified(WinList);
+        }
+
+        private void UnregisterSpectatorHandler(ISpectator spectator)
+        {
+            Log.WriteLine(Log.LogLevels.Info, "Unregister spectator:{0}", spectator.Name);
+
+            SpectatorLeftHandler(spectator, LeaveReasons.Disconnected);
+        }
+
+        private void PublishSpectatorMessageHandler(ISpectator spectator, string msg)
+        {
+            Log.WriteLine(Log.LogLevels.Info, "PublishSpectatorMessageHandler:{0}:{1}", spectator.Name, msg);
+
+            // Send message to players and spectators
+            //foreach (IPlayer p in _playerManager.Players)
+            //    p.OnPublishPlayerMessage(spectator.Name, msg);
+            foreach (IEntity callback in Entities)
+                callback.OnPublishPlayerMessage(spectator.Name, msg);
         }
 
         private void PlayerLeftHandler(IPlayer player, LeaveReasons reason)
@@ -581,15 +665,19 @@ namespace TetriNET.Server
                     Log.WriteLine(Log.LogLevels.Info, "Game finished by forfeit no winner");
                     State = States.GameFinished;
                     // Send game finished (no winner)
-                    foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
-                        p.OnGameFinished();
+                    //foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
+                    //    p.OnGameFinished();
+                    foreach (IEntity callback in Entities.Where(x => x != player))
+                        callback.OnGameFinished();
                     State = States.WaitingStartGame;
                 }
             }
 
-            // Inform players except disconnected player
-            foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
-                p.OnPlayerLeft(id, player.Name, reason);
+            // Inform players and spectators except disconnected player
+            //foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+            //    p.OnPlayerLeft(id, player.Name, reason);
+            foreach (IEntity callback in Entities.Where(x => x != player))
+                callback.OnPlayerLeft(id, player.Name, reason);
 
             // Send new server master id
             if (wasServerMaster)
@@ -598,10 +686,37 @@ namespace TetriNET.Server
                 if (serverMaster != null)
                 {
                     int serverMasterId = _playerManager.GetId(serverMaster);
-                    foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
-                        p.OnServerMasterChanged(serverMasterId);
+                    //foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+                    //    p.OnServerMasterChanged(serverMasterId);
+                    foreach (IEntity callback in Entities.Where(x => x != player))
+                        callback.OnServerMasterChanged(serverMasterId);
                 }
             }
+        }
+
+        private void SpectatorLeftHandler(ISpectator spectator, LeaveReasons reason)
+        {
+            Log.WriteLine(Log.LogLevels.Info, "Spectator left:{0} {1}", spectator.Name, reason);
+
+            // Remove from spectator
+            int id;
+            lock (_spectatorManager.LockObject)
+            {
+                // Get id
+                id = _spectatorManager.GetId(spectator);
+                // Remove spectator from spectator list
+                _spectatorManager.Remove(spectator);
+            }
+
+            // Clean host tables
+            foreach (IHost host in _hosts)
+                host.RemoveSpectator(spectator);
+
+            // Inform players and spectators except disconnected spectator
+            //foreach (ISpectator s in _spectatorManager.Spectators.Where(x => x != spectator))
+            //    s.OnSpectatorLeft(id, spectator.Name, reason);
+            foreach (IEntity callback in Entities.Where(x => x != spectator))
+                callback.OnSpectatorLeft(id, spectator.Name, reason);
         }
 
         #endregion
@@ -715,11 +830,12 @@ namespace TetriNET.Server
             for (int i = 0; i < PiecesSendOnPlacePiece; i++)
                 nextPiecesToSend.Add(_pieceQueue[highestIndex + i]);
 
-            // Send grid to other playing players
+            // Send grid to other playing players and spectators
             int playerId = _playerManager.GetId(player);
             //foreach (IPlayer p in _playerManager.Players.Where(p => p != player && p.State == PlayerStates.Playing))
-            foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
-                p.OnGridModified(playerId, grid);
+            //foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
+            foreach(IEntity callback in Entities.Where(x => x != player))
+                callback.OnGridModified(playerId, grid);
 
             //Logger.Log.WriteLine("Send next piece {0} {1} to {2}", nextPieceToSend, indexToSend, player.Name);
             //// Send next piece
@@ -771,8 +887,9 @@ namespace TetriNET.Server
                 // They will send their grid when receiving them (with an optional capping)
             }
             // Inform about special use
-            foreach (IPlayer p in _playerManager.Players)
-                p.OnSpecialUsed(specialId, playerId, targetId, special);
+            //foreach (IPlayer p in _playerManager.Players)
+            foreach (IEntity callback in Entities)
+                callback.OnSpecialUsed(specialId, playerId, targetId, special);
         }
 
         private void SendLines(IPlayer player, int count)
@@ -787,8 +904,9 @@ namespace TetriNET.Server
             SpecialId++;
             // Send lines to everyone including sender (so attack msg can be displayed)
             //foreach (IPlayer p in _playerManager.Players.Where(x => x.State == PlayerStates.Playing))
-            foreach (IPlayer p in _playerManager.Players)
-                p.OnPlayerAddLines(specialId, playerId, count);
+            //foreach (IPlayer p in _playerManager.Players)
+            foreach (IEntity callback in Entities)
+                callback.OnPlayerAddLines(specialId, playerId, count);
         }
 
         private void ModifyGrid(IPlayer player, byte[] grid)
@@ -800,8 +918,9 @@ namespace TetriNET.Server
             // Get id
             int id = _playerManager.GetId(player);
             // Send grid modification to everyone except sender
-            foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
-                p.OnGridModified(id, player.Grid);
+            //foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
+            foreach (IEntity callback in Entities.Where(x => x != player))
+                callback.OnGridModified(id, player.Grid);
         }
 
         private void GameLost(IPlayer player)
@@ -814,10 +933,11 @@ namespace TetriNET.Server
                 player.State = PlayerStates.GameLost;
                 player.LossTime = DateTime.Now;
 
-                // Inform players
+                // Inform other players and spectators
                 int id = _playerManager.GetId(player);
-                foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
-                    p.OnPlayerLost(id);
+                //foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
+                foreach (IEntity callback in Entities.Where(x => x != player))
+                    callback.OnPlayerLost(id);
 
                 //
                 int playingCount = _playerManager.Players.Count(p => p.State == PlayerStates.Playing);
@@ -825,9 +945,10 @@ namespace TetriNET.Server
                 {
                     Log.WriteLine(Log.LogLevels.Info, "Game finished with only one player playing, no winner");
                     State = States.GameFinished;
-                    // Send game finished (no winner)
-                    foreach (IPlayer p in _playerManager.Players)
-                        p.OnGameFinished();
+                    // Send game finished (no winner) to players and spectators
+                    //foreach (IPlayer p in _playerManager.Players)
+                    foreach (IEntity callback in Entities)
+                        callback.OnGameFinished();
                     State = States.WaitingStartGame;
                 }
                 else if (playingCount == 1) // only one playing left
@@ -852,11 +973,12 @@ namespace TetriNET.Server
                     }
 
                     // Send winner, game finished and win list
-                    foreach (IPlayer p in _playerManager.Players)
+                    //foreach (IPlayer p in _playerManager.Players)
+                    foreach (IEntity callback in Entities)
                     {
-                        p.OnPlayerWon(winnerId);
-                        p.OnGameFinished();
-                        p.OnWinListModified(WinList);
+                        callback.OnPlayerWon(winnerId);
+                        callback.OnGameFinished();
+                        callback.OnWinListModified(WinList);
                     }
                     State = States.WaitingStartGame;
                 }
@@ -872,8 +994,9 @@ namespace TetriNET.Server
             // Get id
             int id = _playerManager.GetId(player);
             // Send to everyone except sender
-            foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
-                p.OnContinuousSpecialFinished(id, special);
+            //foreach (IPlayer p in _playerManager.Players.Where(p => p != player)).
+            foreach (IEntity callback in Entities.Where(x => x != player))
+                callback.OnContinuousSpecialFinished(id, special);
         }
 
         #endregion
@@ -931,6 +1054,26 @@ namespace TetriNET.Server
                     if (delayFromPreviousHeartbeat.TotalMilliseconds > HeartbeatDelay)
                         p.OnHeartbeatReceived();
                 }
+                // Check spectator timeout + send heartbeat if needed
+                foreach (ISpectator s in _spectatorManager.Spectators)
+                {
+                    // Check player timeout
+                    TimeSpan timespan = DateTime.Now - s.LastActionFromClient;
+                    if (timespan.TotalMilliseconds > TimeoutDelay && IsTimeoutDetectionActive)
+                    {
+                        Log.WriteLine(Log.LogLevels.Info, "Timeout++ for player {0}", s.Name);
+                        // Update timeout count
+                        s.SetTimeout();
+                        if (s.TimeoutCount >= MaxTimeoutCountBeforeDisconnection)
+                            SpectatorLeftHandler(s, LeaveReasons.Timeout);
+                    }
+
+                    // Send heartbeat if needed
+                    TimeSpan delayFromPreviousHeartbeat = DateTime.Now - s.LastActionToClient;
+                    if (delayFromPreviousHeartbeat.TotalMilliseconds > HeartbeatDelay)
+                        s.OnHeartbeatReceived();
+                }
+
 
                 // Stop task if stop event is raised
                 if (_stopBackgroundTaskEvent.WaitOne(10))

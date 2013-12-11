@@ -9,6 +9,7 @@ using TetriNET.Common.Logger;
 using TetriNET.ConsoleWCFServer.Ban;
 using TetriNET.ConsoleWCFServer.Host;
 using TetriNET.ConsoleWCFServer.Player;
+using TetriNET.ConsoleWCFServer.Spectator;
 using TetriNET.Server.Interfaces;
 
 namespace TetriNET.ConsoleWCFServer
@@ -47,15 +48,26 @@ namespace TetriNET.ConsoleWCFServer
 
             //
             PlayerManager playerManager = new PlayerManager(6);
+            SpectatorManager spectatorManager = new SpectatorManager(10);
 
             //
-            Server.WCFHost.WCFHost wcfHost = new Server.WCFHost.WCFHost(playerManager, banManager, (playerName, callback) => new Player.Player(playerName, callback))
+            Server.WCFHost.WCFHost wcfHost = new Server.WCFHost.WCFHost(
+                playerManager, 
+                spectatorManager, 
+                banManager, 
+                (playerName, callback) => new Player.Player(playerName, callback),
+                (spectatorName, callback) => new Spectator.Spectator(spectatorName, callback))
             {
                 Port = ConfigurationManager.AppSettings["port"]
             };
 
             //
-            BuiltInHost builtInHost = new BuiltInHost(playerManager, banManager, (playerName, callback) => new Player.Player(playerName, callback));
+            BuiltInHost builtInHost = new BuiltInHost(
+                playerManager,
+                spectatorManager,
+                banManager,
+                (playerName, callback) => new Player.Player(playerName, callback),
+                (spectatorName, callback) => new Spectator.Spectator(spectatorName, callback));
 
             //
             //SocketHost socketHost = new SocketHost(playerManager, (playerName, callback) => new Player(playerName, callback))
@@ -71,7 +83,7 @@ namespace TetriNET.ConsoleWCFServer
             };
 
             //
-            Server.Server server = new Server.Server(playerManager, wcfHost, builtInHost);
+            Server.Server server = new Server.Server(playerManager, spectatorManager, wcfHost, builtInHost);
             //Server server = new Server(playerManager, socketHost);
 
             //

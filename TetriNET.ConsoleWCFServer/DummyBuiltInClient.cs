@@ -328,6 +328,21 @@ namespace TetriNET.ConsoleWCFServer
             Log.WriteLine(Log.LogLevels.Info, "OnAchievementEarned[{0}]:{1} {2} {3}", PlayerName, playerId, achievementId, achievementTitle);
         }
 
+        public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted)
+        {
+            Log.WriteLine(Log.LogLevels.Info, "OnSpectatorRegistered[{0}]:{1} => {2} {3}", PlayerName, result, spectatorId, gameStarted);
+        }
+
+        public void OnSpectatorJoined(int spectatorId, string name)
+        {
+            Log.WriteLine(Log.LogLevels.Info, "OnSpectatorJoined[{0}]:{1}[{2}]", PlayerName, name, spectatorId);
+        }
+
+        public void OnSpectatorLeft(int spectatorId, string name, LeaveReasons reason)
+        {
+            Log.WriteLine(Log.LogLevels.Info, "OnSpectatorLeft[{0}]:{1}[{2}] {3}", PlayerName, name, spectatorId, reason);
+        }
+
         #endregion
 
         private void Register(string playerName)

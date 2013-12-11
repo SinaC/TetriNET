@@ -77,5 +77,16 @@ namespace TetriNET.Common.Contracts
 
         [OperationContract(IsOneWay = true)]
         void OnAchievementEarned(int playerId, int achievementId, string achievementTitle);
+
+        //
+        [OperationContract(IsOneWay = true)]
+        void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted);
+
+        [OperationContract(IsOneWay = true)]
+        void OnSpectatorJoined(int spectatorId, string name);
+
+        [OperationContract(IsOneWay = true)]
+        void OnSpectatorLeft(int spectatorId, string name, LeaveReasons reason);
+
     }
 }

@@ -77,19 +77,26 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Text="Attacks/Defenses" HorizontalAlignment="Left" />
-        <ListBox 
-            Grid.Row="1" IsTabStop="False"
+        <ItemsControl 
+            Grid.Row="1" IsTabStop="False" Focusable="False" FocusManager.IsFocusScope="False"
             HorizontalAlignment="Left" VerticalAlignment="Top"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            Background="White" Width="300" MaxWidth="300"
+            helpers:ItemsControlExtenders.AutoScrollToEnd="True"
+            Background="White" Width="300" MaxWidth="300" Height="Auto" 
             BorderBrush="Transparent"
-            helpers:ListBoxExtenders.AutoScrollToEnd="True"
             ItemsSource="{Binding Entries, Mode=OneWay}">
-            <ListBox.ItemTemplate>
+            <ItemsControl.Template>
+                <ControlTemplate>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ItemsControl.Template>
+            <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <ContentControl Content="{Binding}" IsTabStop="False"/>
                 </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </UserControl>

@@ -19,6 +19,7 @@ namespace TetriNET.Client
     public sealed class Client : ITetriNETCallback, IClient
     {
         private const int MaxPlayers = 6;
+        private const int MaxSpectators = 10;
         private const int MaxLevel = 100;
         private const int GameTimerIntervalStartValue = 1050; // level 0: 1050, level 1: 1040, ..., level 100: 50
         private const int HeartbeatDelay = 300; // in ms
@@ -47,6 +48,7 @@ namespace TetriNET.Client
         private readonly Func<Pieces, int, int, int, int, bool, IPiece> _createPieceFunc;
         private readonly Func<IBoard> _createBoardFunc;
         private readonly PlayerData[] _playersData = new PlayerData[MaxPlayers];
+        private readonly SpectatorData[] _spectatorData = new SpectatorData[MaxSpectators];
         private readonly ManualResetEvent _stopBackgroundTaskEvent = new ManualResetEvent(false);
         private readonly PieceArray _pieces;
         private readonly Inventory _inventory;
@@ -58,6 +60,8 @@ namespace TetriNET.Client
         public ServerStates ServerState { get; private set; }
 
         private IProxy _proxy;
+        private ISpectatorProxy _proxySpectator;
+        private bool _isSpectator;
         private int _clientPlayerId;
         private DateTime _lastActionFromServer;
         private int _timeoutCount;
@@ -192,6 +196,7 @@ namespace TetriNET.Client
 
                 if (playerId >= 0 && playerId < MaxPlayers)
                 {
+                    _isSpectator = false;
                     _clientPlayerId = playerId;
                     PlayerData player = new PlayerData
                     {
@@ -728,6 +733,86 @@ namespace TetriNET.Client
             }
         }
 
+        public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool isGameStarted)
+        {
+            ResetTimeout();
+            if (result == RegistrationResults.RegistrationSuccessful && State == States.Registering)
+            {
+                Log.WriteLine(Log.LogLevels.Info, "Registered as spectator {0} game started {1}", spectatorId, isGameStarted);
+
+                if (spectatorId >= 0 && spectatorId < MaxSpectators)
+                {
+                    _isSpectator = true;
+                    _clientPlayerId = spectatorId;
+                    SpectatorData player = new SpectatorData
+                    {
+                        Name = Name,
+                        SpectatorId = spectatorId
+                    };
+                    _spectatorData[_clientPlayerId] = player;
+
+                    State = States.Registered;
+                    ServerState = isGameStarted ? ServerStates.Playing : ServerStates.Waiting;// TODO: handle server paused
+
+                    if (ClientOnSpectatorRegistered != null)
+                        ClientOnSpectatorRegistered(RegistrationResults.RegistrationSuccessful, spectatorId);
+                }
+                else
+                {
+                    State = States.Created;
+                    IsServerMaster = false;
+                    Log.WriteLine(Log.LogLevels.Warning, "Wrong id {0}", spectatorId);
+
+                    if (ClientOnSpectatorRegistered != null)
+                        ClientOnSpectatorRegistered(RegistrationResults.RegistrationFailedInvalidId, -1);
+                }
+            }
+            else
+            {
+                State = States.Created;
+                IsServerMaster = false;
+
+                if (ClientOnSpectatorRegistered != null)
+                    ClientOnSpectatorRegistered(result, -1);
+
+                Log.WriteLine(Log.LogLevels.Info, "Registration failed {0}", result);
+            }
+        }
+
+        public void OnSpectatorJoined(int spectatorId, string name)
+        {
+            Log.WriteLine(Log.LogLevels.Debug, "Spectator {0}[{1}] joined", name, spectatorId);
+
+            ResetTimeout();
+            // Don't update ourself
+            if (spectatorId != _clientPlayerId && spectatorId >= 0 && spectatorId < MaxSpectators)
+            {
+                SpectatorData spectatorData = new SpectatorData
+                {
+                    Name = name,
+                    SpectatorId = spectatorId
+                };
+                _spectatorData[spectatorId] = spectatorData;
+
+                if (ClientOnSpectatorJoined != null)
+                    ClientOnSpectatorJoined(spectatorId, name);
+            }
+        }
+
+        public void OnSpectatorLeft(int spectatorId, string name, LeaveReasons reason)
+        {
+            Log.WriteLine(Log.LogLevels.Debug, "Spectator {0}[{1}] left ({2})", name, spectatorId, reason);
+
+            ResetTimeout();
+            if (spectatorId != _clientPlayerId && spectatorId >= 0 && spectatorId < MaxPlayers)
+            {
+                _spectatorData[spectatorId] = null;
+
+                if (ClientOnSpectatorLeft != null)
+                    ClientOnSpectatorLeft(spectatorId, name, reason);
+            }
+        }
+
         #endregion
 
         private static double ComputeGameTimerInterval(int level)
@@ -994,9 +1079,18 @@ namespace TetriNET.Client
             IsServerMaster = false;
             _clientPlayerId = -1;
 
-            _proxy.OnConnectionLost -= ConnectionLostHandler;
-            _proxy.Disconnect();
-            _proxy = null;
+            if (_proxy != null)
+            {
+                _proxy.OnConnectionLost -= ConnectionLostHandler;
+                _proxy.Disconnect();
+                _proxy = null;
+            }
+            if (_proxySpectator != null)
+            {
+                _proxySpectator.OnConnectionLost -= ConnectionLostHandler;
+                _proxySpectator.Disconnect();
+                _proxySpectator = null;
+            }
         }
 
         private void GameTimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
@@ -1021,6 +1115,11 @@ namespace TetriNET.Client
         public string Name { get; private set; }
 
         public string Team { get; private set; }
+
+        public bool IsSpectator
+        {
+            get { return _isSpectator; }
+        }
 
         public int PlayerId
         {
@@ -1370,6 +1469,27 @@ namespace TetriNET.Client
             remove { ClientOnPlayerAchievementEarned -= value; }
         }
 
+        private event ClientSpectatorRegisteredHandler ClientOnSpectatorRegistered;
+        event ClientSpectatorRegisteredHandler IClient.OnSpectatorRegistered
+        {
+            add { ClientOnSpectatorRegistered += value; }
+            remove { ClientOnSpectatorRegistered -= value; }
+        }
+
+        private event ClientSpectatorJoinedHandler ClientOnSpectatorJoined;
+        event ClientSpectatorJoinedHandler IClient.OnSpectatorJoined
+        {
+            add { ClientOnSpectatorJoined += value; }
+            remove { ClientOnSpectatorJoined -= value; }
+        }
+
+        private event ClientSpectatorLeftHandler ClientOnSpectatorLeft;
+        event ClientSpectatorLeftHandler IClient.OnSpectatorLeft
+        {
+            add { ClientOnSpectatorLeft += value; }
+            remove { ClientOnSpectatorLeft -= value; }
+        }
+
         public void Dump()
         {
             // Players
@@ -1413,12 +1533,12 @@ namespace TetriNET.Client
             // TODO: current & next piece
         }
 
-        public bool ConnectAndRegister(Func<ITetriNETCallback, IProxy> createProxyFunc, string name)
+        public bool ConnectAndRegisterAsPlayer(Func<ITetriNETCallback, IProxy> createProxyFunc, string name)
         {
             if (createProxyFunc == null)
                 throw new ArgumentNullException("createProxyFunc");
 
-            if (_proxy != null)
+            if (_proxy != null || _proxySpectator != null)
                 return false; // should disconnect first
 
             try
@@ -1434,7 +1554,33 @@ namespace TetriNET.Client
             }
             catch(Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Problem in ConnectAndRegister. Exception:{0}", ex.ToString());
+                Log.WriteLine(Log.LogLevels.Error, "Problem in ConnectAndRegisterAsPlayer. Exception:{0}", ex.ToString());
+                return false;
+            }
+        }
+
+        public bool ConnectAndRegisterAsSpectator(Func<ITetriNETCallback, ISpectatorProxy> createSpectatorProxyFunc, string name)
+        {
+            if (createSpectatorProxyFunc == null)
+                throw new ArgumentNullException("createSpectatorProxyFunc");
+
+            if (_proxy != null || _proxySpectator != null)
+                return false; // should disconnect first
+
+            try
+            {
+                _proxySpectator = createSpectatorProxyFunc(this);
+                _proxySpectator.OnConnectionLost += ConnectionLostHandler;
+
+                State = States.Registering;
+                Name = name;
+                _proxySpectator.RegisterSpectator(this, name);
+               
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLine(Log.LogLevels.Error, "Problem in ConnectAndRegisterAsSpectator. Exception:{0}", ex.ToString());
                 return false;
             }
         }
@@ -1444,9 +1590,12 @@ namespace TetriNET.Client
             State = States.Created;
             IsServerMaster = false;
             _clientPlayerId = -1;
+            _isSpectator = false;
 
             if (_proxy != null)
                 _proxy.UnregisterPlayer(this);
+            if (_proxySpectator != null)
+                _proxySpectator.UnregisterSpectator(this);
 
             if (ClientOnPlayerUnregistered != null)
                 ClientOnPlayerUnregistered();
@@ -1514,7 +1663,12 @@ namespace TetriNET.Client
         public void PublishMessage(string msg)
         {
             if (State == States.Registered || State == States.Playing)
-                _proxy.PublishMessage(this, msg);
+            {
+                if (IsSpectator)
+                    _proxySpectator.PublishSpectatorMessage(this, msg);
+                else
+                    _proxy.PublishMessage(this, msg);
+            }
         }
 
         public void Hold()

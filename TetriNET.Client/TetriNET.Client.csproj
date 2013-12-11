@@ -39,6 +39,7 @@
     <Compile Include="PieceArray.cs" />
     <Compile Include="PlayerData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpectatorData.cs" />
     <Compile Include="Statistics.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -44,7 +44,7 @@ namespace TetriNET.ConsoleWCFClient
             //IClient client = new Client.Client((piece, posX, posY, orientation, index) => new MutatedZ(posX, posY, orientation, index), () => new Board(12, 22));
 
             string baseAddress = ConfigurationManager.AppSettings["address"];
-            client.ConnectAndRegister(callback => new WCFProxy(callback, baseAddress), name);
+            client.ConnectAndRegisterAsPlayer(callback => new WCFProxy(callback, baseAddress), name);
 
             //
             GameController.GameController controller = new GameController.GameController(client);

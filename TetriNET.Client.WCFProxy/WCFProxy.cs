@@ -24,28 +24,17 @@ namespace TetriNET.Client.WCFProxy
                 throw new ArgumentNullException("address");
 
             LastActionToServer = DateTime.Now;
-            string address1 = address;
 
             // Get WCF endpoint
             EndpointAddress endpointAddress = null;
-            if (String.IsNullOrEmpty(address1) || address1.ToLower() == "auto")
+            if (String.IsNullOrEmpty(address) || address.ToLower() == "auto")
             {
-                Log.WriteLine(Log.LogLevels.Debug, "Searching IWCFTetriNET server");
-                EndpointAddress[] endpointAddresses = DiscoveryHelper.DiscoverAddresses<IWCFTetriNET>();
-                if (endpointAddresses != null && endpointAddresses.Any())
-                {
-                    foreach (EndpointAddress endpoint in endpointAddresses)
-                        Log.WriteLine(Log.LogLevels.Debug, "{0}:\t{1}", Array.IndexOf(endpointAddresses, endpoint), endpoint.Uri);
-                    Log.WriteLine(Log.LogLevels.Debug, "Selecting first server");
-                    endpointAddress = endpointAddresses[0];
-                }
-                else
-                {
-                    Log.WriteLine(Log.LogLevels.Debug, "No server found");
-                }
+                List<EndpointAddress> addresses = DiscoverEndpoints().ToList();
+                if (addresses.Any())
+                    endpointAddress = addresses[0];
             }
             else
-                endpointAddress = new EndpointAddress(address1);
+                endpointAddress = new EndpointAddress(address);
 
             // Create WCF proxy from endpoint
             if (endpointAddress != null)
@@ -63,6 +52,12 @@ namespace TetriNET.Client.WCFProxy
 
         public static List<string> DiscoverHosts()
         {
+            IEnumerable<EndpointAddress> addresses = DiscoverEndpoints();
+            return addresses.Select(x => x.Uri.ToString()).ToList();
+        }
+
+        private static IEnumerable<EndpointAddress> DiscoverEndpoints()
+        {
             Log.WriteLine(Log.LogLevels.Debug, "Searching IWCFTetriNET server");
             EndpointAddress[] endpointAddresses = DiscoveryHelper.DiscoverAddresses<IWCFTetriNET>();
             if (endpointAddresses != null && endpointAddresses.Any())
@@ -71,12 +66,12 @@ namespace TetriNET.Client.WCFProxy
                     Log.WriteLine(Log.LogLevels.Debug, "{0}:\t{1}", Array.IndexOf(endpointAddresses, endpoint), endpoint.Uri);
                 Log.WriteLine(Log.LogLevels.Debug, "Selecting first server");
 
-                return endpointAddresses.Select(x => x.Uri.ToString()).ToList();
+                return endpointAddresses;
             }
             else
             {
                 Log.WriteLine(Log.LogLevels.Debug, "No server found");
-                return null;
+                return Enumerable.Empty<EndpointAddress>();
             }
         }
 
@@ -222,6 +217,26 @@ namespace TetriNET.Client.WCFProxy
         public void EarnAchievement(ITetriNETCallback callback, int achievementId, string achievementTitle)
         {
             ExceptionFreeAction(() => _proxy.EarnAchievement(achievementId, achievementTitle), "EarnAchievement");
+        }
+
+        #endregion
+
+        #region ITetriNETSpectator
+
+        public void RegisterSpectator(string spectatorName)
+        {
+        }
+
+        public void UnregisterSpectator()
+        {
+        }
+
+        public void HeartbeatSpectator()
+        {
+        }
+
+        public void PublishSpectatorMessage(string msg)
+        {
         }
 
         #endregion

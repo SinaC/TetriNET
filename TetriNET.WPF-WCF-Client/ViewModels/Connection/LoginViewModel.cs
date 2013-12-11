@@ -156,7 +156,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         private void ConnectDisconnect()
         {
-            //Mouse.OverrideCursor = Cursors.Wait;
             try
             {
                 IsProgressBarVisible = true;
@@ -185,7 +184,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                         Settings.Default.Save();
                     }
 
-                    bool connected = Client.ConnectAndRegister(callback => new WCFProxy(callback, ServerAddress), Username);
+                    bool connected = Client.ConnectAndRegisterAsPlayer(callback => new WCFProxy(callback, ServerAddress), Username);
                     if (!connected)
                     {
                         SetConnectionResultMessage("Connection failed", ChatColor.Red);
@@ -203,7 +202,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             finally
             {
                 IsProgressBarVisible = false;
-                //Mouse.OverrideCursor = null;
             }
         }
 

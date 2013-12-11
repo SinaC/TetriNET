@@ -52,6 +52,8 @@
     <Compile Include="Host\BuiltInHost.cs" />
     <Compile Include="DummyBuiltInClient.cs" />
     <Compile Include="Player\PlayerManager.cs" />
+    <Compile Include="Spectator\Spectator.cs" />
+    <Compile Include="Spectator\SpectatorManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Player\Player.cs" />

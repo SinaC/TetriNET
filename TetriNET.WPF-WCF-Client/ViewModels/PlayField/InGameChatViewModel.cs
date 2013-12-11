@@ -74,13 +74,13 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         public InGameChatViewModel()
         {
-            Entries.Add(new OneLineAddedEntry
+            AddEntry(new OneLineAddedEntry
             {
                 Id = 1,
                 Source = "JOEL0123456789012345",
                 SourceId = 1,
             });
-            Entries.Add(new SpecialEntry
+            AddEntry(new SpecialEntry
             {
                 Id = 2,
                 Special = Specials.SwitchFields,
@@ -89,37 +89,37 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                 Target = "SOMEONE0123456789012",
                 TargetId = 4,
             });
-            Entries.Add(new MultiLineAddedEntry
+            AddEntry(new MultiLineAddedEntry
             {
                 Id = 3,
                 Source = "TSEKWA01234567890123",
                 SourceId = 5,
                 LinesAdded = 4,
             });
-            Entries.Add(new SelfSpecialEntry
+            AddEntry(new SelfSpecialEntry
             {
                 Id = 4,
                 Special = Specials.SwitchFields,
                 PlayerId = 1,
                 PlayerName = "TSEKWA01234567890123"
             });
-            Entries.Add(new PlayerLostEntry
+            AddEntry(new PlayerLostEntry
             {
                 PlayerName = "JOEL0123456789012345"
             });
-            Entries.Add(new AchievementEarnedEntry
+            AddEntry(new AchievementEarnedEntry
                 {
                     PlayerId = 1,
                     PlayerName = "JOEL0123456789012345",
                     AchievementTitle = "Sniper",
                 });
-            Entries.Add(new SelfAchievementEarnedEntry
+            AddEntry(new SelfAchievementEarnedEntry
             {
                 AchievementTitle = "Run baby, Run",
             });
             for (int i = 5; i < 30; i++)
             {
-                Entries.Add(new SelfSpecialEntry
+                AddEntry(new SelfSpecialEntry
                 {
                     Id = i,
                     Special = Specials.SwitchFields,

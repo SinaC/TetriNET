@@ -11,7 +11,7 @@ namespace TetriNET.Server.WCFHost
     public sealed class WCFHost : GenericHost.GenericHost
     {
         [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
-        public sealed class WCFServiceHost : IWCFTetriNET
+        public sealed class WCFServiceHost : IWCFTetriNET, IWCFTetriNETSpectator
         {
             private ServiceHost _serviceHost;
             private readonly IHost _host;
@@ -31,10 +31,13 @@ namespace TetriNET.Server.WCFHost
                 if (String.IsNullOrEmpty(Port) || Port.ToLower() == "auto")
                     baseAddress = DiscoveryHelper.AvailableTcpBaseAddress;
                 else
-                    baseAddress = new Uri("net.tcp://localhost:" + Port + "/TetriNET");
+                    //baseAddress = new Uri("net.tcp://localhost:" + Port + "/TetriNET");
+                    baseAddress = new Uri("net.tcp://localhost:" + Port);
 
                 _serviceHost = new ServiceHost(this, baseAddress);
-                _serviceHost.AddServiceEndpoint(typeof(IWCFTetriNET), new NetTcpBinding(SecurityMode.None), "");
+                //_serviceHost.AddServiceEndpoint(typeof(IWCFTetriNET), new NetTcpBinding(SecurityMode.None), "");
+                _serviceHost.AddServiceEndpoint(typeof(IWCFTetriNET), new NetTcpBinding(SecurityMode.None), "/TetriNET");
+                _serviceHost.AddServiceEndpoint(typeof(IWCFTetriNETSpectator), new NetTcpBinding(SecurityMode.None), "/TetriNETSpectator");
                 //ServiceHost.AddDefaultEndpoints();
                 _serviceHost.Description.Behaviors.Add(new IPFilterServiceBehavior(_host.BanManager, _host.PlayerManager));
                 _serviceHost.Open();
@@ -157,6 +160,31 @@ namespace TetriNET.Server.WCFHost
 
             #endregion
 
+            #region IWCFTetriNETSpectator
+            // Spectator connexion/deconnexion management
+            public void RegisterSpectator(string spectatorName)
+            {
+                _host.RegisterSpectator(Callback, spectatorName);
+            }
+
+            public void UnregisterSpectator()
+            {
+                _host.UnregisterSpectator(Callback);
+            }
+
+            public void HeartbeatSpectator()
+            {
+                _host.HeartbeatSpectator(Callback);
+            }
+            
+            // Chat
+            public void PublishSpectatorMessage(string msg)
+            {
+                _host.PublishSpectatorMessage(Callback, msg);
+            }
+
+            #endregion
+
             private ITetriNETCallback Callback
             {
                 get
@@ -181,8 +209,8 @@ namespace TetriNET.Server.WCFHost
             set { _serviceHost.Port = value; }
         }
 
-        public WCFHost(IPlayerManager playerManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc)
-            : base(playerManager, banManager, createPlayerFunc)
+        public WCFHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc, Func<string, ITetriNETCallback, ISpectator> createSpectatorFunc)
+            : base(playerManager, spectatorManager, banManager, createPlayerFunc, createSpectatorFunc)
         {
             _serviceHost = new WCFServiceHost(this);
 
@@ -212,6 +240,11 @@ namespace TetriNET.Server.WCFHost
         }
 
         public override void RemovePlayer(IPlayer player)
+        {
+            // NOP
+        }
+
+        public override void RemoveSpectator(ISpectator spectator)
         {
             // NOP
         }

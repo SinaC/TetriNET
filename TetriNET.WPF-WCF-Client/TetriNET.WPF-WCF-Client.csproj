@@ -85,6 +85,7 @@
     <Compile Include="CustomSettings\PortableSettingsProvider.cs" />
     <Compile Include="Helpers\AssemblyHelper.cs" />
     <Compile Include="Helpers\AttachedFocus.cs" />
+    <Compile Include="Helpers\ItemsControlExtenders.cs" />
     <Compile Include="Helpers\VisualTree.cs" />
     <Compile Include="Models\ChatColor.cs" />
     <Compile Include="Settings.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="UserControls\PieceControl.xaml.cs">
       <DependentUpon>PieceControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\ProgressRing.cs" />
     <Compile Include="UserControls\ShadowPieceControl.xaml.cs">
       <DependentUpon>ShadowPieceControl.xaml</DependentUpon>
     </Compile>
@@ -198,6 +200,10 @@
     <Page Include="UserControls\PieceControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\ProgressRing.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\ShadowPieceControl.xaml">
       <SubType>Designer</SubType>

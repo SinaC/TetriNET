@@ -47,14 +47,17 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientPlayerAddLinesHandler(int playerId, string playerName, int specialId, int count);
     public delegate void ClientContinuousSpecialToggledHandler(Specials special, bool active, double durationLeftInSeconds);
     public delegate void ClientContinuousSpecialFinishedHandler(int playerId, Specials special);
-
     public delegate void ClientAchievementEarnedHandler(IAchievement achievement, bool firstTime);
     public delegate void ClientPlayerAchievementEarnedHandler(int playerId, string playerName, int achievementId, string achievementTitle);
+    public delegate void ClientSpectatorRegisteredHandler(RegistrationResults result, int spectatorId);
+    public delegate void ClientSpectatorJoinedHandler(int spectatorId, string spectatorName);
+    public delegate void ClientSpectatorLeftHandler(int spectatorId, string spectatorName, LeaveReasons reason);
 
     public interface IClient
     {
         string Name { get; }
         string Team { get; }
+        bool IsSpectator { get; }
         int PlayerId { get; }
         int MaxPlayersCount { get; }
         IPiece CurrentPiece { get; }
@@ -113,14 +116,17 @@ namespace TetriNET.Client.Interfaces
         event ClientPlayerAddLinesHandler OnPlayerAddLines;
         event ClientContinuousSpecialToggledHandler OnContinuousEffectToggled; // on player
         event ClientContinuousSpecialFinishedHandler OnContinuousSpecialFinished; // on opponent
-
         event ClientAchievementEarnedHandler OnAchievementEarned;
         event ClientPlayerAchievementEarnedHandler OnPlayerAchievementEarned;
+        event ClientSpectatorRegisteredHandler OnSpectatorRegistered;
+        event ClientSpectatorJoinedHandler OnSpectatorJoined;
+        event ClientSpectatorLeftHandler OnSpectatorLeft;
 
         //bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc);
         //bool Disconnect();
 
-        bool ConnectAndRegister(Func<ITetriNETCallback, IProxy> createProxyFunc, string name);
+        bool ConnectAndRegisterAsPlayer(Func<ITetriNETCallback, IProxy> createProxyFunc, string name);
+        bool ConnectAndRegisterAsSpectator(Func<ITetriNETCallback, ISpectatorProxy> createSpectatorProxyFunc, string name);
         bool UnregisterAndDisconnect();
 
         // Client->Server command

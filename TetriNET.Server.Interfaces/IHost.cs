@@ -23,9 +23,14 @@ namespace TetriNET.Server.Interfaces
     public delegate void HostFinishContinuousSpecialHandler(IPlayer player, Specials special);
     public delegate void HostEarnAchievementHandler(IPlayer player, int achievementId, string achievementTitle);
 
-    public delegate void PlayerLeftHandler(IPlayer player, LeaveReasons reason);
+    public delegate void HostRegisterSpectatorHandler(ISpectator spectator, int spectatorId);
+    public delegate void HostUnregisterSpectatorHandler(ISpectator spectator);
+    public delegate void HostPublishSpectatorMessageHandler(ISpectator spectator, string msg);
 
-    public interface IHost : ITetriNET
+    public delegate void PlayerLeftHandler(IPlayer player, LeaveReasons reason);
+    public delegate void SpectatorLeftHandler(ISpectator spectator, LeaveReasons reason);
+
+    public interface IHost : ITetriNET, ITetriNETSpectator
     {
         event HostRegisterPlayerHandler OnPlayerRegistered;
         event HostUnregisterPlayerHandler OnPlayerUnregistered;
@@ -47,13 +52,20 @@ namespace TetriNET.Server.Interfaces
         event HostFinishContinuousSpecialHandler OnFinishContinuousSpecial;
         event HostEarnAchievementHandler OnEarnAchievement;
 
+        event HostRegisterSpectatorHandler OnSpectatorRegistered;
+        event HostUnregisterSpectatorHandler OnSpectatorUnregistered;
+        event HostPublishSpectatorMessageHandler OnSpectatorMessagePublished;
+
         event PlayerLeftHandler OnPlayerLeft;
+        event SpectatorLeftHandler OnSpectatorLeft;
 
         IBanManager BanManager { get; }
         IPlayerManager PlayerManager { get; }
+        ISpectatorManager SpectatorManager { get; }
 
         void Start();
         void Stop();
         void RemovePlayer(IPlayer player); // Should be overridden to handle local table storing reference to player
+        void RemoveSpectator(ISpectator spectator); // Should be overridden to handle local table storing reference to spectator
     }
 }

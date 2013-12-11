@@ -10,8 +10,9 @@ namespace TetriNET.Server.GenericHost
     public abstract class GenericHost : IHost
     {
         protected readonly Func<string, ITetriNETCallback, IPlayer> CreatePlayerFunc;
+        protected readonly Func<string, ITetriNETCallback, ISpectator> CreateSpectatorFunc;
 
-        protected GenericHost(IPlayerManager playerManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc)
+        protected GenericHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc, Func<string, ITetriNETCallback, ISpectator> createSpectatorFunc)
         {
             if (playerManager == null)
                 throw new ArgumentNullException("playerManager");
@@ -21,14 +22,22 @@ namespace TetriNET.Server.GenericHost
                 throw new ArgumentNullException("createPlayerFunc");
 
             PlayerManager = playerManager;
+            SpectatorManager = spectatorManager;
             BanManager = banManager;
             CreatePlayerFunc = createPlayerFunc;
+            CreateSpectatorFunc = createSpectatorFunc;
         }
 
         protected virtual void PlayerOnConnectionLost(IPlayer player)
         {
             if (OnPlayerLeft != null)
                 OnPlayerLeft(player, LeaveReasons.ConnectionLost);
+        }
+
+        protected virtual void SpectatorOnConnectionLost(ISpectator spectator)
+        {
+            if (OnSpectatorLeft != null)
+                OnSpectatorLeft(spectator, LeaveReasons.ConnectionLost);
         }
 
         #region IHost
@@ -52,15 +61,22 @@ namespace TetriNET.Server.GenericHost
         public event HostResetWinListHandler OnResetWinList;
         public event HostFinishContinuousSpecialHandler OnFinishContinuousSpecial;
         public event HostEarnAchievementHandler OnEarnAchievement;
+        
+        public event HostRegisterSpectatorHandler OnSpectatorRegistered;
+        public event HostUnregisterSpectatorHandler OnSpectatorUnregistered;
+        public event HostPublishSpectatorMessageHandler OnSpectatorMessagePublished;
 
         public event PlayerLeftHandler OnPlayerLeft;
+        public event SpectatorLeftHandler OnSpectatorLeft;
 
         public IBanManager BanManager { get; private set; }
         public IPlayerManager PlayerManager { get; private set; }
+        public ISpectatorManager SpectatorManager { get; private set; }
 
         public abstract void Start();
         public abstract void Stop();
         public abstract void RemovePlayer(IPlayer player);
+        public abstract void RemoveSpectator(ISpectator spectator);
 
         #endregion
 
@@ -68,7 +84,7 @@ namespace TetriNET.Server.GenericHost
 
         public virtual void RegisterPlayer(ITetriNETCallback callback, string playerName)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "RegisterPlayer");
+            Log.WriteLine(Log.LogLevels.Debug, "RegisterPlayer {0}", playerName);
 
             // TODO: check ban list
 
@@ -154,7 +170,7 @@ namespace TetriNET.Server.GenericHost
 
         public virtual void PlayerTeam(ITetriNETCallback callback, string team)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "PlayerTeam");
+            Log.WriteLine(Log.LogLevels.Debug, "PlayerTeam {0}", team);
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -478,6 +494,115 @@ namespace TetriNET.Server.GenericHost
             else
             {
                 Log.WriteLine(Log.LogLevels.Warning, "EarnAchievement from unknown player");
+            }
+        }
+
+        #endregion
+
+        #region ITetriNETSpectator
+
+        public virtual void RegisterSpectator(ITetriNETCallback callback, string spectatorName)
+        {
+            Log.WriteLine(Log.LogLevels.Debug, "RegisterSpectator {0}", spectatorName);
+
+            // TODO: check ban list
+
+            RegistrationResults result = RegistrationResults.RegistrationSuccessful;
+            ISpectator spectator = null;
+            int id = -1;
+            lock (SpectatorManager.LockObject)
+            {
+                if (String.IsNullOrEmpty(spectatorName) || spectatorName.Length > 20)
+                {
+                    result = RegistrationResults.RegistrationFailedInvalidName;
+                    Log.WriteLine(Log.LogLevels.Warning, "Cannot register {0} because name is invalid", spectatorName);
+                }
+                else if (SpectatorManager[spectatorName] != null)
+                {
+                    result = RegistrationResults.RegistrationFailedPlayerAlreadyExists;
+                    Log.WriteLine(Log.LogLevels.Warning, "Cannot register {0} because it already exists", spectatorName);
+                }
+                else if (SpectatorManager.SpectatorCount >= SpectatorManager.MaxSpectators)
+                {
+                    result = RegistrationResults.RegistrationFailedTooManyPlayers;
+                    Log.WriteLine(Log.LogLevels.Warning, "Cannot register {0} because too many spectators are already connected", spectatorName);
+                }
+                else
+                {
+                    spectator = CreateSpectatorFunc(spectatorName, callback);
+                    //
+                    spectator.OnConnectionLost += SpectatorOnConnectionLost;
+                    //
+                    id = SpectatorManager.Add(spectator);
+                }
+            }
+            if (id >= 0 && spectator != null && result == RegistrationResults.RegistrationSuccessful)
+            {
+                //
+                spectator.ResetTimeout(); // spectator alive
+                //
+                if (OnSpectatorRegistered != null)
+                    OnSpectatorRegistered(spectator, id);
+            }
+            else
+            {
+                Log.WriteLine(Log.LogLevels.Info, "Register failed for spectator {0}", spectatorName);
+                //
+                callback.OnSpectatorRegistered(result, -1, false);
+            }
+        }
+
+        public virtual void UnregisterSpectator(ITetriNETCallback callback)
+        {
+            Log.WriteLine(Log.LogLevels.Debug, "UnregisterPlayer");
+
+            ISpectator spectator = SpectatorManager[callback];
+            if (spectator != null)
+            {
+                //
+                spectator.ResetTimeout(); // player alive
+                //
+                if (OnSpectatorUnregistered != null)
+                    OnSpectatorUnregistered(spectator);
+            }
+            else
+            {
+                Log.WriteLine(Log.LogLevels.Warning, "UnregisterSpectator from unknown spectator");
+            }
+        }
+
+        public virtual void HeartbeatSpectator(ITetriNETCallback callback)
+        {
+            //Log.WriteLine(Log.LogLevels.Debug, "Heartbeat");
+
+            ISpectator spectator = SpectatorManager[callback];
+            if (spectator != null)
+            {
+                //Log.WriteLine("Heartbeat from {0}", player.Name);
+                spectator.ResetTimeout(); // player alive
+            }
+            else
+            {
+                Log.WriteLine(Log.LogLevels.Warning, "HeartbeatSpectator from unknown spectator");
+            }
+        }
+
+        public virtual void PublishSpectatorMessage(ITetriNETCallback callback, string msg)
+        {
+            Log.WriteLine(Log.LogLevels.Debug, "PublishMessage {0}", msg);
+
+            ISpectator spectator = SpectatorManager[callback];
+            if (spectator != null)
+            {
+                //
+                spectator.ResetTimeout(); // player alive
+                //
+                if (OnSpectatorMessagePublished != null)
+                    OnSpectatorMessagePublished(spectator, msg);
+            }
+            else
+            {
+                Log.WriteLine(Log.LogLevels.Warning, "OnSpectatorMessagePublished from unknown spectator");
             }
         }
 

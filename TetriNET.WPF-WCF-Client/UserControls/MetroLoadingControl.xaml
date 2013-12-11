@@ -15,7 +15,7 @@
             <system:Double x:Key = "ParticleRadius">5</system:Double>
 
             <system:Double x:Key = "StartingPointX">0</system:Double>
-            <system:Double x:Key = "StartingPointY">-20</system:Double>
+            <system:Double x:Key = "StartingPointY">15</system:Double>
 
             <system:Double x:Key = "RotationPointX">0.5</system:Double>
             <system:Double x:Key = "RotationPointY">0.5</system:Double>

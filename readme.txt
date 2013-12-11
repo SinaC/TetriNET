@@ -7,15 +7,19 @@ when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 	-> this object is stored in IPlayer and created by createPlayerFunc in host so server or host can ban a player using IPlayer info
 client/server version when registering
 SinaCSpecials: use gravity when board has enough holes or when to high + zebra + clear column + confusion + darkness + immunity + left gravity + mutation
-Confusion could be managed in client instead of GUI
+Confusion could be managed in client-side instead of GUI-side
 Add Pentominos (http://en.wikipedia.org/wiki/Pentomino)
 New options: random blocks clear count, mutation count, darkness time, confusion time, immunity time, random spawn orientation
 Solo mode (extra points for back-to-back, t-spin)
 Server integrated in WPF client
 in multiplayer game, display some stats about players (#lines, score, who attacked who, ...) when game is finished
 right-click on player in players manager to display achievements
-Register: Name + Team
-Spectator mode: new endpoint + new contract/callback (spectator can received every message from server but can only register/unregister + send message)
+Register, PlayerJoined: Name + Team
+
+CURRENT DEVELOPMENT: spectator mode
+	kick/ban should be available on player or spectator
+	client: differentiate spectator from player mode
+	wpf: same as above + new player field screen with 6 opponent fields
 
 bugs:
 why user.config is automatically created with default values in $APPDATA$/Local/SinaC/TetriNET WPF WCF Client/  when recompiling a new version

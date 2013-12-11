@@ -7,8 +7,8 @@ namespace TetriNET.ConsoleWCFServer.Host
 {
     public sealed class BuiltInHost : GenericHost
     {
-        public BuiltInHost(IPlayerManager playerManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc)
-            : base(playerManager, banManager, createPlayerFunc)
+        public BuiltInHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc, Func<string, ITetriNETCallback, ISpectator> createSpectatorFunc)
+            : base(playerManager, spectatorManager, banManager, createPlayerFunc, createSpectatorFunc)
         {
         }
 
@@ -24,6 +24,11 @@ namespace TetriNET.ConsoleWCFServer.Host
         }
 
         public override void RemovePlayer(IPlayer player)
+        {
+            // NOP
+        }
+
+        public override void RemoveSpectator(ISpectator spectator)
         {
             // NOP
         }

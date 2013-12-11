@@ -144,9 +144,14 @@ namespace TetriNET.WPF_WCF_Client.GameController
                         break;
                     case TetriNET.Client.Interfaces.Commands.UseSpecialOnRandomOpponent:
                         {
-                            IOpponent opponent = Client.Opponents.FirstOrDefault();
-                            if (opponent != null)
-                                Client.UseSpecial(opponent.PlayerId);
+                            IOpponent[] opponents = Client.Opponents.ToArray();
+                            if (opponents.Any())
+                            {
+                                int rnd = _random.Next(opponents.Count());
+                                IOpponent opponent = opponents[rnd];
+                                if (opponent != null)
+                                    Client.UseSpecial(opponent.PlayerId);
+                            }
                         }
                         break;
                 }

@@ -42,7 +42,9 @@
     <Compile Include="Attributes\SpecialAttribute.cs" />
     <Compile Include="Contracts\ITetriNET.cs" />
     <Compile Include="Contracts\ITetriNETCallback.cs" />
+    <Compile Include="Contracts\ITetriNETSpectator.cs" />
     <Compile Include="Contracts\IWCFTetriNET.cs" />
+    <Compile Include="Contracts\IWCFTetriNETSpectator.cs" />
     <Compile Include="DataContracts\GameOptions.cs" />
     <Compile Include="DataContracts\LeaveReasons.cs" />
     <Compile Include="DataContracts\RegistrationResults.cs" />
