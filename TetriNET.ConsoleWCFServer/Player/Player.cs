@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Helpers;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 
@@ -30,14 +31,12 @@ namespace TetriNET.ConsoleWCFServer.Player
             }
             catch (CommunicationObjectAbortedException)
             {
-                if (OnConnectionLost != null)
-                    OnConnectionLost(this);
+                OnConnectionLost.Do(x => x(this));
             }
             catch (Exception ex)
             {
                 Log.WriteLine(Log.LogLevels.Error, "Exception:{0} {1}", actionName, ex);
-                if (OnConnectionLost != null)
-                    OnConnectionLost(this);
+                OnConnectionLost.Do(x => x(this));
             }
         }
 

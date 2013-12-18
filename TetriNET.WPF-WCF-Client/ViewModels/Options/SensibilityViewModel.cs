@@ -1,11 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 {
-    public class SensibilityViewModel : INotifyPropertyChanged
+    public class SensibilityViewModel : ObservableObject
     {
         private string PropertyName { get; set; }
 
@@ -56,13 +54,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             PropertyName = propertyName;
             _isActivated = (bool)Settings.Default[PropertyName + "Activated"];
             _value = (int)Settings.Default[PropertyName];
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName]string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

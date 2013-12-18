@@ -143,7 +143,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnConnectionLost -= OnConnectionLost;
-            oldClient.OnPlayerRegistered -= OnPlayerRegistered;
+            oldClient.OnRegisteredAsPlayer -= OnRegisteredAsPlayer;
             oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
             oldClient.OnServerMasterModified -= OnServerMasterModified;
             oldClient.OnGameStarted -= OnGameStarted;
@@ -156,7 +156,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         public override void SubscribeToClientEvents(IClient newClient)
         {
             newClient.OnConnectionLost += OnConnectionLost;
-            newClient.OnPlayerRegistered += OnPlayerRegistered;
+            newClient.OnRegisteredAsPlayer += OnRegisteredAsPlayer;
             newClient.OnPlayerUnregistered += OnPlayerUnregistered;
             newClient.OnServerMasterModified += OnServerMasterModified;
             newClient.OnGameStarted += OnGameStarted;
@@ -206,7 +206,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             UpdateEnabilityAndLabel();
         }
 
-        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
         {
             _isRegistered = Client.IsRegistered;
             _isGameStarted = Client.IsGameStarted;

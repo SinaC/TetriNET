@@ -10,7 +10,19 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:SpecialToStringConverter x:Key="SpecialToStringConverter"/>
-            <DataTemplate DataType="{x:Type playField:SpecialEntry}">
+            <!-- 3 DataTemplate with same DataType but 2 are named so, only unnamed-one is considered as playField:SpecialEntry -->
+            <DataTemplate x:Key="SpecialOnPlayerTemplate" DataType="{x:Type playField:SpecialEntry}">
+                <WrapPanel>
+                    <TextBlock Text="{Binding Id}" Foreground="Black" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="." Foreground="Black" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="{Binding Special, Converter={StaticResource SpecialToStringConverter}}" Foreground="DarkMagenta" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="on" Foreground="Black" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="{Binding Target}" Foreground="Blue" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="from" Foreground="Black" FontSize="10" FontWeight="Bold" Margin="0,0,2,0"/>
+                    <TextBlock Text="{Binding Source}" Foreground="Blue" FontWeight="Bold" FontSize="10"/>
+                </WrapPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="SpecialOnOtherTemplate" DataType="{x:Type playField:SpecialEntry}">
                 <WrapPanel>
                     <TextBlock Text="{Binding Id}" Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="." Foreground="Black" FontSize="10" Margin="0,0,2,0"/>
@@ -21,16 +33,16 @@
                     <TextBlock Text="{Binding Source}" Foreground="Blue" FontSize="10"/>
                 </WrapPanel>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type playField:SelfSpecialEntry}">
-                <WrapPanel>
-                    <TextBlock Text="{Binding Id}" Foreground="Black" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
-                    <TextBlock Text="." Foreground="Black" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
-                    <TextBlock Text="{Binding Special, Converter={StaticResource SpecialToStringConverter}}" Foreground="DarkMagenta" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
-                    <TextBlock Text="on" Foreground="Black" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
-                    <TextBlock Text="{Binding PlayerName}" Foreground="Blue" FontWeight="Bold" FontSize="10" Margin="0,0,2,0"/>
-                    <TextBlock Text="from" Foreground="Black" FontSize="10" FontWeight="Bold" Margin="0,0,2,0"/>
-                    <TextBlock Text="{Binding PlayerName}" Foreground="Blue" FontWeight="Bold" FontSize="10"/>
-                </WrapPanel>
+            <DataTemplate DataType="{x:Type playField:SpecialEntry}">
+                <ContentPresenter x:Name="SpecialEntryContentControl" Content="{Binding}"/>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding IsOnPlayer}" Value="True">
+                        <Setter TargetName="SpecialEntryContentControl" Property="ContentTemplate" Value="{StaticResource SpecialOnPlayerTemplate}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsOnPlayer}" Value="False">
+                        <Setter TargetName="SpecialEntryContentControl" Property="ContentTemplate" Value="{StaticResource SpecialOnOtherTemplate}"/>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
             </DataTemplate>
             <DataTemplate DataType="{x:Type playField:OneLineAddedEntry}">
                 <WrapPanel>
@@ -50,14 +62,33 @@
                     <TextBlock Text="{Binding Source}" Foreground="Blue" FontSize="10"/>
                 </WrapPanel>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type playField:PlayerLostEntry}">
+            <DataTemplate x:Key="SelfLostTemplate" DataType="{x:Type playField:PlayerLostEntry}">
                 <WrapPanel>
+                    <TextBlock Text="***" Foreground="Red" FontSize="10" Margin="0,0,2,0"/>
+                    <TextBlock Text="You have lost" Foreground="Red" FontSize="10"/>
+                </WrapPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="LostTemplate" DataType="{x:Type playField:PlayerLostEntry}">
+                <WrapPanel>
+                    <TextBlock Text="***" Foreground="Red" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="{Binding PlayerName}" Foreground="Red" FontSize="10" FontWeight="Bold" Margin="0,0,2,0"/>
                     <TextBlock Text="has lost" Foreground="Red" FontSize="10"/>
                 </WrapPanel>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type playField:PlayerLostEntry}">
+                <ContentPresenter x:Name="LostEntryContentControl" Content="{Binding}"/>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding IsOnPlayer}" Value="True">
+                        <Setter TargetName="LostEntryContentControl" Property="ContentTemplate" Value="{StaticResource SelfLostTemplate}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsOnPlayer}" Value="False">
+                        <Setter TargetName="LostEntryContentControl" Property="ContentTemplate" Value="{StaticResource LostTemplate}"/>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type playField:AchievementEarnedEntry}">
                 <WrapPanel>
+                    <TextBlock Text="***" Foreground="Green" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="{Binding PlayerName}" Foreground="Green" FontSize="10" FontWeight="Bold" Margin="0,0,2,0"/>
                     <TextBlock Text="has earned" Foreground="Green" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="{Binding AchievementTitle, StringFormat={}[{0}]}" Foreground="Green" FontSize="10"/>
@@ -65,6 +96,7 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type playField:SelfAchievementEarnedEntry}">
                 <WrapPanel>
+                    <TextBlock Text="***" Foreground="Green" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="You have earned" Foreground="Green" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="{Binding AchievementTitle, StringFormat={}[{0}]}" Foreground="Green" FontSize="10"/>
                 </WrapPanel>

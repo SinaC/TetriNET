@@ -17,7 +17,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         {
             get { return IsGameNotStarted && IsServerMaster; }
         }
-
+        
         private bool _isGameNotStarted;
         public bool IsGameNotStarted
         {
@@ -160,7 +160,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             oldClient.OnServerMasterModified -= OnServerMasterModified;
             oldClient.OnConnectionLost -= OnConnectionLost;
             oldClient.OnPlayerUnregistered -= OnPlayerUnregister;
-            oldClient.OnPlayerRegistered -= OnPlayerRegistered;
+            oldClient.OnRegisteredAsPlayer -= OnRegisteredAsPlayer;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
@@ -170,14 +170,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             newClient.OnServerMasterModified += OnServerMasterModified;
             newClient.OnConnectionLost += OnConnectionLost;
             newClient.OnPlayerUnregistered += OnPlayerUnregister;
-            newClient.OnPlayerRegistered += OnPlayerRegistered;
+            newClient.OnRegisteredAsPlayer += OnRegisteredAsPlayer;
         }
 
         #endregion
 
         #region IClient events handler
 
-        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
         {
             if (result == RegistrationResults.RegistrationSuccessful)
             {

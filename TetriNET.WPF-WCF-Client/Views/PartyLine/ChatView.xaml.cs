@@ -1,16 +1,11 @@
-﻿using System.Linq;
-using System.Reflection;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using TetriNET.Client.Achievements;
 using TetriNET.Client.Interfaces;
-using TetriNET.WPF_WCF_Client.Models;
+using TetriNET.Common.Helpers;
 using TetriNET.WPF_WCF_Client.ViewModels;
-using TetriNET.WPF_WCF_Client.ViewModels.Achievements;
 using TetriNET.WPF_WCF_Client.ViewModels.PartyLine;
-using TetriNET.WPF_WCF_Client.Views.Achievements;
 
 namespace TetriNET.WPF_WCF_Client.Views.PartyLine
 {
@@ -32,8 +27,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PartyLine
             if (e.Key == Key.Enter)
             {
                 BindingExpression exp = TxtInputChat.GetBindingExpression(TextBox.TextProperty);
-                if (exp != null)
-                    exp.UpdateSource();
+                exp.Do(x => x.UpdateSource());
             }
         }
 

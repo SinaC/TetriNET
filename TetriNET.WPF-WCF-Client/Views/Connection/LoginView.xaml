@@ -25,7 +25,6 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="160"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="80"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -33,9 +32,49 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
+
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Username: "/>
+        <TextBox Grid.Row="0" Grid.Column="1" MaxLength="20" IsEnabled="{Binding IsNotRegistered}" Text="{Binding Username, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <!--<CheckBox Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" IsEnabled="False" IsChecked="{Binding IsSpectatorModeChecked}">Spectator mode</CheckBox>-->
+        <CheckBox Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="2,0,2,0" IsEnabled="{Binding IsNotRegistered}" IsChecked="{Binding IsSpectatorModeChecked}">Spectator mode</CheckBox>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Server address: "/>
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsEnabled="{Binding IsNotRegistered}" Text="{Binding ServerAddress2, ValidatesOnDataErrors=True}"/>
+        
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Server port: "/>
+        <TextBox Grid.Row="2" Grid.Column="1" IsEnabled="{Binding IsNotRegistered}" Text="{Binding ServerPort2, ValidatesOnDataErrors=True}"/>
+        
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Complete address:"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3">
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="Text" Value="{Binding ServerCompletePlayerAddress}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSpectatorModeChecked}" Value="True">
+                            <Setter Property="Text" Value="{Binding ServerCompleteSpectatorAddress}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
+        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Margin="0,4,0,4"
+                IsEnabled="{Binding IsConnectDisconnectEnabled}"
+                Command="{Binding ConnectDisconnectCommand}">
+            <TextBlock Text="{Binding ConnectDisconnectLabel}"/>
+        </Button>
+
+        <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" Text="{Binding ConnectionResult}" Foreground="{Binding ConnectionResultColor, Converter={StaticResource ChatColorBrushConverter}}"/>
+
+        <userControls:CircularProgressBarControl 
+            ToolTip="Connecting..." Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center"
+            StartupDelay="0"
+            Visibility="{Binding IsProgressBarVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+        <!--<TextBlock Grid.Row="0" Grid.Column="0" Text="Username: "/>
         <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" MaxLength="20" Text="{Binding Username, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"/>
         
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Server address: "/>
@@ -51,6 +90,6 @@
         <userControls:CircularProgressBarControl 
             ToolTip="Connecting..." Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center"
             StartupDelay="0"
-            Visibility="{Binding IsProgressBarVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            Visibility="{Binding IsProgressBarVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>-->
     </Grid>
 </UserControl>

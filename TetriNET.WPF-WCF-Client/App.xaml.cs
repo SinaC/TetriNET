@@ -29,6 +29,8 @@ namespace TetriNET.WPF_WCF_Client
 
             //// TODO: if PortableSettingsProvider file doesn't exist, copy config.FilePath to PortableSettingsProvider path
 
+            if (!Directory.Exists(PortableSettingsProvider.SettingsPath))
+                Directory.CreateDirectory(PortableSettingsProvider.SettingsPath);
             // If new config file doesn't exist, rename user.config or copy old one
             try
             {
@@ -49,8 +51,6 @@ namespace TetriNET.WPF_WCF_Client
                         if (File.Exists(config.FilePath))
                         {
                             Log.WriteLine(Log.LogLevels.Info, "User settings file not found. Copy {0} to {1}", config.FilePath, newPath);
-                            if (!Directory.Exists(PortableSettingsProvider.SettingsPath))
-                                Directory.CreateDirectory(PortableSettingsProvider.SettingsPath);
                             File.Copy(config.FilePath, newPath);
                         }
                     }

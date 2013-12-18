@@ -17,9 +17,8 @@ right-click on player in players manager to display achievements
 Register, PlayerJoined: Name + Team
 
 CURRENT DEVELOPMENT: spectator mode
-	kick/ban should be available on player or spectator
-	client: differentiate spectator from player mode
-	wpf: same as above + new player field screen with 6 opponent fields
+	kick/ban: should be available on player or spectator
+	client: should check if _proxy is not null in every API
 
 bugs:
 why user.config is automatically created with default values in $APPDATA$/Local/SinaC/TetriNET WPF WCF Client/  when recompiling a new version
@@ -156,3 +155,6 @@ http://msdn.microsoft.com/en-us/library/saa62613(v=VS.100).aspx
 patterns
 http://www.dofactory.com/Patterns/Patterns.aspx
 http://stackoverflow.com/questions/5645348/under-what-conditions-can-trydequeue-and-similar-system-collections-concurrent-c
+
+maybe monads
+http://www.codeproject.com/KB/cs/maybemonads.aspx

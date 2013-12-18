@@ -19,6 +19,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
     {
         private bool _isRegistered;
 
+        public bool IsNotRegistered { get { return !_isRegistered; } }
+
         public bool IsConnectDisconnectEnabled
         {
             get
@@ -43,50 +45,107 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             }
         }
 
-        private string _serverAddress;
-        public string ServerAddress
+        private bool _isSpectatorModeChecked;
+        public bool IsSpectatorModeChecked
         {
-            get { return _serverAddress; }
+            get { return _isSpectatorModeChecked; }
             set
             {
-                if (_serverAddress != value)
+                if (_isSpectatorModeChecked != value)
                 {
-                    _serverAddress = value;
-                    if (String.IsNullOrWhiteSpace(_serverAddress))
-                        _serverAddress = "localhost:8765";
-                    // net.tcp://[ip|machine name]:[port]/TetriNET
-                    if (!_serverAddress.StartsWith("net.tcp://"))
-                        _serverAddress = "net.tcp://" + _serverAddress;
-                    //if (ServerAddress.EndsWith("/TetriNETv2"))
-                    //    _serverAddress = _serverAddress.Replace("/TetriNETv2", ""); // remove old endpoint
-                    if (!_serverAddress.EndsWith("/TetriNET"))
-                        _serverAddress = _serverAddress + "/TetriNET";
-
+                    _isSpectatorModeChecked = value;
                     OnPropertyChanged();
-                    OnPropertyChanged("ServerCompleteAddress");
                 }
             }
         }
 
-        private int _serverPort;
-        public int ServerPort
+        private string _serverAddress2;
+        public string ServerAddress2
         {
-            get { return _serverPort; }
+            get { return _serverAddress2; }
             set
             {
-                if (_serverPort != value)
+                if (_serverAddress2 != value)
                 {
-                    _serverPort = value;
+                    _serverAddress2 = value;
                     OnPropertyChanged();
-                    OnPropertyChanged("ServerCompleteAddress");
+                    OnPropertyChanged("ServerCompletePlayerAddress");
+                    OnPropertyChanged("ServerCompleteSpectatorAddress");
                 }
             }
         }
 
-        public string ServerCompleteAddress
+        private int _serverPort2;
+        public int ServerPort2
         {
-            get { return "net.tcp://" + ServerAddress + ":" + ServerPort + "/TetriNET"; }
+            get { return _serverPort2; }
+            set
+            {
+                if (_serverPort2 != value)
+                {
+                    _serverPort2 = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged("ServerCompletePlayerAddress");
+                    OnPropertyChanged("ServerCompleteSpectatorAddress");
+                }
+            }
         }
+
+        public string ServerCompletePlayerAddress
+        {
+            get { return "net.tcp://" + ServerAddress2 + ":" + ServerPort2 + "/TetriNET"; }
+        }
+
+        public string ServerCompleteSpectatorAddress
+        {
+            get { return "net.tcp://" + ServerAddress2 + ":" + ServerPort2 + "/TetriNETSpectator"; }
+        }
+
+        public void SetAddress(string address)
+        {
+            // Split
+            Uri uri = new Uri(address);
+            ServerAddress2 = uri.Host;
+            ServerPort2 = uri.Port;
+        }
+
+        //private string _serverAddress;
+        //public string ServerAddress
+        //{
+        //    get { return _serverAddress; }
+        //    set
+        //    {
+        //        if (_serverAddress != value)
+        //        {
+        //            _serverAddress = value;
+        //            if (String.IsNullOrWhiteSpace(_serverAddress))
+        //                _serverAddress = "localhost:8765";
+        //            // net.tcp://[ip|machine name]:[port]/TetriNET
+        //            if (!_serverAddress.StartsWith("net.tcp://"))
+        //                _serverAddress = "net.tcp://" + _serverAddress;
+        //            //if (ServerAddress.EndsWith("/TetriNETv2"))
+        //            //    _serverAddress = _serverAddress.Replace("/TetriNETv2", ""); // remove old endpoint
+        //            if (!_serverAddress.EndsWith("/TetriNET"))
+        //                _serverAddress = _serverAddress + "/TetriNET";
+
+        //            OnPropertyChanged();
+        //        }
+        //    }
+        //}
+
+        //private int _serverPort;
+        //public int ServerPort
+        //{
+        //    get { return _serverPort; }
+        //    set
+        //    {
+        //        if (_serverPort != value)
+        //        {
+        //            _serverPort = value;
+        //            OnPropertyChanged();
+        //        }
+        //    }
+        //}
 
         public string ConnectDisconnectLabel
         {
@@ -140,7 +199,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             ConnectionResultColor = ChatColor.Black;
             IsProgressBarVisible = false;
             Username = Settings.Default.Username;
-            ServerAddress = Settings.Default.Server;
+            //ServerAddress = Settings.Default.Server;
+            SetAddress(Settings.Default.Server);
 
             ConnectDisconnectCommand = new AsyncRelayCommand(ConnectDisconnect);
         }
@@ -154,6 +214,17 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                 });
         }
 
+        private bool CheckError(string field)
+        {
+            string error = this[field];
+            if (!String.IsNullOrWhiteSpace(error))
+            {
+                SetConnectionResultMessage(error, ChatColor.Red);
+                return false;
+            }
+            return true;
+        }
+
         private void ConnectDisconnect()
         {
             try
@@ -161,30 +232,38 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                 IsProgressBarVisible = true;
                 if (!Client.IsRegistered)
                 {
-                    if (String.IsNullOrEmpty(ServerAddress))
-                    {
-                        SetConnectionResultMessage("Missing server address", ChatColor.Red);
+                    //if (String.IsNullOrEmpty(ServerAddress))
+                    //{
+                    //    SetConnectionResultMessage("Missing server address", ChatColor.Red);
+                    //    return;
+                    //}
+                    //if (Settings.Default.Server != _serverAddress)
+                    //{
+                    //    Settings.Default.Server = _serverAddress;
+                    //    Settings.Default.Save();
+                    //}
+                    if (!CheckError("ServerAddress2"))
                         return;
-                    }
-                    if (Settings.Default.Server != _serverAddress)
+                    if (!CheckError("ServerPort2"))
+                        return;
+                    if (Settings.Default.Server != ServerCompletePlayerAddress)
                     {
-                        Settings.Default.Server = _serverAddress;
+                        Settings.Default.Server = ServerCompletePlayerAddress;
                         Settings.Default.Save();
                     }
-
-                    string error = this["Username"];
-                    if (!String.IsNullOrWhiteSpace(error))
-                    {
-                        SetConnectionResultMessage(error, ChatColor.Red);
+                    if (!CheckError("Username"))
                         return;
-                    }
                     if (Settings.Default.Username != _username)
                     {
                         Settings.Default.Username = _username;
                         Settings.Default.Save();
                     }
 
-                    bool connected = Client.ConnectAndRegisterAsPlayer(callback => new WCFProxy(callback, ServerAddress), Username);
+                    bool connected;
+                    if (IsSpectatorModeChecked)
+                        connected = Client.ConnectAndRegisterAsSpectator(callback => new WCFSpectatorProxy(callback, ServerCompleteSpectatorAddress), Username);
+                    else
+                        connected = Client.ConnectAndRegisterAsPlayer(callback => new WCFProxy(callback, ServerCompletePlayerAddress), Username);
                     if (!connected)
                     {
                         SetConnectionResultMessage("Connection failed", ChatColor.Red);
@@ -210,14 +289,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
             oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
-            oldClient.OnPlayerRegistered -= OnPlayerRegistered;
+            oldClient.OnRegisteredAsPlayer -= OnRegisteredAsPlayer;
+            oldClient.OnRegisteredAsSpectator -= OnRegisteredAsSpectator;
             oldClient.OnConnectionLost -= OnConnectionLost;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
             newClient.OnPlayerUnregistered += OnPlayerUnregistered;
-            newClient.OnPlayerRegistered += OnPlayerRegistered;
+            newClient.OnRegisteredAsPlayer += OnRegisteredAsPlayer;
+            newClient.OnRegisteredAsSpectator += OnRegisteredAsSpectator;
             newClient.OnConnectionLost += OnConnectionLost;
         }
 
@@ -236,9 +317,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             SetConnectionResultMessage(msg, ChatColor.Red);
             _isRegistered = false;
             OnPropertyChanged("ConnectDisconnectLabel");
+            OnPropertyChanged("IsNotRegistered");
         }
 
-        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
         {
             if (result == RegistrationResults.RegistrationSuccessful)
                 SetConnectionResultMessage(String.Format("Registered as player {0}", playerId + 1), ChatColor.Green);
@@ -250,12 +332,29 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             }
             _isRegistered = Client.IsRegistered;
             OnPropertyChanged("ConnectDisconnectLabel");
+            OnPropertyChanged("IsNotRegistered");
+        }
+
+        private void OnRegisteredAsSpectator(RegistrationResults result, int spectatorId)
+        {
+            if (result == RegistrationResults.RegistrationSuccessful)
+                SetConnectionResultMessage(String.Format("Registered as spectator {0}", spectatorId + 1), ChatColor.Green);
+            else
+            {
+                DescriptionAttribute attribute = EnumHelper.GetAttribute<DescriptionAttribute>(result);
+                Client.UnregisterAndDisconnect();
+                SetConnectionResultMessage(String.Format("Registration failed: {0}", attribute == null ? result.ToString() : attribute.Description), ChatColor.Red);
+            }
+            _isRegistered = Client.IsRegistered;
+            OnPropertyChanged("ConnectDisconnectLabel");
+            OnPropertyChanged("IsNotRegistered");
         }
 
         private void OnPlayerUnregistered()
         {
             _isRegistered = Client.IsRegistered;
             OnPropertyChanged("ConnectDisconnectLabel");
+            OnPropertyChanged("IsNotRegistered");
         }
 
         #endregion
@@ -281,6 +380,21 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                     ValidationResult result = rule.Validate(Username, CultureInfo.InvariantCulture);
                     return (string) result.ErrorContent;
                 }
+                else if (columnName == "ServerAddress2")
+                {
+                    return String.IsNullOrWhiteSpace(ServerAddress2) ? "Server address cannot be empty" : null;
+                }
+                else if (columnName == "ServerPort2")
+                {
+                    NumericValidationRule rule = new NumericValidationRule
+                        {
+                            Minimum = 1024,
+                            Maximum = 65535,
+                            PositiveOnly = true
+                        };
+                    ValidationResult result = rule.Validate(ServerPort2, CultureInfo.InvariantCulture);
+                    return (string)result.ErrorContent;
+                }
                 return null;
             }
         }
@@ -295,11 +409,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
     public class LoginViewModelDesignData : LoginViewModel
     {
-        public new ChatColor ConnectionResultColor { get; private set; }
-
         public LoginViewModelDesignData()
         {
             ConnectionResultColor = ChatColor.Red;
+            Username = "SinaC";
+            ServerAddress2 = "localhost";
+            ServerPort2 = 8765;
         }
     }
 }

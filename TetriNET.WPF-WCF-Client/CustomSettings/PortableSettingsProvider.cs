@@ -32,19 +32,19 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
     {
         // Define some static strings later used in our XML creation
         // XML Root node
-        const string XMLROOT = "configuration";
+        const string XMLRoot = "configuration";
 
         // Configuration declaration node
-        const string CONFIGNODE = "configSections";
+        const string ConfigNode = "configSections";
 
         // Configuration section group declaration node
-        const string GROUPNODE = "sectionGroup";
+        const string GroupNode = "sectionGroup";
 
         // User section node
-        const string USERNODE = "userSettings";
+        const string UserNode = "userSettings";
 
         // Application Specific Node
-        readonly string APPNODE = Assembly.GetExecutingAssembly().GetName().Name + ".Properties.Settings";
+        private readonly string _appNode = Assembly.GetExecutingAssembly().GetName().Name + ".Properties.Settings";
 
         private XmlDocument _xmlDoc = null;
 
@@ -141,14 +141,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
             }
             catch (Exception ex)
             {
-                // Create an informational message for the user if we cannot save the settings.
-                // Enable whichever applies to your application type.
-
-                // Uncomment the following line to enable a MessageBox for forms-based apps
-                Log.WriteLine(Log.LogLevels.Error, "Error writting configuration file to disk. Exception: {0}", ex.ToString());
-
-                // Uncomment the following line to enable a console message for console-based apps
-                //Console.WriteLine("Error writing configuration file to disk: " + ex.Message);
+                Log.WriteLine(Log.LogLevels.Error, "Error writing configuration file to disk. Exception: {0}", ex.ToString());
             }
         }
 
@@ -177,36 +170,36 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
 
                         // Create root node and append to the document
                         // <configuration>
-                        XmlElement rootNode = _xmlDoc.CreateElement(XMLROOT);
+                        XmlElement rootNode = _xmlDoc.CreateElement(XMLRoot);
                         _xmlDoc.AppendChild(rootNode);
 
                         // Create Configuration Sections node and add as the first node under the root
                         // <configSections>
-                        XmlElement configNode = _xmlDoc.CreateElement(CONFIGNODE);
+                        XmlElement configNode = _xmlDoc.CreateElement(ConfigNode);
                         _xmlDoc.DocumentElement.PrependChild(configNode);
 
                         // Create the user settings section group declaration and append to the config node above
                         // <sectionGroup name="userSettings"...>
-                        XmlElement groupNode = _xmlDoc.CreateElement(GROUPNODE);
-                        groupNode.SetAttribute("name", USERNODE);
+                        XmlElement groupNode = _xmlDoc.CreateElement(GroupNode);
+                        groupNode.SetAttribute("name", UserNode);
                         groupNode.SetAttribute("type", "System.Configuration.UserSettingsGroup");
                         configNode.AppendChild(groupNode);
 
                         // Create the Application section declaration and append to the groupNode above
                         // <section name="AppName.Properties.Settings"...>
                         XmlElement newSection = _xmlDoc.CreateElement("section");
-                        newSection.SetAttribute("name", APPNODE);
+                        newSection.SetAttribute("name", _appNode);
                         newSection.SetAttribute("type", "System.Configuration.ClientSettingsSection");
                         groupNode.AppendChild(newSection);
 
                         // Create the userSettings node and append to the root node
                         // <userSettings>
-                        XmlElement userNode = _xmlDoc.CreateElement(USERNODE);
+                        XmlElement userNode = _xmlDoc.CreateElement(UserNode);
                         _xmlDoc.DocumentElement.AppendChild(userNode);
 
                         // Create the Application settings node and append to the userNode above
                         // <AppName.Properties.Settings>
-                        XmlElement appNode = _xmlDoc.CreateElement(APPNODE);
+                        XmlElement appNode = _xmlDoc.CreateElement(_appNode);
                         userNode.AppendChild(appNode);
                     }
                 }
@@ -222,7 +215,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
             {
                 string settingType = setProp.PropertyType.ToString();
                 var t = Type.GetType(setProp.PropertyType.FullName);
-                if (setProp.SerializeAs.ToString() == "String")
+                if (setProp.SerializeAs == SettingsSerializeAs.String)
                 {
                     string textData = XMLConfig.SelectSingleNode("//setting[@name='" + setProp.Name + "']").FirstChild.InnerText;
                     return new SettingsPropertyValue(setProp)
@@ -285,7 +278,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
                         Deserialized = true,
                         IsDirty = false,
                         PropertyValue = null,
-                        SerializedValue = ""
+                        SerializedValue = String.Empty
                     };
             }
             return null;
@@ -310,19 +303,19 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
             // If we have a pointer to an actual XML node, update the value stored there
             if (settingNode != null)
             {
-                if (setProp.Property.SerializeAs.ToString() == "String")
+                if (setProp.Property.SerializeAs == SettingsSerializeAs.String)
                     settingNode.InnerText = setProp.SerializedValue.ToString();
                 else
                     // Write the object to the config serialized as Xml - we must remove the Xml declaration when writing
                     // the value, otherwise .Net's configuration system complains about the additional declaration.
-                    settingNode.InnerXml = setProp.SerializedValue.ToString().Replace(@"<?xml version=""1.0"" encoding=""utf-16""?>", "");
+                    settingNode.InnerXml = setProp.SerializedValue.ToString().Replace(@"<?xml version=""1.0"" encoding=""utf-16""?>", String.Empty);
             }
             else
             {
                 // If the value did not already exist in this settings file, create a new entry for this setting
 
                 // Search for the application settings node (<Appname.Properties.Settings>) and store it.
-                XmlNode tmpNode = XMLConfig.SelectSingleNode("//" + APPNODE);
+                XmlNode tmpNode = XMLConfig.SelectSingleNode("//" + _appNode);
 
                 // Create a new settings node and assign its name as well as how it will be serialized
                 XmlElement newSetting = _xmlDoc.CreateElement("setting");

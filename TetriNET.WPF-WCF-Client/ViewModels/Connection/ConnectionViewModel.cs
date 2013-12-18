@@ -32,7 +32,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         private void OnServerSelected(object sender, string serverAddress)
         {
-            LoginViewModel.ServerAddress = serverAddress;
+            LoginViewModel.SetAddress(serverAddress);
         }
 
         #region ITabIndex

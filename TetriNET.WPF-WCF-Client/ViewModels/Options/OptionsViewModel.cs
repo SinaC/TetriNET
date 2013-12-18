@@ -1,4 +1,5 @@
 ﻿using TetriNET.Client.Interfaces;
+using TetriNET.Common.DataContracts;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 {
@@ -6,7 +7,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
     {
         public ClientOptionsViewModel ClientOptionsViewModel { get; set; }
         public ServerOptionsViewModel ServerOptionsViewModel { get; set; }
-
+        
         public OptionsViewModel()
         {
             ClientOptionsViewModel = new ClientOptionsViewModel();

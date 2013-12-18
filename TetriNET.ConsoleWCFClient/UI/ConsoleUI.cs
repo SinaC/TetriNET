@@ -30,7 +30,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             _client.OnRedrawBoard += OnRedrawBoard;
             _client.OnPieceMoving += OnPieceMoving;
             _client.OnPieceMoved += OnPieceMoved;
-            _client.OnPlayerRegistered += OnPlayerRegistered;
+            _client.OnRegisteredAsPlayer += OnRegisteredAsPlayer;
             _client.OnWinListModified += OnWinListModified;
             _client.OnServerMasterModified += OnServerMasterModified;
             _client.OnPlayerLost += OnPlayerLost;
@@ -210,7 +210,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
         {
             if (result == RegistrationResults.RegistrationSuccessful)
             {

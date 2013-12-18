@@ -10,6 +10,7 @@ using System.Windows.Shapes;
 using TetriNET.Client.Strategy;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
+using TetriNET.Common.Helpers;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
 
@@ -183,7 +184,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            handler.Do(x => x(this, new PropertyChangedEventArgs(propertyName)));
         }
     }
 }

@@ -2,9 +2,7 @@
 using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using TetriNET.WPF_WCF_Client.ViewModels;
 
 namespace TetriNET.WPF_WCF_Client

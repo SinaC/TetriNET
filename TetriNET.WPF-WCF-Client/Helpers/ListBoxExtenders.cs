@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using TetriNET.Common.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.Helpers
 {
@@ -90,8 +91,7 @@ namespace TetriNET.WPF_WCF_Client.Helpers
                                 ExecuteOnUIThread.Invoke(() =>
                                     {
                                         ScrollViewer scrollViewer = VisualTree.GetDescendantByType<ScrollViewer>(listBox);
-                                        if (scrollViewer != null)
-                                            scrollViewer.ScrollToEnd();
+                                        scrollViewer.Do(x => x.ScrollToEnd());
                                     });
                             }
                         });

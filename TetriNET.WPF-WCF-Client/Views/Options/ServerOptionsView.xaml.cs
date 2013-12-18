@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using TetriNET.Common.Helpers;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
 
 namespace TetriNET.WPF_WCF_Client.Views.Options
@@ -16,15 +17,13 @@ namespace TetriNET.WPF_WCF_Client.Views.Options
         private void PieceOccurancy_TextChanged(object sender, TextChangedEventArgs e)
         {
             ServerOptionsViewModel vm = DataContext as ServerOptionsViewModel;
-            if (vm != null)
-                vm.PieceOccurancyChangedCommand.Execute(null);
+            vm.Do(x => x.PieceOccurancyChangedCommand.Execute(null));
         }
 
         private void SpecialOccurancy_TextChanged(object sender, TextChangedEventArgs e)
         {
             ServerOptionsViewModel vm = DataContext as ServerOptionsViewModel;
-            if (vm != null)
-                vm.SpecialOccurancyChangedCommand.Execute(null);
+            vm.Do(x => x.SpecialOccurancyChangedCommand.Execute(null));
         }
 
         //private void DrawPiece(Pieces piece, int size, int topX, int topY)

@@ -15,14 +15,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
     {
         public int PlayerId { get; set; }
         public string PlayerName { get; set; }
-    }
 
-    public class SelfSpecialEntry : InGameChatEntry
-    {
-        public int Id { get; set; }
-        public Specials Special { get; set; }
-        public int PlayerId { get; set; }
-        public string PlayerName { get; set; }
+        public bool IsOnPlayer { get; set; }
     }
 
     public class SpecialEntry : InGameChatEntry
@@ -33,6 +27,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         public int SourceId { get; set; }
         public string Target { get; set; }
         public int TargetId { get; set; }
+
+        public bool IsOnPlayer { get; set; }
     }
 
     public class OneLineAddedEntry : InGameChatEntry
@@ -72,62 +68,74 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             get { return _entries; }
         }
 
-        public InGameChatViewModel()
-        {
-            AddEntry(new OneLineAddedEntry
-            {
-                Id = 1,
-                Source = "JOEL0123456789012345",
-                SourceId = 1,
-            });
-            AddEntry(new SpecialEntry
-            {
-                Id = 2,
-                Special = Specials.SwitchFields,
-                Source = "JOEL0123456789012345",
-                SourceId = 1,
-                Target = "SOMEONE0123456789012",
-                TargetId = 4,
-            });
-            AddEntry(new MultiLineAddedEntry
-            {
-                Id = 3,
-                Source = "TSEKWA01234567890123",
-                SourceId = 5,
-                LinesAdded = 4,
-            });
-            AddEntry(new SelfSpecialEntry
-            {
-                Id = 4,
-                Special = Specials.SwitchFields,
-                PlayerId = 1,
-                PlayerName = "TSEKWA01234567890123"
-            });
-            AddEntry(new PlayerLostEntry
-            {
-                PlayerName = "JOEL0123456789012345"
-            });
-            AddEntry(new AchievementEarnedEntry
-                {
-                    PlayerId = 1,
-                    PlayerName = "JOEL0123456789012345",
-                    AchievementTitle = "Sniper",
-                });
-            AddEntry(new SelfAchievementEarnedEntry
-            {
-                AchievementTitle = "Run baby, Run",
-            });
-            for (int i = 5; i < 30; i++)
-            {
-                AddEntry(new SelfSpecialEntry
-                {
-                    Id = i,
-                    Special = Specials.SwitchFields,
-                    PlayerId = i,
-                    PlayerName = String.Format("JOEL{0}", i),
-                });
-            }
-        }
+        //public InGameChatViewModel()
+        //{
+        //    AddEntry(new OneLineAddedEntry
+        //    {
+        //        Id = 1,
+        //        Source = "JOEL0123456789012345",
+        //        SourceId = 1,
+        //    });
+        //    AddEntry(new SpecialEntry
+        //    {
+        //        Id = 2,
+        //        Special = Specials.SwitchFields,
+        //        Source = "JOEL0123456789012345",
+        //        SourceId = 1,
+        //        Target = "SOMEONE0123456789012",
+        //        TargetId = 4,
+        //        IsOnPlayer = false,
+        //    });
+        //    AddEntry(new MultiLineAddedEntry
+        //    {
+        //        Id = 3,
+        //        Source = "TSEKWA01234567890123",
+        //        SourceId = 5,
+        //        LinesAdded = 4,
+        //    });
+        //    AddEntry(new SpecialEntry
+        //    {
+        //        Id = 4,
+        //        Special = Specials.SwitchFields,
+        //        Source = "JOEL0123456789012345",
+        //        SourceId = 1,
+        //        Target = "SOMEONE0123456789012",
+        //        TargetId = 4,
+        //        IsOnPlayer = false,
+        //    });
+        //    AddEntry(new PlayerLostEntry
+        //    {
+        //        PlayerName = "SOMEONE0123456789012"
+        //    });
+        //    AddEntry(new PlayerLostEntry
+        //    {
+        //        PlayerName = "JOEL0123456789012345",
+        //        IsOnPlayer = true,
+        //    });
+        //    AddEntry(new AchievementEarnedEntry
+        //        {
+        //            PlayerId = 1,
+        //            PlayerName = "JOEL0123456789012345",
+        //            AchievementTitle = "Sniper",
+        //        });
+        //    AddEntry(new SelfAchievementEarnedEntry
+        //    {
+        //        AchievementTitle = "Run baby, Run",
+        //    });
+        //    for (int i = 5; i < 30; i++)
+        //    {
+        //        AddEntry(new SpecialEntry
+        //        {
+        //            Id = i,
+        //            Special = Specials.SwitchFields,
+        //            SourceId = i,
+        //            Source = String.Format("JOEL{0}", i),
+        //            TargetId = i,
+        //            Target = String.Format("JOEL{0}", i),
+        //            IsOnPlayer = true,
+        //        });
+        //    }
+        //}
 
         public void AddEntry(InGameChatEntry entry)
         {
@@ -177,7 +185,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         private void OnPlayerAddLines(int playerId, string playerName, int specialId, int count)
         {
-            if (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
+            if (Client.IsPlaying || Client.IsSpectator || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
             {
                 if (count == 1)
                     AddEntry(new OneLineAddedEntry
@@ -199,44 +207,39 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         private void OnSpecialUsed(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special)
         {
-            if (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
+            if (Client.IsPlaying || Client.IsSpectator || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
             {
-                if (targetId == Client.PlayerId)
-                    AddEntry(new SelfSpecialEntry
-                        {
-                            Id = specialId + 1,
-                            Special = special,
-                            PlayerId = targetId,
-                            PlayerName = targetName,
-                        });
-                else
-                    AddEntry(new SpecialEntry
-                        {
-                            Id = specialId + 1,
-                            Special = special,
-                            SourceId = playerId,
-                            Source = playerName,
-                            TargetId = targetId,
-                            Target = targetName,
-                        });
+                AddEntry(new SpecialEntry
+                    {
+                        Id = specialId + 1,
+                        Special = special,
+                        SourceId = playerId,
+                        Source = playerName,
+                        TargetId = targetId,
+                        Target = targetName,
+
+                        IsOnPlayer = targetId == Client.PlayerId,
+                    });
             }
         }
 
         private void OnPlayerLost(int playerId, string playerName)
         {
-            if (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
+            if (Client.IsPlaying || Client.IsSpectator || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
             {
                 AddEntry(new PlayerLostEntry
                     {
                         PlayerId = playerId,
                         PlayerName = playerName,
+
+                        IsOnPlayer = playerId == Client.PlayerId,
                     });
             }
         }
 
         private void OnPlayerAchievementEarned(int playerId, string playerName, int achievementId, string achievementTitle)
         {
-            if (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
+            if (Client.IsPlaying || Client.IsSpectator || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
             {
                 AddEntry(new AchievementEarnedEntry
                     {
@@ -249,7 +252,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         private void OnAchievementEarned(IAchievement achievement, bool firstTime)
         {
-            if (achievement != null && firstTime && (Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying))
+            if (achievement != null && firstTime && (Client.IsPlaying || Client.IsSpectator || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying))
             {
                 AddEntry(new SelfAchievementEarnedEntry
                     {
@@ -279,6 +282,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                 SourceId = 1,
                 Target = "SOMEONE0123456789012",
                 TargetId = 4,
+                IsOnPlayer = false,
             });
             Entries.Add(new MultiLineAddedEntry
             {
@@ -287,16 +291,24 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                 SourceId = 5,
                 LinesAdded = 4,
             });
-            Entries.Add(new SelfSpecialEntry
+            Entries.Add(new SpecialEntry
             {
                 Id = 4,
                 Special = Specials.SwitchFields,
-                PlayerId = 1,
-                PlayerName = "TSEKWA01234567890123"
+                SourceId = 1,
+                Source = "TSEKWA01234567890123",
+                TargetId = 4,
+                Target = "SOMEONE0123456789012",
+                IsOnPlayer = false,
             });
             Entries.Add(new PlayerLostEntry
             {
-                PlayerName = "JOEL0123456789012345"
+                PlayerName = "SOMEONE0123456789012"
+            });
+            Entries.Add(new PlayerLostEntry
+            {
+                PlayerName = "JOEL0123456789012345",
+                IsOnPlayer = true,
             });
             Entries.Add(new AchievementEarnedEntry
                 {
@@ -310,12 +322,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             });
             for (int i = 5; i < 30; i++)
             {
-                Entries.Add(new SelfSpecialEntry
+                Entries.Add(new SpecialEntry
                 {
                     Id = i,
                     Special = Specials.SwitchFields,
-                    PlayerId = i,
-                    PlayerName = String.Format("JOEL{0}", i),
+                    SourceId = i,
+                    Source = String.Format("JOEL{0}", i),
+                    TargetId = i,
+                    Target = String.Format("JOEL{0}", i),
+                    IsOnPlayer = true,
                 });
             }
         }

@@ -42,11 +42,19 @@
     </Window.CommandBindings>
     <Window.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary>
-                    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-                </ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <DataTemplate DataType="{x:Type playFieldViewModels:PlayFieldViewModel}">
+                <playField:PlayFieldView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type playFieldViewModels:PlayFieldViewModelDesignData}">
+                <playField:PlayFieldView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type playFieldViewModels:PlayFieldSpectatorViewModel}">
+                <playField:PlayFieldSpectatorView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type playFieldViewModels:PlayFieldSpectatorViewModelDesignData}">
+                <playField:PlayFieldSpectatorView />
+            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
@@ -83,10 +91,13 @@
                     DataContext="{Binding Path=PartyLineViewModel}" 
                     d:DataContext="{d:DesignInstance partyLineViewModels:PartyLineViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
-            <TabItem Header="Play fields" IsTabStop="False">
+            <!--<TabItem Header="Play fields" IsTabStop="False">
                 <playField:PlayFieldView 
                     DataContext="{Binding Path=PlayFieldViewModel}" 
                     d:DataContext="{d:DesignInstance playFieldViewModels:PlayFieldViewModelDesignData, IsDesignTimeCreatable=True}"/>
+            </TabItem>-->
+            <TabItem Header="Play fields" IsTabStop="False">
+                <ContentControl Content="{Binding Path=PlayFieldViewModel}" IsTabStop="False"/>
             </TabItem>
             <TabItem Header="Achievements" IsTabStop="False">
                 <achievements:AchievementsView 

@@ -27,7 +27,7 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientPieceMovedHandler();
     public delegate void ClientNextPieceModifiedHandler();
     public delegate void ClientHoldPieceModifiedHandler();
-    public delegate void ClientPlayerRegisteredHandler(RegistrationResults result, int playerId, bool isServerMaster);
+    public delegate void ClientRegisteredAsPlayerHandler(RegistrationResults result, int playerId, bool isServerMaster);
     public delegate void ClientPlayerUnregisteredHandler();
     public delegate void ClientWinListModifiedHandler(List<WinEntry> winList);
     public delegate void ClientServerMasterModifiedHandler(int serverMasterId);
@@ -49,7 +49,7 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientContinuousSpecialFinishedHandler(int playerId, Specials special);
     public delegate void ClientAchievementEarnedHandler(IAchievement achievement, bool firstTime);
     public delegate void ClientPlayerAchievementEarnedHandler(int playerId, string playerName, int achievementId, string achievementTitle);
-    public delegate void ClientSpectatorRegisteredHandler(RegistrationResults result, int spectatorId);
+    public delegate void ClientRegisteredAsSpectatorHandler(RegistrationResults result, int spectatorId);
     public delegate void ClientSpectatorJoinedHandler(int spectatorId, string spectatorName);
     public delegate void ClientSpectatorLeftHandler(int spectatorId, string spectatorName, LeaveReasons reason);
 
@@ -96,7 +96,7 @@ namespace TetriNET.Client.Interfaces
         event ClientPieceMovedHandler OnPieceMoved;
         event ClientNextPieceModifiedHandler OnNextPieceModified;
         event ClientHoldPieceModifiedHandler OnHoldPieceModified;
-        event ClientPlayerRegisteredHandler OnPlayerRegistered;
+        event ClientRegisteredAsPlayerHandler OnRegisteredAsPlayer;
         event ClientPlayerUnregisteredHandler OnPlayerUnregistered;
         event ClientWinListModifiedHandler OnWinListModified;
         event ClientServerMasterModifiedHandler OnServerMasterModified;
@@ -118,7 +118,7 @@ namespace TetriNET.Client.Interfaces
         event ClientContinuousSpecialFinishedHandler OnContinuousSpecialFinished; // on opponent
         event ClientAchievementEarnedHandler OnAchievementEarned;
         event ClientPlayerAchievementEarnedHandler OnPlayerAchievementEarned;
-        event ClientSpectatorRegisteredHandler OnSpectatorRegistered;
+        event ClientRegisteredAsSpectatorHandler OnRegisteredAsSpectator;
         event ClientSpectatorJoinedHandler OnSpectatorJoined;
         event ClientSpectatorLeftHandler OnSpectatorLeft;
 

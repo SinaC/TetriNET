@@ -1,6 +1,5 @@
 ﻿using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
-using TetriNET.WPF_WCF_Client.ViewModels.Options;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
@@ -82,7 +81,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnPlayerRegistered -= OnPlayerRegistered;
+            oldClient.OnRegisteredAsPlayer -= OnRegisteredAsPlayer;
             oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
             oldClient.OnConnectionLost -= OnConnectionLost;
             oldClient.OnGameOver -= OnGameOver;
@@ -92,7 +91,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnPlayerRegistered += OnPlayerRegistered;
+            newClient.OnRegisteredAsPlayer += OnRegisteredAsPlayer;
             newClient.OnPlayerUnregistered += OnPlayerUnregistered;
             newClient.OnConnectionLost += OnConnectionLost;
             newClient.OnGameOver += OnGameOver;
@@ -127,7 +126,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             Team = "";
         }
 
-        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
         {
             if (result == RegistrationResults.RegistrationSuccessful)
                 PlayerId = playerId;

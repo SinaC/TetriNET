@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Timers;
 using System.Windows.Data;
 using TetriNET.Common.DataContracts;
@@ -12,7 +11,7 @@ using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
-    public class ContinuousEffect : INotifyPropertyChanged
+    public class ContinuousEffect : ObservableObject
     {
         private const double Epsilon = 0.00001;
 
@@ -78,13 +77,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             double elapsedSeconds = (DateTime.Now - _timerStarted).TotalSeconds;
             TimeLeft = TotalSeconds - elapsedSeconds;
             Opacity = 1.0 - elapsedSeconds/TotalSeconds;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

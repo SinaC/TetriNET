@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using Xceed.Wpf.Toolkit;
+﻿using System.Windows.Controls;
 
 namespace TetriNET.WPF_WCF_Client.Views.Options
 {

@@ -127,7 +127,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 OpponentViewModel vm = DataContext as OpponentViewModel; // <-- this may cause cross-thread exception
                 if (vm == null)
                     return;
-                if (playerId == vm.PlayerId && (vm.Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying))
+                if (playerId == vm.PlayerId && (vm.Client.IsPlaying || vm.Client.IsSpectator || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying))
                     DrawGrid(board);
             });
         }
@@ -150,7 +150,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 OpponentViewModel vm = DataContext as OpponentViewModel;
                 if (vm == null)
                     return;
-                if (targetId == vm.PlayerId && special == Specials.Immunity && (vm.Client.IsPlaying || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying))
+                if (targetId == vm.PlayerId && special == Specials.Immunity && (vm.Client.IsPlaying || vm.Client.IsSpectator || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying))
                     SetImmunity();
             });
         }

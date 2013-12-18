@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
-using TetriNET.Client.Achievements;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
+using TetriNET.Common.Helpers;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.Models;
 
@@ -89,8 +88,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             {
                 if (value != null)
                 {
-                    if (Client != null)
-                        Client.PublishMessage(value);
+                    Client.Do(x => x.PublishMessage(value));
                     _inputChat = ""; // delete msg
                     OnPropertyChanged();
                 }
@@ -193,7 +191,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             oldClient.OnGameResumed -= OnGameResumed;
             oldClient.OnPlayerLost -= OnPlayerLost;
             oldClient.OnPlayerWon -= OnPlayerWon;
-            oldClient.OnPlayerRegistered -= OnPlayerRegistered;
+            oldClient.OnRegisteredAsPlayer -= OnRegisteredAsPlayer;
+            oldClient.OnRegisteredAsSpectator -= OnRegisteredAsSpectator;
             oldClient.OnPlayerJoined -= OnPlayerJoined;
             oldClient.OnPlayerLeft -= OnPlayerLeft;
             oldClient.OnConnectionLost -= OnConnectionLost;
@@ -213,7 +212,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             newClient.OnGameResumed += OnGameResumed;
             newClient.OnPlayerLost += OnPlayerLost;
             newClient.OnPlayerWon += OnPlayerWon;
-            newClient.OnPlayerRegistered += OnPlayerRegistered;
+            newClient.OnRegisteredAsPlayer += OnRegisteredAsPlayer;
+            newClient.OnRegisteredAsSpectator += OnRegisteredAsSpectator;
             newClient.OnPlayerJoined += OnPlayerJoined;
             newClient.OnPlayerLeft += OnPlayerLeft;
             newClient.OnConnectionLost += OnConnectionLost;
@@ -276,11 +276,22 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             AddServerMessage(String.Format("*** {0} has joined", playerName), ChatColor.Green);
         }
 
-        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
         {
             if (result == RegistrationResults.RegistrationSuccessful)
             {
-                AddServerMessage("*** You've registered successfully", ChatColor.Green);
+                AddServerMessage("*** You've registered successfully as Player", ChatColor.Green);
+                IsRegistered = true;
+            }
+            else
+                AddServerMessage("*** You've FAILED registering !!!", ChatColor.Red);
+        }
+
+        private void OnRegisteredAsSpectator(RegistrationResults result, int spectatorId)
+        {
+            if (result == RegistrationResults.RegistrationSuccessful)
+            {
+                AddServerMessage("*** You've registered successfully as Spectator", ChatColor.Green);
                 IsRegistered = true;
             }
             else

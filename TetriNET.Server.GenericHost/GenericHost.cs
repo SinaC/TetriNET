@@ -2,6 +2,7 @@
 using System.Linq;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Helpers;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 
@@ -30,14 +31,12 @@ namespace TetriNET.Server.GenericHost
 
         protected virtual void PlayerOnConnectionLost(IPlayer player)
         {
-            if (OnPlayerLeft != null)
-                OnPlayerLeft(player, LeaveReasons.ConnectionLost);
+            OnPlayerLeft.Do(x => x(player, LeaveReasons.ConnectionLost));
         }
 
         protected virtual void SpectatorOnConnectionLost(ISpectator spectator)
         {
-            if (OnSpectatorLeft != null)
-                OnSpectatorLeft(spectator, LeaveReasons.ConnectionLost);
+            OnSpectatorLeft.Do(x => x(spectator, LeaveReasons.ConnectionLost));
         }
 
         #region IHost
@@ -98,7 +97,7 @@ namespace TetriNET.Server.GenericHost
                     result = RegistrationResults.RegistrationFailedInvalidName;
                     Log.WriteLine(Log.LogLevels.Warning, "Cannot register {0} because name is invalid", playerName);
                 }
-                else if (PlayerManager[playerName] != null)
+                else if (PlayerManager[playerName] != null || SpectatorManager[playerName] != null)
                 {
                     result = RegistrationResults.RegistrationFailedPlayerAlreadyExists;
                     Log.WriteLine(Log.LogLevels.Warning, "Cannot register {0} because it already exists", playerName);
@@ -122,8 +121,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnPlayerRegistered != null)
-                    OnPlayerRegistered(player, id);
+                OnPlayerRegistered.Do(x => x(player, id));
             }
             else
             {
@@ -143,8 +141,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnPlayerUnregistered != null)
-                    OnPlayerUnregistered(player);
+                OnPlayerUnregistered.Do(x => x(player));
             }
             else
             {
@@ -197,8 +194,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnMessagePublished != null)
-                    OnMessagePublished(player, msg);
+                OnMessagePublished.Do(x => x(player, msg));
             }
             else
             {
@@ -215,8 +211,7 @@ namespace TetriNET.Server.GenericHost
             {
                 player.ResetTimeout(); // player alive
                 //
-                if (OnPiecePlaced != null)
-                    OnPiecePlaced(player, pieceIndex, highestIndex, piece, orientation, posX, posY, grid);
+                OnPiecePlaced.Do(x => x(player, pieceIndex, highestIndex, piece, orientation, posX, posY, grid));
             }
             else
             {
@@ -238,8 +233,7 @@ namespace TetriNET.Server.GenericHost
                 if (target != null)
                 {
                     //
-                    if (OnUseSpecial != null)
-                        OnUseSpecial(player, target, special);
+                    OnUseSpecial.Do(x => x(player, target, special));
                 }
                 else
                     Log.WriteLine(Log.LogLevels.Warning, "UseSpecial to unknown player {0} from {1}", targetId, player.Name);
@@ -260,8 +254,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnSendLines != null)
-                    OnSendLines(player, count);
+                OnSendLines.Do(x => x(player, count));
             }
             else
             {
@@ -279,8 +272,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnGridModified != null)
-                    OnGridModified(player, grid);
+                OnGridModified.Do(x => x(player, grid));
             }
             else
             {
@@ -298,8 +290,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnStartGame != null)
-                    OnStartGame(player);
+                OnStartGame.Do(x => x(player));
             }
             else
             {
@@ -317,8 +308,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnStopGame != null)
-                    OnStopGame(player);
+                OnStopGame.Do(x => x(player));
             }
             else
             {
@@ -336,8 +326,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnPauseGame != null)
-                    OnPauseGame(player);
+                OnPauseGame.Do(x => x(player));
             }
             else
             {
@@ -355,8 +344,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnResumeGame != null)
-                    OnResumeGame(player);
+                OnResumeGame.Do(x => x(player));
             }
             else
             {
@@ -374,8 +362,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnGameLost != null)
-                    OnGameLost(player);
+                OnGameLost.Do(x => x(player));
             }
             else
             {
@@ -393,8 +380,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnFinishContinuousSpecial != null)
-                    OnFinishContinuousSpecial(player, special);
+                OnFinishContinuousSpecial.Do(x => x(player, special));
             }
             else
             {
@@ -412,8 +398,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnChangeOptions != null)
-                    OnChangeOptions(player, options);
+                OnChangeOptions.Do(x => x(player, options));
             }
             else
             {
@@ -431,8 +416,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnKickPlayer != null)
-                    OnKickPlayer(player, playerId);
+                OnKickPlayer.Do(x => x(player, playerId));
             }
             else
             {
@@ -450,8 +434,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnBanPlayer != null)
-                    OnBanPlayer(player, playerId);
+                OnBanPlayer.Do(x => x(player, playerId));
             }
             else
             {
@@ -469,8 +452,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnResetWinList != null)
-                    OnResetWinList(player);
+                OnResetWinList.Do(x => x(player));
             }
             else
             {
@@ -488,8 +470,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnEarnAchievement != null)
-                    OnEarnAchievement(player, achievementId, achievementTitle);
+                OnEarnAchievement.Do(x => x(player, achievementId, achievementTitle));
             }
             else
             {
@@ -517,7 +498,7 @@ namespace TetriNET.Server.GenericHost
                     result = RegistrationResults.RegistrationFailedInvalidName;
                     Log.WriteLine(Log.LogLevels.Warning, "Cannot register {0} because name is invalid", spectatorName);
                 }
-                else if (SpectatorManager[spectatorName] != null)
+                else if (SpectatorManager[spectatorName] != null || PlayerManager[spectatorName] != null)
                 {
                     result = RegistrationResults.RegistrationFailedPlayerAlreadyExists;
                     Log.WriteLine(Log.LogLevels.Warning, "Cannot register {0} because it already exists", spectatorName);
@@ -541,8 +522,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 spectator.ResetTimeout(); // spectator alive
                 //
-                if (OnSpectatorRegistered != null)
-                    OnSpectatorRegistered(spectator, id);
+                OnSpectatorRegistered.Do(x => x(spectator, id));
             }
             else
             {
@@ -562,8 +542,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 spectator.ResetTimeout(); // player alive
                 //
-                if (OnSpectatorUnregistered != null)
-                    OnSpectatorUnregistered(spectator);
+                OnSpectatorUnregistered.Do(x => x(spectator));
             }
             else
             {
@@ -597,8 +576,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 spectator.ResetTimeout(); // player alive
                 //
-                if (OnSpectatorMessagePublished != null)
-                    OnSpectatorMessagePublished(spectator, msg);
+                OnSpectatorMessagePublished.Do(x => x(spectator, msg));
             }
             else
             {

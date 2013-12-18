@@ -35,7 +35,7 @@ namespace TetriNET.ConsoleWCFClient
             AchievementManager manager = new AchievementManager();
             manager.FindAllAchievements();
             IClient client = new Client.Client(Piece.CreatePiece, () => new Board(12, 22), () => manager);
-            client.OnPlayerRegistered +=
+            client.OnRegisteredAsPlayer +=
                 (result, id, master) =>
                 {
                     if (result == RegistrationResults.RegistrationSuccessful)

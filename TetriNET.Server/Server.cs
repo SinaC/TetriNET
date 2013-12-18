@@ -133,8 +133,8 @@ namespace TetriNET.Server
             // Inform players and spectators
             //foreach (IPlayer p in _playerManager.Players)
             //    p.OnServerStopped();
-            foreach (IEntity callback in Entities)
-                callback.OnServerStopped();
+            foreach (IEntity entity in Entities)
+                entity.OnServerStopped();
 
             // Stop hosts
             foreach (IHost host in _hosts)
@@ -219,8 +219,8 @@ namespace TetriNET.Server
 
                 // Send game finished to players and spectators
                 //foreach (IPlayer p in _playerManager.Players)
-                foreach (IEntity callback in Entities)
-                    callback.OnGameFinished();
+                foreach (IEntity entity in Entities)
+                    entity.OnGameFinished();
 
                 State = States.WaitingStartGame;
 
@@ -240,8 +240,8 @@ namespace TetriNET.Server
 
                 // Send game paused to players and spectators
                 //foreach (IPlayer p in _playerManager.Players)
-                foreach (IEntity callback in Entities)
-                    callback.OnGamePaused();
+                foreach (IEntity entity in Entities)
+                    entity.OnGamePaused();
 
                 Log.WriteLine(Log.LogLevels.Info, "Game paused");
             }
@@ -261,8 +261,8 @@ namespace TetriNET.Server
 
                 // Send game resumed to players and spectators
                 //foreach (IPlayer p in _playerManager.Players)
-                foreach (IEntity callback in Entities)
-                    callback.OnGameResumed();
+                foreach (IEntity entity in Entities)
+                    entity.OnGameResumed();
 
                 Log.WriteLine(Log.LogLevels.Info, "Game resumed");
             }
@@ -282,10 +282,10 @@ namespace TetriNET.Server
                 // Inform player
                 IPlayer serverMaster = _playerManager.ServerMaster;
                 //foreach (IPlayer p in _playerManager.Players)
-                foreach (IEntity callback in Entities)
+                foreach (IEntity entity in Entities)
                 {
-                    callback.OnPublishServerMessage(String.Format("Win list resetted by {0}", serverMaster == null ? "SERVER" : serverMaster.Name));
-                    callback.OnWinListModified(WinList);
+                    entity.OnPublishServerMessage(String.Format("Win list resetted by {0}", serverMaster == null ? "SERVER" : serverMaster.Name));
+                    entity.OnWinListModified(WinList);
                 }
                 Log.WriteLine(Log.LogLevels.Info, "Win list resetted");
             }
@@ -368,8 +368,8 @@ namespace TetriNET.Server
             //    p.OnPlayerJoined(playerId, player.Name);
             //    //p.OnPlayerTeamChanged(playerId, player.Team); player has not team yet
             //}
-            foreach (IEntity callback in Entities.Where(x => x != player))
-                callback.OnPlayerJoined(playerId, player.Name);
+            foreach (IEntity entity in Entities.Where(x => x != player))
+                entity.OnPlayerJoined(playerId, player.Name);
 
             // Server master
             IPlayer serverMaster = _playerManager.ServerMaster;
@@ -406,8 +406,8 @@ namespace TetriNET.Server
             int id = _playerManager.GetId(player);
             //foreach(IPlayer p in _playerManager.Players)
             //    p.OnPlayerTeamChanged(id, team);
-            foreach (IEntity callback in Entities)
-                callback.OnPlayerTeamChanged(id, team);
+            foreach (IEntity entity in Entities)
+                entity.OnPlayerTeamChanged(id, team);
         }
 
         private void PublishMessageHandler(IPlayer player, string msg)
@@ -418,8 +418,8 @@ namespace TetriNET.Server
             //foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
             //foreach (IPlayer p in _playerManager.Players)
             //    p.OnPublishPlayerMessage(player.Name, msg);
-            foreach (IEntity callback in Entities)
-                callback.OnPublishPlayerMessage(player.Name, msg);
+            foreach (IEntity entity in Entities)
+                entity.OnPublishPlayerMessage(player.Name, msg);
         }
 
         private void PlacePieceHandler(IPlayer player, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid)
@@ -581,8 +581,8 @@ namespace TetriNET.Server
             int id = _playerManager.GetId(player);
             //foreach(IPlayer p in _playerManager.Players.Where(x => x != player))
             //    p.OnAchievementEarned(id, achievementId, achievementTitle);
-            foreach (IEntity callback in Entities.Where(x => x != player))
-                callback.OnAchievementEarned(id, achievementId, achievementTitle);
+            foreach (IEntity entity in Entities.Where(x => x != player))
+                entity.OnAchievementEarned(id, achievementId, achievementTitle);
         }
 
         private void RegisterSpectatorHandler(ISpectator spectator, int spectatorId)
@@ -610,8 +610,8 @@ namespace TetriNET.Server
             // Inform players and other spectators about new spectator connected
             //foreach (IPlayer p in _playerManager.Players)
             //    p.OnSpectatorJoined(spectatorId, spectator.Name);
-            foreach (IEntity callback in Entities.Where(x => x != spectator))
-                callback.OnSpectatorJoined(spectatorId, spectator.Name);
+            foreach (IEntity entity in Entities.Where(x => x != spectator))
+                entity.OnSpectatorJoined(spectatorId, spectator.Name);
 
             // Send win list
             spectator.OnWinListModified(WinList);
@@ -631,8 +631,8 @@ namespace TetriNET.Server
             // Send message to players and spectators
             //foreach (IPlayer p in _playerManager.Players)
             //    p.OnPublishPlayerMessage(spectator.Name, msg);
-            foreach (IEntity callback in Entities)
-                callback.OnPublishPlayerMessage(spectator.Name, msg);
+            foreach (IEntity entity in Entities)
+                entity.OnPublishPlayerMessage(spectator.Name, msg);
         }
 
         private void PlayerLeftHandler(IPlayer player, LeaveReasons reason)
@@ -667,8 +667,8 @@ namespace TetriNET.Server
                     // Send game finished (no winner)
                     //foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
                     //    p.OnGameFinished();
-                    foreach (IEntity callback in Entities.Where(x => x != player))
-                        callback.OnGameFinished();
+                    foreach (IEntity entity in Entities.Where(x => x != player))
+                        entity.OnGameFinished();
                     State = States.WaitingStartGame;
                 }
             }
@@ -676,8 +676,8 @@ namespace TetriNET.Server
             // Inform players and spectators except disconnected player
             //foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
             //    p.OnPlayerLeft(id, player.Name, reason);
-            foreach (IEntity callback in Entities.Where(x => x != player))
-                callback.OnPlayerLeft(id, player.Name, reason);
+            foreach (IEntity entity in Entities.Where(x => x != player))
+                entity.OnPlayerLeft(id, player.Name, reason);
 
             // Send new server master id
             if (wasServerMaster)
@@ -688,8 +688,8 @@ namespace TetriNET.Server
                     int serverMasterId = _playerManager.GetId(serverMaster);
                     //foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
                     //    p.OnServerMasterChanged(serverMasterId);
-                    foreach (IEntity callback in Entities.Where(x => x != player))
-                        callback.OnServerMasterChanged(serverMasterId);
+                    foreach (IEntity entity in Entities.Where(x => x != player))
+                        entity.OnServerMasterChanged(serverMasterId);
                 }
             }
         }
@@ -715,8 +715,8 @@ namespace TetriNET.Server
             // Inform players and spectators except disconnected spectator
             //foreach (ISpectator s in _spectatorManager.Spectators.Where(x => x != spectator))
             //    s.OnSpectatorLeft(id, spectator.Name, reason);
-            foreach (IEntity callback in Entities.Where(x => x != spectator))
-                callback.OnSpectatorLeft(id, spectator.Name, reason);
+            foreach (IEntity entity in Entities.Where(x => x != spectator))
+                entity.OnSpectatorLeft(id, spectator.Name, reason);
         }
 
         #endregion
@@ -888,8 +888,8 @@ namespace TetriNET.Server
             }
             // Inform about special use
             //foreach (IPlayer p in _playerManager.Players)
-            foreach (IEntity callback in Entities)
-                callback.OnSpecialUsed(specialId, playerId, targetId, special);
+            foreach (IEntity entity in Entities)
+                entity.OnSpecialUsed(specialId, playerId, targetId, special);
         }
 
         private void SendLines(IPlayer player, int count)
@@ -905,8 +905,8 @@ namespace TetriNET.Server
             // Send lines to everyone including sender (so attack msg can be displayed)
             //foreach (IPlayer p in _playerManager.Players.Where(x => x.State == PlayerStates.Playing))
             //foreach (IPlayer p in _playerManager.Players)
-            foreach (IEntity callback in Entities)
-                callback.OnPlayerAddLines(specialId, playerId, count);
+            foreach (IEntity entity in Entities)
+                entity.OnPlayerAddLines(specialId, playerId, count);
         }
 
         private void ModifyGrid(IPlayer player, byte[] grid)
@@ -919,8 +919,8 @@ namespace TetriNET.Server
             int id = _playerManager.GetId(player);
             // Send grid modification to everyone except sender
             //foreach (IPlayer p in _playerManager.Players.Where(p => p != player))
-            foreach (IEntity callback in Entities.Where(x => x != player))
-                callback.OnGridModified(id, player.Grid);
+            foreach (IEntity entity in Entities.Where(x => x != player))
+                entity.OnGridModified(id, player.Grid);
         }
 
         private void GameLost(IPlayer player)
@@ -936,8 +936,8 @@ namespace TetriNET.Server
                 // Inform other players and spectators
                 int id = _playerManager.GetId(player);
                 //foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
-                foreach (IEntity callback in Entities.Where(x => x != player))
-                    callback.OnPlayerLost(id);
+                foreach (IEntity entity in Entities.Where(x => x != player))
+                    entity.OnPlayerLost(id);
 
                 //
                 int playingCount = _playerManager.Players.Count(p => p.State == PlayerStates.Playing);
@@ -947,8 +947,8 @@ namespace TetriNET.Server
                     State = States.GameFinished;
                     // Send game finished (no winner) to players and spectators
                     //foreach (IPlayer p in _playerManager.Players)
-                    foreach (IEntity callback in Entities)
-                        callback.OnGameFinished();
+                    foreach (IEntity entity in Entities)
+                        entity.OnGameFinished();
                     State = States.WaitingStartGame;
                 }
                 else if (playingCount == 1) // only one playing left
@@ -974,11 +974,11 @@ namespace TetriNET.Server
 
                     // Send winner, game finished and win list
                     //foreach (IPlayer p in _playerManager.Players)
-                    foreach (IEntity callback in Entities)
+                    foreach (IEntity entity in Entities)
                     {
-                        callback.OnPlayerWon(winnerId);
-                        callback.OnGameFinished();
-                        callback.OnWinListModified(WinList);
+                        entity.OnPlayerWon(winnerId);
+                        entity.OnGameFinished();
+                        entity.OnWinListModified(WinList);
                     }
                     State = States.WaitingStartGame;
                 }
@@ -995,8 +995,8 @@ namespace TetriNET.Server
             int id = _playerManager.GetId(player);
             // Send to everyone except sender
             //foreach (IPlayer p in _playerManager.Players.Where(p => p != player)).
-            foreach (IEntity callback in Entities.Where(x => x != player))
-                callback.OnContinuousSpecialFinished(id, special);
+            foreach (IEntity entity in Entities.Where(x => x != player))
+                entity.OnContinuousSpecialFinished(id, special);
         }
 
         #endregion

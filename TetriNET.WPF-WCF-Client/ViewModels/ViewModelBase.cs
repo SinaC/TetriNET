@@ -1,10 +1,9 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using TetriNET.Client.Interfaces;
+﻿using TetriNET.Client.Interfaces;
+using TetriNET.Common.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels
 {
-    public abstract class ViewModelBase : INotifyPropertyChanged
+    public abstract class ViewModelBase : ObservableObject
     {
         public delegate void ClientChangedEventHandler(IClient oldClient, IClient newClient);
 
@@ -22,8 +21,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
                         UnsubscribeFromClientEvents(_client);
                     IClient oldValue = _client;
                     _client = value;
-                    if (ClientChanged != null)
-                        ClientChanged(oldValue, _client);
+                    ClientChanged.Do(x => x(oldValue, _client));
                     if (_client != null)
                         SubscribeToClientEvents(_client);
                 }
@@ -32,12 +30,5 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
         public abstract void UnsubscribeFromClientEvents(IClient oldClient);
         public abstract void SubscribeToClientEvents(IClient newClient);
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

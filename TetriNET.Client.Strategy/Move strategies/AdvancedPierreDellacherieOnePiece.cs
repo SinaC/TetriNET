@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using TetriNET.Client.Interfaces;
-using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Strategy
 {

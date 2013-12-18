@@ -22,11 +22,13 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         public OptionsViewModel OptionsViewModel { get; private set; }
         public PartyLineViewModel PartyLineViewModel { get; private set; }
         public ConnectionViewModel ConnectionViewModel { get; private set; }
-        public PlayFieldViewModel PlayFieldViewModel { get; private set; }
+        public PlayFieldViewModelBase PlayFieldViewModel { get; private set; }
         public AchievementsViewModel AchievementsViewModel { get; private set; }
 
-        private int _activeTabItemIndex;
+        protected PlayFieldViewModel PlayFieldPlayerViewModel { get; set; }
+        protected PlayFieldSpectatorViewModel PlayFieldSpectatorViewModel { get; set; }
 
+        private int _activeTabItemIndex;
         public int ActiveTabItemIndex
         {
             get { return _activeTabItemIndex; }
@@ -54,8 +56,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             OptionsViewModel = new OptionsViewModel();
             PartyLineViewModel = new PartyLineViewModel();
             ConnectionViewModel = new ConnectionViewModel();
-            PlayFieldViewModel = new PlayFieldViewModel();
+            PlayFieldPlayerViewModel = new PlayFieldViewModel();
+            PlayFieldSpectatorViewModel = new PlayFieldSpectatorViewModel();
             AchievementsViewModel = new AchievementsViewModel();
+            PlayFieldViewModel = PlayFieldPlayerViewModel; // by default, player view
 
             //
             ClientChanged += OnClientChanged;
@@ -77,13 +81,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             OptionsViewModel.Client = newClient;
             PartyLineViewModel.Client = newClient;
             ConnectionViewModel.Client = newClient;
-            PlayFieldViewModel.Client = newClient;
+            PlayFieldPlayerViewModel.Client = newClient;
+            PlayFieldSpectatorViewModel.Client = newClient;
             AchievementsViewModel.Client = newClient;
         }
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnPlayerRegistered -= OnPlayerRegistered;
+            oldClient.OnRegisteredAsPlayer -= OnRegisteredAsPlayer;
+            oldClient.OnRegisteredAsSpectator -= OnRegisteredAsSpectator;
             oldClient.OnPlayerUnregistered -= OnPlayerUnregisted;
             oldClient.OnGameStarted -= OnGameStarted;
             oldClient.OnGameFinished -= OnGameFinished;
@@ -93,7 +99,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnPlayerRegistered += OnPlayerRegistered;
+            newClient.OnRegisteredAsPlayer += OnRegisteredAsPlayer;
+            newClient.OnRegisteredAsSpectator += OnRegisteredAsSpectator;
             newClient.OnPlayerUnregistered += OnPlayerUnregisted;
             newClient.OnGameStarted += OnGameStarted;
             newClient.OnGameFinished += OnGameFinished;
@@ -105,11 +112,28 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
         #region IClient events handler
 
-        private void OnPlayerRegistered(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
         {
-            if (result == RegistrationResults.RegistrationSuccessful && ClientOptionsViewModel.Instance.AutomaticallySwitchToPartyLineOnRegistered)
-                if (ActiveTabItemIndex == ConnectionViewModel.TabIndex)
-                    ActiveTabItemIndex = PartyLineViewModel.TabIndex;
+            if (result == RegistrationResults.RegistrationSuccessful)
+            {
+                PlayFieldViewModel = PlayFieldPlayerViewModel;
+                OnPropertyChanged("PlayFieldViewModel");
+                if (ClientOptionsViewModel.Instance.AutomaticallySwitchToPartyLineOnRegistered)
+                    if (ActiveTabItemIndex == ConnectionViewModel.TabIndex)
+                        ActiveTabItemIndex = PartyLineViewModel.TabIndex;
+            }
+        }
+
+        private void OnRegisteredAsSpectator(RegistrationResults result, int spectatorId)
+        {
+            if (result == RegistrationResults.RegistrationSuccessful)
+            {
+                PlayFieldViewModel = PlayFieldSpectatorViewModel;
+                OnPropertyChanged("PlayFieldViewModel");
+                if (ClientOptionsViewModel.Instance.AutomaticallySwitchToPartyLineOnRegistered)
+                    if (ActiveTabItemIndex == ConnectionViewModel.TabIndex)
+                        ActiveTabItemIndex = PartyLineViewModel.TabIndex;
+            }
         }
 
         private void OnPlayerUnregisted()
@@ -162,8 +186,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         public new OptionsViewModelDesignData OptionsViewModel { get; private set; }
         public new PartyLineViewModelDesignData PartyLineViewModel { get; private set; }
         public new ConnectionViewModelDesignData ConnectionViewModel { get; private set; }
-        public new PlayFieldViewModelDesignData PlayFieldViewModel { get; private set; }
+        public new PlayFieldViewModelBase PlayFieldViewModel { get; private set; }
         public new AchievementsViewModelDesignData AchievementsViewModel { get; private set; }
+
+        protected new PlayFieldViewModelDesignData PlayFieldPlayerViewModel { get; set; }
+        protected new PlayFieldSpectatorViewModelDesignData PlayFieldSpectatorViewModel { get; set; }
 
         public MainWindowViewModelDesignData()
         {
@@ -172,8 +199,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             OptionsViewModel = new OptionsViewModelDesignData();
             PartyLineViewModel = new PartyLineViewModelDesignData();
             ConnectionViewModel = new ConnectionViewModelDesignData();
-            PlayFieldViewModel = new PlayFieldViewModelDesignData();
+            PlayFieldPlayerViewModel = new PlayFieldViewModelDesignData();
+            PlayFieldSpectatorViewModel = new PlayFieldSpectatorViewModelDesignData();
             AchievementsViewModel = new AchievementsViewModelDesignData();
+
+            PlayFieldViewModel = PlayFieldPlayerViewModel;
         }
     }
 }

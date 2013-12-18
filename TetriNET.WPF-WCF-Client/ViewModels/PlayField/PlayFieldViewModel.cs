@@ -5,7 +5,7 @@ using TetriNET.Client.Interfaces;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
-    public class PlayFieldViewModel : ViewModelBase, ITabIndex
+    public class PlayFieldViewModel : PlayFieldViewModelBase
     {
         private const double Epsilon = 0.00001;
 
@@ -73,6 +73,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         private OpponentViewModel GetOpponentViewModel(int playerId)
         {
+            if (Client.IsSpectator)
+                return null;
             if (playerId == Client.PlayerId)
                 return null;
             // playerId -> id mapping rule
@@ -86,15 +88,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                 id = playerId;
             return OpponentsViewModel[id - 1];
         }
-
-        #region ITabIndex
-
-        public int TabIndex
-        {
-            get { return 4; }
-        }
-
-        #endregion
 
         #region ViewModelBase
 
@@ -127,6 +120,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         
         private void OnAchievementEarned(IAchievement achievement, bool firstTime)
         {
+            if (Client.IsSpectator)
+                return;
             Achievement = achievement.Title;
             _achievementTimer.Stop();
             _lastAchievement = DateTime.Now;
@@ -136,6 +131,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         private void OnPlayerLeft(int playerId, string playerName, LeaveReasons reason)
         {
+            if (Client.IsSpectator)
+                return;
             OpponentViewModel opponent = GetOpponentViewModel(playerId);
             if (opponent != null)
             {
@@ -147,6 +144,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         private void OnPlayerJoined(int playerId, string playerName)
         {
+            if (Client.IsSpectator)
+                return;
+
             OpponentViewModel opponent = GetOpponentViewModel(playerId);
             if (opponent != null)
             {

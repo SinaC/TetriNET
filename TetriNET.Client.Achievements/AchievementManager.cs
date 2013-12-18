@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Helpers;
 using TetriNET.Common.Logger;
 
 namespace TetriNET.Client.Achievements
@@ -89,8 +90,7 @@ namespace TetriNET.Client.Achievements
 
         private void AchievementAchieved(IAchievement achievement, bool firstTime)
         {
-            if (Achieved != null)
-                Achieved(achievement, firstTime);
+            Achieved.Do(x => x(achievement, firstTime));
 
             foreach (IAchievement iter in Achievements.Where(x => x.IsAchievable))
                 iter.OnAchievementEarned(achievement, Achievements);

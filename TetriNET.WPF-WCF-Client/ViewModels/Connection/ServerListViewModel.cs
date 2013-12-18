@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using TetriNET.Client.WCFProxy;
 using TetriNET.WPF_WCF_Client.Commands;
@@ -11,7 +9,7 @@ using TetriNET.WPF_WCF_Client.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 {
-    public class ServerListViewModel : INotifyPropertyChanged
+    public class ServerListViewModel : ObservableObject
     {
         private readonly ObservableCollection<string> _servers = new ObservableCollection<string>();
         public ObservableCollection<string> Servers
@@ -103,12 +101,5 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         public ICommand SelectServerCommand { get; private set; }
 
         #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

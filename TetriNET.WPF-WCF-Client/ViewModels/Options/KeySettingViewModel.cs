@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using TetriNET.Common.Helpers;
 using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 {
-    public class KeySettingViewModel : INotifyPropertyChanged
+    public class KeySettingViewModel : ObservableObject
     {
         private Key _key;
         public Key Key
@@ -121,13 +120,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
                     break;
             }
             Settings.Default.Save();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using TetriNET.Client.Interfaces;
 using TetriNET.Client.Strategy;
+using TetriNET.Common.Helpers;
 using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
 using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
@@ -172,10 +173,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             {
                 oldClient.OnGameStarted -= OnGameStarted;
 
-                if (_controller != null)
-                    _controller.UnsubscribeFromClientEvents();
-                if (Bot != null)
-                    Bot.UnsubscribeFromClientEvents();
+                _controller.Do(x => x.UnsubscribeFromClientEvents());
+                Bot.Do(x => x.UnsubscribeFromClientEvents());
             }
             // Set new client
             Inventory.Client = newClient;
