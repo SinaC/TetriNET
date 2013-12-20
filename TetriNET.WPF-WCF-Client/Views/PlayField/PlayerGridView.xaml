@@ -44,5 +44,6 @@
                 <!-- will be filled with controls in ctor -->
             </Canvas>
         </Border>
+        <TextBlock x:Name="PauseText" Grid.Row="1" Visibility="Hidden" FontSize="20" FontWeight="Bold" Text="Game Paused" HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>
 </UserControl>

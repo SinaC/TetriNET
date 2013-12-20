@@ -8,10 +8,6 @@ namespace TetriNET.Common.Helpers
         private T _instance;
         private readonly Func<T> _createHandler;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Singleton&lt;T&gt;"/> class.
-        /// </summary>
-        /// <param name="create">The create.</param>
         public Singleton(Func<T> create)
         {
             if (create == null)
@@ -21,10 +17,6 @@ namespace TetriNET.Common.Helpers
             _createHandler = create;
         }
 
-        /// <summary>
-        /// Gets the instance.
-        /// </summary>
-        /// <value>The instance.</value>
         public T Instance
         {
             get
@@ -33,7 +25,6 @@ namespace TetriNET.Common.Helpers
                 return _instance;
             }
         }
-
     }
 
     public class ThreadSafeSingleton<T>
@@ -43,11 +34,6 @@ namespace TetriNET.Common.Helpers
         private volatile T _instance;
         private readonly Func<T> _createHandler;
 
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ThreadSafeSingleton&lt;T&gt;"/> class.
-        /// </summary>
-        /// <param name="create">The create.</param>
         public ThreadSafeSingleton(Func<T> create)
         {
             if (create == null)
@@ -57,10 +43,6 @@ namespace TetriNET.Common.Helpers
             _createHandler = create;
         }
 
-        /// <summary>
-        /// Gets the instance.
-        /// </summary>
-        /// <value>The instance.</value>
         public T Instance
         {
             get
@@ -78,6 +60,5 @@ namespace TetriNET.Common.Helpers
                 return _instance;
             }
         }
-
     }
 }

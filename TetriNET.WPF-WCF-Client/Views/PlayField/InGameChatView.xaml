@@ -10,6 +10,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:SpecialToStringConverter x:Key="SpecialToStringConverter"/>
+            <converters:ChatColorBrushConverter x:Key="ChatColorBrushConverter"/>
             <!-- 3 DataTemplate with same DataType but 2 are named so, only unnamed-one is considered as playField:SpecialEntry -->
             <DataTemplate x:Key="SpecialOnPlayerTemplate" DataType="{x:Type playField:SpecialEntry}">
                 <WrapPanel>
@@ -99,6 +100,11 @@
                     <TextBlock Text="***" Foreground="Green" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="You have earned" Foreground="Green" FontSize="10" Margin="0,0,2,0"/>
                     <TextBlock Text="{Binding AchievementTitle, StringFormat={}[{0}]}" Foreground="Green" FontSize="10"/>
+                </WrapPanel>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type playField:SimpleMessageEntry}">
+                <WrapPanel>
+                    <TextBlock Text="{Binding Msg}" Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" FontSize="10" />
                 </WrapPanel>
             </DataTemplate>
         </ResourceDictionary>

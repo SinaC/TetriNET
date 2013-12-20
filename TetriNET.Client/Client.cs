@@ -1609,7 +1609,7 @@ namespace TetriNET.Client
 
         public void StopGame()
         {
-            if (ServerState == ServerStates.Playing)
+            if (ServerState == ServerStates.Playing || ServerState == ServerStates.Paused)
                 _proxy.Do(x => x.StopGame(this));
         }
 

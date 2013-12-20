@@ -1,5 +1,4 @@
 ﻿using TetriNET.Client.Interfaces;
-using TetriNET.Common.DataContracts;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 {

@@ -59,15 +59,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             }
         }
 
-        private string _serverAddress2;
-        public string ServerAddress2
+        private string _serverAddress;
+        public string ServerAddress
         {
-            get { return _serverAddress2; }
+            get { return _serverAddress; }
             set
             {
-                if (_serverAddress2 != value)
+                if (_serverAddress != value)
                 {
-                    _serverAddress2 = value;
+                    _serverAddress = value;
                     OnPropertyChanged();
                     OnPropertyChanged("ServerCompletePlayerAddress");
                     OnPropertyChanged("ServerCompleteSpectatorAddress");
@@ -75,15 +75,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             }
         }
 
-        private int _serverPort2;
-        public int ServerPort2
+        private int _serverPort;
+        public int ServerPort
         {
-            get { return _serverPort2; }
+            get { return _serverPort; }
             set
             {
-                if (_serverPort2 != value)
+                if (_serverPort != value)
                 {
-                    _serverPort2 = value;
+                    _serverPort = value;
                     OnPropertyChanged();
                     OnPropertyChanged("ServerCompletePlayerAddress");
                     OnPropertyChanged("ServerCompleteSpectatorAddress");
@@ -93,59 +93,21 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         public string ServerCompletePlayerAddress
         {
-            get { return "net.tcp://" + ServerAddress2 + ":" + ServerPort2 + "/TetriNET"; }
+            get { return "net.tcp://" + ServerAddress + ":" + ServerPort + "/TetriNET"; }
         }
 
         public string ServerCompleteSpectatorAddress
         {
-            get { return "net.tcp://" + ServerAddress2 + ":" + ServerPort2 + "/TetriNETSpectator"; }
+            get { return "net.tcp://" + ServerAddress + ":" + ServerPort + "/TetriNETSpectator"; }
         }
 
         public void SetAddress(string address)
         {
             // Split
             Uri uri = new Uri(address);
-            ServerAddress2 = uri.Host;
-            ServerPort2 = uri.Port;
+            ServerAddress = uri.Host;
+            ServerPort = uri.Port;
         }
-
-        //private string _serverAddress;
-        //public string ServerAddress
-        //{
-        //    get { return _serverAddress; }
-        //    set
-        //    {
-        //        if (_serverAddress != value)
-        //        {
-        //            _serverAddress = value;
-        //            if (String.IsNullOrWhiteSpace(_serverAddress))
-        //                _serverAddress = "localhost:8765";
-        //            // net.tcp://[ip|machine name]:[port]/TetriNET
-        //            if (!_serverAddress.StartsWith("net.tcp://"))
-        //                _serverAddress = "net.tcp://" + _serverAddress;
-        //            //if (ServerAddress.EndsWith("/TetriNETv2"))
-        //            //    _serverAddress = _serverAddress.Replace("/TetriNETv2", ""); // remove old endpoint
-        //            if (!_serverAddress.EndsWith("/TetriNET"))
-        //                _serverAddress = _serverAddress + "/TetriNET";
-
-        //            OnPropertyChanged();
-        //        }
-        //    }
-        //}
-
-        //private int _serverPort;
-        //public int ServerPort
-        //{
-        //    get { return _serverPort; }
-        //    set
-        //    {
-        //        if (_serverPort != value)
-        //        {
-        //            _serverPort = value;
-        //            OnPropertyChanged();
-        //        }
-        //    }
-        //}
 
         public string ConnectDisconnectLabel
         {
@@ -242,9 +204,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                     //    Settings.Default.Server = _serverAddress;
                     //    Settings.Default.Save();
                     //}
-                    if (!CheckError("ServerAddress2"))
+                    if (!CheckError("ServerAddress"))
                         return;
-                    if (!CheckError("ServerPort2"))
+                    if (!CheckError("ServerPort"))
                         return;
                     if (Settings.Default.Server != ServerCompletePlayerAddress)
                     {
@@ -380,11 +342,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                     ValidationResult result = rule.Validate(Username, CultureInfo.InvariantCulture);
                     return (string) result.ErrorContent;
                 }
-                else if (columnName == "ServerAddress2")
+                if (columnName == "ServerAddress")
                 {
-                    return String.IsNullOrWhiteSpace(ServerAddress2) ? "Server address cannot be empty" : null;
+                    return String.IsNullOrWhiteSpace(ServerAddress) ? "Server address cannot be empty" : null;
                 }
-                else if (columnName == "ServerPort2")
+                if (columnName == "ServerPort")
                 {
                     NumericValidationRule rule = new NumericValidationRule
                         {
@@ -392,7 +354,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                             Maximum = 65535,
                             PositiveOnly = true
                         };
-                    ValidationResult result = rule.Validate(ServerPort2, CultureInfo.InvariantCulture);
+                    ValidationResult result = rule.Validate(ServerPort, CultureInfo.InvariantCulture);
                     return (string)result.ErrorContent;
                 }
                 return null;
@@ -413,8 +375,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         {
             ConnectionResultColor = ChatColor.Red;
             Username = "SinaC";
-            ServerAddress2 = "localhost";
-            ServerPort2 = 8765;
+            ServerAddress = "localhost";
+            ServerPort = 8765;
         }
     }
 }

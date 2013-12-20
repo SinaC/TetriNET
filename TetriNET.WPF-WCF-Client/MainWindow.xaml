@@ -81,12 +81,12 @@
                     DataContext="{Binding Path=OptionsViewModel}" 
                     d:DataContext="{d:DesignInstance optionsViewModels:OptionsViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
-            <TabItem Header="Win list" IsTabStop="False">
+            <TabItem Header="Win list" IsTabStop="False" Visibility="{Binding IsRegistered, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <winList:WinListView 
                     DataContext="{Binding Path=WinListViewModel}" 
                     d:DataContext="{d:DesignInstance winListViewModels:WinListViewModelDesignData, IsDesignTimeCreatable=True }" />
             </TabItem>
-            <TabItem Header="Party line" IsTabStop="False">
+            <TabItem Header="Party line" IsTabStop="False" Visibility="{Binding IsRegistered, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <partyLine:PartyLineView 
                     DataContext="{Binding Path=PartyLineViewModel}" 
                     d:DataContext="{d:DesignInstance partyLineViewModels:PartyLineViewModelDesignData, IsDesignTimeCreatable=True}"/>
@@ -96,7 +96,7 @@
                     DataContext="{Binding Path=PlayFieldViewModel}" 
                     d:DataContext="{d:DesignInstance playFieldViewModels:PlayFieldViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>-->
-            <TabItem Header="Play fields" IsTabStop="False">
+            <TabItem Header="Play fields" IsTabStop="False" Visibility="{Binding IsRegistered, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ContentControl Content="{Binding Path=PlayFieldViewModel}" IsTabStop="False"/>
             </TabItem>
             <TabItem Header="Achievements" IsTabStop="False">
@@ -104,7 +104,7 @@
                     DataContext="{Binding Path=AchievementsViewModel}" 
                     d:DataContext="{d:DesignInstance achievementsViewModels:AchievementsViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
-            <TabItem Header="Statistics" IsTabStop="False">
+            <TabItem Header="Statistics" IsTabStop="False" Visibility="{Binding IsRegistered, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <statistics:ClientStatisticsView 
                     DataContext="{Binding Path=ClientStatisticsViewModel}" 
                     d:DataContext="{d:DesignInstance statisticsViewModels:ClientStatisticsViewModelDesignData, IsDesignTimeCreatable=True}"/>

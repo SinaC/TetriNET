@@ -20,10 +20,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             {
                 if (Percentage < 0.00001)
                     return "0";
-                else if (Percentage < 1)
+                if (Percentage < 1)
                     return "<1";
-                else
-                    return String.Format("{0:0.0}", Percentage);
+                return String.Format("{0:0.0}", Percentage);
             }
         }
     }

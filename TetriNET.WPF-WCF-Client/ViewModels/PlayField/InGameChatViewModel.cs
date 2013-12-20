@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.Models;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
@@ -56,6 +57,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
     public class SelfAchievementEarnedEntry : InGameChatEntry
     {
         public string AchievementTitle { get; set; }
+    }
+
+    public class SimpleMessageEntry : InGameChatEntry
+    {
+        public string Msg { get; set; }
+        public ChatColor Color { get; set; }
     }
 
     public class InGameChatViewModel : ViewModelBase
@@ -162,6 +169,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             oldClient.OnPlayerLost -= OnPlayerLost;
             oldClient.OnPlayerAchievementEarned -= OnPlayerAchievementEarned;
             oldClient.OnAchievementEarned -= OnAchievementEarned;
+            oldClient.OnGameOver -= OnGameOver;
+            oldClient.OnGamePaused -= OnGamePaused;
+            oldClient.OnGameResumed -= OnGameResumed;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
@@ -172,6 +182,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             newClient.OnPlayerLost += OnPlayerLost;
             newClient.OnPlayerAchievementEarned += OnPlayerAchievementEarned;
             newClient.OnAchievementEarned += OnAchievementEarned;
+            newClient.OnGameOver += OnGameOver;
+            newClient.OnGamePaused += OnGamePaused;
+            newClient.OnGameResumed += OnGameResumed;
         }
 
         #endregion
@@ -261,6 +274,42 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             }
         }
 
+        private void OnGameOver()
+        {
+            if (Client.IsPlaying || Client.IsSpectator || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
+            {
+                AddEntry(new PlayerLostEntry
+                {
+                    PlayerId = Client.PlayerId,
+                    PlayerName = Client.Name,
+                });
+            }
+        }
+
+        private void OnGameResumed()
+        {
+            if (Client.IsPlaying || Client.IsSpectator || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
+            {
+                AddEntry(new SimpleMessageEntry
+                {
+                    Msg = "*** GAME RESUMED ***",
+                    Color = ChatColor.Magenta,
+                });
+            }
+        }
+
+        private void OnGamePaused()
+        {
+            if (Client.IsPlaying || Client.IsSpectator || ClientOptionsViewModel.Instance.DisplayOpponentsFieldEvenWhenNotPlaying)
+            {
+                AddEntry(new SimpleMessageEntry
+                {
+                    Msg = "*** GAME PAUSED ***",
+                    Color = ChatColor.Magenta,
+                });
+            }
+        }
+
         #endregion
     }
 
@@ -320,6 +369,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             {
                 AchievementTitle = "Run baby, Run",
             });
+            Entries.Add(new SimpleMessageEntry
+                {
+                    Msg = "Simple message",
+                    Color = ChatColor.DodgerBlue,
+                });
             for (int i = 5; i < 30; i++)
             {
                 Entries.Add(new SpecialEntry

@@ -150,7 +150,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         private void ClearEntries()
         {
-            ExecuteOnUIThread.Invoke(() => PlayerList.Clear());
+            ExecuteOnUIThread.Invoke(() =>
+                {
+                    PlayerList.Clear();
+                    SpectatorList.Clear();
+                });
         }
 
         private void AddPlayerEntry(int playerId, string playerName)

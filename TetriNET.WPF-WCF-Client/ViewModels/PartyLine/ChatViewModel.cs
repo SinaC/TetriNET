@@ -195,6 +195,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             oldClient.OnRegisteredAsSpectator -= OnRegisteredAsSpectator;
             oldClient.OnPlayerJoined -= OnPlayerJoined;
             oldClient.OnPlayerLeft -= OnPlayerLeft;
+            oldClient.OnSpectatorJoined -= OnSpectatorJoined;
+            oldClient.OnSpectatorLeft -= OnSpectatorLeft;
             oldClient.OnConnectionLost -= OnConnectionLost;
             oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
         }
@@ -216,6 +218,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             newClient.OnRegisteredAsSpectator += OnRegisteredAsSpectator;
             newClient.OnPlayerJoined += OnPlayerJoined;
             newClient.OnPlayerLeft += OnPlayerLeft;
+            newClient.OnSpectatorJoined += OnSpectatorJoined;
+            newClient.OnSpectatorLeft += OnSpectatorLeft;
             newClient.OnConnectionLost += OnConnectionLost;
             newClient.OnPlayerUnregistered += OnPlayerUnregistered;
         }
@@ -274,6 +278,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         private void OnPlayerJoined(int playerid, string playerName)
         {
             AddServerMessage(String.Format("*** {0} has joined", playerName), ChatColor.Green);
+        }
+
+        private void OnSpectatorLeft(int spectatorId, string spectatorName, LeaveReasons reason)
+        {
+            OnPlayerLeft(spectatorId, spectatorName, reason);
+        }
+
+        private void OnSpectatorJoined(int spectatorId, string spectatorName)
+        {
+            AddServerMessage(String.Format("*** {0} has joined as spectator", spectatorName), ChatColor.Green);
         }
 
         private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)

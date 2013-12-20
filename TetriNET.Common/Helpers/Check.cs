@@ -9,7 +9,8 @@ namespace TetriNET.Common.Helpers
         public static bool CheckEvents<T>(T instance)
         {
             Type t = instance.GetType();
-            foreach (EventInfo e in t.GetEvents())
+            EventInfo[] events = t.GetEvents();
+            foreach (EventInfo e in events)
             {
                 if (e.DeclaringType == null)
                     return false;

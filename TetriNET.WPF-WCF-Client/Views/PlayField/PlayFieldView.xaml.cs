@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -68,7 +69,17 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 if (vm != null)
                     vm.Client.StopGame();
             }
-            else if (e.Key == Key.A && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift) )
+            else if (e.Key == Key.P)
+            {
+                if (vm != null)
+                    vm.Client.PauseGame();
+            }
+            else if (e.Key == Key.R)
+            {
+                if (vm != null)
+                    vm.Client.ResumeGame();
+            }
+            else if (e.Key == Key.A && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
             {
                 Bot.Activated = !Bot.Activated;
             }

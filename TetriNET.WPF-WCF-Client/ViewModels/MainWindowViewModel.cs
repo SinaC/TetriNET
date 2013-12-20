@@ -42,6 +42,20 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             }
         }
 
+        private bool _isRegistered;
+        public bool IsRegistered
+        {
+            get { return _isRegistered; }
+            set
+            {
+                if (_isRegistered != value)
+                {
+                    _isRegistered = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public MainWindowViewModel()
         {
             //
@@ -116,6 +130,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         {
             if (result == RegistrationResults.RegistrationSuccessful)
             {
+                IsRegistered = true;
                 PlayFieldViewModel = PlayFieldPlayerViewModel;
                 OnPropertyChanged("PlayFieldViewModel");
                 if (ClientOptionsViewModel.Instance.AutomaticallySwitchToPartyLineOnRegistered)
@@ -128,6 +143,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         {
             if (result == RegistrationResults.RegistrationSuccessful)
             {
+                IsRegistered = true;
                 PlayFieldViewModel = PlayFieldSpectatorViewModel;
                 OnPropertyChanged("PlayFieldViewModel");
                 if (ClientOptionsViewModel.Instance.AutomaticallySwitchToPartyLineOnRegistered)
@@ -138,6 +154,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
         private void OnPlayerUnregisted()
         {
+            IsRegistered = false;
             ActiveTabItemIndex = ConnectionViewModel.TabIndex;
         }
 
@@ -173,6 +190,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
         private void OnConnectionLost(ConnectionLostReasons reason)
         {
+            IsRegistered = false;
             ActiveTabItemIndex = ConnectionViewModel.TabIndex;
         }
 
@@ -204,6 +222,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             AchievementsViewModel = new AchievementsViewModelDesignData();
 
             PlayFieldViewModel = PlayFieldPlayerViewModel;
+            IsRegistered = true;
         }
     }
 }

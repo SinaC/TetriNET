@@ -294,6 +294,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             _displayDropLocation = ClientOptionsViewModel.Instance.DisplayDropLocation;
             _pieceHint = null; // reset hint>
             ExecuteOnUIThread.Invoke(() => ActivateDarkness(false));
+            ExecuteOnUIThread.Invoke(() => PauseText.Visibility = Visibility.Hidden);
         }
 
         private void OnConnectionLost(ConnectionLostReasons reason)
@@ -304,16 +305,29 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private void OnPlayerUnregistered()
         {
             ExecuteOnUIThread.Invoke(DesactivateContinuousSpecials);
+            ExecuteOnUIThread.Invoke(() => PauseText.Visibility = Visibility.Hidden);
         }
 
         private void OnGameOver()
         {
             ExecuteOnUIThread.Invoke(DesactivateContinuousSpecials);
+            ExecuteOnUIThread.Invoke(() => PauseText.Visibility = Visibility.Hidden);
         }
 
         private void OnGameFinished()
         {
             ExecuteOnUIThread.Invoke(DesactivateContinuousSpecials);
+            ExecuteOnUIThread.Invoke(() => PauseText.Visibility = Visibility.Hidden);
+        }
+
+        private void OnGamePaused()
+        {
+            ExecuteOnUIThread.Invoke(() => PauseText.Visibility = Visibility.Visible);
+        }
+
+        private void OnGameResumed()
+        {
+            ExecuteOnUIThread.Invoke(() => PauseText.Visibility = Visibility.Hidden);
         }
 
         #endregion
@@ -339,6 +353,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             {
                 oldClient.OnGameOver -= OnGameOver;
                 oldClient.OnGameFinished -= OnGameFinished;
+                oldClient.OnGamePaused -= OnGamePaused;
+                oldClient.OnGameResumed -= OnGameResumed;
                 oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
                 oldClient.OnConnectionLost -= OnConnectionLost;
                 oldClient.OnGameStarted -= OnGameStarted;
@@ -346,15 +362,18 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 oldClient.OnPieceMoved -= OnPieceMoved;
                 oldClient.OnRedraw -= OnRedraw;
                 oldClient.OnContinuousEffectToggled -= OnContinuousEffectToggled;
+
             }
             // Add new handlers
             if (newClient != null)
             {
                 newClient.OnGameOver += OnGameOver;
                 newClient.OnGameFinished += OnGameFinished;
+                newClient.OnGamePaused += OnGamePaused;
+                newClient.OnGameResumed += OnGameResumed;
                 newClient.OnPlayerUnregistered += OnPlayerUnregistered;
                 newClient.OnConnectionLost += OnConnectionLost;
-                newClient.OnGameStarted += OnGameStarted;
+                newClient.OnGameStarted += OnGameStarted; // will not be called on first game played because OnClientChanged is called on DataContextChanged (which is set when view receive focus) 
                 newClient.OnRoundStarted += OnRoundStarted;
                 newClient.OnPieceMoved += OnPieceMoved;
                 newClient.OnRedraw += OnRedraw;

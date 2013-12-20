@@ -16,7 +16,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
     public class AchievementsViewModel : ViewModelBase, ITabIndex
     {
         private ObservableCollection<IAchievement> _achievements;
-
         public ObservableCollection<IAchievement> Achievements
         {
             get
@@ -181,6 +180,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
 
     public class AchievementsViewModelDesignData : AchievementsViewModel
     {
+        public new ObservableCollection<IAchievement> Achievements { get; set; }
+
         public AchievementsViewModelDesignData()
         {
             AchievementManager manager = new AchievementManager();
