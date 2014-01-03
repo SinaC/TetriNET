@@ -118,9 +118,9 @@ namespace TetriNET.Client.WCFProxy
 
         #region ITetriNET
 
-        public void RegisterPlayer(ITetriNETCallback callback, string playerName)
+        public void RegisterPlayer(ITetriNETCallback callback, string playerName, string team)
         {
-            ExceptionFreeAction(() => _proxy.RegisterPlayer(playerName), "RegisterPlayer");
+            ExceptionFreeAction(() => _proxy.RegisterPlayer(playerName, team), "RegisterPlayer");
         }
 
         public void UnregisterPlayer(ITetriNETCallback callback)

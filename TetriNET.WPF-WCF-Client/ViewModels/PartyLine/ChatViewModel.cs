@@ -275,9 +275,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             AddServerMessage(msg, ChatColor.Green);
         }
 
-        private void OnPlayerJoined(int playerid, string playerName)
+        private void OnPlayerJoined(int playerid, string playerName, string team)
         {
-            AddServerMessage(String.Format("*** {0} has joined", playerName), ChatColor.Green);
+            if (!String.IsNullOrWhiteSpace(team))
+                AddServerMessage(String.Format("*** {0} [{1}] has joined", playerName, team), ChatColor.Green);
+            else
+                AddServerMessage(String.Format("*** {0} has joined", playerName), ChatColor.Green);
         }
 
         private void OnSpectatorLeft(int spectatorId, string spectatorName, LeaveReasons reason)

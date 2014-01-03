@@ -1,6 +1,8 @@
-﻿using TetriNET.Client.Achievements;
+﻿using System;
+using TetriNET.Client.Achievements;
 using TetriNET.Client.Board;
 using TetriNET.Client.Pieces;
+using TetriNET.Client.WCFProxy;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.CustomSettings;
@@ -76,6 +78,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             PlayFieldViewModel = PlayFieldPlayerViewModel; // by default, player view
 
             //
+            ConnectionViewModel.LoginViewModel.OnConnect += OnConnect;
+
+            //
             ClientChanged += OnClientChanged;
 
             // Create client
@@ -84,6 +89,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             //    (pieces, i, arg3, arg4, arg5, arg6) => Piece.CreatePiece(Pieces.TetriminoI, i, arg3, arg4, arg5, arg6),
             //    () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height),
             //    () => manager);
+        }
+
+        private void OnConnect(ConnectEventArgs e)
+        {
+            if (e.IsSpectator)
+                e.Success = Client.ConnectAndRegisterAsSpectator(callback => new WCFSpectatorProxy(callback, ConnectionViewModel.LoginViewModel.ServerCompleteSpectatorAddress), ConnectionViewModel.LoginViewModel.Username);
+            else
+                e.Success = Client.ConnectAndRegisterAsPlayer(callback => new WCFProxy(callback, ConnectionViewModel.LoginViewModel.ServerCompletePlayerAddress), ConnectionViewModel.LoginViewModel.Username, PartyLineViewModel.Team);
         }
 
         #region ViewModelBase

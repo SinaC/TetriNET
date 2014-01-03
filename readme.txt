@@ -14,7 +14,6 @@ Solo mode (extra points for back-to-back, t-spin)
 Server integrated in WPF client
 in multiplayer game, display some stats about players (#lines, score, who attacked who, ...) when game is finished
 right-click on player in players manager to display achievements
-Register, PlayerJoined: Name + Team
 
 CURRENT DEVELOPMENT: spectator mode
 	kick/ban: should be available on player or spectator

@@ -17,7 +17,7 @@ namespace TetriNET.Common.Contracts
         void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, bool isServerMaster, GameOptions options); // Player Number + In-Game
 
         [OperationContract(IsOneWay = true)] // Player Joined
-        void OnPlayerJoined(int playerId, string name);
+        void OnPlayerJoined(int playerId, string name, string team);
 
         [OperationContract(IsOneWay = true)] // Player Left
         void OnPlayerLeft(int playerId, string name, LeaveReasons reason);

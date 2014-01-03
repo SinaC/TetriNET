@@ -58,9 +58,9 @@ namespace TetriNET.Server.WCFHost
 
             #region IWCFTetriNET
 
-            public void RegisterPlayer(string playerName)
+            public void RegisterPlayer(string playerName, string team)
             {
-                _host.RegisterPlayer(Callback, playerName);
+                _host.RegisterPlayer(Callback, playerName, team);
             }
 
             public void UnregisterPlayer()

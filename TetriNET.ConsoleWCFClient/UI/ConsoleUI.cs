@@ -200,13 +200,13 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void OnPlayerJoined(int playerId, string playerName)
+        private void OnPlayerJoined(int playerId, string playerName, string team)
         {
             lock (_lock)
             {
                 Console.ResetColor();
                 Console.SetCursorPosition(_client.Board.Width + 2 + BoardStartX, 2);
-                Console.Write("{0} [{1}] joined", playerName, playerId);
+                Console.Write("{0}|{1} [{2}] joined", playerName, team, playerId);
             }
         }
 

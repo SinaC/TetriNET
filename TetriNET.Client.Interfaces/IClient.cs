@@ -33,7 +33,7 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientServerMasterModifiedHandler(int serverMasterId);
     public delegate void ClientPlayerLostHandler(int playerId, string playerName);
     public delegate void ClientPlayerWonHandler(int playerId, string playerName);
-    public delegate void ClientPlayerJoinedHandler(int playerId, string playerName);
+    public delegate void ClientPlayerJoinedHandler(int playerId, string playerName, string team);
     public delegate void ClientPlayerLeftHandler(int playerId, string playerName, LeaveReasons reason);
     public delegate void ClientPlayerTeamChangedHandler(int playerId, string team);
     public delegate void ClientPlayerPublishMessageHandler(string playerName, string msg);
@@ -125,7 +125,7 @@ namespace TetriNET.Client.Interfaces
         //bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc);
         //bool Disconnect();
 
-        bool ConnectAndRegisterAsPlayer(Func<ITetriNETCallback, IProxy> createProxyFunc, string name);
+        bool ConnectAndRegisterAsPlayer(Func<ITetriNETCallback, IProxy> createProxyFunc, string name, string team);
         bool ConnectAndRegisterAsSpectator(Func<ITetriNETCallback, ISpectatorProxy> createSpectatorProxyFunc, string name);
         bool UnregisterAndDisconnect();
 

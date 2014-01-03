@@ -8,7 +8,7 @@ namespace TetriNET.Common.Contracts
     {
         // Player connexion/deconnexion management
         [OperationContract(IsOneWay = true)]
-        void RegisterPlayer(string playerName);
+        void RegisterPlayer(string playerName, string team);
 
         [OperationContract(IsOneWay = true)]
         void UnregisterPlayer();

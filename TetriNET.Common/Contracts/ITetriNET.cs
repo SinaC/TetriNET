@@ -5,7 +5,7 @@ namespace TetriNET.Common.Contracts
     public interface ITetriNET
     {
         // Player connexion/deconnexion management
-        void RegisterPlayer(ITetriNETCallback callback, string playerName);
+        void RegisterPlayer(ITetriNETCallback callback, string playerName, string team);
         void UnregisterPlayer(ITetriNETCallback callback);
         void Heartbeat(ITetriNETCallback callback);
         void PlayerTeam(ITetriNETCallback callback, string team);

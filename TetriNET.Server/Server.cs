@@ -342,7 +342,7 @@ namespace TetriNET.Server
 
         private void RegisterPlayerHandler(IPlayer player, int playerId)
         {
-            Log.WriteLine(Log.LogLevels.Info, "New player:[{0}]{1}", playerId, player.Name);
+            Log.WriteLine(Log.LogLevels.Info, "New player:[{0}]{1}|{2}", playerId, player.Name, player.Team);
 
             // Send player id back to player
             player.OnPlayerRegistered(RegistrationResults.RegistrationSuccessful, playerId, State == States.GameStarted || State == States.GamePaused, _playerManager.ServerMaster == player, _options);
@@ -351,9 +351,9 @@ namespace TetriNET.Server
             foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
             {
                 int id = _playerManager.GetId(p);
-                player.OnPlayerJoined(id, p.Name);
-                if (!String.IsNullOrWhiteSpace(p.Team))
-                    player.OnPlayerTeamChanged(id, p.Team);
+                player.OnPlayerJoined(id, p.Name, p.Team);
+                //if (!String.IsNullOrWhiteSpace(p.Team))
+                //    player.OnPlayerTeamChanged(id, p.Team);
             }
             // Inform new player about spectators
             foreach (ISpectator s in _spectatorManager.Spectators)
@@ -369,7 +369,7 @@ namespace TetriNET.Server
             //    //p.OnPlayerTeamChanged(playerId, player.Team); player has not team yet
             //}
             foreach (IEntity entity in Entities.Where(x => x != player))
-                entity.OnPlayerJoined(playerId, player.Name);
+                entity.OnPlayerJoined(playerId, player.Name, player.Team);
 
             // Server master
             IPlayer serverMaster = _playerManager.ServerMaster;
@@ -596,9 +596,9 @@ namespace TetriNET.Server
             foreach (IPlayer p in _playerManager.Players)
             {
                 int id = _playerManager.GetId(p);
-                spectator.OnPlayerJoined(id, p.Name);
-                if (!String.IsNullOrWhiteSpace(p.Team))
-                    spectator.OnPlayerTeamChanged(id, p.Team);
+                spectator.OnPlayerJoined(id, p.Name, p.Team);
+                //if (!String.IsNullOrWhiteSpace(p.Team))
+                //    spectator.OnPlayerTeamChanged(id, p.Team);
             }
             // Inform new spectator about other spectators
             foreach(ISpectator s in _spectatorManager.Spectators.Where(x => x != spectator))

@@ -59,7 +59,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             }
         }
 
-        private void OnPlayerJoined(int playerId, string playerName)
+        private void OnPlayerJoined(int playerId, string playerName, string team)
         {
             if (!Client.IsSpectator)
                 return;
@@ -69,6 +69,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             {
                 opponent.PlayerId = playerId;
                 opponent.PlayerName = playerName;
+                opponent.Team = team;
             }
         }
 

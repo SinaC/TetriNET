@@ -240,9 +240,9 @@ namespace TetriNET.Client
             }
         }
 
-        public void OnPlayerJoined(int playerId, string name)
+        public void OnPlayerJoined(int playerId, string name, string team)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Player {0}[{1}] joined", name, playerId);
+            Log.WriteLine(Log.LogLevels.Debug, "Player {0}{1}[{2}] joined", name, team, playerId);
 
             ResetTimeout();
             // Don't update ourself
@@ -251,6 +251,7 @@ namespace TetriNET.Client
                 PlayerData playerData = new PlayerData
                 {
                     Name = name,
+                    Team = team,
                     PlayerId = playerId,
                     Board = _createBoardFunc(),
                     IsImmune = false,
@@ -258,7 +259,7 @@ namespace TetriNET.Client
                 };
                 _playersData[playerId] = playerData;
 
-                ClientOnPlayerJoined.Do(x => x(playerId, name));
+                ClientOnPlayerJoined.Do(x => x(playerId, name, team));
 
                 if (IsGameStarted)
                 {
@@ -1527,7 +1528,7 @@ namespace TetriNET.Client
             // TODO: current & next piece
         }
 
-        public bool ConnectAndRegisterAsPlayer(Func<ITetriNETCallback, IProxy> createProxyFunc, string name)
+        public bool ConnectAndRegisterAsPlayer(Func<ITetriNETCallback, IProxy> createProxyFunc, string name, string team)
         {
             if (createProxyFunc == null)
                 throw new ArgumentNullException("createProxyFunc");
@@ -1542,7 +1543,8 @@ namespace TetriNET.Client
 
                 State = States.Registering;
                 Name = name;
-                _proxy.RegisterPlayer(this, Name);
+                Team = team;
+                _proxy.RegisterPlayer(this, name, team);
 
                 return true;
             }

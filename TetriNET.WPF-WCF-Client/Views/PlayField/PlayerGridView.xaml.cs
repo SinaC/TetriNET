@@ -35,17 +35,22 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private bool _isDarknessActive;
         private bool _isHintActivated;
-        private bool _displayDropLocation;
+        //private bool _displayDropLocation;
         private IMoveStrategy _moveStrategy;
         private IPiece _pieceHint;
         private readonly List<Rectangle> _grid = new List<Rectangle>();
+
+        public PlayerViewModel ViewModel
+        {
+            get { return DataContext as PlayerViewModel; }
+        }
 
         public PlayerGridView()
         {
             InitializeComponent();
 
             _isHintActivated = false;
-            _displayDropLocation = false;
+            //_displayDropLocation = false;
 
             if (!DesignerProperties.GetIsInDesignMode(this))
                 Canvas.Background = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigBackground();
@@ -89,12 +94,12 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             }
         }
 
-        public void ToggleDropLocation()
-        {
-            _displayDropLocation = !_displayDropLocation;
-            if (_displayDropLocation)
-                DrawDropLocation();
-        }
+        //public void ToggleDropLocation()
+        //{
+        //    _displayDropLocation = !_displayDropLocation;
+        //    if (_displayDropLocation)
+        //        DrawDropLocation();
+        //}
 
         private void DrawPiece(IBoard board, IPiece piece, Brush brush)
         {
@@ -123,17 +128,16 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void DrawHint()
         {
-            PlayerViewModel vm = DataContext as PlayerViewModel;
-            if (vm == null || vm.Client.Board == null || vm.Client.CurrentPiece == null || vm.Client.NextPiece == null)
+            if (ViewModel == null || ViewModel.Client.Board == null || ViewModel.Client.CurrentPiece == null || ViewModel.Client.NextPiece == null)
                 return;
             if (_isHintActivated)
             {
                 if (_pieceHint == null)
                 {
                     // Clone board, current and next
-                    IBoard board = vm.Client.Board.Clone();
-                    _pieceHint = vm.Client.CurrentPiece.Clone();
-                    IPiece next = vm.Client.NextPiece.Clone();
+                    IBoard board = ViewModel.Client.Board.Clone();
+                    _pieceHint = ViewModel.Client.CurrentPiece.Clone();
+                    IPiece next = ViewModel.Client.NextPiece.Clone();
 
                     // Get hint
                     int bestRotationDelta, bestTranslationDelta;
@@ -154,47 +158,45 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                     board.Drop(_pieceHint);
                 }
                 // Draw piece
-                DrawPiece(vm.Client.Board, _pieceHint, _hintBrush);
+                DrawPiece(ViewModel.Client.Board, _pieceHint, _hintBrush);
             }
         }
 
         private void DrawDropLocation()
         {
-            PlayerViewModel vm = DataContext as PlayerViewModel;
-            if (vm == null || vm.Client.Board == null || vm.Client.CurrentPiece == null)
+            if (ViewModel == null || ViewModel.Client.Board == null || ViewModel.Client.CurrentPiece == null)
                 return;
-            if (_displayDropLocation)
+            //if (_displayDropLocation)
+            if (ClientOptionsViewModel.Instance.DisplayDropLocation)
             {
-                IBoard board = vm.Client.Board.Clone();
-                IPiece piece = vm.Client.CurrentPiece.Clone();
+                IBoard board = ViewModel.Client.Board.Clone();
+                IPiece piece = ViewModel.Client.CurrentPiece.Clone();
 
                 board.Drop(piece);
 
-                DrawPiece(vm.Client.Board, piece, _dropBrush);
+                DrawPiece(ViewModel.Client.Board, piece, _dropBrush);
             }
         }
 
         private void DrawCurrentPiece()
         {
-            PlayerViewModel vm = DataContext as PlayerViewModel;
-            if (vm == null || vm.Client.Board == null || vm.Client.CurrentPiece == null)
-                return; 
-            Pieces cellPiece = vm.Client.CurrentPiece.Value;
+            if (ViewModel == null || ViewModel.Client.Board == null || ViewModel.Client.CurrentPiece == null)
+                return;
+            Pieces cellPiece = ViewModel.Client.CurrentPiece.Value;
             Brush brush = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigPiece(cellPiece);
-            DrawPiece(vm.Client.Board, vm.Client.CurrentPiece, brush);
+            DrawPiece(ViewModel.Client.Board, ViewModel.Client.CurrentPiece, brush);
         }
 
         private void DrawGrid()
         {
-            PlayerViewModel vm = DataContext as PlayerViewModel;
-            if (vm == null || vm.Client.Board == null)
+            if (ViewModel == null || ViewModel.Client.Board == null)
                 return;
-            for (int y = 1; y <= vm.Client.Board.Height; y++)
-                for (int x = 1; x <= vm.Client.Board.Width; x++)
+            for (int y = 1; y <= ViewModel.Client.Board.Height; y++)
+                for (int x = 1; x <= ViewModel.Client.Board.Width; x++)
                 {
-                    int cellY = vm.Client.Board.Height - y;
+                    int cellY = ViewModel.Client.Board.Height - y;
                     int cellX = x - 1;
-                    byte cellValue = vm.Client.Board[x, y];
+                    byte cellValue = ViewModel.Client.Board[x, y];
 
                     Rectangle uiPart = GetControl(cellX, cellY);
                     if (uiPart != null)
@@ -291,9 +293,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private void OnGameStarted()
         {
-            _displayDropLocation = ClientOptionsViewModel.Instance.DisplayDropLocation;
-            _pieceHint = null; // reset hint>
-            ExecuteOnUIThread.Invoke(() => ActivateDarkness(false));
+            //_displayDropLocation = ClientOptionsViewModel.Instance.DisplayDropLocation;
+            _pieceHint = null; // reset hint
+            ExecuteOnUIThread.Invoke(DesactivateContinuousSpecials);
             ExecuteOnUIThread.Invoke(() => PauseText.Visibility = Visibility.Hidden);
         }
 
@@ -336,13 +338,12 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private void PlayerGridControl_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             // Crappy workaround MVVM -> code behind
-            PlayerViewModel vm = DataContext as PlayerViewModel;
-            if (vm != null)
+            if (ViewModel != null)
             {
-                vm.ClientChanged += OnClientChanged;
+                ViewModel.ClientChanged += OnClientChanged;
 
-                if (vm.Client != null)
-                    OnClientChanged(null, vm.Client);
+                if (ViewModel.Client != null)
+                    OnClientChanged(null, ViewModel.Client);
             }
         }
 
@@ -384,7 +385,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
 
         private static VisualBrush CreateDoubleRectangleBrush(Color color)
         {
-            Canvas hintCanvas = new Canvas
+            Canvas canvas = new Canvas
             {
                 Width = 16,
                 Height = 16,
@@ -406,16 +407,16 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 Stroke = new SolidColorBrush(color),
                 StrokeThickness = 1,
             };
-            hintCanvas.Children.Add(outer);
+            canvas.Children.Add(outer);
             Canvas.SetLeft(outer, 0);
             Canvas.SetTop(outer, 0);
-            hintCanvas.Children.Add(inner);
+            canvas.Children.Add(inner);
             Canvas.SetLeft(inner, 2);
             Canvas.SetTop(inner, 2);
 
             return new VisualBrush
             {
-                Visual = hintCanvas
+                Visual = canvas
             };
         }
     }

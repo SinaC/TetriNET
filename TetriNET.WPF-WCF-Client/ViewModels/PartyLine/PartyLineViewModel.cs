@@ -214,7 +214,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             _isGamePaused = false;
             UpdateEnabilityAndLabel();
 
-            Client.ChangeTeam(Team);
+            //Client.ChangeTeam(Team);
         }
 
         private void OnPlayerUnregistered()

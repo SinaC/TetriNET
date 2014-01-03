@@ -35,16 +35,16 @@ namespace TetriNET.ConsoleWCFClient
             AchievementManager manager = new AchievementManager();
             manager.FindAllAchievements();
             IClient client = new Client.Client(Piece.CreatePiece, () => new Board(12, 22), () => manager);
-            client.OnRegisteredAsPlayer +=
-                (result, id, master) =>
-                {
-                    if (result == RegistrationResults.RegistrationSuccessful)
-                        client.ChangeTeam(team);
-                };
+            //client.OnRegisteredAsPlayer +=
+            //    (result, id, master) =>
+            //    {
+            //        if (result == RegistrationResults.RegistrationSuccessful)
+            //            client.ChangeTeam(team);
+            //    };
             //IClient client = new Client.Client((piece, posX, posY, orientation, index) => new MutatedZ(posX, posY, orientation, index), () => new Board(12, 22));
 
             string baseAddress = ConfigurationManager.AppSettings["address"];
-            client.ConnectAndRegisterAsPlayer(callback => new WCFProxy(callback, baseAddress), name);
+            client.ConnectAndRegisterAsPlayer(callback => new WCFProxy(callback, baseAddress), name, team);
 
             //
             GameController.GameController controller = new GameController.GameController(client);

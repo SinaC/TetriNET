@@ -38,7 +38,7 @@ namespace TetriNET.Tests
             {
                 throw new NotImplementedException();
             }
-            public void OnPlayerJoined(int playerId, string name)
+            public void OnPlayerJoined(int playerId, string name, string team)
             {
                 throw new NotImplementedException();
             }

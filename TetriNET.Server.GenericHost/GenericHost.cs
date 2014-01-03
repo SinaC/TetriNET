@@ -81,9 +81,9 @@ namespace TetriNET.Server.GenericHost
 
         #region ITetriNET
 
-        public virtual void RegisterPlayer(ITetriNETCallback callback, string playerName)
+        public virtual void RegisterPlayer(ITetriNETCallback callback, string playerName, string team)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "RegisterPlayer {0}", playerName);
+            Log.WriteLine(Log.LogLevels.Debug, "RegisterPlayer {0} {1}", playerName, team);
 
             // TODO: check ban list
 
@@ -112,6 +112,7 @@ namespace TetriNET.Server.GenericHost
                     player = CreatePlayerFunc(playerName, callback);
                     //
                     player.OnConnectionLost += PlayerOnConnectionLost;
+                    player.Team = team;
                     //
                     id = PlayerManager.Add(player);
                 }

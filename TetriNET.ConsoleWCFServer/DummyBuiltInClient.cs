@@ -36,6 +36,7 @@ namespace TetriNET.ConsoleWCFServer
         private DateTime _lastHeartbeat;
 
         public string PlayerName { get; private set; }
+        public string Team { get; private set; }
         public bool IsSpectator { get; private set; }
         public States State { get; private set; }
         public int PlayerId { get; private set; }
@@ -93,7 +94,7 @@ namespace TetriNET.ConsoleWCFServer
                     // NOP: wait connection resolution
                     break;
                 case States.ConnectedToServer:
-                    Register(PlayerName);
+                    Register(PlayerName, Team);
                     break;
                 case States.Registering:
                     // NOP: waiting callback OnPlayerRegistered
@@ -194,9 +195,9 @@ namespace TetriNET.ConsoleWCFServer
                 State = States.ApplicationStarted;
         }
 
-        public void OnPlayerJoined(int playerId, string name)
+        public void OnPlayerJoined(int playerId, string name, string team)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnPlayerJoined[{0}]:{1}[{2}]", PlayerName, name, playerId);
+            Log.WriteLine(Log.LogLevels.Info, "OnPlayerJoined[{0}]:{1}{2}[{3}]", PlayerName, name, team, playerId);
             ResetTimeout();
         }
 
@@ -345,14 +346,15 @@ namespace TetriNET.ConsoleWCFServer
 
         #endregion
 
-        private void Register(string playerName)
+        private void Register(string playerName, string team)
         {
             Log.WriteLine(Log.LogLevels.Info, "Registering");
             State = States.Registering;
 
             PlayerName = playerName;
+            Team = team;
 
-            Proxy.RegisterPlayer(this, PlayerName);
+            Proxy.RegisterPlayer(this, playerName, team);
         }
     }
 }

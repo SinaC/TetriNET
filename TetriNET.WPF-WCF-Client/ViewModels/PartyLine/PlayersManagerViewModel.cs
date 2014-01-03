@@ -157,12 +157,13 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                 });
         }
 
-        private void AddPlayerEntry(int playerId, string playerName)
+        private void AddPlayerEntry(int playerId, string playerName, string team)
         {
             ExecuteOnUIThread.Invoke(() => PlayerList.Add(new PlayerData
                 {
                     RealPlayerId = playerId,
                     PlayerName = playerName,
+                    Team = team,
                     IsServerMaster = false,
                 }));
         }
@@ -270,9 +271,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             IsServerMaster = Client.IsServerMaster;
         }
 
-        private void OnPlayerJoined(int playerId, string playerName)
+        private void OnPlayerJoined(int playerId, string playerName, string team)
         {
-            AddPlayerEntry(playerId, playerName);
+            AddPlayerEntry(playerId, playerName, team);
         }
 
         private void OnPlayerLeft(int playerId, string playerName, LeaveReasons reason)
@@ -289,7 +290,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
         {
             ClearEntries();
-            AddPlayerEntry(playerId, Client.Name);
+            AddPlayerEntry(playerId, Client.Name, Client.Team);
             IsServerMaster = Client.IsServerMaster;
         }
 

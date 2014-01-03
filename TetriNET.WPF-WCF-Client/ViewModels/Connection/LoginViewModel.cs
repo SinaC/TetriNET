@@ -15,6 +15,12 @@ using TetriNET.WPF_WCF_Client.Validators;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 {
+    public class ConnectEventArgs : EventArgs
+    {
+        public bool IsSpectator { get; set; }
+        public bool Success { get; set; }
+    }
+
     public class LoginViewModel : ViewModelBase, IDataErrorInfo
     {
         private bool _isRegistered;
@@ -29,6 +35,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                 return String.IsNullOrWhiteSpace(error);
             }
         }
+
+        public event Action<ConnectEventArgs> OnConnect;
 
         private string _username;
         public string Username
@@ -221,14 +229,23 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                         Settings.Default.Save();
                     }
 
-                    bool connected;
-                    if (IsSpectatorModeChecked)
-                        connected = Client.ConnectAndRegisterAsSpectator(callback => new WCFSpectatorProxy(callback, ServerCompleteSpectatorAddress), Username);
-                    else
-                        connected = Client.ConnectAndRegisterAsPlayer(callback => new WCFProxy(callback, ServerCompletePlayerAddress), Username);
-                    if (!connected)
+                    //bool connected;
+                    if (OnConnect != null)
                     {
-                        SetConnectionResultMessage("Connection failed", ChatColor.Red);
+                        ConnectEventArgs args = new ConnectEventArgs
+                            {
+                                IsSpectator = IsSpectatorModeChecked
+                            };
+                        //if (IsSpectatorModeChecked)
+                            //connected = Client.ConnectAndRegisterAsSpectator(callback => new WCFSpectatorProxy(callback, ServerCompleteSpectatorAddress), Username);
+                        //else
+                            //connected = Client.ConnectAndRegisterAsPlayer(callback => new WCFProxy(callback, ServerCompletePlayerAddress), Username);
+                        OnConnect(args);
+                        //if (!connected)
+                        if (!args.Success)
+                        {
+                            SetConnectionResultMessage("Connection failed", ChatColor.Red);
+                        }
                     }
                 }
                 else
