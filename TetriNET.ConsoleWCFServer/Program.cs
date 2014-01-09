@@ -6,11 +6,13 @@ using System.Reflection;
 using System.Threading.Tasks;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Logger;
+using TetriNET.Common.Randomizer;
 using TetriNET.ConsoleWCFServer.Ban;
 using TetriNET.ConsoleWCFServer.Host;
 using TetriNET.ConsoleWCFServer.Player;
 using TetriNET.ConsoleWCFServer.Spectator;
 using TetriNET.Server.Interfaces;
+using TetriNET.Server.PieceProvider;
 
 namespace TetriNET.ConsoleWCFServer
 {
@@ -83,7 +85,11 @@ namespace TetriNET.ConsoleWCFServer
             };
 
             //
-            Server.Server server = new Server.Server(playerManager, spectatorManager, wcfHost, builtInHost);
+            PieceBag pieceProvider = new PieceBag(RangeRandom.Random, 4);
+            //PieceQueue pieceProvider = new PieceQueue(RangeRandom.Random);
+
+            //
+            Server.Server server = new Server.Server(playerManager, spectatorManager, pieceProvider, wcfHost, builtInHost);
             //Server server = new Server(playerManager, socketHost);
 
             //

@@ -60,6 +60,13 @@ namespace TetriNET.Common.Randomizer
             Debug.Assert(false, "RangeRandom");
             return default(T);
         }
+        
+        public static T Random<T>(IEnumerable<IOccurancy<T>> occurancies, IEnumerable<T> history)
+        {
+            var list = (occurancies as IList<IOccurancy<T>> ?? occurancies.ToList()).Where(x => !history.Contains(x.Value));
+
+            return Random(list);
+        }
 
         /// <summary>
         /// Return sum of occurancy found in <paramref name="occurancies"/>

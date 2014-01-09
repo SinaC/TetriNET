@@ -84,6 +84,10 @@
       <Project>{546c0189-9339-4de6-902a-f38550c5a517}</Project>
       <Name>TetriNET.Server.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Server.PieceProvider\TetriNET.Server.PieceProvider.csproj">
+      <Project>{87b820fe-0848-41a3-9cee-05c5da7ff1f7}</Project>
+      <Name>TetriNET.Server.PieceProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Server\TetriNET.Server.csproj">
       <Project>{161C5DDA-F2A8-400E-9702-3C4B45FFB772}</Project>
       <Name>TetriNET.Server</Name>

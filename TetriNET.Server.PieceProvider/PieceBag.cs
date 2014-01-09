@@ -1,19 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using TetriNET.Common.DataContracts;
+using TetriNET.Server.Interfaces;
 
-namespace TetriNET.Server
+namespace TetriNET.Server.PieceProvider
 {
-    internal sealed class PieceQueue
+    public sealed class PieceBag : IPieceProvider
     {
         private readonly object _lock = new object();
-        private readonly Func<Pieces> _randomFunc;
+        private readonly Func<IEnumerable<PieceOccurancy>, IEnumerable<Pieces>, Pieces> _randomFunc;
+        private readonly int _historySize;
         private int _size;
         private Pieces[] _array;
+        private readonly Pieces[] _history;
 
-        public PieceQueue(Func<Pieces> randomFunc, int seed = 0)
+        public PieceBag(Func<IEnumerable<PieceOccurancy>, IEnumerable<Pieces>, Pieces> randomFunc, int historySize)
         {
             _randomFunc = randomFunc;
-            Grow(64);
+            _historySize = historySize;
+            _history = new Pieces[_historySize];
+            //Grow(64);
         }
 
         public void Reset()
@@ -23,6 +29,8 @@ namespace TetriNET.Server
                 Fill(0, _size);
             }
         }
+
+        public Func<IEnumerable<PieceOccurancy>> Occurancies { get; set; }
 
         public Pieces this[int index]
         {
@@ -53,7 +61,14 @@ namespace TetriNET.Server
         private void Fill(int from, int count)
         {
             for (int i = from; i < from + count; i++)
-                _array[i] = _randomFunc();
+            {
+                int endIndex = i < _historySize ? i : _historySize;
+                for (int j = 0; j < endIndex; j++)
+                    _history[j] = _array[i - endIndex + j];
+                for (int j = endIndex; j < _historySize; j++ )
+                    _history[j] = Pieces.Invalid;
+                _array[i] = _randomFunc(Occurancies(), _history);
+            }
         }
     }
 }

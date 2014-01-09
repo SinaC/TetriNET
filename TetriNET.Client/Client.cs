@@ -649,7 +649,7 @@ namespace TetriNET.Client
 
         public void OnNextPiece(int index, List<Pieces> pieces)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Next piece: {0} {1}", index, pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
+            Log.WriteLine(Log.LogLevels.Debug, "Next piece: {0} {1}", index, pieces.Any() ? pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i) : String.Empty);
 
             ResetTimeout();
 

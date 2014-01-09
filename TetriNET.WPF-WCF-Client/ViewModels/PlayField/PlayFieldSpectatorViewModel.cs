@@ -5,7 +5,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
     public class PlayFieldSpectatorViewModel : PlayFieldViewModelBase
     {
-        public int OpponentCount = 6;
+        private const int OpponentCount = 6;
 
         public InGameChatViewModel InGameChatViewModel { get; set; }
         public OpponentViewModel[] OpponentsViewModel { get; set; }

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{546C0189-9339-4DE6-902A-F38550C5A517}</ProjectGuid>
+    <ProjectGuid>{87B820FE-0848-41A3-9CEE-05C5DA7FF1F7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TetriNET.Server.Interfaces</RootNamespace>
-    <AssemblyName>TetriNET.Server.Interfaces</AssemblyName>
+    <RootNamespace>TetriNET.Server.PieceProvider</RootNamespace>
+    <AssemblyName>TetriNET.Server.PieceProvider</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -34,20 +34,18 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IBanManager.cs" />
-    <Compile Include="IEntity.cs" />
-    <Compile Include="IHost.cs" />
-    <Compile Include="IPieceProvider.cs" />
-    <Compile Include="IPlayer.cs" />
-    <Compile Include="IPlayerManager.cs" />
-    <Compile Include="ISpectator.cs" />
-    <Compile Include="ISpectatorManager.cs" />
+    <Compile Include="PieceBag.cs" />
+    <Compile Include="PieceQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Server.Interfaces\TetriNET.Server.Interfaces.csproj">
+      <Project>{546c0189-9339-4de6-902a-f38550c5a517}</Project>
+      <Name>TetriNET.Server.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

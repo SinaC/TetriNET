@@ -35,7 +35,7 @@ namespace TetriNET.Server
         private const int MaxTimeoutCountBeforeDisconnection = 3;
         private const bool IsTimeoutDetectionActive = false;
 
-        private readonly PieceQueue _pieceQueue;
+        private readonly IPieceProvider _pieceProvider;
         private readonly ManualResetEvent _stopBackgroundTaskEvent = new ManualResetEvent(false);
         private readonly IPlayerManager _playerManager;
         private readonly ISpectatorManager _spectatorManager;
@@ -51,7 +51,7 @@ namespace TetriNET.Server
         public int SpecialId { get; private set; }
         public List<WinEntry> WinList { get; private set; }
 
-        public Server(IPlayerManager playerManager, ISpectatorManager spectatorManager, params IHost[] hosts)
+        public Server(IPlayerManager playerManager, ISpectatorManager spectatorManager, IPieceProvider pieceProvider, params IHost[] hosts)
         {
             if (playerManager == null)
                 throw new ArgumentNullException("playerManager");
@@ -60,7 +60,9 @@ namespace TetriNET.Server
             _options = new GameOptions();
             _options.ResetToDefault();
 
-            _pieceQueue = new PieceQueue(() => RangeRandom.Random(_options.PieceOccurancies));
+            //_pieceProvider = new PieceQueue(() => RangeRandom.Random(_options.PieceOccurancies));
+            _pieceProvider = pieceProvider;
+            _pieceProvider.Occurancies = () => _options.PieceOccurancies;
             _playerManager = playerManager;
             _spectatorManager = spectatorManager;
             _hosts = hosts.ToList();
@@ -168,15 +170,15 @@ namespace TetriNET.Server
                 SpecialId = 0;
 
                 // Reset Piece Queue
-                _pieceQueue.Reset(); // TODO: random seed
-                //Pieces firstPiece = _pieceQueue[0];
-                //Pieces secondPiece = _pieceQueue[1];
-                //Pieces thirdPiece = _pieceQueue[2];
+                _pieceProvider.Reset(); // TODO: random seed
+                //Pieces firstPiece = _pieceProvider[0];
+                //Pieces secondPiece = _pieceProvider[1];
+                //Pieces thirdPiece = _pieceProvider[2];
                 //Log.WriteLine(Log.LogLevels.Info, "Starting game with {0} {1} {2}", firstPiece, secondPiece, thirdPiece);
 
                 List<Pieces> pieces = new List<Pieces>();
                 for (int i = 0; i < PiecesSendOnGameStarted; i++)
-                    pieces.Add(_pieceQueue[i]);
+                    pieces.Add(_pieceProvider[i]);
                 Log.WriteLine(Log.LogLevels.Info, "Starting game with {0}", pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
 
                 // Reset sudden death
@@ -819,16 +821,30 @@ namespace TetriNET.Server
             //if (index != player.PieceIndex)
             //    Log.WriteLine(Log.LogLevels.Error, "!!!! piece index different for player {0} local {1} remote {2}", player.Name, player.PieceIndex, index);
 
+            bool sendNextPieces = false;
             // Set grid
             player.Grid = grid;
             // Get next piece
             //player.PieceIndex++;
             player.PieceIndex = pieceIndex;
             //int indexToSend = player.PieceIndex + 2; // indices 0, 1 and 2 have been sent when starting game
-            //Pieces nextPieceToSend = _pieceQueue[indexToSend];
+            //Pieces nextPieceToSend = _pieceProvider[indexToSend];
             List<Pieces> nextPiecesToSend = new List<Pieces>();
-            for (int i = 0; i < PiecesSendOnPlacePiece; i++)
-                nextPiecesToSend.Add(_pieceQueue[highestIndex + i]);
+            Log.WriteLine(Log.LogLevels.Info, "{0} {1} indexes: {2} {3}", _playerManager.GetId(player), player.Name, highestIndex, pieceIndex);
+            if (highestIndex < pieceIndex)
+                Log.WriteLine(Log.LogLevels.Error, "PROBLEM WITH INDEXES!!!!!");
+            if (highestIndex < pieceIndex + PiecesSendOnPlacePiece) // send many pieces when needed
+            {
+                for (int i = 0; i < 2*PiecesSendOnPlacePiece; i++)
+                    nextPiecesToSend.Add(_pieceProvider[highestIndex + i]);
+                sendNextPieces = true;
+            }
+            else if (highestIndex < pieceIndex + 2 * PiecesSendOnPlacePiece) // send next pieces only if needed
+            {
+                for (int i = 0; i < PiecesSendOnPlacePiece; i++)
+                    nextPiecesToSend.Add(_pieceProvider[highestIndex + i]);
+                sendNextPieces = true;
+            }
 
             // Send grid to other playing players and spectators
             int playerId = _playerManager.GetId(player);
@@ -837,12 +853,15 @@ namespace TetriNET.Server
             foreach(IEntity callback in Entities.Where(x => x != player))
                 callback.OnGridModified(playerId, grid);
 
-            //Logger.Log.WriteLine("Send next piece {0} {1} to {2}", nextPieceToSend, indexToSend, player.Name);
-            //// Send next piece
-            //player.OnNextPiece(indexToSend, nextPieceToSend);
-            Log.WriteLine(Log.LogLevels.Debug, "Send next piece {0} {1} {2}", highestIndex, nextPiecesToSend.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
-            // Send next pieces
-            player.OnNextPiece(highestIndex, nextPiecesToSend);
+            if (sendNextPieces)
+            {
+                //Logger.Log.WriteLine("Send next piece {0} {1} to {2}", nextPieceToSend, indexToSend, player.Name);
+                //// Send next piece
+                //player.OnNextPiece(indexToSend, nextPieceToSend);
+                Log.WriteLine(Log.LogLevels.Debug, "Send next piece {0} {1} {2}", highestIndex, pieceIndex, nextPiecesToSend.Any() ? nextPiecesToSend.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i) : String.Empty);
+                // Send next pieces
+                player.OnNextPiece(highestIndex, nextPiecesToSend);
+            }
 
         }
 

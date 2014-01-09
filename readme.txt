@@ -14,10 +14,7 @@ Solo mode (extra points for back-to-back, t-spin)
 Server integrated in WPF client
 in multiplayer game, display some stats about players (#lines, score, who attacked who, ...) when game is finished
 right-click on player in players manager to display achievements
-
-CURRENT DEVELOPMENT: spectator mode
-	kick/ban: should be available on player or spectator
-	client: should check if _proxy is not null in every API
+kick/ban: should be available on player or spectator
 
 bugs:
 why user.config is automatically created with default values in $APPDATA$/Local/SinaC/TetriNET WPF WCF Client/  when recompiling a new version

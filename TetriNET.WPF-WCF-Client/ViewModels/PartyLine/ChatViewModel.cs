@@ -297,7 +297,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         {
             if (result == RegistrationResults.RegistrationSuccessful)
             {
-                AddServerMessage("*** You've registered successfully as Player", ChatColor.Green);
+                AddServerMessage(String.Format("*** You've registered successfully as {0} (player)", Client.Name), ChatColor.Green);
                 IsRegistered = true;
             }
             else
@@ -308,7 +308,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         {
             if (result == RegistrationResults.RegistrationSuccessful)
             {
-                AddServerMessage("*** You've registered successfully as Spectator", ChatColor.Green);
+                AddServerMessage(String.Format("*** You've registered successfully as {0} (spectator)", Client.Name), ChatColor.Green);
                 IsRegistered = true;
             }
             else

@@ -11,15 +11,81 @@ using TetriNET.Common.Attributes;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
+using TetriNET.Common.Randomizer;
 
 namespace TetriNET.Tests
 {
     class Program
     {
+        private class IntOccurancy : IOccurancy<int>
+        {
+            public int Value { get; set; }
+            public int Occurancy { get; set; }
+        }
+
         static void Main(string[] args)
         {
-            Program p = new Program();
-            p.TestSpectator();
+            //Program p = new Program();
+            //p.TestSpectator();
+
+            List<IntOccurancy> occurancies = new List<IntOccurancy>
+                {
+                    new IntOccurancy
+                        {
+                            Value = 0,
+                            Occurancy = 10,
+                        },
+                    new IntOccurancy
+                        {
+                            Value = 1,
+                            Occurancy = 10,
+                        },
+                    new IntOccurancy
+                        {
+                            Value = 2,
+                            Occurancy = 10,
+                        },
+                    new IntOccurancy
+                        {
+                            Value = 3,
+                            Occurancy = 10,
+                        },
+                    new IntOccurancy
+                        {
+                            Value = 4,
+                            Occurancy = 10,
+                        },
+                    new IntOccurancy
+                        {
+                            Value = 5,
+                            Occurancy = 10,
+                        },
+                    new IntOccurancy
+                        {
+                            Value = 6,
+                            Occurancy = 10,
+                        },
+                    new IntOccurancy
+                        {
+                            Value = 7,
+                            Occurancy = 10,
+                        },
+                    new IntOccurancy
+                        {
+                            Value = 8,
+                            Occurancy = 10,
+                        },
+                    new IntOccurancy
+                        {
+                            Value = 9,
+                            Occurancy = 10,
+                        },
+                };
+            int[] history =
+                {
+                    1, 2, 3, 4
+                };
+            int r = RangeRandom.Random(occurancies, history);
         }
 
         public class TestCallback : ITetriNETCallback

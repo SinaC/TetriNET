@@ -8,8 +8,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
     public class PlayFieldViewModel : PlayFieldViewModelBase
     {
         private const double Epsilon = 0.00001;
-
-        public int OpponentCount = 5;
+        private const int OpponentCount = 5;
 
         public GameInfoViewModel GameInfoViewModel { get; set; }
         public InGameChatViewModel InGameChatViewModel { get; set; }
