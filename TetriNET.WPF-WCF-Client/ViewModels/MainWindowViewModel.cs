@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Windows;
 using TetriNET.Client.Achievements;
 using TetriNET.Client.Board;
 using TetriNET.Client.Pieces;
@@ -19,13 +21,13 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        public WinListViewModel WinListViewModel { get; private set; }
-        public ClientStatisticsViewModel ClientStatisticsViewModel { get; private set; }
-        public OptionsViewModel OptionsViewModel { get; private set; }
-        public PartyLineViewModel PartyLineViewModel { get; private set; }
-        public ConnectionViewModel ConnectionViewModel { get; private set; }
-        public PlayFieldViewModelBase PlayFieldViewModel { get; private set; }
-        public AchievementsViewModel AchievementsViewModel { get; private set; }
+        public WinListViewModel WinListViewModel { get; protected set; }
+        public ClientStatisticsViewModel ClientStatisticsViewModel { get; protected set; }
+        public OptionsViewModel OptionsViewModel { get; protected set; }
+        public PartyLineViewModel PartyLineViewModel { get; protected set; }
+        public ConnectionViewModel ConnectionViewModel { get; protected set; }
+        public PlayFieldViewModelBase PlayFieldViewModel { get; protected set; }
+        public AchievementsViewModel AchievementsViewModel { get; protected set; }
 
         protected PlayFieldViewModel PlayFieldPlayerViewModel { get; set; }
         protected PlayFieldSpectatorViewModel PlayFieldSpectatorViewModel { get; set; }
@@ -60,11 +62,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
         public MainWindowViewModel()
         {
-            //
-            AchievementManager manager = new AchievementManager();
-            manager.FindAllAchievements();
-            Settings.Default.Achievements = Settings.Default.Achievements ?? new AchievementsSettings();
-            Settings.Default.Achievements.Load(manager.Achievements);
+            AchievementManager manager = null;
+            bool isDesignMode = DesignerProperties.GetIsInDesignMode(new DependencyObject());
+            if (!isDesignMode)
+            {
+                //
+                manager = new AchievementManager();
+                manager.FindAllAchievements();
+                Settings.Default.Achievements = Settings.Default.Achievements ?? new AchievementsSettings();
+                Settings.Default.Achievements.Load(manager.Achievements);
+            }
 
             // Create sub view models
             WinListViewModel = new WinListViewModel();
@@ -83,12 +90,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             //
             ClientChanged += OnClientChanged;
 
-            // Create client
-            Client = new Client.Client(Piece.CreatePiece, () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height), () => manager);
-            //Client = new Client.Client(
-            //    (pieces, i, arg3, arg4, arg5, arg6) => Piece.CreatePiece(Pieces.TetriminoI, i, arg3, arg4, arg5, arg6),
-            //    () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height),
-            //    () => manager);
+            if (!isDesignMode)
+            {
+                // Create client
+                Client = new Client.Client(Piece.CreatePiece, () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height), () => manager);
+                //Client = new Client.Client(
+                //    (pieces, i, arg3, arg4, arg5, arg6) => Piece.CreatePiece(Pieces.TetriminoI, i, arg3, arg4, arg5, arg6),
+                //    () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height),
+                //    () => manager);
+            }
         }
 
         private void OnConnect(ConnectEventArgs e)
@@ -212,16 +222,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
     public class MainWindowViewModelDesignData : MainWindowViewModel
     {
-        public new WinListViewModelDesignData WinListViewModel { get; private set; }
-        public new ClientStatisticsViewModelDesignData ClientStatisticsViewModel { get; private set; }
-        public new OptionsViewModelDesignData OptionsViewModel { get; private set; }
-        public new PartyLineViewModelDesignData PartyLineViewModel { get; private set; }
-        public new ConnectionViewModelDesignData ConnectionViewModel { get; private set; }
-        public new PlayFieldViewModelBase PlayFieldViewModel { get; private set; }
-        public new AchievementsViewModelDesignData AchievementsViewModel { get; private set; }
+        //public new WinListViewModelDesignData WinListViewModel { get; private set; }
+        //public new ClientStatisticsViewModelDesignData ClientStatisticsViewModel { get; private set; }
+        //public new OptionsViewModelDesignData OptionsViewModel { get; private set; }
+        //public new PartyLineViewModelDesignData PartyLineViewModel { get; private set; }
+        //public new ConnectionViewModelDesignData ConnectionViewModel { get; private set; }
+        //public new PlayFieldViewModelBase PlayFieldViewModel { get; private set; }
+        //public new AchievementsViewModelDesignData AchievementsViewModel { get; private set; }
 
-        protected new PlayFieldViewModelDesignData PlayFieldPlayerViewModel { get; set; }
-        protected new PlayFieldSpectatorViewModelDesignData PlayFieldSpectatorViewModel { get; set; }
+        //protected new PlayFieldViewModelDesignData PlayFieldPlayerViewModel { get; set; }
+        //protected new PlayFieldSpectatorViewModelDesignData PlayFieldSpectatorViewModel { get; set; }
 
         public MainWindowViewModelDesignData()
         {

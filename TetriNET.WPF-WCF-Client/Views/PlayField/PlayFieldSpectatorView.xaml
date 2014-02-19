@@ -18,7 +18,9 @@
             <ColumnDefinition Width="110"/>
             <ColumnDefinition Width="110"/>
         </Grid.ColumnDefinitions>
-        <playField:InGameChatView Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" DataContext="{Binding InGameChatViewModel}" d:DataContext="{d:DesignInstance viewModels:InGameChatViewModelDesignData, IsDesignTimeCreatable=True}"/>
+        <playField:InGameChatView Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                                  DataContext="{Binding InGameChatViewModel}" 
+                                  d:DataContext="{d:DesignInstance viewModels:InGameChatViewModelDesignData, IsDesignTimeCreatable=True}"/>
         <playField:OpponentGridView x:Name="OpponentGrid1" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" 
                                     DataContext="{Binding OpponentsViewModel[0]}"/>
         <playField:OpponentGridView x:Name="OpponentGrid2" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" 

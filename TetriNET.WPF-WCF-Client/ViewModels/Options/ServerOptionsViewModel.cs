@@ -221,20 +221,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #region Commands
 
-        public ICommand SendOptionsToServerCommand { get; private set; }
-        public ICommand ResetOptionsCommand { get; private set; }
-        public ICommand SpecialOccurancyChangedCommand { get; private set; }
-        public ICommand PieceOccurancyChangedCommand { get; private set; }
+        public ICommand SendOptionsToServerCommand { get; protected set; }
+        public ICommand ResetOptionsCommand { get; protected set; }
+        public ICommand SpecialOccurancyChangedCommand { get; protected set; }
+        public ICommand PieceOccurancyChangedCommand { get; protected set; }
 
         #endregion
     }
 
     public class ServerOptionsViewModelDesignData : ServerOptionsViewModel
     {
-        public new GameOptions Options { get; private set; }
-        public new ICommand SpecialOccurancyChangedCommand { get; private set; }
-        public new ICommand PieceOccurancyChangedCommand { get; private set; }
-
         public ServerOptionsViewModelDesignData()
         {
             Options = new GameOptions();

@@ -160,9 +160,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
     public class PlayFieldViewModelDesignData : PlayFieldViewModel
     {
-        public new GameInfoViewModelDesignData GameInfoViewModel { get; private set; }
-        public new InGameChatViewModelDesignData InGameChatViewModel { get; private set; }
-
         public PlayFieldViewModelDesignData()
         {
             GameInfoViewModel = new GameInfoViewModelDesignData();

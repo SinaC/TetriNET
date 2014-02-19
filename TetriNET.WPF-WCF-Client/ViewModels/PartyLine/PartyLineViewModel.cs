@@ -275,9 +275,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
     public class PartyLineViewModelDesignData : PartyLineViewModel
     {
-        public new ChatViewModelDesignData ChatViewModel { get; private set; }
-        public new PlayersManagerViewModelDesignData PlayersManagerViewModel { get; private set; }
-
         public PartyLineViewModelDesignData()
         {
             ChatViewModel = new ChatViewModelDesignData();

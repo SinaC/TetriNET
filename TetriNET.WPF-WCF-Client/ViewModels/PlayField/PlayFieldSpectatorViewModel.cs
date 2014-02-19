@@ -78,8 +78,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
     public class PlayFieldSpectatorViewModelDesignData : PlayFieldSpectatorViewModel
     {
-        public new InGameChatViewModelDesignData InGameChatViewModel { get; private set; }
-
         public PlayFieldSpectatorViewModelDesignData()
         {
             InGameChatViewModel = new InGameChatViewModelDesignData();

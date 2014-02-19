@@ -127,7 +127,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #region Key settings
 
-        public ObservableCollection<KeySettingViewModel> KeySettings { get; private set; }
+        public ObservableCollection<KeySettingViewModel> KeySettings { get; protected set; }
 
         #endregion
 
@@ -235,8 +235,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
     public class ClientOptionsViewModelDesignData : ClientOptionsViewModel
     {
-        public new ObservableCollection<KeySettingViewModel> KeySettings { get; private set; }
-
         public ClientOptionsViewModelDesignData()
         {
             KeySettings = new ObservableCollection<KeySettingViewModel>

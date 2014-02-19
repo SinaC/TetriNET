@@ -66,8 +66,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
     public class ConnectionViewModelDesignData : ConnectionViewModel
     {
-        public new LoginViewModelDesignData LoginViewModel { get; private set; }
-
         public ConnectionViewModelDesignData()
         {
             LoginViewModel = new LoginViewModelDesignData();

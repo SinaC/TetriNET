@@ -1,17 +1,17 @@
 ﻿<Window x:Class="TetriNET.WPF_WCF_Client.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:statistics="clr-namespace:TetriNET.WPF_WCF_Client.Views.Statistics"
         xmlns:connection="clr-namespace:TetriNET.WPF_WCF_Client.Views.Connection"
         xmlns:options="clr-namespace:TetriNET.WPF_WCF_Client.Views.Options"
         xmlns:partyLine="clr-namespace:TetriNET.WPF_WCF_Client.Views.PartyLine"
         xmlns:winList="clr-namespace:TetriNET.WPF_WCF_Client.Views.WinList"
         xmlns:achievements="clr-namespace:TetriNET.WPF_WCF_Client.Views.Achievements"
-        xmlns:local="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:playField="clr-namespace:TetriNET.WPF_WCF_Client.Views.PlayField"
         xmlns:test="clr-namespace:TetriNET.WPF_WCF_Client.Views.Test"
+        xmlns:mainViewModel="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels"
         xmlns:connectionViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
         xmlns:optionsViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Options"
         xmlns:winListViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.WinList"
@@ -25,7 +25,7 @@
         ResizeMode="NoResize"
         MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
         KeyboardNavigation.DirectionalNavigation="None"
-        d:DataContext="{d:DesignInstance local:MainWindowViewModelDesignData, IsDesignTimeCreatable=False}"
+        d:DataContext="{d:DesignInstance mainViewModel:MainWindowViewModelDesignData, IsDesignTimeCreatable=True}"
         Icon="TetriNET.ico"
         Title="TetriNET" 
         Height="500" Width="780">
@@ -46,15 +46,15 @@
             <DataTemplate DataType="{x:Type playFieldViewModels:PlayFieldViewModel}">
                 <playField:PlayFieldView />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type playFieldViewModels:PlayFieldViewModelDesignData}">
+            <!--<DataTemplate DataType="{x:Type playFieldViewModels:PlayFieldViewModelDesignData}">
                 <playField:PlayFieldView />
-            </DataTemplate>
+            </DataTemplate>-->
             <DataTemplate DataType="{x:Type playFieldViewModels:PlayFieldSpectatorViewModel}">
                 <playField:PlayFieldSpectatorView />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type playFieldViewModels:PlayFieldSpectatorViewModelDesignData}">
+            <!--<DataTemplate DataType="{x:Type playFieldViewModels:PlayFieldSpectatorViewModelDesignData}">
                 <playField:PlayFieldSpectatorView />
-            </DataTemplate>
+            </DataTemplate>-->
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
@@ -73,43 +73,40 @@
             SelectedIndex="{Binding ActiveTabItemIndex}">
             <TabItem Header="Connect" IsTabStop="False">
                 <connection:ConnectionView 
-                    DataContext="{Binding Path=ConnectionViewModel}" 
-                    d:DataContext="{d:DesignInstance connectionViewModels:ConnectionViewModelDesignData, IsDesignTimeCreatable=True}"/>
+                    DataContext="{Binding Path=ConnectionViewModel}"/>
             </TabItem>
             <TabItem Header="Options" IsTabStop="False">
                 <options:OptionsView 
-                    DataContext="{Binding Path=OptionsViewModel}" 
-                    d:DataContext="{d:DesignInstance optionsViewModels:OptionsViewModelDesignData, IsDesignTimeCreatable=True}"/>
+                    DataContext="{Binding Path=OptionsViewModel}"/>
             </TabItem>
             <TabItem Header="Win list" IsTabStop="False" Visibility="{Binding IsRegistered, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <winList:WinListView 
-                    DataContext="{Binding Path=WinListViewModel}" 
-                    d:DataContext="{d:DesignInstance winListViewModels:WinListViewModelDesignData, IsDesignTimeCreatable=True }" />
+                    DataContext="{Binding Path=WinListViewModel}"/>
             </TabItem>
             <TabItem Header="Party line" IsTabStop="False" Visibility="{Binding IsRegistered, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <partyLine:PartyLineView 
-                    DataContext="{Binding Path=PartyLineViewModel}" 
-                    d:DataContext="{d:DesignInstance partyLineViewModels:PartyLineViewModelDesignData, IsDesignTimeCreatable=True}"/>
+                    DataContext="{Binding Path=PartyLineViewModel}"/>
             </TabItem>
             <!--<TabItem Header="Play fields" IsTabStop="False">
                 <playField:PlayFieldView 
                     DataContext="{Binding Path=PlayFieldViewModel}" 
                     d:DataContext="{d:DesignInstance playFieldViewModels:PlayFieldViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>-->
-            <TabItem Header="Play fields" IsTabStop="False" Visibility="{Binding IsRegistered, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TabItem Header="Play fields" IsTabStop="False" 
+                     Visibility="{Binding IsRegistered, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ContentControl Content="{Binding Path=PlayFieldViewModel}" IsTabStop="False"/>
             </TabItem>
             <TabItem Header="Achievements" IsTabStop="False">
                 <achievements:AchievementsView 
-                    DataContext="{Binding Path=AchievementsViewModel}" 
-                    d:DataContext="{d:DesignInstance achievementsViewModels:AchievementsViewModelDesignData, IsDesignTimeCreatable=True}"/>
+                    DataContext="{Binding Path=AchievementsViewModel}"/>
             </TabItem>
-            <TabItem Header="Statistics" IsTabStop="False" Visibility="{Binding IsRegistered, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TabItem Header="Statistics" IsTabStop="False" 
+                     Visibility="{Binding IsRegistered, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <statistics:ClientStatisticsView 
-                    DataContext="{Binding Path=ClientStatisticsViewModel}" 
-                    d:DataContext="{d:DesignInstance statisticsViewModels:ClientStatisticsViewModelDesignData, IsDesignTimeCreatable=True}"/>
+                    DataContext="{Binding Path=ClientStatisticsViewModel}"/>
             </TabItem>
-            <TabItem Header="Textures test" IsTabStop="False" Visibility="{Binding Path=OptionsViewModel.ClientOptionsViewModel.IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TabItem Header="Textures test" IsTabStop="False" 
+                     Visibility="{Binding Path=OptionsViewModel.ClientOptionsViewModel.IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <test:TestView />
             </TabItem>
         </TabControl>
