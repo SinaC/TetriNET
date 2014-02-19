@@ -14,6 +14,6 @@
         <!--<Canvas x:Name="Canvas" Grid.Row="1" Background="Black"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="64" Height="64">
             
         </Canvas>-->
-        <UserControls:PieceControl x:Name="PieceControl" Grid.Row="1" Background="Black"  VerticalAlignment="Top" HorizontalAlignment="Left" Width="64" Height="64"/>
+        <UserControls:PieceControl x:Name="PieceControl" Grid.Row="1" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" Width="64" Height="64"/>
     </Grid>
 </UserControl>

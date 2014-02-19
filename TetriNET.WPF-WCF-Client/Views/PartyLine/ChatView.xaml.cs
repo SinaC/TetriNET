@@ -46,7 +46,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PartyLine
                     TextBlock txt = sender as TextBlock;
                     if (txt != null)
                     {
-                        AchievementEntry entry = txt.Tag as AchievementEntry;
+                        AchievementEntry entry = txt.DataContext as AchievementEntry;
                         if (entry != null)
                         {
                             IAchievement achievement = entry.Achievement;

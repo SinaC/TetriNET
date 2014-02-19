@@ -170,7 +170,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             IsProgressBarVisible = false;
             Username = Settings.Default.Username;
             //ServerAddress = Settings.Default.Server;
-            SetAddress(Settings.Default.Server);
+            string server = Settings.Default.Server;
+            if (String.IsNullOrWhiteSpace(Settings.Default.Server))
+                server = "net.tcp://localhost:8765/TetriNET"; // defaulting, doesn't seem to be set automatically
+            SetAddress(server);
 
             ConnectDisconnectCommand = new AsyncRelayCommand(ConnectDisconnect);
         }

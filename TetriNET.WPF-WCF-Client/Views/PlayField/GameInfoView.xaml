@@ -25,23 +25,33 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="1" Text="Time :"/>
-        <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding ElapsedTime, StringFormat=hh\\:mm\\:ss}" FontWeight="Bold" Margin="8,0,0,0" />
+        <TextBlock Grid.Row="0" Grid.Column="1" 
+                   Text="Time :"/>
+        <TextBlock Grid.Row="0" Grid.Column="2" FontWeight="Bold" Margin="8,0,0,0"
+                   Text="{Binding ElapsedTime, StringFormat=hh\\:mm\\:ss}" />
 
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="Score :"/>
-        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Score, StringFormat={}{0:#,0}}" FontWeight="Bold" Margin="8,0,0,0" />
+        <TextBlock Grid.Row="1" Grid.Column="1" 
+                   Text="Score :"/>
+        <TextBlock Grid.Row="1" Grid.Column="2" FontWeight="Bold" Margin="8,0,0,0"
+                   Text="{Binding Score, StringFormat={}{0:#,0}}" />
 
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="Lines :"/>
-        <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding LinesCleared}" FontWeight="Bold" Margin="8,0,0,0" />
+        <TextBlock Grid.Row="2" Grid.Column="1"
+                   Text="Lines :"/>
+        <TextBlock Grid.Row="2" Grid.Column="2" FontWeight="Bold" Margin="8,0,0,0" 
+                   Text="{Binding LinesCleared}"/>
         
-        <TextBlock Grid.Row="3" Grid.Column="1" Text="Level :"/>
-        <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding Level}" FontWeight="Bold" Margin="8,0,0,0" />
+        <TextBlock Grid.Row="3" Grid.Column="1" 
+                   Text="Level :"/>
+        <TextBlock Grid.Row="3" Grid.Column="2" FontWeight="Bold" Margin="8,0,0,0" 
+                   Text="{Binding Level}"/>
 
         <ItemsControl IsTabStop="False" Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Margin="0,0,12,0"
                       ItemsSource="{Binding EffectsView}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Rectangle Stretch="Fill" Width="16" Height="16" Fill="{Binding Special, Converter={StaticResource SpecialToBrushConverter}}" Opacity="{Binding Opacity}"/>
+                    <Rectangle Stretch="Fill" Width="16" Height="16" 
+                               Fill="{Binding Special, Converter={StaticResource SpecialToBrushConverter}}" 
+                               Opacity="{Binding Opacity}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

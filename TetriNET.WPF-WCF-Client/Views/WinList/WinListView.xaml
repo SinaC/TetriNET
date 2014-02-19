@@ -10,7 +10,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -21,8 +21,12 @@
                   ItemsSource="{Binding PlayerWinList, Mode=OneWay}">
             <ListView.View>
                 <GridView AllowsColumnReorder="False" ColumnHeaderToolTip="Win list">
-                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Player name" Width="240" />
-                    <GridViewColumn DisplayMemberBinding="{Binding Score}" Header="Score" Width="60"/>
+                    <GridViewColumn Width="240"
+                                    Header="Player name"
+                                    DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Width="60"
+                                    Header="Score" 
+                                    DisplayMemberBinding="{Binding Score}"/>
                 </GridView>
             </ListView.View>
         </ListView>
@@ -31,12 +35,15 @@
                   ItemsSource="{Binding TeamWinList, Mode=OneWay}">
             <ListView.View>
                 <GridView AllowsColumnReorder="False" ColumnHeaderToolTip="Win list">
-                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Team/Player" Width="240" />
-                    <GridViewColumn DisplayMemberBinding="{Binding Score}" Header="Score" Width="60"/>
+                    <GridViewColumn Width="240"
+                                    DisplayMemberBinding="{Binding Name}" Header="Team/Player"/>
+                    <GridViewColumn Width="60"
+                                    DisplayMemberBinding="{Binding Score}" Header="Score"/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Grid.Row="1" Grid.Column="0" Width="100" HorizontalAlignment="Left" IsEnabled="{Binding IsResetEnabled}"
+        <Button Grid.Row="1" Grid.Column="0" Width="100" HorizontalAlignment="Left"
+                IsEnabled="{Binding IsResetEnabled}"
                 Command="{Binding ResetWinListCommand}">
             <TextBlock Text="Reset Scores"/>
         </Button>

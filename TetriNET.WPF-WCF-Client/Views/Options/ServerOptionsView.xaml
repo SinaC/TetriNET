@@ -43,18 +43,36 @@
                     <RowDefinition Height="20"/>
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Classic Style Multiplayer Rules"/>
-                <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding Options.ClassicStyleMultiplayerRules}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Lines to Make For Special Block:"/>
-                <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Options.LinesToMakeForSpecials}" Minimum="1" Maximum="4" />
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Number of Special Blocks Added Each Time:"/>
-                <xctk:IntegerUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Options.SpecialsAddedEachTime}" Minimum="1" Maximum="4" />
-                <TextBlock Grid.Row="0" Grid.Column="2" Text="Capacity of Special Block Inventory:" Margin="4,0,0,0"/>
-                <xctk:IntegerUpDown Grid.Row="0" Grid.Column="3" Value="{Binding Options.InventorySize}" Minimum="1" Maximum="15" />
-                <TextBlock Grid.Row="1" Grid.Column="2" Text="Minutes Before Lines Start Being Added:" Margin="4,0,0,0"/>
-                <xctk:IntegerUpDown Grid.Row="1" Grid.Column="3" Value="{Binding Options.DelayBeforeSuddenDeath}" Minimum="0" Maximum="15" />
-                <TextBlock Grid.Row="2" Grid.Column="2" Text="Seconds Between Lines Being Added:" Margin="4,0,0,0"/>
-                <xctk:IntegerUpDown Grid.Row="2" Grid.Column="3" Value="{Binding Options.SuddenDeathTick}" Minimum="1" Maximum="30" />
+                <TextBlock Grid.Row="0" Grid.Column="0" 
+                           Text="Classic Style Multiplayer Rules"/>
+                <CheckBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"
+                          IsChecked="{Binding Options.ClassicStyleMultiplayerRules}" />
+                
+                <TextBlock Grid.Row="1" Grid.Column="0" 
+                           Text="Lines to Make For Special Block:"/>
+                <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1" 
+                                    Value="{Binding Options.LinesToMakeForSpecials}" Minimum="1" Maximum="4" />
+                
+                <TextBlock Grid.Row="2" Grid.Column="0" 
+                           Text="Number of Special Blocks Added Each Time:"/>
+                <xctk:IntegerUpDown Grid.Row="2" Grid.Column="1" 
+                                    Value="{Binding Options.SpecialsAddedEachTime}" Minimum="1" Maximum="4" />
+
+                <TextBlock Grid.Row="0" Grid.Column="2" Margin="4,0,0,0"
+                           Text="Capacity of Special Block Inventory:"/>
+                <xctk:IntegerUpDown Grid.Row="0" Grid.Column="3" 
+                                    Value="{Binding Options.InventorySize}" Minimum="1" Maximum="15" />
+
+                <TextBlock Grid.Row="1" Grid.Column="2" Margin="4,0,0,0"
+                           Text="Minutes Before Lines Start Being Added:"/>
+                <xctk:IntegerUpDown Grid.Row="1" Grid.Column="3" 
+                                    Value="{Binding Options.DelayBeforeSuddenDeath}" Minimum="0" Maximum="15" />
+
+                <TextBlock Grid.Row="2" Grid.Column="2" Margin="4,0,0,0"
+                           Text="Seconds Between Lines Being Added:"/>
+                <xctk:IntegerUpDown Grid.Row="2" Grid.Column="3" 
+                                    Value="{Binding Options.SuddenDeathTick}" Minimum="1" Maximum="30" />
+                
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Starting level:" Margin="0,0,5,0"/>
                 <TextBox Grid.Row="3" Grid.Column="1" MaxWidth="40" Width="40" Height="20">
                     <TextBox.Text>
@@ -113,7 +131,8 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <!--<TextBlock Text="{Binding Value}" Margin="5,0,5,0"/>-->
-                                <userControls:ShadowPieceControl PieceValue="{Binding Value}"  Margin="5,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                <userControls:ShadowPieceControl Margin="5,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Left" 
+                                    PieceValue="{Binding Value}"/>
                                 <TextBox Grid.Column="1" MaxWidth="40" Width="40" TextChanged="PieceOccurancy_TextChanged">
                                     <!--<i:Interaction.Triggers>
                                         <i:EventTrigger EventName="TextChanged">
@@ -169,8 +188,10 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                    <Rectangle Stretch="Fill" Width="16" Height="16" Fill="{Binding Value, Converter={StaticResource SpecialToBrushConverter}}" Margin="5,0,5,0"/>
-                                    <TextBlock Text="{Binding Value, Converter={StaticResource SpecialToStringConverter}}" VerticalAlignment="Center" Margin="5,0,5,0" />
+                                    <Rectangle Stretch="Fill" Width="16" Height="16"  Margin="5,0,5,0"
+                                               Fill="{Binding Value, Converter={StaticResource SpecialToBrushConverter}}"/>
+                                    <TextBlock VerticalAlignment="Center" Margin="5,0,5,0" 
+                                        Text="{Binding Value, Converter={StaticResource SpecialToStringConverter}}"/>
                                 </StackPanel>
                                 <TextBox Grid.Column="1" MaxWidth="40" Width="40" TextChanged="SpecialOccurancy_TextChanged">
                                     <TextBox.Text>
@@ -187,7 +208,8 @@
                 </ItemsControl>
             </GroupBox>
         </Grid>
-        <Button Grid.Row="2" Width="150" Margin="0,4,0,0" HorizontalAlignment="Left" IsEnabled="{Binding IsSendOptionsToServerEnabled}"
+        <Button Grid.Row="2" Width="150" Margin="0,4,0,0" HorizontalAlignment="Left" 
+                IsEnabled="{Binding IsSendOptionsToServerEnabled}"
                 Command="{Binding SendOptionsToServerCommand}">
             <TextBlock Text="Send options to server"/>
         </Button>

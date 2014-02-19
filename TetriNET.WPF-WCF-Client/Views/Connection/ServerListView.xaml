@@ -18,7 +18,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ListBox Grid.Row="0" ItemsSource="{Binding Servers}" SelectedItem="{Binding SelectedServer}">
+        <ListBox Grid.Row="0" 
+                 ItemsSource="{Binding Servers}" SelectedItem="{Binding SelectedServer}">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                     <EventSetter Event="MouseDoubleClick" Handler="ServerList_DoubleClick"/>

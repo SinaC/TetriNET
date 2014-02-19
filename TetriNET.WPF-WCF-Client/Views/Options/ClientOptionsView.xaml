@@ -27,14 +27,21 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         
-        <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding AutomaticallySwitchToPartyLineOnRegistered, Mode=TwoWay}">Switch on connect</CheckBox>
-        <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding AutomaticallySwitchToPlayFieldOnGameStarted, Mode=TwoWay}">Switch on start/stop game</CheckBox>
-        <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding DisplayDropLocation, Mode=TwoWay}">Display drop location</CheckBox>
+        <CheckBox Grid.Row="0" Grid.Column="0" 
+                  IsChecked="{Binding AutomaticallySwitchToPartyLineOnRegistered, Mode=TwoWay}">Switch on connect</CheckBox>
+        <CheckBox Grid.Row="1" Grid.Column="0" 
+                  IsChecked="{Binding AutomaticallySwitchToPlayFieldOnGameStarted, Mode=TwoWay}">Switch on start/stop game</CheckBox>
+        <CheckBox Grid.Row="2" Grid.Column="0" 
+                  IsChecked="{Binding DisplayDropLocation, Mode=TwoWay}">Display drop location</CheckBox>
         
-        <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding DisplayOpponentsFieldEvenWhenNotPlaying, Mode=TwoWay}">Show opponents even if not playing</CheckBox>
+        <CheckBox Grid.Row="0" Grid.Column="1" 
+                  IsChecked="{Binding DisplayOpponentsFieldEvenWhenNotPlaying, Mode=TwoWay}">Show opponents even if not playing</CheckBox>
         
-        <CheckBox Grid.Row="0" Grid.Column="2" IsChecked="{Binding IsDeveloperModeActivated, Mode=TwoWay}">Developer mode</CheckBox>
-        <CheckBox Grid.Row="1" Grid.Column="2" IsChecked="{Binding DisplayPieceAnchor, Mode=TwoWay}" Visibility="{Binding IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">Display piece center</CheckBox>
+        <CheckBox Grid.Row="0" Grid.Column="2" 
+                  IsChecked="{Binding IsDeveloperModeActivated, Mode=TwoWay}">Developer mode</CheckBox>
+        <CheckBox Grid.Row="1" Grid.Column="2" 
+                  IsChecked="{Binding DisplayPieceAnchor, Mode=TwoWay}" 
+                  Visibility="{Binding IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">Display piece center</CheckBox>
 
         <GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Header="Controls">
             <ItemsControl
@@ -52,8 +59,10 @@
                                 <ColumnDefinition Width="Auto" SharedSizeGroup="KeySettingCommand"/>
                                 <ColumnDefinition Width="100"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="{Binding CommandDescription}"/>
-                            <userControls:KeyBoxControl Grid.Row="0" Grid.Column="1" DataContext="{Binding}" Margin="0,0,10,0"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" 
+                                       Text="{Binding CommandDescription}"/>
+                            <userControls:KeyBoxControl Grid.Row="0" Grid.Column="1" Margin="0,0,10,0"
+                                                        DataContext="{Binding}"/>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -69,10 +78,14 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 
-                <userControls:SensibilityControl Grid.Row="0" Label="Drop :" DataContext="{Binding DropSensibilityViewModel}"/>
-                <userControls:SensibilityControl Grid.Row="1" Label="Down :" DataContext="{Binding DownSensibilityViewModel}"/>
-                <userControls:SensibilityControl Grid.Row="2" Label="Left :" DataContext="{Binding LeftSensibilityViewModel}"/>
-                <userControls:SensibilityControl Grid.Row="3" Label="Right :" DataContext="{Binding RightSensibilityViewModel}"/>
+                <userControls:SensibilityControl Grid.Row="0" Label="Drop :" 
+                                                 DataContext="{Binding DropSensibilityViewModel}"/>
+                <userControls:SensibilityControl Grid.Row="1" Label="Down :" 
+                                                 DataContext="{Binding DownSensibilityViewModel}"/>
+                <userControls:SensibilityControl Grid.Row="2" Label="Left :" 
+                                                 DataContext="{Binding LeftSensibilityViewModel}"/>
+                <userControls:SensibilityControl Grid.Row="3" Label="Right :" 
+                                                 DataContext="{Binding RightSensibilityViewModel}"/>
             </Grid>
         </GroupBox>
     </Grid>

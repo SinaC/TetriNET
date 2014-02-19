@@ -12,10 +12,12 @@
     <Grid>
         <TabControl>
             <TabItem Header="Client options">
-                <Options:ClientOptionsView DataContext="{Binding ClientOptionsViewModel}" d:DataContext="{d:DesignInstance options:ClientOptionsViewModelDesignData, IsDesignTimeCreatable=True}"/>
+                <Options:ClientOptionsView 
+                    DataContext="{Binding ClientOptionsViewModel}" d:DataContext="{d:DesignInstance options:ClientOptionsViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
             <TabItem Header="Server options">
-                <Options:ServerOptionsView DataContext="{Binding ServerOptionsViewModel}" d:DataContext="{d:DesignInstance options:ServerOptionsViewModelDesignData, IsDesignTimeCreatable=True}"/>
+                <Options:ServerOptionsView 
+                    DataContext="{Binding ServerOptionsViewModel}" d:DataContext="{d:DesignInstance options:ServerOptionsViewModelDesignData, IsDesignTimeCreatable=True}"/>
             </TabItem>
         </TabControl>        
     </Grid>

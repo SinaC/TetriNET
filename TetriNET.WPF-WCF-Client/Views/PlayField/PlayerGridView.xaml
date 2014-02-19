@@ -14,12 +14,23 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <ControlTemplate x:Key="PlayerDataTemplate" TargetType="ContentControl">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="[L]" Visibility="{Binding HasLost, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,2,0"/>
-                    <TextBlock Text="{Binding DisplayPlayerId}" Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    <TextBlock Text="." Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,0,2,0"/>
-                    <TextBlock Text="{Binding PlayerName}"/>
-                    <TextBlock Text="-" Visibility="{Binding IsPlayerInTeam, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="2,0,2,0"/>
-                    <TextBlock Text="{Binding Team}" Visibility="{Binding IsPlayerInTeam, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <TextBlock Margin="0,0,2,0"
+                               Text="[L]"
+                               Visibility="{Binding HasLost, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <TextBlock 
+                               Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                               Text="{Binding DisplayPlayerId}"/>
+                    <TextBlock Margin="0,0,2,0"
+                               Visibility="{Binding IsPlayerIdVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                               Text="."/>
+                    <TextBlock 
+                               Text="{Binding PlayerName}"/>
+                    <TextBlock Margin="2,0,2,0"
+                               Visibility="{Binding IsPlayerInTeam, Converter={StaticResource BooleanToVisibilityConverter}}"
+                               Text="-"/>
+                    <TextBlock 
+                               Visibility="{Binding IsPlayerInTeam, Converter={StaticResource BooleanToVisibilityConverter}}"
+                               Text="{Binding Team}"/>
                 </StackPanel>
             </ControlTemplate>
         </ResourceDictionary>
@@ -35,7 +46,7 @@
         <ContentControl Grid.Row="0" HorizontalAlignment="Stretch" MaxWidth="192" IsTabStop="False">
             <ContentControl.Style>
                 <Style TargetType="ContentControl">
-                    <Setter Property="Template" Value="{StaticResource PlayerDataTemplate}" />
+                    <Setter Property="Template" Value="{StaticResource PlayerDataTemplate}"/>
                 </Style>
             </ContentControl.Style>
         </ContentControl>
@@ -44,6 +55,7 @@
                 <!-- will be filled with controls in ctor -->
             </Canvas>
         </Border>
-        <TextBlock x:Name="PauseText" Grid.Row="1" Visibility="Hidden" FontSize="20" FontWeight="Bold" Text="Game Paused" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock x:Name="PauseText" Grid.Row="1" Visibility="Hidden" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Text="Game Paused"/>
     </Grid>
 </UserControl>
