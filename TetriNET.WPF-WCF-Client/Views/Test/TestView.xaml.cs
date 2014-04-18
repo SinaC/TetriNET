@@ -26,7 +26,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
             {
                 int i;
                 // Add textures to Canvas
-                ITextureManager textures = TextureManager.TextureManager.TexturesSingleton.Instance;
+                ITextureManager textures = TextureManager.TextureManager.TexturesSingleInstance.Instance;
 
                 // Special textures
                 i = 0;
@@ -131,7 +131,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
                     {
                         Width = size,
                         Height = size,
-                        Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigPiece(cellPiece)
+                        Fill = TextureManager.TextureManager.TexturesSingleInstance.Instance.GetBigPiece(cellPiece)
                     };
                 Canvas.Children.Add(rectangle);
                 Canvas.SetLeft(rectangle, topX + x * size);

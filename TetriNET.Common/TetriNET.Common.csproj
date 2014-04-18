@@ -61,7 +61,7 @@
     <Compile Include="Helpers\Check.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\MonadExtensions.cs" />
-    <Compile Include="Helpers\Singleton.cs" />
+    <Compile Include="Helpers\SingleInstance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Randomizer\RangeRandom.cs" />
   </ItemGroup>

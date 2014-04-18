@@ -39,7 +39,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Options
         //        {
         //            Width = size,
         //            Height = size,
-        //            Fill = TextureManager.TextureManager.TexturesSingleton.Instance.GetBigPiece(cellPiece)
+        //            Fill = TextureManager.TextureManager.TexturesSingleInstance.Instance.GetBigPiece(cellPiece)
         //        };
         //        Canvas.Children.Add(rectangle);
         //        Canvas.SetLeft(rectangle, topX + x * size);

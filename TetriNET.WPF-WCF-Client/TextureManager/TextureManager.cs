@@ -22,12 +22,12 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
         private Brush BigBackground { get; set; }
         private Brush SmallBackground { get; set; }
 
-        #region Singleton
-        public static ThreadSafeSingleton<TextureManager> TexturesSingleton = new ThreadSafeSingleton<TextureManager>(() => new TextureManager());
+        #region SingleInstance
+        public static ThreadSafeSingleInstance<TextureManager> TexturesSingleInstance = new ThreadSafeSingleInstance<TextureManager>(() => new TextureManager());
 
         private TextureManager()
         {
-            // Singleton
+            // SingleInstance
         }
         #endregion
 

@@ -14,7 +14,7 @@ namespace TetriNET.Common.Randomizer
 
     public class RangeRandom
     {
-        private static readonly ThreadSafeSingleton<Random> Randomizer = new ThreadSafeSingleton<Random>(() => new Random());
+        private static readonly ThreadSafeSingleInstance<Random> Randomizer = new ThreadSafeSingleInstance<Random>(() => new Random());
 
         /// <summary>
         /// Return a random index in <paramref name="ranges"/> depending on probabilities
