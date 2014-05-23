@@ -200,18 +200,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             StopTimer(false);
         }
 
-        private void StopTimerAndComputeTime()
-        {
-            StopTimer(true);
-        }
-
-        private void StopTimer(bool computeTime = true)
-        {
-            _timer.Stop();
-            if (computeTime)
-                ElapsedTime = DateTime.Now - _gameStartTime;
-        }
-
         private void OnGameStarted()
         {
             DisplayLevel(0);
@@ -222,23 +210,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             ElapsedTime = TimeSpan.FromSeconds(0);
             _timer.Start();
         }
-
-        private void DisplayLevel(int level)
-        {
-            Level = level == 0 ? Client.Level : level;
-        }
-
-        private void DisplayClearedLines(int linesCleared)
-        {
-            LinesCleared = linesCleared == 0 ? Client.LinesCleared : linesCleared;
-        }
-
-        private void DisplayScore(int score)
-        {
-            Score = score == 0 ? Client.Score : score;
-        }
-
-        #endregion
 
         private void OnContinuousEffectToggled(Specials special, bool active, double duration)
         {
@@ -271,6 +242,35 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                 }
             }
         }
+
+        private void StopTimerAndComputeTime()
+        {
+            StopTimer(true);
+        }
+
+        private void StopTimer(bool computeTime = true)
+        {
+            _timer.Stop();
+            if (computeTime)
+                ElapsedTime = DateTime.Now - _gameStartTime;
+        }
+
+        private void DisplayLevel(int level)
+        {
+            Level = level == 0 ? Client.Level : level;
+        }
+
+        private void DisplayClearedLines(int linesCleared)
+        {
+            LinesCleared = linesCleared == 0 ? Client.LinesCleared : linesCleared;
+        }
+
+        private void DisplayScore(int score)
+        {
+            Score = score == 0 ? Client.Score : score;
+        }
+
+        #endregion
     }
 
     // http://www.codewrecks.com/blog/index.php/2012/11/07/wpf-and-design-time-data-part-2use-a-concrete-class-2/

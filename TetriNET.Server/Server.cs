@@ -401,9 +401,7 @@ namespace TetriNET.Server
         {
             Log.WriteLine(Log.LogLevels.Info, "Player team changed:{0}:{1}", player.Name, team);
 
-            if (String.IsNullOrWhiteSpace(team))
-                team = null;
-            player.Team = team;
+            player.Team = String.IsNullOrWhiteSpace(team) ? null : team;
             // Send message to players and spectators
             int id = _playerManager.GetId(player);
             //foreach(IPlayer p in _playerManager.Players)

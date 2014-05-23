@@ -163,6 +163,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
+            oldClient.OnRegisteredAsPlayer -= OnClientRegistered;
+            oldClient.OnRegisteredAsSpectator -= OnClientRegistered;
             oldClient.OnGameStarted -= OnGameStarted;
             oldClient.OnPlayerAddLines -= OnPlayerAddLines;
             oldClient.OnSpecialUsed -= OnSpecialUsed;
@@ -176,6 +178,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
+            newClient.OnRegisteredAsPlayer += OnClientRegistered;
+            newClient.OnRegisteredAsSpectator += OnClientRegistered;
             newClient.OnGameStarted += OnGameStarted;
             newClient.OnPlayerAddLines += OnPlayerAddLines;
             newClient.OnSpecialUsed += OnSpecialUsed;
@@ -190,6 +194,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         #endregion
 
         #region IClient events handler
+
+        private void OnClientRegistered(RegistrationResults result, int playerId, bool isServerMaster)
+        {
+            ClearEntries();
+        }
+
+        private void OnClientRegistered(RegistrationResults result, int spectatorId)
+        {
+            ClearEntries();
+        }
 
         private void OnGameStarted()
         {
@@ -231,7 +245,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                         TargetId = targetId,
                         Target = targetName,
 
-                        IsOnPlayer = targetId == Client.PlayerId,
+                        IsOnPlayer = targetId == Client.PlayerId && !Client.IsSpectator,
                     });
             }
         }
@@ -245,7 +259,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                         PlayerId = playerId,
                         PlayerName = playerName,
 
-                        IsOnPlayer = playerId == Client.PlayerId,
+                        IsOnPlayer = playerId == Client.PlayerId && !Client.IsSpectator,
                     });
             }
         }
