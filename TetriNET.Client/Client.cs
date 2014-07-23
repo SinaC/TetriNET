@@ -725,10 +725,10 @@ namespace TetriNET.Client
 
         public void OnAchievementEarned(int playerId, int achievementId, string achievementTitle)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Achievement {0}|{1} earned by {2}", playerId, achievementId, achievementTitle);
+            Log.WriteLine(Log.LogLevels.Debug, "Achievement {0}|{1} earned by {2}", achievementId, achievementTitle, playerId);
 
             ResetTimeout();
-            if (playerId != _clientPlayerId)
+            if (playerId != _clientPlayerId || IsSpectator)
             {
                 //if (ClientOnServerPublishMessage != null)
                 //{
