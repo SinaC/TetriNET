@@ -27,6 +27,8 @@ server message when someone change team
 score by player not sorted by team
 when a player joins a running game, opponents grid should be sent to player
 when a player joins a running game, he's not considered as playing and then don't receive death notification
+when a spectator joins a running game, opponents status (alive/dead) should be sent to player
+when a spectator joins a running game, options should be sent to player
 
 wcf + jquery
 http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-with-nettcpbinding
