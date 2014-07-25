@@ -5,7 +5,7 @@ using TetriNET.Common.Contracts;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 
-namespace TetriNET.ConsoleWCFServer.Player
+namespace TetriNET.Server.PlayerManager
 {
     public sealed class PlayerManager : IPlayerManager
     {
@@ -20,7 +20,7 @@ namespace TetriNET.ConsoleWCFServer.Player
         }
 
         #region IPlayerManager
-       
+
         public int Add(IPlayer player)
         {
             bool alreadyExists = _players.Any(x => x != null && (x == player || x.Name == player.Name));

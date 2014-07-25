@@ -7,17 +7,19 @@ using TetriNET.Common.Helpers;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 
-namespace TetriNET.ConsoleWCFServer.Spectator
+namespace TetriNET.Server.PlayerManager
 {
-    public sealed class Spectator : ISpectator
+    public sealed class Player : IPlayer
     {
-        public Spectator(string name, ITetriNETCallback callback)
+        public Player(string name, ITetriNETCallback callback)
         {
             Name = name;
             Callback = callback;
+            PieceIndex = 0;
             LastActionToClient = DateTime.Now;
             LastActionFromClient = DateTime.Now;
             TimeoutCount = 0;
+            State = PlayerStates.Registered;
         }
 
         private void ExceptionFreeAction(Action action, string actionName)
@@ -38,15 +40,20 @@ namespace TetriNET.ConsoleWCFServer.Spectator
             }
         }
 
-        #region ISpectator + IEntity
+        #region IPlayer + IEntity
 
-        public event SpectatorConnectionLostHandler OnConnectionLost;
+        public event ConnectionLostHandler OnConnectionLost;
 
         public string Name { get; private set; }
-
+        public string Team { get; set; }
+        public int PieceIndex { get; set; }
+        public byte[] Grid { get; set; }
         //
         public ITetriNETCallback Callback { get; private set; }
         //
+        public PlayerStates State { get; set; }
+        public DateTime LossTime { get; set; }
+        public int MutationCount { get; set; }
 
         // Heartbeat management
         public DateTime LastActionToClient { get; private set; } // used to check if heartbeat is needed

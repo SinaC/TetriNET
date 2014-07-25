@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A2BAD88B-73BB-4B79-B30B-ABFB4FD2C1C4}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{1682C01C-8662-47B4-8B1F-A64BE59940A6}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TetriNET.ConsoleWCFServer</RootNamespace>
-    <AssemblyName>TetriNET.ConsoleWCFServer</AssemblyName>
+    <RootNamespace>TetriNET.WCF.Service</RootNamespace>
+    <AssemblyName>TetriNET.WCF.Service</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -22,7 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,37 +30,55 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>TetriNET.ConsoleWCFServer.Program</StartupObject>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>TetriNET.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Ban\HostTransportAddress.cs" />
-    <Compile Include="Host\BuiltInHost.cs" />
-    <Compile Include="DummyBuiltInClient.cs" />
+    <Compile Include="ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProjectInstaller.Designer.cs">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Service.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Service.Designer.cs">
+      <DependentUpon>Service.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Host\SocketHost.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
-    <Content Include="NLog.config">
+    <None Include="App.config" />
+    <None Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Service.resx">
+      <DependentUpon>Service.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TetriNET.Common.Logger\TetriNET.Common.Logger.csproj">
+      <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
+      <Name>TetriNET.Common.Logger</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
@@ -74,10 +90,6 @@
     <ProjectReference Include="..\TetriNET.Server.GenericHost\TetriNET.Server.GenericHost.csproj">
       <Project>{010b434d-86f0-4bff-b17b-702bcccf69f5}</Project>
       <Name>TetriNET.Server.GenericHost</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Common.Logger\TetriNET.Common.Logger.csproj">
-      <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
-      <Name>TetriNET.Common.Logger</Name>
     </ProjectReference>
     <ProjectReference Include="..\TetriNET.Server.Interfaces\TetriNET.Server.Interfaces.csproj">
       <Project>{546c0189-9339-4de6-902a-f38550c5a517}</Project>
@@ -95,17 +107,14 @@
       <Project>{1395a243-12d6-44be-a852-2b52db545cbe}</Project>
       <Name>TetriNET.Server.SpectatorManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Server\TetriNET.Server.csproj">
-      <Project>{161C5DDA-F2A8-400E-9702-3C4B45FFB772}</Project>
-      <Name>TetriNET.Server</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Server.WCFHost\TetriNET.Server.WCFHost.csproj">
       <Project>{0d26f900-9e0d-4fbd-b7b0-5da679c71491}</Project>
       <Name>TetriNET.Server.WCFHost</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="TetriNET.ico" />
+    <ProjectReference Include="..\TetriNET.Server\TetriNET.Server.csproj">
+      <Project>{161c5dda-f2a8-400e-9702-3c4b45ffb772}</Project>
+      <Name>TetriNET.Server</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -5,7 +5,7 @@ using TetriNET.Common.Contracts;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 
-namespace TetriNET.ConsoleWCFServer.Spectator
+namespace TetriNET.Server.SpectatorManager
 {
     public class SpectatorManager : ISpectatorManager
     {

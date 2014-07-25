@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Logger;
 using TetriNET.Common.Randomizer;
-using TetriNET.ConsoleWCFServer.Ban;
 using TetriNET.ConsoleWCFServer.Host;
-using TetriNET.ConsoleWCFServer.Player;
-using TetriNET.ConsoleWCFServer.Spectator;
+using TetriNET.Server.BanManager;
 using TetriNET.Server.Interfaces;
 using TetriNET.Server.PieceProvider;
+using TetriNET.Server.PlayerManager;
+using TetriNET.Server.SpectatorManager;
 
 namespace TetriNET.ConsoleWCFServer
 {
@@ -57,8 +57,8 @@ namespace TetriNET.ConsoleWCFServer
                 playerManager, 
                 spectatorManager, 
                 banManager, 
-                (playerName, callback) => new Player.Player(playerName, callback),
-                (spectatorName, callback) => new Spectator.Spectator(spectatorName, callback))
+                (playerName, callback) => new Player(playerName, callback),
+                (spectatorName, callback) => new Spectator(spectatorName, callback))
             {
                 Port = ConfigurationManager.AppSettings["port"]
             };
@@ -68,8 +68,8 @@ namespace TetriNET.ConsoleWCFServer
                 playerManager,
                 spectatorManager,
                 banManager,
-                (playerName, callback) => new Player.Player(playerName, callback),
-                (spectatorName, callback) => new Spectator.Spectator(spectatorName, callback));
+                (playerName, callback) => new Player(playerName, callback),
+                (spectatorName, callback) => new Spectator(spectatorName, callback));
 
             //
             //SocketHost socketHost = new SocketHost(playerManager, (playerName, callback) => new Player(playerName, callback))

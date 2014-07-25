@@ -4,7 +4,7 @@ using System.Net;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 
-namespace TetriNET.ConsoleWCFServer.Ban
+namespace TetriNET.Server.BanManager
 {
     // TODO: read/write in file
     public sealed class BanManager : IBanManager
@@ -51,7 +51,7 @@ namespace TetriNET.ConsoleWCFServer.Ban
 
         public void Dump()
         {
-            foreach(BanEntry entry in _banList.Values)
+            foreach (BanEntry entry in _banList.Values)
                 Log.WriteLine(Log.LogLevels.Info, "{0} {1} {2}", entry.Address, entry.Name, entry.Reason);
         }
 
