@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B85B19F2-5C8D-4AB8-96E2-379B482089F9}</ProjectGuid>
+    <ProjectGuid>{100AAF67-91BC-41E7-8ABB-4A6B4449B119}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TetriNET.Client.WCFProxy</RootNamespace>
-    <AssemblyName>TetriNET.Client.WCFProxy</AssemblyName>
+    <RootNamespace>TetriNET.Client.TCPProxy</RootNamespace>
+    <AssemblyName>TetriNET.Client.TCPProxy</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,32 +32,28 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomBehavior.cs" />
+    <Compile Include="TCPProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WCFProxy.cs" />
-    <Compile Include="WCFSpectatorProxy.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ServiceModelEx\ServiceModelEx.csproj">
-      <Project>{0858c710-af53-4049-b98e-cfe3638d1228}</Project>
-      <Name>ServiceModelEx</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Client.Interfaces\TetriNET.Client.Interfaces.csproj">
       <Project>{85b3313b-f31a-45be-8bf6-8ae55ae484b0}</Project>
       <Name>TetriNET.Client.Interfaces</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
-      <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
-      <Name>TetriNET.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common.Logger\TetriNET.Common.Logger.csproj">
       <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
       <Name>TetriNET.Common.Logger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
+      <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
+      <Name>TetriNET.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

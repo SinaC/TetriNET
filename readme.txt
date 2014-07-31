@@ -18,6 +18,8 @@ spectator should be able to start/stop game + kick/ban (aka server master)
 merge spectator and player endpoint
 server room: may be specified in RegisterPlayer or by default start in first room with an empty place. Create automatically room when player connects if the room doesn't exist
 
+options should be sent when connecting player or spectator and when modified by server master, not anymore when game is started
+
 bugs:
 why user.config is automatically created with default values in $APPDATA$/Local/SinaC/TetriNET WPF WCF Client/  when recompiling a new version
 WPF Client bot: sometimes _handleNextTetriminoEvent is raised but WaitHandle is not woken up

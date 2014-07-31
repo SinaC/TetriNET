@@ -44,6 +44,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
@@ -52,7 +53,6 @@
     <Compile Include="DummyBuiltInClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Host\SocketHost.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -94,6 +94,10 @@
     <ProjectReference Include="..\TetriNET.Server.SpectatorManager\TetriNET.Server.SpectatorManager.csproj">
       <Project>{1395a243-12d6-44be-a852-2b52db545cbe}</Project>
       <Name>TetriNET.Server.SpectatorManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Server.TCPHost\TetriNET.Server.TCPHost.csproj">
+      <Project>{329e516d-8dd7-4435-a086-c66d2c8db9a9}</Project>
+      <Name>TetriNET.Server.TCPHost</Name>
     </ProjectReference>
     <ProjectReference Include="..\TetriNET.Server\TetriNET.Server.csproj">
       <Project>{161C5DDA-F2A8-400E-9702-3C4B45FFB772}</Project>

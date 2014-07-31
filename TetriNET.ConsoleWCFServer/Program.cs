@@ -13,6 +13,7 @@ using TetriNET.Server.Interfaces;
 using TetriNET.Server.PieceProvider;
 using TetriNET.Server.PlayerManager;
 using TetriNET.Server.SpectatorManager;
+using TetriNET.Server.TCPHost;
 
 namespace TetriNET.ConsoleWCFServer
 {
@@ -71,11 +72,15 @@ namespace TetriNET.ConsoleWCFServer
                 (playerName, callback) => new Player(playerName, callback),
                 (spectatorName, callback) => new Spectator(spectatorName, callback));
 
-            //
-            //SocketHost socketHost = new SocketHost(playerManager, (playerName, callback) => new Player(playerName, callback))
-            //{
-            //    Port = 5656
-            //};
+
+            TCPHost socketHost = new TCPHost(playerManager,
+                spectatorManager,
+                banManager,
+                (playerName, callback) => new Player(playerName, callback),
+                (spectatorName, callback) => new Spectator(spectatorName, callback))
+            {
+                Port = 5656
+            };
 
             //
             List<DummyBuiltInClient> clients = new List<DummyBuiltInClient>
@@ -89,8 +94,7 @@ namespace TetriNET.ConsoleWCFServer
             //PieceQueue pieceProvider = new PieceQueue(RangeRandom.Random);
 
             //
-            Server.Server server = new Server.Server(playerManager, spectatorManager, pieceProvider, wcfHost, builtInHost);
-            //Server server = new Server(playerManager, socketHost);
+            Server.Server server = new Server.Server(playerManager, spectatorManager, pieceProvider, wcfHost, builtInHost, socketHost);
 
             //
             server.StartServer();

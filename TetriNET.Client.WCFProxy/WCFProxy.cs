@@ -45,6 +45,7 @@ namespace TetriNET.Client.WCFProxy
                 InstanceContext instanceContext = new InstanceContext(callback);
                 //_proxy = DuplexChannelFactory<IWCFTetriNET>.CreateChannel(instanceContext, binding, endpointAddress);
                 _factory = new DuplexChannelFactory<IWCFTetriNET>(instanceContext, binding, endpointAddress);
+                //_factory.Endpoint.Behaviors.Add(new CustomBehavior());
                 _proxy = _factory.CreateChannel(instanceContext);
             }
             else
