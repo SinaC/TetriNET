@@ -14,6 +14,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 50;
             Title = "Need for speed";
             Description = "Clear 50 lines on level 100";
+            BronzeLevel = 1;
+            SilverLevel = 3;
+            GoldLevel = 5;
         }
 
         public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)

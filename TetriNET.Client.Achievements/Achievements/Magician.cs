@@ -13,6 +13,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 20;
             Title = "Magician";
             Description = "Use 3 Switch in a game";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void Reset()

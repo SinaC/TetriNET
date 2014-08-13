@@ -12,6 +12,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 10;
             Title = "HH's style";
             Description = "Lose a multiplayer game while having a Nuke, Gravity or Switch in inventory";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount, int playerLeft, List<Specials> inventory)

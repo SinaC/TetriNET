@@ -21,14 +21,13 @@
         xmlns:achievementsViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Achievements"
         mc:Ignorable="d"
         UseLayoutRounding="True"
-        WindowStyle="ToolWindow"
         ResizeMode="NoResize"
         MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
         KeyboardNavigation.DirectionalNavigation="None"
         d:DataContext="{d:DesignInstance mainViewModel:MainWindowViewModelDesignData, IsDesignTimeCreatable=True}"
         Icon="TetriNET.ico"
-        Title="TetriNET" 
-        Height="500" Width="780">
+        Title="TetriNET"
+        Height="535" Width="800" WindowStyle="None">
     <!-- No window border ==> no close button either :p add a custom one before using this
    
         WindowStyle="None"
@@ -40,6 +39,9 @@
         <CommandBinding Command="ApplicationCommands.Close"
                         Executed="CloseCommandHandler"/>
     </Window.CommandBindings>
+    <Window.Background>
+        <ImageBrush ImageSource="C:\Users\seper_000\Documents\GitHub\TetriNET\Images\tetrinet.jpg"/>
+    </Window.Background>
     <Window.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -59,18 +61,124 @@
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
+            <!--LEFT COL-->
+            <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
+            <!--RIGHT COL-->
+            <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <!--HEADER-->
+            <RowDefinition Height="25"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <!--FOOTER-->
+            <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
+
+        <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Top" 
+                VerticalContentAlignment="Top" BorderThickness="0"
+                Height="15" Content="X" Click="Close_Click"/>
+        
         <TabControl 
-            Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="3" 
+            Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="3" 
             KeyboardNavigation.TabNavigation="None"
             SelectedIndex="{Binding ActiveTabItemIndex}">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border Name="Border" BorderThickness="0,0,0,0" BorderBrush="Gainsboro" CornerRadius="4,4,0,0" Margin="2,0">
+                                    <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="10,2"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="Header" Value="Connect">
+                                        <Setter TargetName="Border" Property="Background">
+                                            <Setter.Value>
+                                                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                                    <GradientStop Color="Black" Offset="0"/>
+                                                    <GradientStop Color="#FF7BB7FF" Offset="0.18"/>
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <Trigger Property="Header" Value="Options">
+                                        <Setter TargetName="Border" Property="Background">
+                                            <Setter.Value>
+                                                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                                    <GradientStop Color="Black" Offset="0"/>
+                                                    <GradientStop Color="#FFFF9700" Offset="0.18"/>
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <Trigger Property="Header" Value="Win list">
+                                        <Setter TargetName="Border" Property="Background">
+                                            <Setter.Value>
+                                                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                                    <GradientStop Color="Black" Offset="0"/>
+                                                    <GradientStop Color="#FF76E4A3" Offset="0.18"/>
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <Trigger Property="Header" Value="Party line">
+                                        <Setter TargetName="Border" Property="Background">
+                                            <Setter.Value>
+                                                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                                    <GradientStop Color="Black" Offset="0"/>
+                                                    <GradientStop Color="#FFD82F2F" Offset="0.18"/>
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+
+                                    <Trigger Property="Header" Value="Play fields">
+                                        <Setter TargetName="Border" Property="Background">
+                                            <Setter.Value>
+                                                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                                    <GradientStop Color="Black" Offset="0"/>
+                                                    <GradientStop Color="#FFE414DA" Offset="0.18"/>
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <Trigger Property="Header" Value="Achievements">
+                                        <Setter TargetName="Border" Property="Background">
+                                            <Setter.Value>
+                                                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                                    <GradientStop Color="Black" Offset="0"/>
+                                                    <GradientStop Color="#FF00F3FF" Offset="0.18"/>
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <Trigger Property="Header" Value="Statistics">
+                                        <Setter TargetName="Border" Property="Background">
+                                            <Setter.Value>
+                                                <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0">
+                                                    <GradientStop Color="Black" Offset="0"/>
+                                                    <GradientStop Color="#FFE0E0E0" Offset="0.18"/>
+                                                </LinearGradientBrush>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="False">
+                                        <Setter TargetName="Border" Property="Background" Value="GhostWhite" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
             <TabItem Header="Connect" IsTabStop="False">
                 <connection:ConnectionView 
                     DataContext="{Binding Path=ConnectionViewModel}"/>

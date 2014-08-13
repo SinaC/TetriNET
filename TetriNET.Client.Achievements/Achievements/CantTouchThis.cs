@@ -16,6 +16,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Title = "Can't Touch This";
             Description = "Earn all achievements";
             OnlyOnce = true;
+            BronzeLevel = 1;
+            SilverLevel = 2;
+            GoldLevel = 3;
 
             _achievementsCount = Assembly.GetExecutingAssembly().GetTypes().Count(t => t.IsSubclassOf(typeof(Achievement)) && !t.IsAbstract);
         }

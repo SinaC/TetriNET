@@ -14,6 +14,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 60;
             Title = "Dirty South Style";
             Description = "Do 3 Tetrises in 3 drops";
+            BronzeLevel = 1;
+            SilverLevel = 3;
+            GoldLevel = 5;
         }
 
         public override void Reset()

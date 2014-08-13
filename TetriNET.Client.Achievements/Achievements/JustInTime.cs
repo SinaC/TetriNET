@@ -12,6 +12,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 30;
             Title = "Just in time...";
             Description = "Nuke 1 line before death";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)

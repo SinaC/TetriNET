@@ -27,6 +27,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 70;
             Title = "Grand Slam";
             Description = "Use on an opponent and be the target of every available specials";
+            BronzeLevel = 1;
+            SilverLevel = 3;
+            GoldLevel = 5;
         }
 
         public override void OnGameStarted(GameOptions options)

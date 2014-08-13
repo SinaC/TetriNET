@@ -15,6 +15,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 10;
             Title = "Slam";
             Description = "Use every available specials in one game";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void OnGameStarted(GameOptions options)

@@ -12,6 +12,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 10;
             Title = "Call me Savior !";
             Description = "Nuke a player in your team";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)

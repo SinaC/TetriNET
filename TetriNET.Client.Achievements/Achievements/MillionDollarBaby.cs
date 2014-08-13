@@ -10,6 +10,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 50;
             Title = "Million Dollar Baby";
             Description = "Get 1,000,000 points in one game";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, Interfaces.IBoard board, List<Common.DataContracts.Pieces> collapsedPieces)

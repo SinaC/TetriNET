@@ -12,6 +12,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 20;
             Title = "Cnofisuon";
             Description = "Use 5 Confusions in a game";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void Reset()

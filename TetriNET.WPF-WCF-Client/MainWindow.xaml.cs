@@ -42,6 +42,11 @@ namespace TetriNET.WPF_WCF_Client
         {
             this.WindowState = WindowState.Minimized;
         }
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
 
         #endregion
 

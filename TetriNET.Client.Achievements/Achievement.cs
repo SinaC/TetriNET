@@ -24,7 +24,18 @@ namespace TetriNET.Client.Achievements
         public DateTime FirstTimeAchieved { get; set; }
         public DateTime LastTimeAchieved { get; set; }
         public int ExtraData { get; set; } // can be used to store data between game session
-       
+        public int BronzeLevel { get; protected set; }
+        public int SilverLevel { get; protected set; }
+        public int GoldLevel { get; protected set; }
+
+        public string LevelColor
+        {
+            get { return AchieveCount >= GoldLevel ? "Gold" 
+                : AchieveCount >= SilverLevel ? "Silver"
+                : AchieveCount >= BronzeLevel ? "#FFD3712D" 
+                : "Transparent"; }
+        }
+
         public bool AchievedMoreThanOnce
         {
             get { return AchieveCount > 1; }

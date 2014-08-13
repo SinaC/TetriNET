@@ -14,6 +14,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 20;
             Title = "Back to Back";
             Description = "Do 2 Tetrises without clearing any lines in between";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void Reset()

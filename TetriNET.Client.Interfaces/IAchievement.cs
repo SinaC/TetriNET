@@ -24,6 +24,8 @@ namespace TetriNET.Client.Interfaces
         bool IsAchievable { get; }
         bool AchievedMoreThanOnce { get; }
 
+        string LevelColor { get; }
+
         string Progress { get; }
         bool IsProgressAvailable { get; }
 

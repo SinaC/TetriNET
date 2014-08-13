@@ -14,6 +14,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 50;
             Title = "Fear my brain !";
             Description = "Clear 10 lines in 10 drops";
+            BronzeLevel = 1;
+            SilverLevel = 3;
+            GoldLevel = 5;
         }
 
         public override void Reset()

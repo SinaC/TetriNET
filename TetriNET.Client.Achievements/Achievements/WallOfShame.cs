@@ -12,6 +12,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 40;
             Title = "Wall of Shame";
             Description = "Lose a multiplayer game while having a Nuke, a Gravity and a Switch in inventory";
+            BronzeLevel = 1;
+            SilverLevel = 3;
+            GoldLevel = 5;
         }
 
         public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount, int playerLeft, List<Specials> inventory)

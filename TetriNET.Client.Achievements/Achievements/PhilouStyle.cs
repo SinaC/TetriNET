@@ -13,6 +13,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Id = 31;
             Title = "Philou's Style";
             Description = "In a multiplayer game, let the first 3 pieces drop without any moves, then win the game";
+            BronzeLevel = 1;
+            SilverLevel = 3;
+            GoldLevel = 5;
         }
 
         public override void Reset()

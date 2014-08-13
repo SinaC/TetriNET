@@ -14,6 +14,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 50;
             Title = "Void Master";
             Description = "Clear whole board by clearing lines";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)

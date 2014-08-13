@@ -14,6 +14,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 15;
             Title = "Do a barrel roll";
             Description = "Use a Gravity and a Left Gravity in a game";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void Reset()

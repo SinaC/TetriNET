@@ -14,6 +14,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Title = "Eliminator";
             Description = "Clear a total of 10,000 lines";
             OnlyOnce = true;
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override string Progress

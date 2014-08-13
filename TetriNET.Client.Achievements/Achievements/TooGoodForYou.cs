@@ -13,6 +13,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 40;
             Title = "Too good for you";
             Description = "Win a game without using any specials";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void Reset()

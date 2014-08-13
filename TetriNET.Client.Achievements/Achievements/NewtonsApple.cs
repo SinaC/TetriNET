@@ -13,6 +13,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 20;
             Title = "Newton's Apple";
             Description = "Use 5 Gravity in a game";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void Reset()

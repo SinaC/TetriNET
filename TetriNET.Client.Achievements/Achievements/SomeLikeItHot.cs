@@ -14,6 +14,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Title = "Some like it hot";
             Description = "Drop a total of 100,000 Tetriminos";
             OnlyOnce = true;
+            BronzeLevel = 1;
+            SilverLevel = 2;
+            GoldLevel = 10;
         }
 
         public override string Progress

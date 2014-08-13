@@ -14,6 +14,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Title = "Who's your daddy ?";
             Description = "Win 5 times in a row";
             ResetOnGameStarted = false;
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void Reset()

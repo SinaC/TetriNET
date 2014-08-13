@@ -14,6 +14,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Title = "Tetris Ace";
             Description = "Perform 150 Tetrises";
             OnlyOnce = true;
+            BronzeLevel = 1;
+            SilverLevel = 3;
+            GoldLevel = 5;
         }
 
         public override string Progress

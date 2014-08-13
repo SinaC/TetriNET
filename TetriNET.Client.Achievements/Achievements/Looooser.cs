@@ -14,6 +14,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Title = "Looooser";
             Description = "Be the first to lose, 5 times in a row in a multiplayer game (min. 4 players)";
             ResetOnGameStarted = false;
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void Reset()

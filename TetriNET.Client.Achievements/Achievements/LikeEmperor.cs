@@ -11,6 +11,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Title = "Like an Emperor";
             Description = "Win 1000 games";
             OnlyOnce = true;
+            BronzeLevel = 1;
+            SilverLevel = 2;
+            GoldLevel = 3;
         }
 
         public override string Progress

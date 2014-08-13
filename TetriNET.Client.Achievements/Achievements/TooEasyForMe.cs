@@ -13,6 +13,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 20;
             Title = "Too easy for me";
             Description = "Nuke an enemy (and win the game)";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void Reset()

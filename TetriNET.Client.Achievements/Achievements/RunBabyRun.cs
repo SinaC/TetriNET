@@ -8,6 +8,9 @@
             Points = 20;
             Title = "Run baby run";
             Description = "Win a multiplayer game with more than 300 moves/min";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void OnGameWon(double playTime, int moveCount, int lineCount, int playerCount)

@@ -8,6 +8,9 @@
             Points = 40;
             Title = "Sniper";
             Description = "Win a multiplayer game in less than 1 minute";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void OnGameWon(double playTime, int moveCount, int lineCount, int playerCount)

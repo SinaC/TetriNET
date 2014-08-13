@@ -198,7 +198,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
                 fearMyBrain.IsAchieved = true;
                 fearMyBrain.FirstTimeAchieved =  DateTime.Now.AddDays(-4);
                 fearMyBrain.LastTimeAchieved = DateTime.Now.AddDays(-1);
-                fearMyBrain.AchieveCount = 2;
+                fearMyBrain.AchieveCount = 3;
             }
             IAchievement tooGoodForYou = manager.Achievements.FirstOrDefault(x => x.Title == "Too good for you");
             if (tooGoodForYou != null)
@@ -206,7 +206,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
                 tooGoodForYou.IsAchieved = true;
                 tooGoodForYou.FirstTimeAchieved = DateTime.Now.AddDays(-4);
                 tooGoodForYou.LastTimeAchieved = DateTime.Now.AddDays(-4);
-                tooGoodForYou.AchieveCount = 1;
+                tooGoodForYou.AchieveCount = 10;
             }
             IAchievement tetrisAce = manager.Achievements.FirstOrDefault(x => x.Title == "Tetris Ace");
             if (tetrisAce != null)

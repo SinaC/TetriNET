@@ -11,6 +11,9 @@ namespace TetriNET.Client.Achievements.Achievements
             Points = 30;
             Title = "Serial builder";
             Description = "Finish a game with more than 15 lines cleared/min";
+            BronzeLevel = 1;
+            SilverLevel = 5;
+            GoldLevel = 10;
         }
 
         public override void OnGameWon(double playTime, int moveCount, int lineCount, int playerCount)
