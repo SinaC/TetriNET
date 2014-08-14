@@ -21,6 +21,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
         private Dictionary<Pieces, Brush> SmallPiecesBrushes { get; set; }
         private Brush BigBackground { get; set; }
         private Brush SmallBackground { get; set; }
+        private Brush WindowBackground { get; set; }
 
         #region SingleInstance
         public static ThreadSafeSingleInstance<TextureManager> TexturesSingleInstance = new ThreadSafeSingleInstance<TextureManager>(() => new TextureManager());
@@ -35,6 +36,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
         {
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
+            SaveBrushToFile(BigBackground, 800, 550, Path.Combine(folderPath, "window_background.bmp"));
             SaveBrushToFile(BigBackground, 192, 352, Path.Combine(folderPath, "big_background.bmp"));
             SaveBrushToFile(SmallBackground, 96, 176, Path.Combine(folderPath, "small_background.bmp"));
             foreach (KeyValuePair<Specials, Brush> special in BigSpecialsBrushes)

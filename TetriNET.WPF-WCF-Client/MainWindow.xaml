@@ -40,7 +40,7 @@
                         Executed="CloseCommandHandler"/>
     </Window.CommandBindings>
     <Window.Background>
-        <ImageBrush ImageSource="..\Images\tetrinet.jpg"/>
+        <ImageBrush ImageSource="Textures/window_background.bmp"/>
     </Window.Background>
     <Window.Resources>
         <ResourceDictionary>
