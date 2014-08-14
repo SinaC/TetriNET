@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.ConsoleWCFClient", "TetriNET.ConsoleWCFClient\TetriNET.ConsoleWCFClient.csproj", "{DF0E62BB-86B0-4FAC-B731-0CD62C90CEB7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Common", "TetriNET.Common\TetriNET.Common.csproj", "{195BE21E-603A-4858-A805-09C59107C5A7}"
@@ -34,7 +36,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Client.Strategy", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{C9AD63A5-DD1F-44E7-8612-26CBA1AF5385}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\Pictures\tetrinet.jpg = ..\..\..\Pictures\tetrinet.jpg
+		Images\tetrinet.jpg = Images\tetrinet.jpg
 		Images\tetrinet2.bmp = Images\tetrinet2.bmp
 		Images\TNETBLKS.BMP = Images\TNETBLKS.BMP
 		Images\x2mod.bmp = Images\x2mod.bmp

@@ -17,7 +17,7 @@ namespace TetriNET.Client.Achievements.Achievements
             BronzeLevel = 1;
             SilverLevel = 5;
             GoldLevel = 10;
-        }
+        } 
 
         public override void Reset()
         {

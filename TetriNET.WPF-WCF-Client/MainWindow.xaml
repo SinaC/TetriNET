@@ -27,7 +27,7 @@
         d:DataContext="{d:DesignInstance mainViewModel:MainWindowViewModelDesignData, IsDesignTimeCreatable=True}"
         Icon="TetriNET.ico"
         Title="TetriNET"
-        Height="535" Width="800" WindowStyle="None">
+        Height="550" Width="800" WindowStyle="None">
     <!-- No window border ==> no close button either :p add a custom one before using this
    
         WindowStyle="None"
@@ -40,7 +40,7 @@
                         Executed="CloseCommandHandler"/>
     </Window.CommandBindings>
     <Window.Background>
-        <ImageBrush ImageSource="C:\Users\seper_000\Documents\GitHub\TetriNET\Images\tetrinet.jpg"/>
+        <ImageBrush ImageSource="..\Images\tetrinet.jpg"/>
     </Window.Background>
     <Window.Resources>
         <ResourceDictionary>
@@ -71,16 +71,22 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <!--HEADER-->
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <!--FOOTER-->
             <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal">
+            <Button  VerticalAlignment="Top" HorizontalAlignment="Right"
+                    VerticalContentAlignment="Top"  BorderThickness="1"
+                    Height="17" Width="15" Content="-" Click="Minimize_Click"></Button>
 
-        <Button Grid.Row="0" Grid.Column="4" VerticalAlignment="Top" 
-                VerticalContentAlignment="Top" BorderThickness="0"
-                Height="15" Content="X" Click="Close_Click"/>
+            <Button VerticalAlignment="Top" HorizontalAlignment="Right"
+                    VerticalContentAlignment="Top" BorderThickness="1"
+                    Height="17" Width="15" Content="X" Click="Close_Click"/>
+        </StackPanel>
         
         <TabControl 
             Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="3" 
