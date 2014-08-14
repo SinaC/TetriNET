@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using TetriNET.Client.Interfaces;
@@ -32,7 +33,7 @@ namespace TetriNET.Client.WCFProxy
             _proxy = _factory.CreateChannel(instanceContext);
         }
 
-        private void ExceptionFreeAction(Action action, string actionName)
+        private void ExceptionFreeAction(Action action, [CallerMemberName]string actionName = null)
         {
             try
             {
@@ -76,22 +77,22 @@ namespace TetriNET.Client.WCFProxy
 
         public void RegisterSpectator(ITetriNETCallback callback, string spectatorName)
         {
-            ExceptionFreeAction(() => _proxy.RegisterSpectator(spectatorName), "RegisterSpectator");
+            ExceptionFreeAction(() => _proxy.RegisterSpectator(spectatorName));
         }
 
         public void UnregisterSpectator(ITetriNETCallback callback)
         {
-            ExceptionFreeAction(_proxy.UnregisterSpectator, "UnregisterSpectator");
+            ExceptionFreeAction(_proxy.UnregisterSpectator);
         }
 
         public void HeartbeatSpectator(ITetriNETCallback callback)
         {
-            ExceptionFreeAction(_proxy.HeartbeatSpectator, "Heartbeat");
+            ExceptionFreeAction(_proxy.HeartbeatSpectator);
         }
 
         public void PublishSpectatorMessage(ITetriNETCallback callback, string msg)
         {
-            ExceptionFreeAction(() => _proxy.PublishSpectatorMessage(msg), "PublishSpectatorMessage");
+            ExceptionFreeAction(() => _proxy.PublishSpectatorMessage(msg));
         }
 
         #endregion

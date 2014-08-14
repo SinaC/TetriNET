@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using ServiceModelEx;
@@ -77,7 +78,7 @@ namespace TetriNET.Client.WCFProxy
             }
         }
 
-        private void ExceptionFreeAction(Action action, string actionName)
+        private void ExceptionFreeAction(Action action, [CallerMemberName]string actionName = null)
         {
             try
             {
@@ -121,122 +122,102 @@ namespace TetriNET.Client.WCFProxy
 
         public void RegisterPlayer(ITetriNETCallback callback, string playerName, string team)
         {
-            ExceptionFreeAction(() => _proxy.RegisterPlayer(playerName, team), "RegisterPlayer");
+            ExceptionFreeAction(() => _proxy.RegisterPlayer(playerName, team));
         }
 
         public void UnregisterPlayer(ITetriNETCallback callback)
         {
-            ExceptionFreeAction(_proxy.UnregisterPlayer, "UnregisterPlayer");
+            ExceptionFreeAction(_proxy.UnregisterPlayer);
         }
 
         public void Heartbeat(ITetriNETCallback callback)
         {
-            ExceptionFreeAction(_proxy.Heartbeat, "Heartbeat");
+            ExceptionFreeAction(_proxy.Heartbeat);
         }
 
         public void PlayerTeam(ITetriNETCallback callback, string team)
         {
-            ExceptionFreeAction(() => _proxy.PlayerTeam(team), "PlayerTeam");
+            ExceptionFreeAction(() => _proxy.PlayerTeam(team));
         }
 
         public void PublishMessage(ITetriNETCallback callback, string msg)
         {
-            ExceptionFreeAction(() => _proxy.PublishMessage(msg), "PublishMessage");
+            ExceptionFreeAction(() => _proxy.PublishMessage(msg));
         }
 
         public void PlacePiece(ITetriNETCallback callback, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid)
         {
-            ExceptionFreeAction(() => _proxy.PlacePiece(pieceIndex, highestIndex, piece, orientation, posX, posY, grid), "PlacePiece");
+            ExceptionFreeAction(() => _proxy.PlacePiece(pieceIndex, highestIndex, piece, orientation, posX, posY, grid));
         }
 
         public void ModifyGrid(ITetriNETCallback callback, byte[] grid)
         {
-            ExceptionFreeAction(() => _proxy.ModifyGrid(grid), "ModifyGrid");
+            ExceptionFreeAction(() => _proxy.ModifyGrid(grid));
         }
 
         public void UseSpecial(ITetriNETCallback callback, int targetId, Specials special)
         {
-            ExceptionFreeAction(() => _proxy.UseSpecial(targetId, special), "UseSpecial");
+            ExceptionFreeAction(() => _proxy.UseSpecial(targetId, special));
         }
 
         public void SendLines(ITetriNETCallback callback, int count)
         {
-            ExceptionFreeAction(() => _proxy.SendLines(count), "SendLines");
+            ExceptionFreeAction(() => _proxy.SendLines(count));
         }
 
         public void GameLost(ITetriNETCallback callback)
         {
-            ExceptionFreeAction(_proxy.GameLost, "ResumeGame");
+            ExceptionFreeAction(_proxy.GameLost);
         }
 
         public void FinishContinuousSpecial(ITetriNETCallback callback, Specials special)
         {
-            ExceptionFreeAction(() => _proxy.FinishContinuousSpecial(special), "FinishContinuousSpecial");
+            ExceptionFreeAction(() => _proxy.FinishContinuousSpecial(special));
         }
 
         public void StartGame(ITetriNETCallback callback)
         {
-            ExceptionFreeAction(_proxy.StartGame, "StartGame");
+            ExceptionFreeAction(_proxy.StartGame);
         }
 
         public void StopGame(ITetriNETCallback callback)
         {
-            ExceptionFreeAction(_proxy.StopGame, "StopGame");
+            ExceptionFreeAction(_proxy.StopGame);
         }
 
         public void PauseGame(ITetriNETCallback callback)
         {
-            ExceptionFreeAction(_proxy.PauseGame, "PauseGame");
+            ExceptionFreeAction(_proxy.PauseGame);
         }
 
         public void ResumeGame(ITetriNETCallback callback)
         {
-            ExceptionFreeAction(_proxy.ResumeGame, "ResumeGame");
+            ExceptionFreeAction(_proxy.ResumeGame);
         }
 
         public void ChangeOptions(ITetriNETCallback callback, GameOptions options)
         {
-            ExceptionFreeAction(() => _proxy.ChangeOptions(options), "ChangeOptions");
+            ExceptionFreeAction(() => _proxy.ChangeOptions(options));
         }
 
         public void KickPlayer(ITetriNETCallback callback, int playerId)
         {
-            ExceptionFreeAction(() => _proxy.KickPlayer(playerId), "KickPlayer");
+            ExceptionFreeAction(() => _proxy.KickPlayer(playerId));
         }
 
         public void BanPlayer(ITetriNETCallback callback, int playerId)
         {
-            ExceptionFreeAction(() => _proxy.BanPlayer(playerId), "BanPlayer");
+            ExceptionFreeAction(() => _proxy.BanPlayer(playerId));
         }
 
         public void ResetWinList(ITetriNETCallback callback)
         {
-            ExceptionFreeAction(_proxy.ResetWinList, "ResetWinList");
+            ExceptionFreeAction(_proxy.ResetWinList);
         }
 
         public void EarnAchievement(ITetriNETCallback callback, int achievementId, string achievementTitle)
         {
-            ExceptionFreeAction(() => _proxy.EarnAchievement(achievementId, achievementTitle), "EarnAchievement");
-        }
-
-        #endregion
-
-        #region ITetriNETSpectator
-
-        public void RegisterSpectator(string spectatorName)
-        {
-        }
-
-        public void UnregisterSpectator()
-        {
-        }
-
-        public void HeartbeatSpectator()
-        {
-        }
-
-        public void PublishSpectatorMessage(string msg)
-        {
+            ExceptionFreeAction(() => _proxy.EarnAchievement(achievementId, achievementTitle));
         }
 
         #endregion
