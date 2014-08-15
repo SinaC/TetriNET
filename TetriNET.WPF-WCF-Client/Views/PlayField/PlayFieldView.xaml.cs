@@ -26,8 +26,11 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             InitializeComponent();
 
             //http://stackoverflow.com/questions/15241118/keydown-event-not-raising-from-a-grid
-            Focusable = true; // This is needed to catch KeyUp/KeyDown
-            Loaded += (sender, args) => Focus(); // This is needed to catch KeyUp/KeyDown
+            Loaded += (sender, args) =>
+            {
+                Focusable = true; // This is needed to catch KeyUp/KeyDown
+                Focus();
+            }; // This is needed to catch KeyUp/KeyDown
         }
 
         #region IClient events handler
