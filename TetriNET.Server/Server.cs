@@ -71,31 +71,31 @@ namespace TetriNET.Server
 
             foreach (IHost host in _hosts)
             {
-                host.OnPlayerRegistered += RegisterPlayerHandler;
-                host.OnPlayerUnregistered += UnregisterPlayerHandler;
-                host.OnPlayerTeamChanged += PlayerTeamHandler;
-                host.OnMessagePublished += PublishMessageHandler;
-                host.OnPiecePlaced += PlacePieceHandler;
-                host.OnUseSpecial += UseSpecialHandler;
-                host.OnSendLines += SendLinesHandler;
-                host.OnGridModified += ModifyGridHandler;
-                host.OnStartGame += StartGameHandler;
-                host.OnStopGame += StopGameHandler;
-                host.OnPauseGame += PauseGameHandler;
-                host.OnResumeGame += ResumeGameHandler;
-                host.OnGameLost += GameLostHandler;
-                host.OnChangeOptions += ChangeOptionsHandler;
-                host.OnKickPlayer += KickPlayerHandler;
-                host.OnBanPlayer += BanPlayerHandler;
-                host.OnResetWinList += ResetWinListHandler;
-                host.OnFinishContinuousSpecial += FinishContinuousSpecialHandler;
-                host.OnEarnAchievement += EarnAchievementHandler;
-                host.OnSpectatorRegistered += RegisterSpectatorHandler;
-                host.OnSpectatorUnregistered += UnregisterSpectatorHandler;
-                host.OnSpectatorMessagePublished += PublishSpectatorMessageHandler;
-
-                host.OnPlayerLeft += PlayerLeftHandler;
-                host.OnSpectatorLeft += SpectatorLeftHandler;
+                host.HostPlayerRegistered += OnRegisterPlayer;
+                host.HostPlayerUnregistered += OnUnregisterPlayer;
+                host.HostPlayerTeamChanged += OnPlayerTeam;
+                host.HostMessagePublished += OnPublishMessage;
+                host.HostPiecePlaced += OnPlacePiece;
+                host.HostUseSpecial += OnUseSpecial;
+                host.HostSendLines += OnSendLines;
+                host.HostGridModified += OnModifyGrid;
+                host.HostStartGame += OnStartGame;
+                host.HostStopGame += OnStopGame;
+                host.HostPauseGame += OnPauseGame;
+                host.HostResumeGame += OnResumeGame;
+                host.HostGameLost += OnGameLost;
+                host.HostChangeOptions += OnChangeOptions;
+                host.HostKickPlayer += OnKickPlayer;
+                host.HostBanPlayer += OnBanPlayer;
+                host.HostResetWinList += OnResetWinList;
+                host.HostFinishContinuousSpecial += OnFinishContinuousSpecial;
+                host.HostEarnAchievement += OnEarnAchievement;
+                host.HostSpectatorRegistered += OnRegisterSpectator;
+                host.HostSpectatorUnregistered += OnUnregisterSpectator;
+                host.HostSpectatorMessagePublished += OnPublishSpectatorMessage;
+                     
+                host.HostPlayerLeft += OnPayerLeft;
+                host.HostSpectatorLeft += OnSpectatorLeft;
 
                 Debug.Assert(Check.CheckEvents(host), "Every host events must be handled");
             }
@@ -342,7 +342,7 @@ namespace TetriNET.Server
 
         #region IHost event handler
 
-        private void RegisterPlayerHandler(IPlayer player, int playerId)
+        private void OnRegisterPlayer(IPlayer player, int playerId)
         {
             Log.WriteLine(Log.LogLevels.Info, "New player:[{0}]{1}|{2}", playerId, player.Name, player.Team);
 
@@ -390,14 +390,14 @@ namespace TetriNET.Server
             player.OnWinListModified(WinList);
         }
 
-        private void UnregisterPlayerHandler(IPlayer player)
+        private void OnUnregisterPlayer(IPlayer player)
         {
             Log.WriteLine(Log.LogLevels.Info, "Unregister player:{0}", player.Name);
 
-            PlayerLeftHandler(player, LeaveReasons.Disconnected);
+            OnPayerLeft(player, LeaveReasons.Disconnected);
         }
 
-        private void PlayerTeamHandler(IPlayer player, string team)
+        private void OnPlayerTeam(IPlayer player, string team)
         {
             Log.WriteLine(Log.LogLevels.Info, "Player team changed:{0}:{1}", player.Name, team);
 
@@ -410,7 +410,7 @@ namespace TetriNET.Server
                 entity.OnPlayerTeamChanged(id, team);
         }
 
-        private void PublishMessageHandler(IPlayer player, string msg)
+        private void OnPublishMessage(IPlayer player, string msg)
         {
             Log.WriteLine(Log.LogLevels.Info, "PublishMessage:{0}:{1}", player.Name, msg);
 
@@ -422,27 +422,27 @@ namespace TetriNET.Server
                 entity.OnPublishPlayerMessage(player.Name, msg);
         }
 
-        private void PlacePieceHandler(IPlayer player, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid)
+        private void OnPlacePiece(IPlayer player, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid)
         {
             EnqueueAction(() => PlacePiece(player, pieceIndex, highestIndex, piece, orientation, posX, posY, grid));
         }
 
-        private void UseSpecialHandler(IPlayer player, IPlayer target, Specials special)
+        private void OnUseSpecial(IPlayer player, IPlayer target, Specials special)
         {
             EnqueueAction(() => Special(player, target, special));
         }
 
-        private void SendLinesHandler(IPlayer player, int count)
+        private void OnSendLines(IPlayer player, int count)
         {
             EnqueueAction(() => SendLines(player, count));
         }
 
-        private void ModifyGridHandler(IPlayer player, byte[] grid)
+        private void OnModifyGrid(IPlayer player, byte[] grid)
         {
             EnqueueAction(() => ModifyGrid(player, grid));
         }
 
-        private void StartGameHandler(IPlayer player)
+        private void OnStartGame(IPlayer player)
         {
             Log.WriteLine(Log.LogLevels.Info, "StartGame:{0}", player.Name);
 
@@ -453,7 +453,7 @@ namespace TetriNET.Server
             }
         }
 
-        private void StopGameHandler(IPlayer player)
+        private void OnStopGame(IPlayer player)
         {
             Log.WriteLine(Log.LogLevels.Info, "StopGame:{0}", player.Name);
 
@@ -464,7 +464,7 @@ namespace TetriNET.Server
             }
         }
 
-        private void PauseGameHandler(IPlayer player)
+        private void OnPauseGame(IPlayer player)
         {
             Log.WriteLine(Log.LogLevels.Info, "PauseGame:{0}", player.Name);
 
@@ -475,7 +475,7 @@ namespace TetriNET.Server
             }
         }
 
-        private void ResumeGameHandler(IPlayer player)
+        private void OnResumeGame(IPlayer player)
         {
             Log.WriteLine(Log.LogLevels.Info, "ResumeGame:{0}", player.Name);
 
@@ -486,14 +486,14 @@ namespace TetriNET.Server
             }
         }
 
-        private void GameLostHandler(IPlayer player)
+        private void OnGameLost(IPlayer player)
         {
             EnqueueAction(() => GameLost(player));
         }
 
-        private void ChangeOptionsHandler(IPlayer player, GameOptions options)
+        private void OnChangeOptions(IPlayer player, GameOptions options)
         {
-            Log.WriteLine(Log.LogLevels.Info, "ChangeOptionsHandler:{0} {1}", player.Name, options);
+            Log.WriteLine(Log.LogLevels.Info, "ChangeOptions:{0} {1}", player.Name, options);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
             if (masterPlayer == player && State == States.WaitingStartGame)
@@ -521,7 +521,7 @@ namespace TetriNET.Server
                 Log.WriteLine(Log.LogLevels.Info, "Cannot change options");
         }
 
-        private void KickPlayerHandler(IPlayer player, int playerId)
+        private void OnKickPlayer(IPlayer player, int playerId)
         {
             Log.WriteLine(Log.LogLevels.Info, "KickPlayer:{0} [{1}]", player.Name, playerId);
 
@@ -532,13 +532,13 @@ namespace TetriNET.Server
                 // Send server stopped
                 kickedPlayer.OnServerStopped();
                 // Remove player from player manager and hosts + warn other players
-                PlayerLeftHandler(kickedPlayer, LeaveReasons.Kick);
+                OnPayerLeft(kickedPlayer, LeaveReasons.Kick);
             }
             else
                 Log.WriteLine(Log.LogLevels.Info, "Cannot kick player");
         }
 
-        private void BanPlayerHandler(IPlayer player, int playerId)
+        private void OnBanPlayer(IPlayer player, int playerId)
         {
             Log.WriteLine(Log.LogLevels.Info, "BanPlayer:{0} [{1}]", player.Name, playerId);
 
@@ -549,14 +549,14 @@ namespace TetriNET.Server
                 // Send server stopped
                 bannedPlayer.OnServerStopped();
                 // Remove player from player manager and hosts + warn other players
-                PlayerLeftHandler(bannedPlayer, LeaveReasons.Ban);
+                OnPayerLeft(bannedPlayer, LeaveReasons.Ban);
                 // TODO: add to ban list
             }
             else
                 Log.WriteLine(Log.LogLevels.Info, "Cannot ban player");
         }
 
-        private void ResetWinListHandler(IPlayer player)
+        private void OnResetWinList(IPlayer player)
         {
             Log.WriteLine(Log.LogLevels.Info, "ResetWinLost:{0}", player.Name);
 
@@ -569,14 +569,14 @@ namespace TetriNET.Server
                 Log.WriteLine(Log.LogLevels.Info, "Cannot reset win list");
         }
 
-        private void FinishContinuousSpecialHandler(IPlayer player, Specials special)
+        private void OnFinishContinuousSpecial(IPlayer player, Specials special)
         {
             EnqueueAction(() => FinishContinuousSpecial(player, special));
         }
 
-        private void EarnAchievementHandler(IPlayer player, int achievementId, string achievementTitle)
+        private void OnEarnAchievement(IPlayer player, int achievementId, string achievementTitle)
         {
-            Log.WriteLine(Log.LogLevels.Info, "EarnAchievementHandler:{0} {1} {2}", player.Name, achievementId, achievementTitle);
+            Log.WriteLine(Log.LogLevels.Info, "EarnAchievement:{0} {1} {2}", player.Name, achievementId, achievementTitle);
 
             int id = _playerManager.GetId(player);
             //foreach(IPlayer p in _playerManager.Players.Where(x => x != player))
@@ -585,7 +585,7 @@ namespace TetriNET.Server
                 entity.OnAchievementEarned(id, achievementId, achievementTitle);
         }
 
-        private void RegisterSpectatorHandler(ISpectator spectator, int spectatorId)
+        private void OnRegisterSpectator(ISpectator spectator, int spectatorId)
         {
             Log.WriteLine(Log.LogLevels.Info, "New spectator:[{0}]{1}", spectatorId, spectator.Name);
 
@@ -617,16 +617,16 @@ namespace TetriNET.Server
             spectator.OnWinListModified(WinList);
         }
 
-        private void UnregisterSpectatorHandler(ISpectator spectator)
+        private void OnUnregisterSpectator(ISpectator spectator)
         {
             Log.WriteLine(Log.LogLevels.Info, "Unregister spectator:{0}", spectator.Name);
 
-            SpectatorLeftHandler(spectator, LeaveReasons.Disconnected);
+            OnSpectatorLeft(spectator, LeaveReasons.Disconnected);
         }
 
-        private void PublishSpectatorMessageHandler(ISpectator spectator, string msg)
+        private void OnPublishSpectatorMessage(ISpectator spectator, string msg)
         {
-            Log.WriteLine(Log.LogLevels.Info, "PublishSpectatorMessageHandler:{0}:{1}", spectator.Name, msg);
+            Log.WriteLine(Log.LogLevels.Info, "PublishSpectatorMessage:{0}:{1}", spectator.Name, msg);
 
             // Send message to players and spectators
             //foreach (IPlayer p in _playerManager.Players)
@@ -635,7 +635,7 @@ namespace TetriNET.Server
                 entity.OnPublishPlayerMessage(spectator.Name, msg);
         }
 
-        private void PlayerLeftHandler(IPlayer player, LeaveReasons reason)
+        private void OnPayerLeft(IPlayer player, LeaveReasons reason)
         {
             Log.WriteLine(Log.LogLevels.Info, "Player left:{0} {1}", player.Name, reason);
 
@@ -694,7 +694,7 @@ namespace TetriNET.Server
             }
         }
 
-        private void SpectatorLeftHandler(ISpectator spectator, LeaveReasons reason)
+        private void OnSpectatorLeft(ISpectator spectator, LeaveReasons reason)
         {
             Log.WriteLine(Log.LogLevels.Info, "Spectator left:{0} {1}", spectator.Name, reason);
 
@@ -1063,7 +1063,7 @@ namespace TetriNET.Server
                         // Update timeout count
                         p.SetTimeout();
                         if (p.TimeoutCount >= MaxTimeoutCountBeforeDisconnection)
-                            PlayerLeftHandler(p, LeaveReasons.Timeout);
+                            OnPayerLeft(p, LeaveReasons.Timeout);
                     }
 
                     // Send heartbeat if needed
@@ -1082,7 +1082,7 @@ namespace TetriNET.Server
                         // Update timeout count
                         s.SetTimeout();
                         if (s.TimeoutCount >= MaxTimeoutCountBeforeDisconnection)
-                            SpectatorLeftHandler(s, LeaveReasons.Timeout);
+                            OnSpectatorLeft(s, LeaveReasons.Timeout);
                     }
 
                     // Send heartbeat if needed

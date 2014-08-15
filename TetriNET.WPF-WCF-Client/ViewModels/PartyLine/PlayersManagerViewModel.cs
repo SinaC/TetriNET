@@ -224,30 +224,30 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnPlayerTeamChanged -= OnPlayerTeamChanged;
-            oldClient.OnServerMasterModified -= OnServerMasterModified;
-            oldClient.OnPlayerJoined -= OnPlayerJoined;
-            oldClient.OnPlayerLeft -= OnPlayerLeft;
-            oldClient.OnRegisteredAsPlayer -= OnRegisteredAsPlayer;
-            oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
-            oldClient.OnConnectionLost -= OnConnectionLost;
-            oldClient.OnRegisteredAsSpectator -= OnRegisteredAsSpectator;
-            oldClient.OnSpectatorLeft -= OnSpectatorLeft;
-            oldClient.OnSpectatorJoined -= OnSpectatorJoined;
+            oldClient.PlayerTeamChanged -= OnPlayerTeamChanged;
+            oldClient.ServerMasterModified -= OnServerMasterModified;
+            oldClient.PlayerJoined -= OnPlayerJoined;
+            oldClient.PlayerLeft -= OnPlayerLeft;
+            oldClient.RegisteredAsPlayer -= OnRegisteredAsPlayer;
+            oldClient.PlayerUnregistered -= OnPlayerUnregistered;
+            oldClient.ConnectionLost -= OnConnectionLost;
+            oldClient.RegisteredAsSpectator -= OnRegisteredAsSpectator;
+            oldClient.SpectatorLeft -= OnSpectatorLeft;
+            oldClient.SpectatorJoined -= OnSpectatorJoined;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnPlayerTeamChanged += OnPlayerTeamChanged;
-            newClient.OnServerMasterModified += OnServerMasterModified;
-            newClient.OnPlayerJoined += OnPlayerJoined;
-            newClient.OnPlayerLeft += OnPlayerLeft;
-            newClient.OnRegisteredAsPlayer += OnRegisteredAsPlayer;
-            newClient.OnPlayerUnregistered += OnPlayerUnregistered;
-            newClient.OnConnectionLost += OnConnectionLost;
-            newClient.OnRegisteredAsSpectator += OnRegisteredAsSpectator;
-            newClient.OnSpectatorLeft += OnSpectatorLeft;
-            newClient.OnSpectatorJoined += OnSpectatorJoined;
+            newClient.PlayerTeamChanged += OnPlayerTeamChanged;
+            newClient.ServerMasterModified += OnServerMasterModified;
+            newClient.PlayerJoined += OnPlayerJoined;
+            newClient.PlayerLeft += OnPlayerLeft;
+            newClient.RegisteredAsPlayer += OnRegisteredAsPlayer;
+            newClient.PlayerUnregistered += OnPlayerUnregistered;
+            newClient.ConnectionLost += OnConnectionLost;
+            newClient.RegisteredAsSpectator += OnRegisteredAsSpectator;
+            newClient.SpectatorLeft += OnSpectatorLeft;
+            newClient.SpectatorJoined += OnSpectatorJoined;
         }
 
         #endregion

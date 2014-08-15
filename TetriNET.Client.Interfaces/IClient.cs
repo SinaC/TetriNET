@@ -11,47 +11,47 @@ namespace TetriNET.Client.Interfaces
         Other,
     }
 
-    public delegate void ClientConnectionLostHandler(ConnectionLostReasons reason);
+    public delegate void ClientConnectionLostEventHandler(ConnectionLostReasons reason);
 
-    public delegate void ClientRoundStartedHandler();
-    public delegate void ClientRoundFinishedHandler(int deletedRows);
-    public delegate void ClientStartGameHandler();
-    public delegate void ClientFinishGameHandler();
-    public delegate void ClientPauseGameHandler();
-    public delegate void ClientResumeGameHandler();
-    public delegate void ClientGameOverHandler();
+    public delegate void ClientRoundStartedEventHandler();
+    public delegate void ClientRoundFinishedEventHandler(int deletedRows);
+    public delegate void ClientStartGameEventHandler();
+    public delegate void ClientFinishGameEventHandler();
+    public delegate void ClientPauseGameEventHandler();
+    public delegate void ClientResumeGameEventHandler();
+    public delegate void ClientGameOverEventHandler();
     
-    public delegate void ClientRedrawHandler();
-    public delegate void ClientRedrawBoardHandler(int playerId, IBoard board);
-    public delegate void ClientPieceMovingHandler();
-    public delegate void ClientPieceMovedHandler();
-    public delegate void ClientNextPieceModifiedHandler();
-    public delegate void ClientHoldPieceModifiedHandler();
-    public delegate void ClientRegisteredAsPlayerHandler(RegistrationResults result, int playerId, bool isServerMaster);
-    public delegate void ClientPlayerUnregisteredHandler();
-    public delegate void ClientWinListModifiedHandler(List<WinEntry> winList);
-    public delegate void ClientServerMasterModifiedHandler(int serverMasterId);
-    public delegate void ClientPlayerLostHandler(int playerId, string playerName);
-    public delegate void ClientPlayerWonHandler(int playerId, string playerName);
-    public delegate void ClientPlayerJoinedHandler(int playerId, string playerName, string team);
-    public delegate void ClientPlayerLeftHandler(int playerId, string playerName, LeaveReasons reason);
-    public delegate void ClientPlayerTeamChangedHandler(int playerId, string team);
-    public delegate void ClientPlayerPublishMessageHandler(string playerName, string msg);
-    public delegate void ClientServerPublishMessageHandler(string msg);
-    public delegate void ClientInventoryChangedHandler();
-    public delegate void ClientLinesClearedChangedHandler(int linesCleared);
-    public delegate void ClientLevelChangedHandler(int level);
-    public delegate void ClientScoreChangedHandler(int score);
-    public delegate void ClientSpecialUsedHandler(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special);
-    public delegate void ClientUseSpecialHandler(int targetId, string targetName, Specials special);
-    public delegate void ClientPlayerAddLinesHandler(int playerId, string playerName, int specialId, int count);
-    public delegate void ClientContinuousSpecialToggledHandler(Specials special, bool active, double durationLeftInSeconds);
-    public delegate void ClientContinuousSpecialFinishedHandler(int playerId, Specials special);
-    public delegate void ClientAchievementEarnedHandler(IAchievement achievement, bool firstTime);
-    public delegate void ClientPlayerAchievementEarnedHandler(int playerId, string playerName, int achievementId, string achievementTitle);
-    public delegate void ClientRegisteredAsSpectatorHandler(RegistrationResults result, int spectatorId);
-    public delegate void ClientSpectatorJoinedHandler(int spectatorId, string spectatorName);
-    public delegate void ClientSpectatorLeftHandler(int spectatorId, string spectatorName, LeaveReasons reason);
+    public delegate void ClientRedrawEventHandler();
+    public delegate void ClientRedrawBoardEventHandler(int playerId, IBoard board);
+    public delegate void ClientPieceMovingEventHandler();
+    public delegate void ClientPieceMovedEventHandler();
+    public delegate void ClientNextPieceModifiedEventHandler();
+    public delegate void ClientHoldPieceModifiedEventHandler();
+    public delegate void ClientRegisteredAsPlayerEventHandler(RegistrationResults result, int playerId, bool isServerMaster);
+    public delegate void ClientPlayerUnregisteredEventHandler();
+    public delegate void ClientWinListModifiedEventHandler(List<WinEntry> winList);
+    public delegate void ClientServerMasterModifiedEventHandler(int serverMasterId);
+    public delegate void ClientPlayerLostEventHandler(int playerId, string playerName);
+    public delegate void ClientPlayerWonEventHandler(int playerId, string playerName);
+    public delegate void ClientPlayerJoinedEventHandler(int playerId, string playerName, string team);
+    public delegate void ClientPlayerLeftEventHandler(int playerId, string playerName, LeaveReasons reason);
+    public delegate void ClientPlayerTeamChangedEventHandler(int playerId, string team);
+    public delegate void ClientPlayerPublishMessageEventHandler(string playerName, string msg);
+    public delegate void ClientServerPublishMessageEventHandler(string msg);
+    public delegate void ClientInventoryChangedEventHandler();
+    public delegate void ClientLinesClearedChangedEventHandler(int linesCleared);
+    public delegate void ClientLevelChangedEventHandler(int level);
+    public delegate void ClientScoreChangedEventHandler(int score);
+    public delegate void ClientSpecialUsedEventHandler(int playerId, string playerName, int targetId, string targetName, int specialId, Specials special);
+    public delegate void ClientUseSpecialEventHandler(int targetId, string targetName, Specials special);
+    public delegate void ClientPlayerAddLinesEventHandler(int playerId, string playerName, int specialId, int count);
+    public delegate void ClientContinuousSpecialToggledEventHandler(Specials special, bool active, double durationLeftInSeconds);
+    public delegate void ClientContinuousSpecialFinishedEventHandler(int playerId, Specials special);
+    public delegate void ClientAchievementEarnedEventHandler(IAchievement achievement, bool firstTime);
+    public delegate void ClientPlayerAchievementEarnedEventHandler(int playerId, string playerName, int achievementId, string achievementTitle);
+    public delegate void ClientRegisteredAsSpectatorEventHandler(RegistrationResults result, int spectatorId);
+    public delegate void ClientSpectatorJoinedEventHandler(int spectatorId, string spectatorName);
+    public delegate void ClientSpectatorLeftEventHandler(int spectatorId, string spectatorName, LeaveReasons reason);
 
     public interface IClient
     {
@@ -81,46 +81,46 @@ namespace TetriNET.Client.Interfaces
         IClientStatistics Statistics { get; }
         IEnumerable<IAchievement> Achievements { get; }
 
-        event ClientConnectionLostHandler OnConnectionLost;
+        event ClientConnectionLostEventHandler ConnectionLost;
 
-        event ClientRoundStartedHandler OnRoundStarted;
-        event ClientRoundFinishedHandler OnRoundFinished;
-        event ClientStartGameHandler OnGameStarted;
-        event ClientFinishGameHandler OnGameFinished;
-        event ClientPauseGameHandler OnGamePaused;
-        event ClientResumeGameHandler OnGameResumed;
-        event ClientGameOverHandler OnGameOver;
-        event ClientRedrawHandler OnRedraw;
-        event ClientRedrawBoardHandler OnRedrawBoard;
-        event ClientPieceMovingHandler OnPieceMoving;
-        event ClientPieceMovedHandler OnPieceMoved;
-        event ClientNextPieceModifiedHandler OnNextPieceModified;
-        event ClientHoldPieceModifiedHandler OnHoldPieceModified;
-        event ClientRegisteredAsPlayerHandler OnRegisteredAsPlayer;
-        event ClientPlayerUnregisteredHandler OnPlayerUnregistered;
-        event ClientWinListModifiedHandler OnWinListModified;
-        event ClientServerMasterModifiedHandler OnServerMasterModified;
-        event ClientPlayerLostHandler OnPlayerLost;
-        event ClientPlayerWonHandler OnPlayerWon;
-        event ClientPlayerJoinedHandler OnPlayerJoined;
-        event ClientPlayerLeftHandler OnPlayerLeft;
-        event ClientPlayerTeamChangedHandler OnPlayerTeamChanged;
-        event ClientPlayerPublishMessageHandler OnPlayerPublishMessage;
-        event ClientServerPublishMessageHandler OnServerPublishMessage;
-        event ClientInventoryChangedHandler OnInventoryChanged;
-        event ClientLinesClearedChangedHandler OnLinesClearedChanged;
-        event ClientLevelChangedHandler OnLevelChanged;
-        event ClientScoreChangedHandler OnScoreChanged;
-        event ClientSpecialUsedHandler OnSpecialUsed;
-        event ClientUseSpecialHandler OnUseSpecial;
-        event ClientPlayerAddLinesHandler OnPlayerAddLines;
-        event ClientContinuousSpecialToggledHandler OnContinuousEffectToggled; // on player
-        event ClientContinuousSpecialFinishedHandler OnContinuousSpecialFinished; // on opponent
-        event ClientAchievementEarnedHandler OnAchievementEarned;
-        event ClientPlayerAchievementEarnedHandler OnPlayerAchievementEarned;
-        event ClientRegisteredAsSpectatorHandler OnRegisteredAsSpectator;
-        event ClientSpectatorJoinedHandler OnSpectatorJoined;
-        event ClientSpectatorLeftHandler OnSpectatorLeft;
+        event ClientRoundStartedEventHandler RoundStarted;
+        event ClientRoundFinishedEventHandler RoundFinished;
+        event ClientStartGameEventHandler GameStarted;
+        event ClientFinishGameEventHandler GameFinished;
+        event ClientPauseGameEventHandler GamePaused;
+        event ClientResumeGameEventHandler GameResumed;
+        event ClientGameOverEventHandler GameOver;
+        event ClientRedrawEventHandler Redraw;
+        event ClientRedrawBoardEventHandler RedrawBoard;
+        event ClientPieceMovingEventHandler PieceMoving;
+        event ClientPieceMovedEventHandler PieceMoved;
+        event ClientNextPieceModifiedEventHandler NextPieceModified;
+        event ClientHoldPieceModifiedEventHandler HoldPieceModified;
+        event ClientRegisteredAsPlayerEventHandler RegisteredAsPlayer;
+        event ClientPlayerUnregisteredEventHandler PlayerUnregistered;
+        event ClientWinListModifiedEventHandler WinListModified;
+        event ClientServerMasterModifiedEventHandler ServerMasterModified;
+        event ClientPlayerLostEventHandler PlayerLost;
+        event ClientPlayerWonEventHandler PlayerWon;
+        event ClientPlayerJoinedEventHandler PlayerJoined;
+        event ClientPlayerLeftEventHandler PlayerLeft;
+        event ClientPlayerTeamChangedEventHandler PlayerTeamChanged;
+        event ClientPlayerPublishMessageEventHandler PlayerPublishMessage;
+        event ClientServerPublishMessageEventHandler ServerPublishMessage;
+        event ClientInventoryChangedEventHandler InventoryChanged;
+        event ClientLinesClearedChangedEventHandler LinesClearedChanged;
+        event ClientLevelChangedEventHandler LevelChanged;
+        event ClientScoreChangedEventHandler ScoreChanged;
+        event ClientSpecialUsedEventHandler SpecialUsed;
+        event ClientUseSpecialEventHandler UseSpecial;
+        event ClientPlayerAddLinesEventHandler PlayerAddLines;
+        event ClientContinuousSpecialToggledEventHandler ContinuousEffectToggled; // on player
+        event ClientContinuousSpecialFinishedEventHandler ContinuousSpecialFinished; // on opponent
+        event ClientAchievementEarnedEventHandler AchievementEarned;
+        event ClientPlayerAchievementEarnedEventHandler PlayerAchievementEarned;
+        event ClientRegisteredAsSpectatorEventHandler RegisteredAsSpectator;
+        event ClientSpectatorJoinedEventHandler SpectatorJoined;
+        event ClientSpectatorLeftEventHandler SpectatorLeft;
 
         //bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc);
         //bool Disconnect();
@@ -152,7 +152,7 @@ namespace TetriNET.Client.Interfaces
         void RotateClockwise();
         void RotateCounterClockwise();
         void DiscardFirstSpecial();
-        bool UseSpecial(int targetId);
+        bool UseFirstSpecial(int targetId);
 
         // Achievement
         void ResetAchievements();

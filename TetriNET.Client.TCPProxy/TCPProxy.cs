@@ -229,7 +229,7 @@ namespace TetriNET.Client.TCPProxy
         
         public DateTime LastActionToServer { get; private set; }
         
-        public event ProxyConnectionLostHandler OnConnectionLost;
+        public event ProxyConnectionLostEventHandler ConnectionLost;
         
         public bool Disconnect()
         {

@@ -81,22 +81,22 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnRegisteredAsPlayer -= OnRegisteredAsPlayer;
-            oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
-            oldClient.OnConnectionLost -= OnConnectionLost;
-            oldClient.OnGameOver -= OnGameOver;
-            oldClient.OnGameStarted -= OnGameStarted;
-            oldClient.OnPlayerTeamChanged -= OnPlayerTeamChanged;
+            oldClient.RegisteredAsPlayer -= OnRegisteredAsPlayer;
+            oldClient.PlayerUnregistered -= OnPlayerUnregistered;
+            oldClient.ConnectionLost -= OnConnectionLost;
+            oldClient.GameOver -= OnGameOver;
+            oldClient.GameStarted -= OnGameStarted;
+            oldClient.PlayerTeamChanged -= OnPlayerTeamChanged;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnRegisteredAsPlayer += OnRegisteredAsPlayer;
-            newClient.OnPlayerUnregistered += OnPlayerUnregistered;
-            newClient.OnConnectionLost += OnConnectionLost;
-            newClient.OnGameOver += OnGameOver;
-            newClient.OnGameStarted += OnGameStarted;
-            newClient.OnPlayerTeamChanged += OnPlayerTeamChanged;
+            newClient.RegisteredAsPlayer += OnRegisteredAsPlayer;
+            newClient.PlayerUnregistered += OnPlayerUnregistered;
+            newClient.ConnectionLost += OnConnectionLost;
+            newClient.GameOver += OnGameOver;
+            newClient.GameStarted += OnGameStarted;
+            newClient.PlayerTeamChanged += OnPlayerTeamChanged;
         }
 
         #endregion

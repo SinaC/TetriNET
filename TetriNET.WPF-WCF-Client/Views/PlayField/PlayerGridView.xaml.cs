@@ -352,33 +352,33 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             // Remove old handlers
             if (oldClient != null)
             {
-                oldClient.OnGameOver -= OnGameOver;
-                oldClient.OnGameFinished -= OnGameFinished;
-                oldClient.OnGamePaused -= OnGamePaused;
-                oldClient.OnGameResumed -= OnGameResumed;
-                oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
-                oldClient.OnConnectionLost -= OnConnectionLost;
-                oldClient.OnGameStarted -= OnGameStarted;
-                oldClient.OnRoundStarted -= OnRoundStarted;
-                oldClient.OnPieceMoved -= OnPieceMoved;
-                oldClient.OnRedraw -= OnRedraw;
-                oldClient.OnContinuousEffectToggled -= OnContinuousEffectToggled;
+                oldClient.GameOver -= OnGameOver;
+                oldClient.GameFinished -= OnGameFinished;
+                oldClient.GamePaused -= OnGamePaused;
+                oldClient.GameResumed -= OnGameResumed;
+                oldClient.PlayerUnregistered -= OnPlayerUnregistered;
+                oldClient.ConnectionLost -= OnConnectionLost;
+                oldClient.GameStarted -= OnGameStarted;
+                oldClient.RoundStarted -= OnRoundStarted;
+                oldClient.PieceMoved -= OnPieceMoved;
+                oldClient.Redraw -= OnRedraw;
+                oldClient.ContinuousEffectToggled -= OnContinuousEffectToggled;
 
             }
             // Add new handlers
             if (newClient != null)
             {
-                newClient.OnGameOver += OnGameOver;
-                newClient.OnGameFinished += OnGameFinished;
-                newClient.OnGamePaused += OnGamePaused;
-                newClient.OnGameResumed += OnGameResumed;
-                newClient.OnPlayerUnregistered += OnPlayerUnregistered;
-                newClient.OnConnectionLost += OnConnectionLost;
-                newClient.OnGameStarted += OnGameStarted; // will not be called on first game played because OnClientChanged is called on DataContextChanged (which is set when view receive focus) 
-                newClient.OnRoundStarted += OnRoundStarted;
-                newClient.OnPieceMoved += OnPieceMoved;
-                newClient.OnRedraw += OnRedraw;
-                newClient.OnContinuousEffectToggled += OnContinuousEffectToggled;
+                newClient.GameOver += OnGameOver;
+                newClient.GameFinished += OnGameFinished;
+                newClient.GamePaused += OnGamePaused;
+                newClient.GameResumed += OnGameResumed;
+                newClient.PlayerUnregistered += OnPlayerUnregistered;
+                newClient.ConnectionLost += OnConnectionLost;
+                newClient.GameStarted += OnGameStarted; // will not be called on first game played because OnClientChanged is called on DataContextChanged (which is set when view receive focus) 
+                newClient.RoundStarted += OnRoundStarted;
+                newClient.PieceMoved += OnPieceMoved;
+                newClient.Redraw += OnRedraw;
+                newClient.ContinuousEffectToggled += OnContinuousEffectToggled;
             }
         }
         #endregion

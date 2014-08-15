@@ -155,22 +155,22 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnGameFinished -= OnGameFinished;
-            oldClient.OnGameStarted -= OnGameStarted;
-            oldClient.OnServerMasterModified -= OnServerMasterModified;
-            oldClient.OnConnectionLost -= OnConnectionLost;
-            oldClient.OnPlayerUnregistered -= OnPlayerUnregister;
-            oldClient.OnRegisteredAsPlayer -= OnRegisteredAsPlayer;
+            oldClient.GameFinished -= OnGameFinished;
+            oldClient.GameStarted -= OnGameStarted;
+            oldClient.ServerMasterModified -= OnServerMasterModified;
+            oldClient.ConnectionLost -= OnConnectionLost;
+            oldClient.PlayerUnregistered -= OnPlayerUnregister;
+            oldClient.RegisteredAsPlayer -= OnRegisteredAsPlayer;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnGameFinished += OnGameFinished;
-            newClient.OnGameStarted += OnGameStarted;
-            newClient.OnServerMasterModified += OnServerMasterModified;
-            newClient.OnConnectionLost += OnConnectionLost;
-            newClient.OnPlayerUnregistered += OnPlayerUnregister;
-            newClient.OnRegisteredAsPlayer += OnRegisteredAsPlayer;
+            newClient.GameFinished += OnGameFinished;
+            newClient.GameStarted += OnGameStarted;
+            newClient.ServerMasterModified += OnServerMasterModified;
+            newClient.ConnectionLost += OnConnectionLost;
+            newClient.PlayerUnregistered += OnPlayerUnregister;
+            newClient.RegisteredAsPlayer += OnRegisteredAsPlayer;
         }
 
         #endregion

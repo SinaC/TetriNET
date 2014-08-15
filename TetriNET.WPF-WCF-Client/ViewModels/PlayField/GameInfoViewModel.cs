@@ -162,28 +162,28 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnContinuousEffectToggled -= OnContinuousEffectToggled;
-            oldClient.OnLinesClearedChanged -= DisplayClearedLines;
-            oldClient.OnLevelChanged -= DisplayLevel;
-            oldClient.OnScoreChanged -= DisplayScore;
-            oldClient.OnGameStarted -= OnGameStarted;
-            oldClient.OnGameOver -= StopTimerAndComputeTime;
-            oldClient.OnGameFinished -= StopTimerAndComputeTime;
-            oldClient.OnConnectionLost -= OnConnectionLost;
-            oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
+            oldClient.ContinuousEffectToggled -= OnContinuousEffectToggled;
+            oldClient.LinesClearedChanged -= DisplayClearedLines;
+            oldClient.LevelChanged -= DisplayLevel;
+            oldClient.ScoreChanged -= DisplayScore;
+            oldClient.GameStarted -= OnGameStarted;
+            oldClient.GameOver -= StopTimerAndComputeTime;
+            oldClient.GameFinished -= StopTimerAndComputeTime;
+            oldClient.ConnectionLost -= OnConnectionLost;
+            oldClient.PlayerUnregistered -= OnPlayerUnregistered;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnContinuousEffectToggled += OnContinuousEffectToggled;
-            newClient.OnLinesClearedChanged += DisplayClearedLines;
-            newClient.OnLevelChanged += DisplayLevel;
-            newClient.OnScoreChanged += DisplayScore;
-            newClient.OnGameStarted += OnGameStarted;
-            newClient.OnGameOver += StopTimerAndComputeTime;
-            newClient.OnGameFinished += StopTimerAndComputeTime;
-            newClient.OnConnectionLost += OnConnectionLost;
-            newClient.OnPlayerUnregistered += OnPlayerUnregistered;
+            newClient.ContinuousEffectToggled += OnContinuousEffectToggled;
+            newClient.LinesClearedChanged += DisplayClearedLines;
+            newClient.LevelChanged += DisplayLevel;
+            newClient.ScoreChanged += DisplayScore;
+            newClient.GameStarted += OnGameStarted;
+            newClient.GameOver += StopTimerAndComputeTime;
+            newClient.GameFinished += StopTimerAndComputeTime;
+            newClient.ConnectionLost += OnConnectionLost;
+            newClient.PlayerUnregistered += OnPlayerUnregistered;
         }
 
         #endregion

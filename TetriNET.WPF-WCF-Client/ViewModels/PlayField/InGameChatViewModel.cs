@@ -163,32 +163,32 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnRegisteredAsPlayer -= OnClientRegistered;
-            oldClient.OnRegisteredAsSpectator -= OnClientRegistered;
-            oldClient.OnGameStarted -= OnGameStarted;
-            oldClient.OnPlayerAddLines -= OnPlayerAddLines;
-            oldClient.OnSpecialUsed -= OnSpecialUsed;
-            oldClient.OnPlayerLost -= OnPlayerLost;
-            oldClient.OnPlayerAchievementEarned -= OnPlayerAchievementEarned;
-            oldClient.OnAchievementEarned -= OnAchievementEarned;
-            oldClient.OnGameOver -= OnGameOver;
-            oldClient.OnGamePaused -= OnGamePaused;
-            oldClient.OnGameResumed -= OnGameResumed;
+            oldClient.RegisteredAsPlayer -= OnClientRegistered;
+            oldClient.RegisteredAsSpectator -= OnClientRegistered;
+            oldClient.GameStarted -= OnGameStarted;
+            oldClient.PlayerAddLines -= OnPlayerAddLines;
+            oldClient.SpecialUsed -= OnSpecialUsed;
+            oldClient.PlayerLost -= OnPlayerLost;
+            oldClient.PlayerAchievementEarned -= OnPlayerAchievementEarned;
+            oldClient.AchievementEarned -= OnAchievementEarned;
+            oldClient.GameOver -= OnGameOver;
+            oldClient.GamePaused -= OnGamePaused;
+            oldClient.GameResumed -= OnGameResumed;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnRegisteredAsPlayer += OnClientRegistered;
-            newClient.OnRegisteredAsSpectator += OnClientRegistered;
-            newClient.OnGameStarted += OnGameStarted;
-            newClient.OnPlayerAddLines += OnPlayerAddLines;
-            newClient.OnSpecialUsed += OnSpecialUsed;
-            newClient.OnPlayerLost += OnPlayerLost;
-            newClient.OnPlayerAchievementEarned += OnPlayerAchievementEarned;
-            newClient.OnAchievementEarned += OnAchievementEarned;
-            newClient.OnGameOver += OnGameOver;
-            newClient.OnGamePaused += OnGamePaused;
-            newClient.OnGameResumed += OnGameResumed;
+            newClient.RegisteredAsPlayer += OnClientRegistered;
+            newClient.RegisteredAsSpectator += OnClientRegistered;
+            newClient.GameStarted += OnGameStarted;
+            newClient.PlayerAddLines += OnPlayerAddLines;
+            newClient.SpecialUsed += OnSpecialUsed;
+            newClient.PlayerLost += OnPlayerLost;
+            newClient.PlayerAchievementEarned += OnPlayerAchievementEarned;
+            newClient.AchievementEarned += OnAchievementEarned;
+            newClient.GameOver += OnGameOver;
+            newClient.GamePaused += OnGamePaused;
+            newClient.GameResumed += OnGameResumed;
         }
 
         #endregion

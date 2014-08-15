@@ -17,8 +17,8 @@ namespace TetriNET.ConsoleWCFClient.GameController
 
             Client = client;
 
-            client.OnGamePaused += OnGamePaused;
-            client.OnGameFinished += OnGameFinished;
+            client.GamePaused += OnGamePaused;
+            client.GameFinished += OnGameFinished;
 
             _timers.Add(Commands.Drop, CreateTimer(75, DropTickHandler));
             _timers.Add(Commands.Down, CreateTimer(75, DownTickHandler));
@@ -40,8 +40,8 @@ namespace TetriNET.ConsoleWCFClient.GameController
 
         public void UnsubscribeFromClientEvents()
         {
-            Client.OnGamePaused -= OnGamePaused;
-            Client.OnGameFinished -= OnGameFinished;
+            Client.GamePaused -= OnGamePaused;
+            Client.GameFinished -= OnGameFinished;
         }
 
         public void KeyDown(Commands cmd)
@@ -78,31 +78,31 @@ namespace TetriNET.ConsoleWCFClient.GameController
                         Client.DiscardFirstSpecial();
                         break;
                     case Commands.UseSpecialOn1:
-                        Client.UseSpecial(0);
+                        Client.UseFirstSpecial(0);
                         break;
                     case Commands.UseSpecialOn2:
-                        Client.UseSpecial(1);
+                        Client.UseFirstSpecial(1);
                         break;
                     case Commands.UseSpecialOn3:
-                        Client.UseSpecial(2);
+                        Client.UseFirstSpecial(2);
                         break;
                     case Commands.UseSpecialOn4:
-                        Client.UseSpecial(3);
+                        Client.UseFirstSpecial(3);
                         break;
                     case Commands.UseSpecialOn5:
-                        Client.UseSpecial(4);
+                        Client.UseFirstSpecial(4);
                         break;
                     case Commands.UseSpecialOn6:
-                        Client.UseSpecial(5);
+                        Client.UseFirstSpecial(5);
                         break;
                     case Commands.UseSpecialOnSelf:
-                        Client.UseSpecial(Client.PlayerId);
+                        Client.UseFirstSpecial(Client.PlayerId);
                         break;
                     case Commands.UseSpecialOnRandomOpponent:
                         {
                             IOpponent opponent = Client.Opponents.FirstOrDefault();
                             if (opponent != null)
-                                Client.UseSpecial(opponent.PlayerId);
+                                Client.UseFirstSpecial(opponent.PlayerId);
                         }
                         break;
                 }

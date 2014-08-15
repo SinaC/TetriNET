@@ -43,7 +43,7 @@ namespace TetriNET.Client.WCFProxy
             catch (Exception ex)
             {
                 Log.WriteLine(Log.LogLevels.Error, "Exception:{0} {1}", actionName, ex);
-                OnConnectionLost.Do(x => x());
+                ConnectionLost.Do(x => x());
                 _factory.Do(x => x.Abort());
             }
         }
@@ -52,7 +52,7 @@ namespace TetriNET.Client.WCFProxy
 
         public DateTime LastActionToServer { get; private set; }
 
-        public event ProxySpectatorConnectionLostHandler OnConnectionLost;
+        public event ProxySpectatorConnectionLostEventHandler ConnectionLost;
 
         public bool Disconnect()
         {

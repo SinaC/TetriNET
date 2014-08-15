@@ -7,7 +7,7 @@ namespace TetriNET.Client.Interfaces
     {
         List<IAchievement> Achievements { get; }
 
-        event AchievedHandler Achieved;
+        event AchievedEventHandler Achieved;
 
         void Reset();
         

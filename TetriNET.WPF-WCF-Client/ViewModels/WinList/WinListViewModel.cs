@@ -63,20 +63,20 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnServerMasterModified -= OnServerMasterModified;
-            oldClient.OnWinListModified -= OnWinListModified;
-            oldClient.OnConnectionLost -= OnConnectionLost;
-            oldClient.OnGameStarted -= RefreshResetEnable;
-            oldClient.OnGameFinished -= RefreshResetEnable;
+            oldClient.ServerMasterModified -= OnServerMasterModified;
+            oldClient.WinListModified -= OnWinListModified;
+            oldClient.ConnectionLost -= OnConnectionLost;
+            oldClient.GameStarted -= RefreshResetEnable;
+            oldClient.GameFinished -= RefreshResetEnable;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnServerMasterModified += OnServerMasterModified;
-            newClient.OnWinListModified += OnWinListModified;
-            newClient.OnConnectionLost += OnConnectionLost;
-            newClient.OnGameStarted += RefreshResetEnable;
-            newClient.OnGameFinished += RefreshResetEnable;
+            newClient.ServerMasterModified += OnServerMasterModified;
+            newClient.WinListModified += OnWinListModified;
+            newClient.ConnectionLost += OnConnectionLost;
+            newClient.GameStarted += RefreshResetEnable;
+            newClient.GameFinished += RefreshResetEnable;
         }
 
         #endregion

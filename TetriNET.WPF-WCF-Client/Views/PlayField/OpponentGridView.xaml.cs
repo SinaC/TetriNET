@@ -188,22 +188,22 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             // Remove old handlers
             if (oldClient != null)
             {
-                oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
-                oldClient.OnConnectionLost -= OnConnectionLost;
-                oldClient.OnGameStarted -= OnGameStarted;
-                oldClient.OnRedrawBoard -= OnRedrawBoard;
-                oldClient.OnSpecialUsed -= OnSpecialUsed;
-                oldClient.OnContinuousSpecialFinished -= OnContinuousSpecialFinished;
+                oldClient.PlayerUnregistered -= OnPlayerUnregistered;
+                oldClient.ConnectionLost -= OnConnectionLost;
+                oldClient.GameStarted -= OnGameStarted;
+                oldClient.RedrawBoard -= OnRedrawBoard;
+                oldClient.SpecialUsed -= OnSpecialUsed;
+                oldClient.ContinuousSpecialFinished -= OnContinuousSpecialFinished;
             }
             // Add new handlers
             if (newClient != null)
             {
-                newClient.OnPlayerUnregistered += OnPlayerUnregistered;
-                newClient.OnConnectionLost += OnConnectionLost;
-                newClient.OnGameStarted += OnGameStarted;
-                newClient.OnRedrawBoard += OnRedrawBoard;
-                newClient.OnSpecialUsed += OnSpecialUsed;
-                newClient.OnContinuousSpecialFinished += OnContinuousSpecialFinished;
+                newClient.PlayerUnregistered += OnPlayerUnregistered;
+                newClient.ConnectionLost += OnConnectionLost;
+                newClient.GameStarted += OnGameStarted;
+                newClient.RedrawBoard += OnRedrawBoard;
+                newClient.SpecialUsed += OnSpecialUsed;
+                newClient.ContinuousSpecialFinished += OnContinuousSpecialFinished;
             }
         }
         #endregion

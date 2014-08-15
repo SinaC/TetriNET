@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Input;
-using TetriNET.Client.WCFProxy;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Client.Interfaces;
@@ -270,18 +269,18 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
-            oldClient.OnRegisteredAsPlayer -= OnRegisteredAsPlayer;
-            oldClient.OnRegisteredAsSpectator -= OnRegisteredAsSpectator;
-            oldClient.OnConnectionLost -= OnConnectionLost;
+            oldClient.PlayerUnregistered -= OnPlayerUnregistered;
+            oldClient.RegisteredAsPlayer -= OnRegisteredAsPlayer;
+            oldClient.RegisteredAsSpectator -= OnRegisteredAsSpectator;
+            oldClient.ConnectionLost -= OnConnectionLost;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnPlayerUnregistered += OnPlayerUnregistered;
-            newClient.OnRegisteredAsPlayer += OnRegisteredAsPlayer;
-            newClient.OnRegisteredAsSpectator += OnRegisteredAsSpectator;
-            newClient.OnConnectionLost += OnConnectionLost;
+            newClient.PlayerUnregistered += OnPlayerUnregistered;
+            newClient.RegisteredAsPlayer += OnRegisteredAsPlayer;
+            newClient.RegisteredAsSpectator += OnRegisteredAsSpectator;
+            newClient.ConnectionLost += OnConnectionLost;
         }
 
         #endregion

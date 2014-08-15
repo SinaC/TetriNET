@@ -5,7 +5,6 @@ using TetriNET.Client.Board;
 using TetriNET.Client.Interfaces;
 using TetriNET.Client.Pieces;
 using TetriNET.Client.WCFProxy;
-using TetriNET.Common.DataContracts;
 using TetriNET.Common.Logger;
 using TetriNET.ConsoleWCFClient.AI;
 using TetriNET.ConsoleWCFClient.UI;

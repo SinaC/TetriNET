@@ -1,10 +1,10 @@
 ﻿namespace TetriNET.Server.Interfaces
 {
-    public delegate void SpectatorConnectionLostHandler(ISpectator spectator);
+    public delegate void SpectatorConnectionLostEventHandler(ISpectator spectator);
 
     public interface ISpectator : IEntity
     {
-        event SpectatorConnectionLostHandler OnConnectionLost;
+        event SpectatorConnectionLostEventHandler ConnectionLost;
 
         string Name { get; }
     }

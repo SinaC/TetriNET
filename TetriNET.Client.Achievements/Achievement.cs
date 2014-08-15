@@ -12,6 +12,10 @@ namespace TetriNET.Client.Achievements
 
         protected bool IsFailed { get; set; }
 
+        protected int BronzeLevel { get; set; }
+        protected int SilverLevel { get; set; }
+        protected int GoldLevel { get; set; }
+
         public int Id { get; protected set; }
         public int Points { get; protected set; }
         public string Title { get; protected set; }
@@ -24,24 +28,26 @@ namespace TetriNET.Client.Achievements
         public DateTime FirstTimeAchieved { get; set; }
         public DateTime LastTimeAchieved { get; set; }
         public int ExtraData { get; set; } // can be used to store data between game session
-        public int BronzeLevel { get; protected set; }
-        public int SilverLevel { get; protected set; }
-        public int GoldLevel { get; protected set; }
 
-        public string LevelColor
-        {
-            get { return AchieveCount >= GoldLevel ? "Gold" 
-                : AchieveCount >= SilverLevel ? "Silver"
-                : AchieveCount >= BronzeLevel ? "#FFD3712D" 
-                : "Transparent"; }
-        }
+        //public string LevelColor // Color is UI business
+        //{
+        //    get { return AchieveCount >= GoldLevel ? "Gold" 
+        //        : AchieveCount >= SilverLevel ? "Silver"
+        //        : AchieveCount >= BronzeLevel ? "#FFD3712D" 
+        //        : "Transparent"; }
+        //}
+
+        public bool IsGoldLevelReached { get { return AchieveCount >= GoldLevel; }}
+        public bool IsSilverLevelReached { get { return AchieveCount >= SilverLevel; } }
+        public bool IsBronzeLevelReached { get { return AchieveCount >= BronzeLevel; } }
 
         public bool AchievedMoreThanOnce
         {
             get { return AchieveCount > 1; }
         }
 
-        public bool IsAchievable {
+        public bool IsAchievable 
+        {
             get
             {
                 return (OnlyOnce && !IsAchieved) || (!OnlyOnce && !IsFailed && !AlreadyAchievedThisGame);
@@ -58,7 +64,7 @@ namespace TetriNET.Client.Achievements
             get { return !String.IsNullOrWhiteSpace(Progress); }
         }
 
-        public event AchievedHandler Achieved;
+        public event AchievedEventHandler Achieved;
 
         protected Achievement()
         {

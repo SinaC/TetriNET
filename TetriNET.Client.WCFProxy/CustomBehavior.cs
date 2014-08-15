@@ -5,7 +5,6 @@ using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 using System.Text;
-using System.Xml;
 
 namespace TetriNET.Client.WCFProxy
 {

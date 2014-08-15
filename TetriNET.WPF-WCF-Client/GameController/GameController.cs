@@ -35,10 +35,10 @@ namespace TetriNET.WPF_WCF_Client.GameController
             Client = client;
             _isConfusionActive = false;
 
-            client.OnGameStarted += OnGameStarted;
-            client.OnGamePaused += OnGamePaused;
-            client.OnGameFinished += OnGameFinished;
-            client.OnContinuousEffectToggled += OnContinuousEffectToggled;
+            client.GameStarted += OnGameStarted;
+            client.GamePaused += OnGamePaused;
+            client.GameFinished += OnGameFinished;
+            client.ContinuousEffectToggled += OnContinuousEffectToggled;
         }
 
         #region IGameController
@@ -76,10 +76,10 @@ namespace TetriNET.WPF_WCF_Client.GameController
 
         public void UnsubscribeFromClientEvents()
         {
-            Client.OnGameStarted -= OnGameStarted;
-            Client.OnGamePaused -= OnGamePaused;
-            Client.OnGameFinished -= OnGameFinished;
-            Client.OnContinuousEffectToggled -= OnContinuousEffectToggled;
+            Client.GameStarted -= OnGameStarted;
+            Client.GamePaused -= OnGamePaused;
+            Client.GameFinished -= OnGameFinished;
+            Client.ContinuousEffectToggled -= OnContinuousEffectToggled;
         }
 
         public void KeyDown(Client.Interfaces.Commands cmd)
@@ -122,25 +122,25 @@ namespace TetriNET.WPF_WCF_Client.GameController
                         Client.DiscardFirstSpecial();
                         break;
                     case TetriNET.Client.Interfaces.Commands.UseSpecialOn1:
-                        Client.UseSpecial(0);
+                        Client.UseFirstSpecial(0);
                         break;
                     case TetriNET.Client.Interfaces.Commands.UseSpecialOn2:
-                        Client.UseSpecial(1);
+                        Client.UseFirstSpecial(1);
                         break;
                     case TetriNET.Client.Interfaces.Commands.UseSpecialOn3:
-                        Client.UseSpecial(2);
+                        Client.UseFirstSpecial(2);
                         break;
                     case TetriNET.Client.Interfaces.Commands.UseSpecialOn4:
-                        Client.UseSpecial(3);
+                        Client.UseFirstSpecial(3);
                         break;
                     case TetriNET.Client.Interfaces.Commands.UseSpecialOn5:
-                        Client.UseSpecial(4);
+                        Client.UseFirstSpecial(4);
                         break;
                     case TetriNET.Client.Interfaces.Commands.UseSpecialOn6:
-                        Client.UseSpecial(5);
+                        Client.UseFirstSpecial(5);
                         break;
                     case TetriNET.Client.Interfaces.Commands.UseSpecialOnSelf:
-                        Client.UseSpecial(Client.PlayerId);
+                        Client.UseFirstSpecial(Client.PlayerId);
                         break;
                     case TetriNET.Client.Interfaces.Commands.UseSpecialOnRandomOpponent:
                         {
@@ -150,7 +150,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
                                 int rnd = _random.Next(opponents.Count());
                                 IOpponent opponent = opponents[rnd];
                                 if (opponent != null)
-                                    Client.UseSpecial(opponent.PlayerId);
+                                    Client.UseFirstSpecial(opponent.PlayerId);
                             }
                         }
                         break;

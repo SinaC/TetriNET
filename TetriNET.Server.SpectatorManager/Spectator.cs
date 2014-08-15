@@ -29,18 +29,18 @@ namespace TetriNET.Server.SpectatorManager
             }
             catch (CommunicationObjectAbortedException)
             {
-                OnConnectionLost.Do(x => x(this));
+                ConnectionLost.Do(x => x(this));
             }
             catch (Exception ex)
             {
                 Log.WriteLine(Log.LogLevels.Error, "Exception:{0} {1}", actionName, ex);
-                OnConnectionLost.Do(x => x(this));
+                ConnectionLost.Do(x => x(this));
             }
         }
 
         #region ISpectator + IEntity
 
-        public event SpectatorConnectionLostHandler OnConnectionLost;
+        public event SpectatorConnectionLostEventHandler ConnectionLost;
 
         public string Name { get; private set; }
 

@@ -140,9 +140,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 IClient oldClient = args.OldValue as IClient;
                 if (oldClient != null)
                 {
-                    oldClient.OnGameStarted -= @this.OnGameStarted;
-                    oldClient.OnInventoryChanged -= @this.OnInventoryChanged;
-                    oldClient.OnPieceMoved -= @this.OnPieceMoved;
+                    oldClient.GameStarted -= @this.OnGameStarted;
+                    oldClient.InventoryChanged -= @this.OnInventoryChanged;
+                    oldClient.PieceMoved -= @this.OnPieceMoved;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
@@ -150,9 +150,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 // Add new handlers
                 if (newClient != null)
                 {
-                    newClient.OnGameStarted += @this.OnGameStarted;
-                    newClient.OnInventoryChanged += @this.OnInventoryChanged;
-                    newClient.OnPieceMoved += @this.OnPieceMoved;
+                    newClient.GameStarted += @this.OnGameStarted;
+                    newClient.InventoryChanged += @this.OnInventoryChanged;
+                    newClient.PieceMoved += @this.OnPieceMoved;
                 }
             }
         }

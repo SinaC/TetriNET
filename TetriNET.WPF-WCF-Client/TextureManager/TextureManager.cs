@@ -24,19 +24,21 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
         private Brush WindowBackground { get; set; }
 
         #region SingleInstance
+
         public static ThreadSafeSingleInstance<TextureManager> TexturesSingleInstance = new ThreadSafeSingleInstance<TextureManager>(() => new TextureManager());
 
         private TextureManager()
         {
             // SingleInstance
         }
+        
         #endregion
 
         public void SaveToPath(string folderPath)
         {
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
-            SaveBrushToFile(BigBackground, 800, 550, Path.Combine(folderPath, "window_background.bmp"));
+            SaveBrushToFile(WindowBackground, 800, 550, Path.Combine(folderPath, "window_background.bmp"));
             SaveBrushToFile(BigBackground, 192, 352, Path.Combine(folderPath, "big_background.bmp"));
             SaveBrushToFile(SmallBackground, 96, 176, Path.Combine(folderPath, "small_background.bmp"));
             foreach (KeyValuePair<Specials, Brush> special in BigSpecialsBrushes)
@@ -63,6 +65,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
 
         public void ReadFromPath(string folderPath)
         {
+            WindowBackground = ReadBackground(Path.Combine(folderPath, "window_background.bmp"), false);
             BigBackground = ReadBackground(Path.Combine(folderPath, "big_background.bmp"), false);
             SmallBackground = ReadBackground(Path.Combine(folderPath, "small_background.bmp"), true);
 
@@ -227,6 +230,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
         }
 
         #region ITextureManager
+
         public Brush GetBigPiece(Pieces piece)
         {
             Brush brush;
@@ -268,6 +272,12 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
         {
             return SmallBackground;
         }
+
+        public Brush GetWindowBackground()
+        {
+            return WindowBackground;
+        }
+
         #endregion
 
         private static Brush ExtractBackground(BitmapImage image, int posX, int posY, int width, int height, bool isSmall)

@@ -54,11 +54,11 @@ namespace TetriNET.WPF_WCF_Client.AI
             SpecialStrategy = specialStrategy;
             MoveStrategy = moveStrategy;
 
-            _client.OnRoundStarted += _client_OnRoundStarted;
-            _client.OnGameStarted += client_OnGameStarted;
-            _client.OnGameFinished += _client_OnGameFinished;
-            _client.OnGameOver += _client_OnGameOver;
-            _client.OnContinuousEffectToggled += _client_OnContinuousEffectToggled;
+            _client.RoundStarted += _client_OnRoundStarted;
+            _client.GameStarted += client_OnGameStarted;
+            _client.GameFinished += _client_OnGameFinished;
+            _client.GameOver += _client_OnGameOver;
+            _client.ContinuousEffectToggled += _client_OnContinuousEffectToggled;
 
             _stopEvent = new ManualResetEvent(false);
             _handleNextPieceEvent = new ManualResetEvent(false);
@@ -69,11 +69,11 @@ namespace TetriNET.WPF_WCF_Client.AI
 
         public void UnsubscribeFromClientEvents()
         {
-            _client.OnRoundStarted -= _client_OnRoundStarted;
-            _client.OnGameStarted -= client_OnGameStarted;
-            _client.OnGameFinished -= _client_OnGameFinished;
-            _client.OnGameOver -= _client_OnGameOver;
-            _client.OnContinuousEffectToggled -= _client_OnContinuousEffectToggled;
+            _client.RoundStarted -= _client_OnRoundStarted;
+            _client.GameStarted -= client_OnGameStarted;
+            _client.GameFinished -= _client_OnGameFinished;
+            _client.GameOver -= _client_OnGameOver;
+            _client.ContinuousEffectToggled -= _client_OnContinuousEffectToggled;
         }
 
         private void _client_OnContinuousEffectToggled(Specials special, bool active, double duration)
@@ -161,10 +161,10 @@ namespace TetriNET.WPF_WCF_Client.AI
                                     continueLoop = true;
                                     break;
                                 case SpecialAdvice.SpecialAdviceActions.UseSelf:
-                                    continueLoop = _client.UseSpecial(_client.PlayerId);
+                                    continueLoop = _client.UseFirstSpecial(_client.PlayerId);
                                     break;
                                 case SpecialAdvice.SpecialAdviceActions.UseOpponent:
-                                    continueLoop = _client.UseSpecial(advice.OpponentId);
+                                    continueLoop = _client.UseFirstSpecial(advice.OpponentId);
                                     break;
                             }
                             if (!continueLoop)

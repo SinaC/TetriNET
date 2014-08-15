@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using TetriNET.Client.Achievements;
 using TetriNET.Client.Board;
@@ -125,24 +124,24 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnRegisteredAsPlayer -= OnRegisteredAsPlayer;
-            oldClient.OnRegisteredAsSpectator -= OnRegisteredAsSpectator;
-            oldClient.OnPlayerUnregistered -= OnPlayerUnregisted;
-            oldClient.OnGameStarted -= OnGameStarted;
-            oldClient.OnGameFinished -= OnGameFinished;
-            oldClient.OnGameOver -= OnGameOver;
-            oldClient.OnConnectionLost -= OnConnectionLost;
+            oldClient.RegisteredAsPlayer -= OnRegisteredAsPlayer;
+            oldClient.RegisteredAsSpectator -= OnRegisteredAsSpectator;
+            oldClient.PlayerUnregistered -= OnPlayerUnregisted;
+            oldClient.GameStarted -= OnGameStarted;
+            oldClient.GameFinished -= OnGameFinished;
+            oldClient.GameOver -= OnGameOver;
+            oldClient.ConnectionLost -= OnConnectionLost;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnRegisteredAsPlayer += OnRegisteredAsPlayer;
-            newClient.OnRegisteredAsSpectator += OnRegisteredAsSpectator;
-            newClient.OnPlayerUnregistered += OnPlayerUnregisted;
-            newClient.OnGameStarted += OnGameStarted;
-            newClient.OnGameFinished += OnGameFinished;
-            newClient.OnGameOver += OnGameOver;
-            newClient.OnConnectionLost += OnConnectionLost;
+            newClient.RegisteredAsPlayer += OnRegisteredAsPlayer;
+            newClient.RegisteredAsSpectator += OnRegisteredAsSpectator;
+            newClient.PlayerUnregistered += OnPlayerUnregisted;
+            newClient.GameStarted += OnGameStarted;
+            newClient.GameFinished += OnGameFinished;
+            newClient.GameOver += OnGameOver;
+            newClient.ConnectionLost += OnConnectionLost;
         }
 
         #endregion

@@ -54,7 +54,7 @@ namespace TetriNET.Client.Achievements
         }
 
         #region IAchievementManager
-        public event AchievedHandler Achieved;
+        public event AchievedEventHandler Achieved;
 
         private List<IAchievement> _achievements;
         public List<IAchievement> Achievements

@@ -4,7 +4,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Interfaces
 {
-    public delegate void AchievedHandler(IAchievement achievement, bool firstTime);
+    public delegate void AchievedEventHandler(IAchievement achievement, bool firstTime);
 
     public interface IAchievement
     {
@@ -24,12 +24,15 @@ namespace TetriNET.Client.Interfaces
         bool IsAchievable { get; }
         bool AchievedMoreThanOnce { get; }
 
-        string LevelColor { get; }
+        //string LevelColor { get; }
+        bool IsGoldLevelReached { get; }
+        bool IsSilverLevelReached { get; }
+        bool IsBronzeLevelReached { get; }
 
         string Progress { get; }
         bool IsProgressAvailable { get; }
 
-        event AchievedHandler Achieved;
+        event AchievedEventHandler Achieved;
 
         void Reset();
 

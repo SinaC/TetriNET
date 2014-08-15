@@ -15,12 +15,6 @@
             <DataTemplate x:Key="AchievedOnlyOnceDataTemplate" DataType="{x:Type interfaces:IAchievement}">
                 <Border BorderBrush="Black" BorderThickness="1">
                     <StackPanel Orientation="Vertical" Margin="5,0,5,0">
-                        <StackPanel.Background>
-                            <LinearGradientBrush StartPoint="1,0" EndPoint="-1,1">
-                                <GradientStop Color="{Binding LevelColor}" Offset="0.0" />
-                                <GradientStop Color="White" Offset="0.3" />
-                            </LinearGradientBrush>
-                        </StackPanel.Background>
                         <StackPanel.ToolTip>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -55,12 +49,6 @@
             <DataTemplate x:Key="AchievedMoreThanOnceDataTemplate" DataType="{x:Type interfaces:IAchievement}">
                 <Border BorderBrush="Black" BorderThickness="1">
                     <StackPanel Orientation="Vertical" Margin="5,0,5,0">
-                        <StackPanel.Background>
-                            <LinearGradientBrush StartPoint="1,0" EndPoint="-1,1">
-                                <GradientStop Color="{Binding LevelColor}" Offset="0.0" />
-                                <GradientStop Color="White" Offset="0.3" />
-                            </LinearGradientBrush>
-                        </StackPanel.Background>
                         <StackPanel.ToolTip>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -150,6 +138,51 @@
                 SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                 SelectionMode="Single"
                 ItemsSource="{Binding Achievements}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsGoldLevelReached}" Value="False"/>
+                                    <Condition Binding="{Binding IsSilverLevelReached}" Value="False"/>
+                                    <Condition Binding="{Binding IsBronzeLevelReached}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="1,0" EndPoint="-1,1">
+                                            <GradientStop Color="#FFD3712D" Offset="0.0"/>
+                                            <GradientStop Color="White" Offset="0.3" />
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsGoldLevelReached}" Value="False"/>
+                                    <Condition Binding="{Binding IsSilverLevelReached}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="1,0" EndPoint="-1,1">
+                                            <GradientStop Color="Silver" Offset="0.0"/>
+                                            <GradientStop Color="White" Offset="0.3" />
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiDataTrigger>
+                            <DataTrigger Binding="{Binding IsGoldLevelReached}" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="1,0" EndPoint="-1,1">
+                                            <GradientStop Color="Gold" Offset="0.0"/>
+                                            <GradientStop Color="White" Offset="0.3" />
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
                 <!--<ListBox.Resources>
                     <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="{x:Static SystemColors.HighlightColor}" />
                     <Style TargetType="ListBoxItem">

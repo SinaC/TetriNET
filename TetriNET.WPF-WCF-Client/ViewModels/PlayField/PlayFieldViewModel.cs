@@ -101,16 +101,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnPlayerJoined -= OnPlayerJoined;
-            oldClient.OnPlayerLeft -= OnPlayerLeft;
-            oldClient.OnAchievementEarned -= OnAchievementEarned;
+            oldClient.PlayerJoined -= OnPlayerJoined;
+            oldClient.PlayerLeft -= OnPlayerLeft;
+            oldClient.AchievementEarned -= OnAchievementEarned;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnPlayerJoined += OnPlayerJoined;
-            newClient.OnPlayerLeft += OnPlayerLeft;
-            newClient.OnAchievementEarned += OnAchievementEarned;
+            newClient.PlayerJoined += OnPlayerJoined;
+            newClient.PlayerLeft += OnPlayerLeft;
+            newClient.AchievementEarned += OnAchievementEarned;
         }
 
         #endregion

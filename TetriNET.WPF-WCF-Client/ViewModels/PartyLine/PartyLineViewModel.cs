@@ -142,28 +142,28 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnConnectionLost -= OnConnectionLost;
-            oldClient.OnRegisteredAsPlayer -= OnRegisteredAsPlayer;
-            oldClient.OnPlayerUnregistered -= OnPlayerUnregistered;
-            oldClient.OnServerMasterModified -= OnServerMasterModified;
-            oldClient.OnGameStarted -= OnGameStarted;
-            oldClient.OnGameFinished -= OnGameFinished;
-            oldClient.OnGamePaused -= OnGamePaused;
-            oldClient.OnGameResumed -= OnGameResumed;
-            oldClient.OnPlayerTeamChanged -= OnPlayerTeamChanged;
+            oldClient.ConnectionLost -= OnConnectionLost;
+            oldClient.RegisteredAsPlayer -= OnRegisteredAsPlayer;
+            oldClient.PlayerUnregistered -= OnPlayerUnregistered;
+            oldClient.ServerMasterModified -= OnServerMasterModified;
+            oldClient.GameStarted -= OnGameStarted;
+            oldClient.GameFinished -= OnGameFinished;
+            oldClient.GamePaused -= OnGamePaused;
+            oldClient.GameResumed -= OnGameResumed;
+            oldClient.PlayerTeamChanged -= OnPlayerTeamChanged;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnConnectionLost += OnConnectionLost;
-            newClient.OnRegisteredAsPlayer += OnRegisteredAsPlayer;
-            newClient.OnPlayerUnregistered += OnPlayerUnregistered;
-            newClient.OnServerMasterModified += OnServerMasterModified;
-            newClient.OnGameStarted += OnGameStarted;
-            newClient.OnGameFinished += OnGameFinished;
-            newClient.OnGamePaused += OnGamePaused;
-            newClient.OnGameResumed += OnGameResumed;
-            newClient.OnPlayerTeamChanged += OnPlayerTeamChanged;
+            newClient.ConnectionLost += OnConnectionLost;
+            newClient.RegisteredAsPlayer += OnRegisteredAsPlayer;
+            newClient.PlayerUnregistered += OnPlayerUnregistered;
+            newClient.ServerMasterModified += OnServerMasterModified;
+            newClient.GameStarted += OnGameStarted;
+            newClient.GameFinished += OnGameFinished;
+            newClient.GamePaused += OnGamePaused;
+            newClient.GameResumed += OnGameResumed;
+            newClient.PlayerTeamChanged += OnPlayerTeamChanged;
         }
 
         #endregion

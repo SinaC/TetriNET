@@ -26,12 +26,12 @@ namespace TetriNET.ConsoleWCFClient.AI
             _activated = false;
             SleepTime = 50;
 
-            Client.OnRoundStarted += _client_OnRoundStarted;
-            Client.OnGameStarted += client_OnGameStarted;
-            Client.OnGameFinished += _client_OnGameFinished;
-            Client.OnGameOver += _client_OnGameOver;
-            Client.OnGamePaused += _client_OnGamePaused;
-            Client.OnGameResumed += _client_OnGameResumed;
+            Client.RoundStarted += _client_OnRoundStarted;
+            Client.GameStarted += client_OnGameStarted;
+            Client.GameFinished += _client_OnGameFinished;
+            Client.GameOver += _client_OnGameOver;
+            Client.GamePaused += _client_OnGamePaused;
+            Client.GameResumed += _client_OnGameResumed;
         }
 
         #region IBot
@@ -120,10 +120,10 @@ namespace TetriNET.ConsoleWCFClient.AI
                         continueLoop = true;
                         break;
                     case SpecialAdvice.SpecialAdviceActions.UseSelf:
-                        continueLoop = Client.UseSpecial(Client.PlayerId);
+                        continueLoop = Client.UseFirstSpecial(Client.PlayerId);
                         break;
                     case SpecialAdvice.SpecialAdviceActions.UseOpponent:
-                        continueLoop = Client.UseSpecial(advice.OpponentId);
+                        continueLoop = Client.UseFirstSpecial(advice.OpponentId);
                         break;
                 }
                 if (!continueLoop)

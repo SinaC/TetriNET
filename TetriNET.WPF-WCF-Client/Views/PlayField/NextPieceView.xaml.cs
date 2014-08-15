@@ -47,8 +47,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 IClient oldClient = args.OldValue as IClient;
                 if (oldClient != null)
                 {
-                    oldClient.OnGameStarted -= @this.OnGameStarted;
-                    oldClient.OnNextPieceModified -= @this.OnNextPieceModified;
+                    oldClient.GameStarted -= @this.OnGameStarted;
+                    oldClient.NextPieceModified -= @this.OnNextPieceModified;
                 }
                 // Set new client
                 IClient newClient = args.NewValue as IClient;
@@ -56,8 +56,8 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                 // Add new handlers
                 if (newClient != null)
                 {
-                    newClient.OnGameStarted += @this.OnGameStarted;
-                    newClient.OnNextPieceModified += @this.OnNextPieceModified;
+                    newClient.GameStarted += @this.OnGameStarted;
+                    newClient.NextPieceModified += @this.OnNextPieceModified;
                 }
             }
         }

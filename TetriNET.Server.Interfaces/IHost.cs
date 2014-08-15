@@ -3,61 +3,61 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Server.Interfaces
 {
-    public delegate void HostRegisterPlayerHandler(IPlayer player, int playerId);
-    public delegate void HostUnregisterPlayerHandler(IPlayer player);
-    public delegate void HostPlayerTeamHandler(IPlayer player, string team);
-    public delegate void HostPublishMessageHandler(IPlayer player, string msg);
-    public delegate void HostPlacePieceHandler(IPlayer player, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid);
-    public delegate void HostUseSpecialHandler(IPlayer player, IPlayer target, Specials special);
-    public delegate void HostSendLinesHandler(IPlayer player, int count);
-    public delegate void HostModifyGridHandler(IPlayer player, byte[] grid);
-    public delegate void HostStartGameHandler(IPlayer player);
-    public delegate void HostStopGameHandler(IPlayer player);
-    public delegate void HostPauseGameHandler(IPlayer player);
-    public delegate void HostResumeGameHandler(IPlayer player);
-    public delegate void HostGameLostHandler(IPlayer player);
-    public delegate void HostChangeOptionsHandler(IPlayer player, GameOptions options);
-    public delegate void HostKickPlayerHandler(IPlayer player, int playerId);
-    public delegate void HostBanPlayerHandler(IPlayer player, int playerId);
-    public delegate void HostResetWinListHandler(IPlayer player);
-    public delegate void HostFinishContinuousSpecialHandler(IPlayer player, Specials special);
-    public delegate void HostEarnAchievementHandler(IPlayer player, int achievementId, string achievementTitle);
+    public delegate void HostRegisterPlayerEventHandler(IPlayer player, int playerId);
+    public delegate void HostUnregisterPlayerEventHandler(IPlayer player);
+    public delegate void HostPlayerTeamEventHandler(IPlayer player, string team);
+    public delegate void HostPublishMessageEventHandler(IPlayer player, string msg);
+    public delegate void HostPlacePieceEventHandler(IPlayer player, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid);
+    public delegate void HostUseSpecialEventHandler(IPlayer player, IPlayer target, Specials special);
+    public delegate void HostSendLinesEventHandler(IPlayer player, int count);
+    public delegate void HostModifyGridEventHandler(IPlayer player, byte[] grid);
+    public delegate void HostStartGameEventHandler(IPlayer player);
+    public delegate void HostStopGameEventHandler(IPlayer player);
+    public delegate void HostPauseGameEventHandler(IPlayer player);
+    public delegate void HostResumeGameEventHandler(IPlayer player);
+    public delegate void HostGameLostEventHandler(IPlayer player);
+    public delegate void HostChangeOptionsEventHandler(IPlayer player, GameOptions options);
+    public delegate void HostKickPlayerEventHandler(IPlayer player, int playerId);
+    public delegate void HostBanPlayerEventHandler(IPlayer player, int playerId);
+    public delegate void HostResetWinListEventHandler(IPlayer player);
+    public delegate void HostFinishContinuousSpecialEventHandler(IPlayer player, Specials special);
+    public delegate void HostEarnAchievementEventHandler(IPlayer player, int achievementId, string achievementTitle);
 
-    public delegate void HostRegisterSpectatorHandler(ISpectator spectator, int spectatorId);
-    public delegate void HostUnregisterSpectatorHandler(ISpectator spectator);
-    public delegate void HostPublishSpectatorMessageHandler(ISpectator spectator, string msg);
+    public delegate void HostRegisterSpectatorEventHandler(ISpectator spectator, int spectatorId);
+    public delegate void HostUnregisterSpectatorEventHandler(ISpectator spectator);
+    public delegate void HostPublishSpectatorMessageEventHandler(ISpectator spectator, string msg);
 
-    public delegate void PlayerLeftHandler(IPlayer player, LeaveReasons reason);
-    public delegate void SpectatorLeftHandler(ISpectator spectator, LeaveReasons reason);
+    public delegate void PlayerLeftEventHandler(IPlayer player, LeaveReasons reason);
+    public delegate void SpectatorLeftEventHandler(ISpectator spectator, LeaveReasons reason);
 
     public interface IHost : ITetriNET, ITetriNETSpectator
     {
-        event HostRegisterPlayerHandler OnPlayerRegistered;
-        event HostUnregisterPlayerHandler OnPlayerUnregistered;
-        event HostPlayerTeamHandler OnPlayerTeamChanged;
-        event HostPublishMessageHandler OnMessagePublished;
-        event HostPlacePieceHandler OnPiecePlaced;
-        event HostUseSpecialHandler OnUseSpecial;
-        event HostSendLinesHandler OnSendLines;
-        event HostModifyGridHandler OnGridModified;
-        event HostStartGameHandler OnStartGame;
-        event HostStopGameHandler OnStopGame;
-        event HostPauseGameHandler OnPauseGame;
-        event HostResumeGameHandler OnResumeGame;
-        event HostGameLostHandler OnGameLost;
-        event HostChangeOptionsHandler OnChangeOptions;
-        event HostKickPlayerHandler OnKickPlayer;
-        event HostBanPlayerHandler OnBanPlayer;
-        event HostResetWinListHandler OnResetWinList;
-        event HostFinishContinuousSpecialHandler OnFinishContinuousSpecial;
-        event HostEarnAchievementHandler OnEarnAchievement;
+        event HostRegisterPlayerEventHandler HostPlayerRegistered;
+        event HostUnregisterPlayerEventHandler HostPlayerUnregistered;
+        event HostPlayerTeamEventHandler HostPlayerTeamChanged;
+        event HostPublishMessageEventHandler HostMessagePublished;
+        event HostPlacePieceEventHandler HostPiecePlaced;
+        event HostUseSpecialEventHandler HostUseSpecial;
+        event HostSendLinesEventHandler HostSendLines;
+        event HostModifyGridEventHandler HostGridModified;
+        event HostStartGameEventHandler HostStartGame;
+        event HostStopGameEventHandler HostStopGame;
+        event HostPauseGameEventHandler HostPauseGame;
+        event HostResumeGameEventHandler HostResumeGame;
+        event HostGameLostEventHandler HostGameLost;
+        event HostChangeOptionsEventHandler HostChangeOptions;
+        event HostKickPlayerEventHandler HostKickPlayer;
+        event HostBanPlayerEventHandler HostBanPlayer;
+        event HostResetWinListEventHandler HostResetWinList;
+        event HostFinishContinuousSpecialEventHandler HostFinishContinuousSpecial;
+        event HostEarnAchievementEventHandler HostEarnAchievement;
 
-        event HostRegisterSpectatorHandler OnSpectatorRegistered;
-        event HostUnregisterSpectatorHandler OnSpectatorUnregistered;
-        event HostPublishSpectatorMessageHandler OnSpectatorMessagePublished;
+        event HostRegisterSpectatorEventHandler HostSpectatorRegistered;
+        event HostUnregisterSpectatorEventHandler HostSpectatorUnregistered;
+        event HostPublishSpectatorMessageEventHandler HostSpectatorMessagePublished;
 
-        event PlayerLeftHandler OnPlayerLeft;
-        event SpectatorLeftHandler OnSpectatorLeft;
+        event PlayerLeftEventHandler HostPlayerLeft;
+        event SpectatorLeftEventHandler HostSpectatorLeft;
 
         IBanManager BanManager { get; }
         IPlayerManager PlayerManager { get; }

@@ -31,42 +31,42 @@ namespace TetriNET.Server.GenericHost
 
         protected virtual void PlayerOnConnectionLost(IPlayer player)
         {
-            OnPlayerLeft.Do(x => x(player, LeaveReasons.ConnectionLost));
+            HostPlayerLeft.Do(x => x(player, LeaveReasons.ConnectionLost));
         }
 
         protected virtual void SpectatorOnConnectionLost(ISpectator spectator)
         {
-            OnSpectatorLeft.Do(x => x(spectator, LeaveReasons.ConnectionLost));
+            HostSpectatorLeft.Do(x => x(spectator, LeaveReasons.ConnectionLost));
         }
 
         #region IHost
 
-        public event HostRegisterPlayerHandler OnPlayerRegistered;
-        public event HostUnregisterPlayerHandler OnPlayerUnregistered;
-        public event HostPlayerTeamHandler OnPlayerTeamChanged;
-        public event HostPublishMessageHandler OnMessagePublished;
-        public event HostPlacePieceHandler OnPiecePlaced;
-        public event HostUseSpecialHandler OnUseSpecial;
-        public event HostSendLinesHandler OnSendLines;
-        public event HostModifyGridHandler OnGridModified;
-        public event HostStartGameHandler OnStartGame;
-        public event HostStopGameHandler OnStopGame;
-        public event HostPauseGameHandler OnPauseGame;
-        public event HostResumeGameHandler OnResumeGame;
-        public event HostGameLostHandler OnGameLost;
-        public event HostChangeOptionsHandler OnChangeOptions;
-        public event HostKickPlayerHandler OnKickPlayer;
-        public event HostBanPlayerHandler OnBanPlayer;
-        public event HostResetWinListHandler OnResetWinList;
-        public event HostFinishContinuousSpecialHandler OnFinishContinuousSpecial;
-        public event HostEarnAchievementHandler OnEarnAchievement;
+        public event HostRegisterPlayerEventHandler HostPlayerRegistered;
+        public event HostUnregisterPlayerEventHandler HostPlayerUnregistered;
+        public event HostPlayerTeamEventHandler HostPlayerTeamChanged;
+        public event HostPublishMessageEventHandler HostMessagePublished;
+        public event HostPlacePieceEventHandler HostPiecePlaced;
+        public event HostUseSpecialEventHandler HostUseSpecial;
+        public event HostSendLinesEventHandler HostSendLines;
+        public event HostModifyGridEventHandler HostGridModified;
+        public event HostStartGameEventHandler HostStartGame;
+        public event HostStopGameEventHandler HostStopGame;
+        public event HostPauseGameEventHandler HostPauseGame;
+        public event HostResumeGameEventHandler HostResumeGame;
+        public event HostGameLostEventHandler HostGameLost;
+        public event HostChangeOptionsEventHandler HostChangeOptions;
+        public event HostKickPlayerEventHandler HostKickPlayer;
+        public event HostBanPlayerEventHandler HostBanPlayer;
+        public event HostResetWinListEventHandler HostResetWinList;
+        public event HostFinishContinuousSpecialEventHandler HostFinishContinuousSpecial;
+        public event HostEarnAchievementEventHandler HostEarnAchievement;
         
-        public event HostRegisterSpectatorHandler OnSpectatorRegistered;
-        public event HostUnregisterSpectatorHandler OnSpectatorUnregistered;
-        public event HostPublishSpectatorMessageHandler OnSpectatorMessagePublished;
+        public event HostRegisterSpectatorEventHandler HostSpectatorRegistered;
+        public event HostUnregisterSpectatorEventHandler HostSpectatorUnregistered;
+        public event HostPublishSpectatorMessageEventHandler HostSpectatorMessagePublished;
 
-        public event PlayerLeftHandler OnPlayerLeft;
-        public event SpectatorLeftHandler OnSpectatorLeft;
+        public event PlayerLeftEventHandler HostPlayerLeft;
+        public event SpectatorLeftEventHandler HostSpectatorLeft;
 
         public IBanManager BanManager { get; private set; }
         public IPlayerManager PlayerManager { get; private set; }
@@ -111,7 +111,7 @@ namespace TetriNET.Server.GenericHost
                 {
                     player = CreatePlayerFunc(playerName, callback);
                     //
-                    player.OnConnectionLost += PlayerOnConnectionLost;
+                    player.ConnectionLost += PlayerOnConnectionLost;
                     player.Team = team;
                     //
                     id = PlayerManager.Add(player);
@@ -122,7 +122,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnPlayerRegistered.Do(x => x(player, id));
+                HostPlayerRegistered.Do(x => x(player, id));
             }
             else
             {
@@ -142,7 +142,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnPlayerUnregistered.Do(x => x(player));
+                HostPlayerUnregistered.Do(x => x(player));
             }
             else
             {
@@ -176,8 +176,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                if (OnPlayerTeamChanged != null)
-                    OnPlayerTeamChanged(player, team);
+                HostPlayerTeamChanged.Do(x => x(player, team));
             }
             else
             {
@@ -195,7 +194,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnMessagePublished.Do(x => x(player, msg));
+                HostMessagePublished.Do(x => x(player, msg));
             }
             else
             {
@@ -212,7 +211,7 @@ namespace TetriNET.Server.GenericHost
             {
                 player.ResetTimeout(); // player alive
                 //
-                OnPiecePlaced.Do(x => x(player, pieceIndex, highestIndex, piece, orientation, posX, posY, grid));
+                HostPiecePlaced.Do(x => x(player, pieceIndex, highestIndex, piece, orientation, posX, posY, grid));
             }
             else
             {
@@ -234,7 +233,7 @@ namespace TetriNET.Server.GenericHost
                 if (target != null)
                 {
                     //
-                    OnUseSpecial.Do(x => x(player, target, special));
+                    HostUseSpecial.Do(x => x(player, target, special));
                 }
                 else
                     Log.WriteLine(Log.LogLevels.Warning, "UseSpecial to unknown player {0} from {1}", targetId, player.Name);
@@ -255,7 +254,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnSendLines.Do(x => x(player, count));
+                HostSendLines.Do(x => x(player, count));
             }
             else
             {
@@ -273,7 +272,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnGridModified.Do(x => x(player, grid));
+                HostGridModified.Do(x => x(player, grid));
             }
             else
             {
@@ -291,7 +290,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnStartGame.Do(x => x(player));
+                HostStartGame.Do(x => x(player));
             }
             else
             {
@@ -309,7 +308,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnStopGame.Do(x => x(player));
+                HostStopGame.Do(x => x(player));
             }
             else
             {
@@ -327,7 +326,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnPauseGame.Do(x => x(player));
+                HostPauseGame.Do(x => x(player));
             }
             else
             {
@@ -345,7 +344,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnResumeGame.Do(x => x(player));
+                HostResumeGame.Do(x => x(player));
             }
             else
             {
@@ -363,7 +362,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnGameLost.Do(x => x(player));
+                HostGameLost.Do(x => x(player));
             }
             else
             {
@@ -381,7 +380,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnFinishContinuousSpecial.Do(x => x(player, special));
+                HostFinishContinuousSpecial.Do(x => x(player, special));
             }
             else
             {
@@ -399,7 +398,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnChangeOptions.Do(x => x(player, options));
+                HostChangeOptions.Do(x => x(player, options));
             }
             else
             {
@@ -417,7 +416,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnKickPlayer.Do(x => x(player, playerId));
+                HostKickPlayer.Do(x => x(player, playerId));
             }
             else
             {
@@ -435,7 +434,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnBanPlayer.Do(x => x(player, playerId));
+                HostBanPlayer.Do(x => x(player, playerId));
             }
             else
             {
@@ -453,7 +452,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnResetWinList.Do(x => x(player));
+                HostResetWinList.Do(x => x(player));
             }
             else
             {
@@ -471,7 +470,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                OnEarnAchievement.Do(x => x(player, achievementId, achievementTitle));
+                HostEarnAchievement.Do(x => x(player, achievementId, achievementTitle));
             }
             else
             {
@@ -513,7 +512,7 @@ namespace TetriNET.Server.GenericHost
                 {
                     spectator = CreateSpectatorFunc(spectatorName, callback);
                     //
-                    spectator.OnConnectionLost += SpectatorOnConnectionLost;
+                    spectator.ConnectionLost += SpectatorOnConnectionLost;
                     //
                     id = SpectatorManager.Add(spectator);
                 }
@@ -523,7 +522,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 spectator.ResetTimeout(); // spectator alive
                 //
-                OnSpectatorRegistered.Do(x => x(spectator, id));
+                HostSpectatorRegistered.Do(x => x(spectator, id));
             }
             else
             {
@@ -543,7 +542,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 spectator.ResetTimeout(); // player alive
                 //
-                OnSpectatorUnregistered.Do(x => x(spectator));
+                HostSpectatorUnregistered.Do(x => x(spectator));
             }
             else
             {
@@ -577,7 +576,7 @@ namespace TetriNET.Server.GenericHost
                 //
                 spectator.ResetTimeout(); // player alive
                 //
-                OnSpectatorMessagePublished.Do(x => x(spectator, msg));
+                HostSpectatorMessagePublished.Do(x => x(spectator, msg));
             }
             else
             {

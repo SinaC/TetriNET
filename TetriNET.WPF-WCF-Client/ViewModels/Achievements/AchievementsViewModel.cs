@@ -111,16 +111,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnGameStarted -= RefreshResetEnable;
-            oldClient.OnGameFinished -= OnGameFinished;
-            oldClient.OnAchievementEarned -= OnAchievementEarned;
+            oldClient.GameStarted -= RefreshResetEnable;
+            oldClient.GameFinished -= OnGameFinished;
+            oldClient.AchievementEarned -= OnAchievementEarned;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnGameStarted += RefreshResetEnable;
-            newClient.OnGameFinished += OnGameFinished;
-            newClient.OnAchievementEarned += OnAchievementEarned;
+            newClient.GameStarted += RefreshResetEnable;
+            newClient.GameFinished += OnGameFinished;
+            newClient.AchievementEarned += OnAchievementEarned;
         }
 
         #endregion
@@ -190,7 +190,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
                 sniper.IsAchieved = true;
                 sniper.FirstTimeAchieved = DateTime.Now.AddDays(-2).AddHours(1);
                 sniper.LastTimeAchieved = DateTime.Now.AddDays(-2).AddHours(1);
-                sniper.AchieveCount = 1;
+                sniper.AchieveCount = 2;
             }
             IAchievement fearMyBrain = manager.Achievements.FirstOrDefault(x => x.Title == "Fear my brain !");
             if (fearMyBrain != null)
@@ -207,6 +207,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
                 tooGoodForYou.FirstTimeAchieved = DateTime.Now.AddDays(-4);
                 tooGoodForYou.LastTimeAchieved = DateTime.Now.AddDays(-4);
                 tooGoodForYou.AchieveCount = 10;
+            }
+            IAchievement architect = manager.Achievements.FirstOrDefault(x => x.Title == "Architect");
+            if (architect != null)
+            {
+                architect.IsAchieved = true;
+                architect.FirstTimeAchieved = DateTime.Now.AddDays(-4);
+                architect.LastTimeAchieved = DateTime.Now.AddDays(-4);
+                architect.AchieveCount = 1;
             }
             IAchievement tetrisAce = manager.Achievements.FirstOrDefault(x => x.Title == "Tetris Ace");
             if (tetrisAce != null)

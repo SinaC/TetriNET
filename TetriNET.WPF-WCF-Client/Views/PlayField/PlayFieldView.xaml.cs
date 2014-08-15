@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -185,7 +184,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             // Remove old handlers
             if (oldClient != null)
             {
-                oldClient.OnGameStarted -= OnGameStarted;
+                oldClient.GameStarted -= OnGameStarted;
 
                 _controller.Do(x => x.UnsubscribeFromClientEvents());
                 Bot.Do(x => x.UnsubscribeFromClientEvents());
@@ -197,7 +196,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             // Add new handlers
             if (newClient != null)
             {
-                newClient.OnGameStarted += OnGameStarted;
+                newClient.GameStarted += OnGameStarted;
 
                 // And create controller + bot
                 _controller = new GameController.GameController(newClient);

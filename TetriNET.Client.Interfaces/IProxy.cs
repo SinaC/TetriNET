@@ -3,13 +3,13 @@ using TetriNET.Common.Contracts;
 
 namespace TetriNET.Client.Interfaces
 {
-    public delegate void ProxyConnectionLostHandler();
+    public delegate void ProxyConnectionLostEventHandler();
 
     public interface IProxy : ITetriNET
     {
         DateTime LastActionToServer { get; } // used to check if heartbeat is needed
 
-        event ProxyConnectionLostHandler OnConnectionLost;
+        event ProxyConnectionLostEventHandler ConnectionLost;
 
         bool Disconnect();
     }

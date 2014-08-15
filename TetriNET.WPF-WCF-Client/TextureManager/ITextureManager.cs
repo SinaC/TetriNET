@@ -11,5 +11,6 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
         Brush GetSmallSpecial(Specials special);
         Brush GetBigBackground();
         Brush GetSmallBackground();
+        Brush GetWindowBackground();
     }
 }

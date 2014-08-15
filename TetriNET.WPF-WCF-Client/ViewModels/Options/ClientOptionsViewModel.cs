@@ -183,18 +183,18 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            oldClient.OnGameOver -= OnGameOver;
-            oldClient.OnGameFinished -= OnGameFinished;
-            oldClient.OnGameStarted -= OnGameStarted;
-            oldClient.OnPlayerUnregistered -= OnPlayerUnregister;
+            oldClient.GameOver -= OnGameOver;
+            oldClient.GameFinished -= OnGameFinished;
+            oldClient.GameStarted -= OnGameStarted;
+            oldClient.PlayerUnregistered -= OnPlayerUnregister;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            newClient.OnGameOver += OnGameOver;
-            newClient.OnGameFinished += OnGameFinished;
-            newClient.OnGameStarted += OnGameStarted;
-            newClient.OnPlayerUnregistered += OnPlayerUnregister;
+            newClient.GameOver += OnGameOver;
+            newClient.GameFinished += OnGameFinished;
+            newClient.GameStarted += OnGameStarted;
+            newClient.PlayerUnregistered += OnPlayerUnregister;
         }
 
         #endregion
