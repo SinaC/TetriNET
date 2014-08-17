@@ -278,7 +278,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
                 returnValue.Add(kv.Key, new ValuePercentage
                 {
                     Value = kv.Value,
-                    Percentage = sum == 0 ? 0 : (double)(100 * kv.Value) / (double)sum
+                    Percentage = sum == 0 ? 0 : (100.0 * kv.Value) / sum
                 });
             }
             return returnValue;
@@ -308,7 +308,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             return new ValuePercentage
             {
                 Value = value,
-                Percentage = sum == 0 ? 0 : (double)(100 * value) / (double)sum
+                Percentage = sum == 0 ? 0 : (100.0 * value) / sum
             };
         }
     }

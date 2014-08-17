@@ -24,7 +24,6 @@ namespace TetriNET.Client.Interfaces
         bool IsAchievable { get; }
         bool AchievedMoreThanOnce { get; }
 
-        //string LevelColor { get; }
         bool IsGoldLevelReached { get; }
         bool IsSilverLevelReached { get; }
         bool IsBronzeLevelReached { get; }
