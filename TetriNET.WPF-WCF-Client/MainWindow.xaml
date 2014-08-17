@@ -80,12 +80,50 @@
         
         <StackPanel Grid.Row="0" Grid.Column="3" Orientation="Horizontal">
             <Button  VerticalAlignment="Top" HorizontalAlignment="Right"
-                    VerticalContentAlignment="Top"  BorderThickness="1"
-                    Height="17" Width="15" Content="-" Click="Minimize_Click"></Button>
+                     VerticalContentAlignment="Top"  BorderThickness="1"
+                     Height="20" Width="15" 
+                     Click="Minimize_Click">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="{x:Null}" />
+                        <Setter Property="BorderBrush" Value="LightGray" />
+                        <Style.Triggers>
+                            <Trigger Property="Control.IsMouseOver" Value="True">
+                                <Setter Property="Control.Background" Value="{x:Null}" />
+                                <Setter Property="Control.BorderBrush" Value="{x:Null}" />
+                                <Setter Property="Control.FontWeight" Value="Bold" />
+                            </Trigger>
+                            <Trigger Property="Control.IsFocused" Value="True">
+                                <Setter Property="Control.FontWeight" Value="Bold" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <TextBlock FontSize="10" Text="_"/>
+            </Button>
 
             <Button VerticalAlignment="Top" HorizontalAlignment="Right"
                     VerticalContentAlignment="Top" BorderThickness="1"
-                    Height="17" Width="15" Content="X" Click="Close_Click"/>
+                    Height="20" Width="15" 
+                    Click="Close_Click">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Background" Value="{x:Null}" />
+                        <Setter Property="BorderBrush" Value="LightGray" />
+                        <Style.Triggers>
+                            <Trigger Property="Control.IsMouseOver" Value="True">
+                                <Setter Property="Control.Background" Value="{x:Null}" />
+                                <Setter Property="Control.BorderBrush" Value="{x:Null}" />
+                                <Setter Property="Control.FontWeight" Value="Bold" />
+                            </Trigger>
+                            <Trigger Property="Control.IsFocused" Value="True">
+                                <Setter Property="Control.FontWeight" Value="Bold" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <TextBlock FontSize="10" Text="X"/>
+            </Button>
         </StackPanel>
         
         <TabControl 
