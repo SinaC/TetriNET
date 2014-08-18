@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using TetriNET.Client.Interfaces;
@@ -188,6 +189,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             oldClient.GameFinished -= OnGameFinished;
             oldClient.GameStarted -= OnGameStarted;
             oldClient.PlayerUnregistered -= OnPlayerUnregister;
+            oldClient.ConnectionLost -= OnConnectionLost;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
@@ -196,11 +198,17 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             newClient.GameFinished += OnGameFinished;
             newClient.GameStarted += OnGameStarted;
             newClient.PlayerUnregistered += OnPlayerUnregister;
+            newClient.ConnectionLost += OnConnectionLost;
         }
 
         #endregion
 
         #region IClient events handler
+
+        private void OnConnectionLost(ConnectionLostReasons reason)
+        {
+            IsGameNotStarted = true;
+        }
 
         private void OnPlayerUnregister()
         {

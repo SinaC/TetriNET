@@ -40,7 +40,7 @@ namespace TetriNET.Common.Contracts
         void OnPlayerWon(int playerId);
 
         [OperationContract(IsOneWay = true)] // New Game
-        void OnGameStarted(List<Pieces> pieces);
+        void OnGameStarted(List<Pieces> pieces); // Options removed in 1.5
 
         [OperationContract(IsOneWay = true)] // End Game
         void OnGameFinished(GameStatistics statistics); // Statistics added in 1.5
