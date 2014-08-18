@@ -188,7 +188,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             UpdateEnabilityAndLabel();
         }
 
-        private void OnGameFinished()
+        private void OnGameFinished(GameStatistics statistics)
         {
             _isGamePaused = false;
             _isGameStarted = false;

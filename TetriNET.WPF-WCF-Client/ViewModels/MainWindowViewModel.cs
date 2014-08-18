@@ -186,7 +186,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
                 ActiveTabItemIndex = PlayFieldViewModel.TabIndex;
         }
 
-        private void OnGameFinished()
+        private void OnGameFinished(GameStatistics statistics)
         {
             if (ClientOptionsViewModel.Instance.AutomaticallySwitchToPlayFieldOnGameStarted)
             {

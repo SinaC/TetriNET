@@ -168,7 +168,12 @@ namespace TetriNET.Client.TCPProxy
             throw new NotImplementedException();
         }
         
-        public void SendLines(ITetriNETCallback callback, int count)
+        //public void SendLines(ITetriNETCallback callback, int count)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        public void ClearLines(ITetriNETCallback callback, int count)
         {
             throw new NotImplementedException();
         }

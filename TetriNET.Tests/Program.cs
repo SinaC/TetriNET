@@ -131,11 +131,11 @@ namespace TetriNET.Tests
             {
                 throw new NotImplementedException();
             }
-            public void OnGameStarted(List<Pieces> pieces, GameOptions options)
+            public void OnGameStarted(List<Pieces> pieces)
             {
                 throw new NotImplementedException();
             }
-            public void OnGameFinished()
+            public void OnGameFinished(GameStatistics statistics)
             {
                 throw new NotImplementedException();
             }
@@ -183,7 +183,11 @@ namespace TetriNET.Tests
             {
                 throw new NotImplementedException();
             }
-            public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted)
+            public void OnOptionsChanged(GameOptions options)
+            {
+                throw new NotImplementedException();
+            }
+            public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted, GameOptions options)
             {
                 throw new NotImplementedException();
             }

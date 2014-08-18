@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
@@ -20,7 +21,7 @@ namespace TetriNET.Server.SpectatorManager
             TimeoutCount = 0;
         }
 
-        private void ExceptionFreeAction(Action action, string actionName)
+        private void ExceptionFreeAction(Action action, [CallerMemberName]string actionName = null)
         {
             try
             {
@@ -72,132 +73,137 @@ namespace TetriNET.Server.SpectatorManager
 
         public void OnHeartbeatReceived()
         {
-            ExceptionFreeAction(() => Callback.OnHeartbeatReceived(), "OnHeartbeatReceived");
+            ExceptionFreeAction(() => Callback.OnHeartbeatReceived());
         }
 
         public void OnServerStopped()
         {
-            ExceptionFreeAction(() => Callback.OnServerStopped(), "OnServerStopped");
+            ExceptionFreeAction(() => Callback.OnServerStopped());
         }
 
         public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
         {
-            ExceptionFreeAction(() => Callback.OnPlayerRegistered(result, playerId, gameStarted, isServerMaster, options), "OnPlayerRegistered");
+            ExceptionFreeAction(() => Callback.OnPlayerRegistered(result, playerId, gameStarted, isServerMaster, options));
         }
 
         public void OnPlayerJoined(int playerId, string name, string team)
         {
-            ExceptionFreeAction(() => Callback.OnPlayerJoined(playerId, name, team), "OnPlayerJoined");
+            ExceptionFreeAction(() => Callback.OnPlayerJoined(playerId, name, team));
         }
 
         public void OnPlayerLeft(int playerId, string name, LeaveReasons reason)
         {
-            ExceptionFreeAction(() => Callback.OnPlayerLeft(playerId, name, reason), "OnPlayerLeft");
+            ExceptionFreeAction(() => Callback.OnPlayerLeft(playerId, name, reason));
         }
 
         public void OnPlayerTeamChanged(int playerId, string team)
         {
-            ExceptionFreeAction(() => Callback.OnPlayerTeamChanged(playerId, team), "OnPlayerTeamChanged");
+            ExceptionFreeAction(() => Callback.OnPlayerTeamChanged(playerId, team));
         }
 
         public void OnPlayerLost(int playerId)
         {
-            ExceptionFreeAction(() => Callback.OnPlayerLost(playerId), "OnPlayerLost");
+            ExceptionFreeAction(() => Callback.OnPlayerLost(playerId));
         }
 
         public void OnPlayerWon(int playerId)
         {
-            ExceptionFreeAction(() => Callback.OnPlayerWon(playerId), "OnPlayerWon");
+            ExceptionFreeAction(() => Callback.OnPlayerWon(playerId));
         }
 
-        public void OnGameStarted(List<Pieces> pieces, GameOptions options)
+        public void OnGameStarted(List<Pieces> pieces)
         {
-            ExceptionFreeAction(() => Callback.OnGameStarted(pieces, options), "OnGameStarted");
+            ExceptionFreeAction(() => Callback.OnGameStarted(pieces));
         }
 
-        public void OnGameFinished()
+        public void OnGameFinished(GameStatistics statistics)
         {
-            ExceptionFreeAction(() => Callback.OnGameFinished(), "OnGameFinished");
+            ExceptionFreeAction(() => Callback.OnGameFinished(statistics));
         }
 
         public void OnGamePaused()
         {
-            ExceptionFreeAction(() => Callback.OnGamePaused(), "OnGamePaused");
+            ExceptionFreeAction(() => Callback.OnGamePaused());
         }
 
         public void OnGameResumed()
         {
-            ExceptionFreeAction(() => Callback.OnGameResumed(), "OnGameResumed");
+            ExceptionFreeAction(() => Callback.OnGameResumed());
         }
 
         public void OnServerAddLines(int lineCount)
         {
-            ExceptionFreeAction(() => Callback.OnServerAddLines(lineCount), "OnServerAddLines");
+            ExceptionFreeAction(() => Callback.OnServerAddLines(lineCount));
         }
 
         public void OnPlayerAddLines(int specialId, int playerId, int lineCount)
         {
-            ExceptionFreeAction(() => Callback.OnPlayerAddLines(specialId, playerId, lineCount), "OnPlayerAddLines");
+            ExceptionFreeAction(() => Callback.OnPlayerAddLines(specialId, playerId, lineCount));
         }
 
         public void OnPublishPlayerMessage(string playerName, string msg)
         {
-            ExceptionFreeAction(() => Callback.OnPublishPlayerMessage(playerName, msg), "OnPublishPlayerMessage");
+            ExceptionFreeAction(() => Callback.OnPublishPlayerMessage(playerName, msg));
         }
 
         public void OnPublishServerMessage(string msg)
         {
-            ExceptionFreeAction(() => Callback.OnPublishServerMessage(msg), "OnPublishServerMessage");
+            ExceptionFreeAction(() => Callback.OnPublishServerMessage(msg));
         }
 
         public void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special)
         {
-            ExceptionFreeAction(() => Callback.OnSpecialUsed(specialId, playerId, targetId, special), "OnSpecialUsed");
+            ExceptionFreeAction(() => Callback.OnSpecialUsed(specialId, playerId, targetId, special));
         }
 
         public void OnNextPiece(int index, List<Pieces> pieces)
         {
-            ExceptionFreeAction(() => Callback.OnNextPiece(index, pieces), "OnNextPiece");
+            ExceptionFreeAction(() => Callback.OnNextPiece(index, pieces));
         }
 
         public void OnGridModified(int playerId, byte[] grid)
         {
-            ExceptionFreeAction(() => Callback.OnGridModified(playerId, grid), "OnGridModified");
+            ExceptionFreeAction(() => Callback.OnGridModified(playerId, grid));
         }
 
         public void OnServerMasterChanged(int playerId)
         {
-            ExceptionFreeAction(() => Callback.OnServerMasterChanged(playerId), "OnServerMasterChanged");
+            ExceptionFreeAction(() => Callback.OnServerMasterChanged(playerId));
         }
 
         public void OnWinListModified(List<WinEntry> winList)
         {
-            ExceptionFreeAction(() => Callback.OnWinListModified(winList), "OnWinListModified");
+            ExceptionFreeAction(() => Callback.OnWinListModified(winList));
         }
 
         public void OnContinuousSpecialFinished(int playerId, Specials special)
         {
-            ExceptionFreeAction(() => Callback.OnContinuousSpecialFinished(playerId, special), "OnContinuousSpecialFinished");
+            ExceptionFreeAction(() => Callback.OnContinuousSpecialFinished(playerId, special));
         }
 
         public void OnAchievementEarned(int playerId, int achievementId, string achievementTitle)
         {
-            ExceptionFreeAction(() => Callback.OnAchievementEarned(playerId, achievementId, achievementTitle), "OnAchievementEarned");
+            ExceptionFreeAction(() => Callback.OnAchievementEarned(playerId, achievementId, achievementTitle));
         }
 
-        public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted)
+        public void OnOptionsChanged(GameOptions options)
         {
-            ExceptionFreeAction(() => Callback.OnSpectatorRegistered(result, spectatorId, gameStarted), "OnSpectatorRegistered");
+            ExceptionFreeAction(() => Callback.OnOptionsChanged(options));
+        }
+
+        public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted, GameOptions options)
+        {
+            ExceptionFreeAction(() => Callback.OnSpectatorRegistered(result, spectatorId, gameStarted, options));
         }
 
         public void OnSpectatorJoined(int spectatorId, string name)
         {
-            ExceptionFreeAction(() => Callback.OnSpectatorJoined(spectatorId, name), "OnSpectatorJoined");
+            ExceptionFreeAction(() => Callback.OnSpectatorJoined(spectatorId, name));
         }
 
         public void OnSpectatorLeft(int spectatorId, string name, LeaveReasons reason)
         {
-            ExceptionFreeAction(() => Callback.OnSpectatorLeft(spectatorId, name, reason), "OnSpectatorLeft");
+            ExceptionFreeAction(() => Callback.OnSpectatorLeft(spectatorId, name, reason));
         }
 
         #endregion

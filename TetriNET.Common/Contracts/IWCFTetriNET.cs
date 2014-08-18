@@ -33,8 +33,11 @@ namespace TetriNET.Common.Contracts
         [OperationContract(IsOneWay = true)]
         void UseSpecial(int targetId, Specials special);
 
+        //[OperationContract(IsOneWay = true)] // Removed in 1.5
+        //void SendLines(int count);
+
         [OperationContract(IsOneWay = true)]
-        void SendLines(int count);
+        void ClearLines(int count); // Added in 1.5
 
         [OperationContract(IsOneWay = true)]
         void GameLost();

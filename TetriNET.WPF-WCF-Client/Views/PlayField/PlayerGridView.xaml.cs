@@ -316,7 +316,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             ExecuteOnUIThread.Invoke(() => PauseText.Visibility = Visibility.Hidden);
         }
 
-        private void OnGameFinished()
+        private void OnGameFinished(GameStatistics statistics)
         {
             ExecuteOnUIThread.Invoke(DesactivateContinuousSpecials);
             ExecuteOnUIThread.Invoke(() => PauseText.Visibility = Visibility.Hidden);

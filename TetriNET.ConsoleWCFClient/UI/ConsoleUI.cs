@@ -142,7 +142,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             DisplayInventory();
         }
 
-        private void OnGameFinished()
+        private void OnGameFinished(GameStatistics statistics)
         {
             lock (_lock)
             {

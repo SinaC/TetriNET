@@ -160,9 +160,14 @@ namespace TetriNET.Client.WCFProxy
             ExceptionFreeAction(() => _proxy.UseSpecial(targetId, special));
         }
 
-        public void SendLines(ITetriNETCallback callback, int count)
+        //public void SendLines(ITetriNETCallback callback, int count)
+        //{
+        //    ExceptionFreeAction(() => _proxy.SendLines(count));
+        //}
+
+        public void ClearLines(ITetriNETCallback callback, int count)
         {
-            ExceptionFreeAction(() => _proxy.SendLines(count));
+            ExceptionFreeAction(() => _proxy.ClearLines(count));
         }
 
         public void GameLost(ITetriNETCallback callback)

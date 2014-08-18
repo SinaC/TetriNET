@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Windows.Input;
 using TetriNET.Client.Achievements;
 using TetriNET.Client.Interfaces;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Logger;
 using TetriNET.WPF_WCF_Client.Commands;
 using TetriNET.WPF_WCF_Client.Helpers;
@@ -139,7 +140,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
             RefreshAchievementsStats();
         }
 
-        private void OnGameFinished()
+        private void OnGameFinished(GameStatistics statistics)
         {
             //
             RefreshResetEnable();

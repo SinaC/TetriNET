@@ -67,7 +67,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
             oldClient.WinListModified -= OnWinListModified;
             oldClient.ConnectionLost -= OnConnectionLost;
             oldClient.GameStarted -= RefreshResetEnable;
-            oldClient.GameFinished -= RefreshResetEnable;
+            oldClient.GameFinished -= OnGameFinished;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
@@ -76,12 +76,17 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
             newClient.WinListModified += OnWinListModified;
             newClient.ConnectionLost += OnConnectionLost;
             newClient.GameStarted += RefreshResetEnable;
-            newClient.GameFinished += RefreshResetEnable;
+            newClient.GameFinished += OnGameFinished;
         }
 
         #endregion
 
         #region IClient events handler
+
+        private void OnGameFinished(GameStatistics statistics)
+        {
+            RefreshResetEnable();
+        }
 
         private void RefreshResetEnable()
         {

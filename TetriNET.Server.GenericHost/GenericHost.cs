@@ -47,7 +47,8 @@ namespace TetriNET.Server.GenericHost
         public event HostPublishMessageEventHandler HostMessagePublished;
         public event HostPlacePieceEventHandler HostPiecePlaced;
         public event HostUseSpecialEventHandler HostUseSpecial;
-        public event HostSendLinesEventHandler HostSendLines;
+        //public event HostSendLinesEventHandler HostSendLines;
+        public event HostClearLinesEventHandler HostClearLines;
         public event HostModifyGridEventHandler HostGridModified;
         public event HostStartGameEventHandler HostStartGame;
         public event HostStopGameEventHandler HostStopGame;
@@ -244,9 +245,27 @@ namespace TetriNET.Server.GenericHost
             }
         }
 
-        public virtual void SendLines(ITetriNETCallback callback, int count)
+        //public virtual void SendLines(ITetriNETCallback callback, int count)
+        //{
+        //    Log.WriteLine(Log.LogLevels.Debug, "SendLines {0}", count);
+
+        //    IPlayer player = PlayerManager[callback];
+        //    if (player != null)
+        //    {
+        //        //
+        //        player.ResetTimeout(); // player alive
+        //        //
+        //        HostSendLines.Do(x => x(player, count));
+        //    }
+        //    else
+        //    {
+        //        Log.WriteLine(Log.LogLevels.Warning, "SendLines from unknown player");
+        //    }
+        //}
+
+        public virtual void ClearLines(ITetriNETCallback callback, int count)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "SendLines {0}", count);
+            Log.WriteLine(Log.LogLevels.Debug, "ClearLines {0}", count);
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -254,11 +273,11 @@ namespace TetriNET.Server.GenericHost
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostSendLines.Do(x => x(player, count));
+                HostClearLines.Do(x => x(player, count));
             }
             else
             {
-                Log.WriteLine(Log.LogLevels.Warning, "SendLines from unknown player");
+                Log.WriteLine(Log.LogLevels.Warning, "ClearLines from unknown player");
             }
         }
 
@@ -528,7 +547,7 @@ namespace TetriNET.Server.GenericHost
             {
                 Log.WriteLine(Log.LogLevels.Info, "Register failed for spectator {0}", spectatorName);
                 //
-                callback.OnSpectatorRegistered(result, -1, false);
+                callback.OnSpectatorRegistered(result, -1, false, null);
             }
         }
 

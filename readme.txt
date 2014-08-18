@@ -1,32 +1,36 @@
 TODO:
 spam prevention, no more than 1 service call every 50ms (configurable) -> modify ip filter + handle spam in IPFilterServiceBehavior
-Manage new connection and disconnection at one place -> ideally in Server because there can be many hosts and we can remove a player only once
+Handle new connection and disconnection at one place -> ideally in Server because there can be many hosts and we can remove a player only once
 when Server calls BanPlayer on hosts, only one host must add it to ban manager:
 	use a common object for every transport address, ban list Add and isBanned take this common object instead of a real transport address
 	-> everyone can manage ban without knowing in which host it has been created
 	-> this object is stored in IPlayer and created by createPlayerFunc in host so server or host can ban a player using IPlayer info
 client/server version when registering
 SinaCSpecials: use gravity when board has enough holes or when to high + zebra + clear column + confusion + darkness + immunity + left gravity + mutation
-Confusion could be managed in client-side instead of GUI-side
+Confusion could be handled in client-side instead of GUI-side
 Add Pentominos (http://en.wikipedia.org/wiki/Pentomino)
 New options: random blocks clear count, mutation count, darkness time, confusion time, immunity time, random spawn orientation
 Solo mode (extra points for back-to-back, t-spin)
 Server integrated in WPF client
-in multiplayer game, display some stats about players (#lines, score, who attacked who, ...) when game is finished
 right-click on player in players manager to display achievements
 spectator should be able to start/stop game + kick/ban (aka server master)
 merge spectator and player endpoint
 server room: may be specified in RegisterPlayer or by default start in first room with an empty place. Create automatically room when player connects if the room doesn't exist
+in multiplayer game, display some stats about players (#lines, score, who attacked who, ...) when game is finished
 
-options should be sent when connecting player or spectator and when modified by server master, not anymore when game is started
-
-bugs:
+Known issues:
 why user.config is automatically created with default values in $APPDATA$/Local/SinaC/TetriNET WPF WCF Client/  when recompiling a new version
 WPF Client bot: sometimes _handleNextTetriminoEvent is raised but WaitHandle is not woken up
 chat player list is sometimes wrong (2 times the same player) server not yet started and 2 clients try to connect at the same time while server is starting
-server master is not updated in spectator mode
 server message when someone change team
 score by player not sorted by team
+
+SendLines(int count) from OperationContract replaced with LinesCleared(int count) -> server generates OnPlayerAddLines if needed
+game statistics collected at server level and sent to client when game is finished  TODO: display in client
+
+Bugs fixed:
+options are send to player/spectator when they connect or when options are modified
+server master is not updated in spectator mode
 when a player joins a running game, opponents grid should be sent to player
 when a player joins a running game, he's not considered as playing and then don't receive death notification
 when a spectator joins a running game, opponents status (alive/dead) should be sent to player

@@ -40,10 +40,10 @@ namespace TetriNET.Common.Contracts
         void OnPlayerWon(int playerId);
 
         [OperationContract(IsOneWay = true)] // New Game
-        void OnGameStarted(List<Pieces> pieces, GameOptions options);
+        void OnGameStarted(List<Pieces> pieces);
 
         [OperationContract(IsOneWay = true)] // End Game
-        void OnGameFinished();
+        void OnGameFinished(GameStatistics statistics); // Statistics added in 1.5
 
         [OperationContract(IsOneWay = true)] // Pause Game
         void OnGamePaused();
@@ -78,9 +78,12 @@ namespace TetriNET.Common.Contracts
         [OperationContract(IsOneWay = true)]
         void OnAchievementEarned(int playerId, int achievementId, string achievementTitle);
 
+        [OperationContract(IsOneWay = true)] // New in 1.5
+        void OnOptionsChanged(GameOptions options);
+
         //
         [OperationContract(IsOneWay = true)]
-        void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted);
+        void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted, GameOptions options); // Options added in 1.5
 
         [OperationContract(IsOneWay = true)]
         void OnSpectatorJoined(int spectatorId, string name);

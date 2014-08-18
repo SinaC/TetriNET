@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Input;
 using TetriNET.Client.Interfaces;
+using TetriNET.Common.DataContracts;
 using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Options
@@ -211,7 +212,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             IsGameNotStarted = false;
         }
 
-        private void OnGameFinished()
+        private void OnGameFinished(GameStatistics statistics)
         {
             IsGameNotStarted = true;
         }

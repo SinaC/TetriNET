@@ -340,7 +340,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             AddServerMessage("*** You have LOST", ChatColor.Orange);
         }
 
-        private void OnGameFinished()
+        private void OnGameFinished(GameStatistics statistics)
         {
             AddServerMessage("*** The Game has Ended", ChatColor.Red);
         }

@@ -168,7 +168,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             oldClient.ScoreChanged -= DisplayScore;
             oldClient.GameStarted -= OnGameStarted;
             oldClient.GameOver -= StopTimerAndComputeTime;
-            oldClient.GameFinished -= StopTimerAndComputeTime;
+            oldClient.GameFinished -= OnGameFinished;
             oldClient.ConnectionLost -= OnConnectionLost;
             oldClient.PlayerUnregistered -= OnPlayerUnregistered;
         }
@@ -181,7 +181,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             newClient.ScoreChanged += DisplayScore;
             newClient.GameStarted += OnGameStarted;
             newClient.GameOver += StopTimerAndComputeTime;
-            newClient.GameFinished += StopTimerAndComputeTime;
+            newClient.GameFinished += OnGameFinished;
             newClient.ConnectionLost += OnConnectionLost;
             newClient.PlayerUnregistered += OnPlayerUnregistered;
         }
@@ -241,6 +241,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
                     ExecuteOnUIThread.Invoke(EffectsView.Refresh);
                 }
             }
+        }
+
+        private void OnGameFinished(GameStatistics statistics)
+        {
+            StopTimerAndComputeTime();
         }
 
         private void StopTimerAndComputeTime()

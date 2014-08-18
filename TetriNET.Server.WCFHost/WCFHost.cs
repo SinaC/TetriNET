@@ -42,6 +42,8 @@ namespace TetriNET.Server.WCFHost
                 _serviceHost.Description.Behaviors.Add(new IPFilterServiceBehavior(_host.BanManager, _host.PlayerManager));
                 _serviceHost.Open();
 
+                Log.WriteLine(Log.LogLevels.Info, "WCF Host opened on {0}", baseAddress);
+
                 foreach (var endpt in _serviceHost.Description.Endpoints)
                 {
                     Log.WriteLine(Log.LogLevels.Debug, "Enpoint address:\t{0}", endpt.Address);
@@ -98,9 +100,14 @@ namespace TetriNET.Server.WCFHost
                 _host.ModifyGrid(Callback, grid);
             }
 
-            public void SendLines(int count)
+            //public void SendLines(int count)
+            //{
+            //    _host.SendLines(Callback, count);
+            //}
+
+            public void ClearLines(int count)
             {
-                _host.SendLines(Callback, count);
+                _host.ClearLines(Callback, count);
             }
 
             public void GameLost()

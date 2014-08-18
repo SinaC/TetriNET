@@ -74,12 +74,12 @@ namespace TetriNET.Server.TCPHost
                 throw new NotImplementedException();
             }
 
-            public void OnGameStarted(List<Pieces> pieces, GameOptions options)
+            public void OnGameStarted(List<Pieces> pieces)
             {
                 throw new NotImplementedException();
             }
 
-            public void OnGameFinished()
+            public void OnGameFinished(GameStatistics statistics)
             {
                 throw new NotImplementedException();
             }
@@ -139,7 +139,12 @@ namespace TetriNET.Server.TCPHost
                 throw new NotImplementedException();
             }
 
-            public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted)
+            public void OnOptionsChanged(GameOptions options)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted, GameOptions options)
             {
                 throw new NotImplementedException();
             }
@@ -323,9 +328,14 @@ namespace TetriNET.Server.TCPHost
                 _host.UseSpecial(callback, targetId, special);
             }
 
-            public void SendLines(ITetriNETCallback callback, int count)
+            //public void SendLines(ITetriNETCallback callback, int count)
+            //{
+            //    _host.SendLines(callback, count);
+            //}
+
+            public void ClearLines(ITetriNETCallback callback, int count)
             {
-                _host.SendLines(callback, count);
+                _host.ClearLines(callback, count);
             }
 
             public void GameLost(ITetriNETCallback callback)

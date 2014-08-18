@@ -155,21 +155,25 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
+            oldClient.OptionsChanged -= OnOptionsChanged;
             oldClient.GameFinished -= OnGameFinished;
             oldClient.GameStarted -= OnGameStarted;
             oldClient.ServerMasterModified -= OnServerMasterModified;
             oldClient.ConnectionLost -= OnConnectionLost;
             oldClient.PlayerUnregistered -= OnPlayerUnregister;
+            oldClient.RegisteredAsSpectator -= OnRegisteredAsSpectator;
             oldClient.RegisteredAsPlayer -= OnRegisteredAsPlayer;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
+            newClient.OptionsChanged += OnOptionsChanged;
             newClient.GameFinished += OnGameFinished;
             newClient.GameStarted += OnGameStarted;
             newClient.ServerMasterModified += OnServerMasterModified;
             newClient.ConnectionLost += OnConnectionLost;
             newClient.PlayerUnregistered += OnPlayerUnregister;
+            newClient.RegisteredAsSpectator += OnRegisteredAsSpectator;
             newClient.RegisteredAsPlayer += OnRegisteredAsPlayer;
         }
 
@@ -185,6 +189,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
                     Client.ChangeOptions(Options);
                 else
                     Options = Client.Options;
+                IsGameNotStarted = !Client.IsGameStarted;
+            }
+        }
+
+        private void OnRegisteredAsSpectator(RegistrationResults result, int spectatorId)
+        {
+            if (result == RegistrationResults.RegistrationSuccessful)
+            {
+                Options = Client.Options;
                 IsGameNotStarted = !Client.IsGameStarted;
             }
         }
@@ -209,12 +222,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         private void OnGameStarted()
         {
             IsGameNotStarted = false;
-            Options = Client.Options;
         }
 
-        private void OnGameFinished()
+        private void OnGameFinished(GameStatistics statistics)
         {
             IsGameNotStarted = true;
+        }
+
+        private void OnOptionsChanged()
+        {
+            Options = Client.Options;
         }
 
         #endregion

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using TetriNET.Client.Interfaces;
+using TetriNET.Common.DataContracts;
 
 namespace TetriNET.ConsoleWCFClient.GameController
 {
@@ -120,7 +121,7 @@ namespace TetriNET.ConsoleWCFClient.GameController
 
         #region IClient event handlers
 
-        private void OnGameFinished()
+        private void OnGameFinished(GameStatistics statistics)
         {
             foreach (Timer timer in _timers.Values)
                 timer.Stop();

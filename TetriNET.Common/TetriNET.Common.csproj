@@ -49,6 +49,8 @@
     <Compile Include="Contracts\IWCFTetriNET.cs" />
     <Compile Include="Contracts\IWCFTetriNETSpectator.cs" />
     <Compile Include="DataContracts\GameOptions.cs" />
+    <Compile Include="DataContracts\GameStatistics.cs" />
+    <Compile Include="DataContracts\GameStatisticsByPlayer.cs" />
     <Compile Include="DataContracts\LeaveReasons.cs" />
     <Compile Include="DataContracts\RegistrationResults.cs" />
     <Compile Include="DataContracts\SpecialOccurancy.cs" />

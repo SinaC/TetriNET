@@ -397,12 +397,9 @@ namespace TetriNET.Client
             GameStarted.Do(x => x());
         }
 
-        private void OnGameStartedPlayer(List<Pieces> pieces, GameOptions options)
+        private void OnGameStartedPlayer(List<Pieces> pieces)
         {
             // Reset board action list
-            //Action outAction;
-            //while (!_boardActionQueue.IsEmpty)
-            //    _boardActionQueue.TryDequeue(out outAction);
             while (_boardActionBlockingCollection.Count > 0)
             {
                 Action item;
@@ -414,8 +411,6 @@ namespace TetriNET.Client
             ServerState = ServerStates.Playing;
             // Reset statistics
             _statistics.Reset();
-            // Reset options
-            Options = options;
             // Reset pieces
             _pieces.Reset();
             for (int i = 0; i < pieces.Count; i++)
@@ -490,7 +485,7 @@ namespace TetriNET.Client
             //Log.WriteLine("PIECES:{0}", _pieces.Dump(8));
         }
 
-        public void OnGameStarted(List<Pieces> pieces, GameOptions options)
+        public void OnGameStarted(List<Pieces> pieces)
         {
             Log.WriteLine(Log.LogLevels.Debug, "Game started with {0}", pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
 
@@ -499,10 +494,10 @@ namespace TetriNET.Client
             if (IsSpectator)
                 OnGameStartedSpectator();
             else
-                OnGameStartedPlayer(pieces, options);
+                OnGameStartedPlayer(pieces);
         }
 
-        public void OnGameFinished()
+        public void OnGameFinished(GameStatistics statistics)
         {
             Log.WriteLine(Log.LogLevels.Debug, "Game finished");
 
@@ -522,16 +517,13 @@ namespace TetriNET.Client
             }
 
             // Reset board action list
-            //Action outAction;
-            //while (!_boardActionQueue.IsEmpty)
-            //    _boardActionQueue.TryDequeue(out outAction);
             while (_boardActionBlockingCollection.Count > 0)
             {
                 Action item;
                 _boardActionBlockingCollection.TryTake(out item);
             }
 
-            GameFinished.Do(x => x());
+            GameFinished.Do(x => x(statistics));
 
             if (!IsSpectator)
                 _achievementManager.Do(x => x.OnGameFinished());
@@ -747,7 +739,19 @@ namespace TetriNET.Client
             }
         }
 
-        public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool isGameStarted)
+        public void OnOptionsChanged(GameOptions options)
+        {
+            Log.WriteLine(Log.LogLevels.Debug, "Options changed");
+
+            ResetTimeout();
+
+            // Reset options
+            Options = options;
+
+            OptionsChanged.Do(x => x());
+        }
+
+        public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool isGameStarted, GameOptions options)
         {
             ResetTimeout();
             if (result == RegistrationResults.RegistrationSuccessful && State == States.Registering)
@@ -765,6 +769,8 @@ namespace TetriNET.Client
                     };
                     _spectatorData[_clientSpectatorId] = player;
 
+                    Options = options;
+                    // Set state
                     State = States.Registered;
                     ServerState = isGameStarted ? ServerStates.Playing : ServerStates.Waiting;// TODO: handle server paused
 
@@ -864,9 +870,6 @@ namespace TetriNET.Client
             _gameTimer.Stop();
 
             // Reset board action list
-            //Action outAction;
-            //while (!_boardActionQueue.IsEmpty)
-            //    _boardActionQueue.TryDequeue(out outAction);
             while (_boardActionBlockingCollection.Count > 0)
             {
                 Action item;
@@ -1008,6 +1011,7 @@ namespace TetriNET.Client
                     Score += Level * 800;
                     ScoreChanged.Do(x => x(Score));
                     break;
+                    // TODO: more than 4 lines ???
             }
 
             // Check level increase
@@ -1040,14 +1044,18 @@ namespace TetriNET.Client
             // Send piece places to server
             _proxy.Do(x => x.PlacePiece(this, _pieceIndex, _pieces.HighestIndex+1, CurrentPiece.Value, CurrentPiece.Orientation, CurrentPiece.PosX, CurrentPiece.PosY, Board.Cells));
 
-            // Send lines if classic style
-            if (Options.ClassicStyleMultiplayerRules && deletedRows > 1)
+            //// Send lines if classic style
+            //if (Options.ClassicStyleMultiplayerRules && deletedRows > 1)
+            //{
+            //    int addLines = deletedRows - 1;
+            //    if (deletedRows >= 4)
+            //        // special case for Tetris and above
+            //        addLines = 4;
+            //    _proxy.Do(x => x.SendLines(this, addLines));
+            //}
+            if (deletedRows > 0)
             {
-                int addLines = deletedRows - 1;
-                if (deletedRows >= 4)
-                    // special case for Tetris and above
-                    addLines = 4;
-                _proxy.Do(x => x.SendLines(this, addLines));
+                _proxy.Do(x => x.ClearLines(this, deletedRows));
             }
 
             // UI is updated in StartRound
@@ -1248,6 +1256,7 @@ namespace TetriNET.Client
         public event ClientContinuousSpecialFinishedEventHandler ContinuousSpecialFinished;
         public event ClientAchievementEarnedEventHandler AchievementEarned;
         public event ClientPlayerAchievementEarnedEventHandler PlayerAchievementEarned;
+        public event ClientOptionsChangedEventHandler OptionsChanged;
         public event ClientRegisteredAsSpectatorEventHandler RegisteredAsSpectator;
         public event ClientSpectatorJoinedEventHandler SpectatorJoined;
         public event ClientSpectatorLeftEventHandler SpectatorLeft;
@@ -1651,9 +1660,6 @@ namespace TetriNET.Client
 
         #region Board Action Queue
 
-        //private readonly ManualResetEvent _actionEnqueuedEvent = new ManualResetEvent(false);
-        //private readonly ConcurrentQueue<Action> _boardActionQueue = new ConcurrentQueue<Action>();
-
         private readonly BlockingCollection<Action> _boardActionBlockingCollection = new BlockingCollection<Action>(new ConcurrentQueue<Action>());
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -1668,42 +1674,6 @@ namespace TetriNET.Client
         private void BoardActionTask()
         {
             Log.WriteLine(Log.LogLevels.Info, "BoardActionTask started");
-
-            //WaitHandle[] waitHandles =
-            //{
-            //    _stopBackgroundTaskEvent,
-            //    _actionEnqueuedEvent
-            //};
-
-            //while (true)
-            //{
-            //    int handle = WaitHandle.WaitAny(waitHandles, 100);
-            //    if (handle == 0) // _stopBackgroundTaskEvent
-            //        break; // Stop here
-            //    // Even if WaitAny returned WaitHandle.WaitTimeout, we check action queue
-            //    _actionEnqueuedEvent.Reset();
-            //    // Perform board actions
-            //    if (State == States.Playing && !_boardActionQueue.IsEmpty)
-            //    {
-            //        while (!_boardActionQueue.IsEmpty)
-            //        {
-            //            Action action;
-            //            bool dequeue = _boardActionQueue.TryDequeue(out action);
-            //            if (dequeue)
-            //            {
-            //                try
-            //                {
-            //                    action();
-            //                    Thread.Sleep(1);
-            //                }
-            //                catch (Exception ex)
-            //                {
-            //                    Log.WriteLine(Log.LogLevels.Error, "Exception raised in BoardActionTask. Exception:{0}", ex);
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
 
             _cancellationTokenSource = new CancellationTokenSource();
 
@@ -1757,7 +1727,7 @@ namespace TetriNET.Client
                     RandomBlocksClear(10);
                     break;
                 case Specials.SwitchFields:
-                    // NOP: Managed by Server
+                    // NOP: Handled by Server
                     break;
                 case Specials.ClearSpecialBlocks:
                     ClearSpecialBlocks();

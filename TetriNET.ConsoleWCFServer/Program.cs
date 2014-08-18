@@ -8,6 +8,7 @@ using TetriNET.Common.DataContracts;
 using TetriNET.Common.Logger;
 using TetriNET.Common.Randomizer;
 using TetriNET.ConsoleWCFServer.Host;
+using TetriNET.Server;
 using TetriNET.Server.BanManager;
 using TetriNET.Server.Interfaces;
 using TetriNET.Server.PieceProvider;
@@ -35,6 +36,7 @@ namespace TetriNET.ConsoleWCFServer
             Console.WriteLine("q: reset win list");
             Console.WriteLine("*: toggle sudden death");
             Console.WriteLine("o: dump options");
+            Console.WriteLine("i: dump statistics");
         }
 
         static void Main(string[] args)
@@ -132,45 +134,67 @@ namespace TetriNET.ConsoleWCFServer
                             clients.Add(new DummyBuiltInClient("BuiltIn-" + Guid.NewGuid().ToString().Substring(0, 5), () => builtInHost));
                             break;
                         case ConsoleKey.Subtract:
-                        {
-                            DummyBuiltInClient client = clients.LastOrDefault();
-                            if (client != null)
                             {
-                                client.DisconnectFromServer();
-                                clients.Remove(client);
+                                DummyBuiltInClient client = clients.LastOrDefault();
+                                if (client != null)
+                                {
+                                    client.DisconnectFromServer();
+                                    clients.Remove(client);
+                                }
+                                break;
                             }
-                            break;
-                        }
                         case ConsoleKey.L:
-                        {
-                            DummyBuiltInClient client = clients.LastOrDefault();
-                            if (client != null)
-                                client.Lose();
-                            break;
-                        }
+                            {
+                                DummyBuiltInClient client = clients.LastOrDefault();
+                                if (client != null)
+                                    client.Lose();
+                                break;
+                            }
                         case ConsoleKey.D:
                             foreach (IPlayer p in playerManager.Players)
                                 Console.WriteLine("{0}) {1} [{2}] {3} {4} {5:HH:mm:ss.fff} {6:HH:mm:ss.fff}", playerManager.GetId(p), p.Name, p.Team, p.State, p.PieceIndex, p.LastActionFromClient, p.LastActionToClient);
                             break;
                         case ConsoleKey.W:
-                            foreach(WinEntry e in server.WinList)
+                            foreach (WinEntry e in server.WinList)
                                 Console.WriteLine("{0}[{1}]: {2} pts", e.PlayerName, e.Team, e.Score);
                             break;
                         case ConsoleKey.Q:
                             server.ResetWinList();
                             break;
                         case ConsoleKey.Multiply:
-                                server.ToggleSuddenDeath();
-                                break;
+                            server.ToggleSuddenDeath();
+                            break;
                         case ConsoleKey.O:
                             {
                                 GameOptions options = server.GetOptions();
-                                foreach(PieceOccurancy occurancy in options.PieceOccurancies)
+                                foreach (PieceOccurancy occurancy in options.PieceOccurancies)
                                     Console.WriteLine("{0}:{1}", occurancy.Value, occurancy.Occurancy);
-                                foreach(SpecialOccurancy occurancy in options.SpecialOccurancies)
+                                foreach (SpecialOccurancy occurancy in options.SpecialOccurancies)
                                     Console.WriteLine("{0}:{1}", occurancy.Value, occurancy.Occurancy);
                             }
                             break;
+                        case ConsoleKey.I:
+                            {
+                                foreach(KeyValuePair<int, GameStatisticsByPlayer> byPlayer in server.PlayerStatistics)
+                                {
+                                    int id = byPlayer.Key;
+                                    GameStatisticsByPlayer stats = byPlayer.Value;
+                                    IPlayer player = playerManager[id];
+                                    string playerName = player == null ? "???" : player.Name;
+                                    Console.WriteLine("{0}) {1} : 1:{2} 2:{3} 3:{4} 4:{5}", byPlayer.Key, playerName, stats.SingleCount, stats.DoubleCount, stats.TripleCount, stats.TetrisCount);
+                                    foreach(KeyValuePair<Specials, Dictionary<int,int>> bySpecial in stats.SpecialsUsed)
+                                    {
+                                        Console.WriteLine("Special {0}", bySpecial.Key);
+                                        foreach(KeyValuePair<int,int> kv in bySpecial.Value)
+                                        {
+                                            IPlayer other = playerManager[kv.Key];
+                                            string otherName = other == null ? String.Format("[id:{0}]", kv.Key) : other.Name;
+                                            Console.WriteLine("\t{0}:{1}", otherName, kv.Value);
+                                        }
+                                    }
+                                }
+                                break;
+                            }
                     }
                 }
                 else

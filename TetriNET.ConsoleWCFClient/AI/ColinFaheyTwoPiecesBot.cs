@@ -4,6 +4,7 @@ using System.Linq;
 using System.Timers;
 using TetriNET.Client.Interfaces;
 using TetriNET.Client.Strategy;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Logger;
 
 namespace TetriNET.ConsoleWCFClient.AI
@@ -74,7 +75,7 @@ namespace TetriNET.ConsoleWCFClient.AI
                 _timer.Start();
         }
 
-        private void _client_OnGameFinished()
+        private void _client_OnGameFinished(GameStatistics statistics)
         {
             _timer.Stop();
         }

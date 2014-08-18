@@ -225,7 +225,7 @@ namespace TetriNET.ConsoleWCFServer
             ResetTimeout();
         }
 
-        public void OnGameStarted(List<Pieces> pieces, GameOptions options)
+        public void OnGameStarted(List<Pieces> pieces)
         {
             Log.WriteLine(Log.LogLevels.Info, "OnGameStarted[{0}]:{1}", PlayerName, pieces.Select(x => x.ToString()).Aggregate((n,i) => n + "," + i));
             ResetTimeout();
@@ -238,7 +238,7 @@ namespace TetriNET.ConsoleWCFServer
                 Log.WriteLine(Log.LogLevels.Info, "Was not waiting start game");
         }
 
-        public void OnGameFinished()
+        public void OnGameFinished(GameStatistics statistics)
         {
             Log.WriteLine(Log.LogLevels.Info, "OnGameFinished[{0}]", PlayerName);
             ResetTimeout();
@@ -329,7 +329,12 @@ namespace TetriNET.ConsoleWCFServer
             Log.WriteLine(Log.LogLevels.Info, "OnAchievementEarned[{0}]:{1} {2} {3}", PlayerName, playerId, achievementId, achievementTitle);
         }
 
-        public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted)
+        public void OnOptionsChanged(GameOptions options)
+        {
+            Log.WriteLine(Log.LogLevels.Info, "OnOptionsChanged[{0}]", PlayerName);
+        }
+
+        public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted, GameOptions options)
         {
             Log.WriteLine(Log.LogLevels.Info, "OnSpectatorRegistered[{0}]:{1} => {2} {3}", PlayerName, result, spectatorId, gameStarted);
         }

@@ -175,7 +175,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
             _isConfusionActive = false;
         }
 
-        private void OnGameFinished()
+        private void OnGameFinished(GameStatistics statistics)
         {
             foreach (DispatcherTimer timer in _timers.Values)
                 timer.Stop();

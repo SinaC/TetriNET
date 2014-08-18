@@ -17,7 +17,8 @@ namespace TetriNET.Common.Contracts
         void PlacePiece(ITetriNETCallback callback, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid);
         void ModifyGrid(ITetriNETCallback callback, byte[] grid);
         void UseSpecial(ITetriNETCallback callback, int targetId, Specials special);
-        void SendLines(ITetriNETCallback callback, int count);
+        //void SendLines(ITetriNETCallback callback, int count); // Removed in 1.5
+        void ClearLines(ITetriNETCallback callback, int count); // Added in 1.5
         void GameLost(ITetriNETCallback callback);
         void FinishContinuousSpecial(ITetriNETCallback callback, Specials special);
         void EarnAchievement(ITetriNETCallback callback, int achievementId, string achievementTitle);

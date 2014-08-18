@@ -16,7 +16,7 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientRoundStartedEventHandler();
     public delegate void ClientRoundFinishedEventHandler(int deletedRows);
     public delegate void ClientStartGameEventHandler();
-    public delegate void ClientFinishGameEventHandler();
+    public delegate void ClientFinishGameEventHandler(GameStatistics statistics);
     public delegate void ClientPauseGameEventHandler();
     public delegate void ClientResumeGameEventHandler();
     public delegate void ClientGameOverEventHandler();
@@ -49,6 +49,7 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientContinuousSpecialFinishedEventHandler(int playerId, Specials special);
     public delegate void ClientAchievementEarnedEventHandler(IAchievement achievement, bool firstTime);
     public delegate void ClientPlayerAchievementEarnedEventHandler(int playerId, string playerName, int achievementId, string achievementTitle);
+    public delegate void ClientOptionsChangedEventHandler();
     public delegate void ClientRegisteredAsSpectatorEventHandler(RegistrationResults result, int spectatorId);
     public delegate void ClientSpectatorJoinedEventHandler(int spectatorId, string spectatorName);
     public delegate void ClientSpectatorLeftEventHandler(int spectatorId, string spectatorName, LeaveReasons reason);
@@ -118,6 +119,7 @@ namespace TetriNET.Client.Interfaces
         event ClientContinuousSpecialFinishedEventHandler ContinuousSpecialFinished; // on opponent
         event ClientAchievementEarnedEventHandler AchievementEarned;
         event ClientPlayerAchievementEarnedEventHandler PlayerAchievementEarned;
+        event ClientOptionsChangedEventHandler OptionsChanged;
         event ClientRegisteredAsSpectatorEventHandler RegisteredAsSpectator;
         event ClientSpectatorJoinedEventHandler SpectatorJoined;
         event ClientSpectatorLeftEventHandler SpectatorLeft;

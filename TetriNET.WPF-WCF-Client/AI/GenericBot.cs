@@ -105,7 +105,7 @@ namespace TetriNET.WPF_WCF_Client.AI
                 _handleNextPieceEvent.Set();
         }
 
-        private void _client_OnGameFinished()
+        private void _client_OnGameFinished(GameStatistics statistics)
         {
             //_stopEvent.Set();
         }
