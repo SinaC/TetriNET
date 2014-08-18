@@ -8,7 +8,7 @@ using System.Windows;
 [assembly: AssemblyTitle("TetriNET WPF WCF Client")]
 [assembly: AssemblyDescription("TetriNET WPF WCF Client")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("SinaC (and Phil-ou for graphics)")]
+[assembly: AssemblyCompany("SinaC")]
 [assembly: AssemblyProduct("TetriNET WPF WCF Client")]
 [assembly: AssemblyCopyright("Copyright © SinaC 2013")]
 [assembly: AssemblyTrademark("")]
