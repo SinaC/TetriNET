@@ -21,7 +21,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         public WinListViewModel WinListViewModel { get; protected set; }
-        public ClientStatisticsViewModel ClientStatisticsViewModel { get; protected set; }
+        public StatisticsViewModel StatisticsViewModel { get; protected set; }
         public OptionsViewModel OptionsViewModel { get; protected set; }
         public PartyLineViewModel PartyLineViewModel { get; protected set; }
         public ConnectionViewModel ConnectionViewModel { get; protected set; }
@@ -74,7 +74,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
             // Create sub view models
             WinListViewModel = new WinListViewModel();
-            ClientStatisticsViewModel = new ClientStatisticsViewModel();
+            StatisticsViewModel = new StatisticsViewModel();
             OptionsViewModel = new OptionsViewModel();
             PartyLineViewModel = new PartyLineViewModel();
             ConnectionViewModel = new ConnectionViewModel();
@@ -113,7 +113,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         private void OnClientChanged(IClient oldClient, IClient newClient)
         {
             WinListViewModel.Client = newClient;
-            ClientStatisticsViewModel.Client = newClient;
+            StatisticsViewModel.Client = newClient;
             OptionsViewModel.Client = newClient;
             PartyLineViewModel.Client = newClient;
             ConnectionViewModel.Client = newClient;
@@ -221,21 +221,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
     public class MainWindowViewModelDesignData : MainWindowViewModel
     {
-        //public new WinListViewModelDesignData WinListViewModel { get; private set; }
-        //public new ClientStatisticsViewModelDesignData ClientStatisticsViewModel { get; private set; }
-        //public new OptionsViewModelDesignData OptionsViewModel { get; private set; }
-        //public new PartyLineViewModelDesignData PartyLineViewModel { get; private set; }
-        //public new ConnectionViewModelDesignData ConnectionViewModel { get; private set; }
-        //public new PlayFieldViewModelBase PlayFieldViewModel { get; private set; }
-        //public new AchievementsViewModelDesignData AchievementsViewModel { get; private set; }
-
-        //protected new PlayFieldViewModelDesignData PlayFieldPlayerViewModel { get; set; }
-        //protected new PlayFieldSpectatorViewModelDesignData PlayFieldSpectatorViewModel { get; set; }
-
         public MainWindowViewModelDesignData()
         {
             WinListViewModel = new WinListViewModelDesignData();
-            ClientStatisticsViewModel = new ClientStatisticsViewModelDesignData();
+            StatisticsViewModel = new StatisticsViewModelDesignData();
             OptionsViewModel = new OptionsViewModelDesignData();
             PartyLineViewModel = new PartyLineViewModelDesignData();
             ConnectionViewModel = new ConnectionViewModelDesignData();

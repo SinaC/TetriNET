@@ -51,7 +51,7 @@ namespace TetriNET.Server
         public States State { get; private set; }
         public int SpecialId { get; private set; }
         public List<WinEntry> WinList { get; private set; }
-        public Dictionary<int, GameStatisticsByPlayer> PlayerStatistics { get; private set; } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
+        public Dictionary<string, GameStatisticsByPlayer> PlayerStatistics { get; private set; } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
 
         public Server(IPlayerManager playerManager, ISpectatorManager spectatorManager, IPieceProvider pieceProvider, params IHost[] hosts)
         {
@@ -69,7 +69,7 @@ namespace TetriNET.Server
             _spectatorManager = spectatorManager;
             _hosts = hosts.ToList();
 
-            PlayerStatistics = new Dictionary<int, GameStatisticsByPlayer>();
+            PlayerStatistics = new Dictionary<string, GameStatisticsByPlayer>();
 
             WinList = new List<WinEntry>();
 
@@ -336,43 +336,42 @@ namespace TetriNET.Server
             // Create GameStatisticsByPlayer for each player
             foreach (IPlayer player in _playerManager.Players)
             {
-                int playerId = _playerManager.GetId(player);
                 // Init stats
                 GameStatisticsByPlayer stats = new GameStatisticsByPlayer
                     {
-                        PlayerId = playerId,
-                        SpecialsUsed = new Dictionary<Specials, Dictionary<int, int>>()
+                        PlayerName = player.Name,
+                        SpecialsUsed = new Dictionary<Specials, Dictionary<string, int>>()
                     };
                 foreach (SpecialOccurancy occurancy in _options.SpecialOccurancies.Where(x => x.Occurancy > 0))
                 {
-                    Dictionary<int, int> specialsByPlayer = _playerManager.Players.Select(p => _playerManager.GetId(p)).ToDictionary(id => id, id => 0);
+                    Dictionary<string, int> specialsByPlayer = _playerManager.Players.Select(p => p.Name).ToDictionary(x => x, x => 0);
                     stats.SpecialsUsed.Add(occurancy.Value, specialsByPlayer);
                 }
                 // Add stats
-                PlayerStatistics.Add(playerId, stats);
+                PlayerStatistics.Add(player.Name, stats);
             }
         }
 
-        private void UpdateStatistics(int playerId, int linesCount)
+        private void UpdateStatistics(string playerName, int linesCount)
         {
             if (linesCount == 1)
-                PlayerStatistics[playerId].SingleCount++;
+                PlayerStatistics[playerName].SingleCount++;
             else if (linesCount == 2)
-                PlayerStatistics[playerId].DoubleCount++;
+                PlayerStatistics[playerName].DoubleCount++;
             else if (linesCount == 3)
-                PlayerStatistics[playerId].TripleCount++;
+                PlayerStatistics[playerName].TripleCount++;
             else if (linesCount >= 4)
-                PlayerStatistics[playerId].TetrisCount++;
+                PlayerStatistics[playerName].TetrisCount++;
         }
 
-        private void UpdateStatistics(int playerId, int targetId, Specials special)
+        private void UpdateStatistics(string playerName, string targetName, Specials special)
         {
-            PlayerStatistics[playerId].SpecialsUsed[special][targetId]++;
+            PlayerStatistics[playerName].SpecialsUsed[special][targetName]++;
         }
 
-        private void UpdateStatistics(int playerId, DateTime gameStartTime, DateTime lossTime)
+        private void UpdateStatistics(string playerName, DateTime gameStartTime, DateTime lossTime)
         {
-            PlayerStatistics[playerId].PlayingTime = (lossTime - gameStartTime).TotalSeconds;
+            PlayerStatistics[playerName].PlayingTime = (lossTime - gameStartTime).TotalSeconds;
         }
 
         private GameStatistics PrepareGameStatistics()
@@ -506,8 +505,7 @@ namespace TetriNET.Server
 
         private void OnClearLines(IPlayer player, int count)
         {
-            int playerId = _playerManager.GetId(player);
-            UpdateStatistics(playerId, count);
+            UpdateStatistics(player.Name, count);
             if (_options.ClassicStyleMultiplayerRules && count > 1)
             {
                 int addLines = count - 1;
@@ -948,7 +946,7 @@ namespace TetriNET.Server
             int playerId = _playerManager.GetId(player);
             int targetId = _playerManager.GetId(target);
             // Update statistics
-            UpdateStatistics(playerId, targetId, special);
+            UpdateStatistics(player.Name, target.Name, special);
             // Store special id locally
             int specialId = SpecialId;
             // Increment special
@@ -1015,7 +1013,7 @@ namespace TetriNET.Server
                 foreach (IEntity entity in Entities.Where(x => x != player))
                     entity.OnPlayerLost(id);
 
-                UpdateStatistics(id, _gameStartTime, player.LossTime);
+                UpdateStatistics(player.Name, _gameStartTime, player.LossTime);
 
                 //
                 int playingCount = _playerManager.Players.Count(p => p.State == PlayerStates.Playing);

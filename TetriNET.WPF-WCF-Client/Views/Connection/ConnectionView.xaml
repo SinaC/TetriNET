@@ -7,7 +7,7 @@
              xmlns:connectionViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
              IsTabStop="False"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance connectionViewModels:ConnectionViewModelDesignData}"
+             d:DataContext="{d:DesignInstance connectionViewModels:ConnectionViewModelDesignData, IsDesignTimeCreatable=True}"
              d:DesignHeight="300" d:DesignWidth="600">
     <Grid>
         <Grid.RowDefinitions>
@@ -19,8 +19,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <views:LoginView Grid.Row="0" Grid.Column="0" Margin="0,0,4,0" 
-                         DataContext="{Binding LoginViewModel}" 
-                         d:DataContext="{d:DesignInstance connectionViewModels:LoginViewModelDesignData, IsDesignTimeCreatable=True}" />
+                         DataContext="{Binding LoginViewModel}"/>
         <views:ServerListView Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Margin="4,0,0,0" 
                               DataContext="{Binding ServerListViewModel}" />
         <TextBlock Grid.Row="1" Grid.Column="0" 

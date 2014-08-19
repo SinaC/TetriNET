@@ -259,7 +259,7 @@
             </TabItem>
             <TabItem Header="Statistics" IsTabStop="False" 
                      Visibility="{Binding IsRegistered, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <statistics:ClientStatisticsView DataContext="{Binding Path=ClientStatisticsViewModel}"/>
+                <statistics:StatisticsView DataContext="{Binding Path=StatisticsViewModel}"/>
             </TabItem>
             <TabItem Header="Textures test" IsTabStop="False" 
                      Visibility="{Binding Path=OptionsViewModel.ClientOptionsViewModel.IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">

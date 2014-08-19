@@ -7,8 +7,7 @@ namespace TetriNET.Common.DataContracts
     public class GameStatisticsByPlayer
     {
         [DataMember]
-        // Player Id
-        public int PlayerId { get; set; }
+        public string PlayerName { get; set; }
 
         // Lines count (received from client when game is finished)
         [DataMember]
@@ -24,8 +23,8 @@ namespace TetriNET.Common.DataContracts
         [DataMember]
         public double PlayingTime { get; set; }
 
-        // Number of specials used on each players <Specials, <PlayerId, Count>>
+        // Number of specials used on each players <Specials, <PlayerName, Count>>
         [DataMember]
-        public Dictionary<Specials, Dictionary<int, int>> SpecialsUsed { get; set; }
+        public Dictionary<Specials, Dictionary<string, int>> SpecialsUsed { get; set; }
     }
 }

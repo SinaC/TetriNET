@@ -36,7 +36,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
     // TODO: create sub view model with an ObservableDictionary + Matching Sum
 
-    public class ClientStatisticsViewModel : ViewModelBase, ITabIndex
+    public class ClientStatisticsViewModel : ViewModelBase
     {
         public ObservableDictionary<Pieces, ValuePercentage> PieceCount
         {
@@ -205,15 +205,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             OnPropertyChanged("GameWon");
             OnPropertyChanged("GameLost");
         }
-
-        #region ITabIndex
-
-        public int TabIndex
-        {
-            get { return 6; }
-        }
-
-        #endregion
 
         #region ViewModelBase
 

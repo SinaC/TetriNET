@@ -8,7 +8,6 @@ using TetriNET.Common.DataContracts;
 using TetriNET.Common.Logger;
 using TetriNET.Common.Randomizer;
 using TetriNET.ConsoleWCFServer.Host;
-using TetriNET.Server;
 using TetriNET.Server.BanManager;
 using TetriNET.Server.Interfaces;
 using TetriNET.Server.PieceProvider;
@@ -175,20 +174,17 @@ namespace TetriNET.ConsoleWCFServer
                             break;
                         case ConsoleKey.I:
                             {
-                                foreach(KeyValuePair<int, GameStatisticsByPlayer> byPlayer in server.PlayerStatistics)
+                                foreach(KeyValuePair<string, GameStatisticsByPlayer> byPlayer in server.PlayerStatistics)
                                 {
-                                    int id = byPlayer.Key;
                                     GameStatisticsByPlayer stats = byPlayer.Value;
-                                    IPlayer player = playerManager[id];
-                                    string playerName = player == null ? "???" : player.Name;
+                                    string playerName = byPlayer.Key;
                                     Console.WriteLine("{0}) {1} : 1:{2} 2:{3} 3:{4} 4:{5}", byPlayer.Key, playerName, stats.SingleCount, stats.DoubleCount, stats.TripleCount, stats.TetrisCount);
-                                    foreach(KeyValuePair<Specials, Dictionary<int,int>> bySpecial in stats.SpecialsUsed)
+                                    foreach (KeyValuePair<Specials, Dictionary<string, int>> bySpecial in stats.SpecialsUsed)
                                     {
                                         Console.WriteLine("Special {0}", bySpecial.Key);
-                                        foreach(KeyValuePair<int,int> kv in bySpecial.Value)
+                                        foreach (KeyValuePair<string, int> kv in bySpecial.Value)
                                         {
-                                            IPlayer other = playerManager[kv.Key];
-                                            string otherName = other == null ? String.Format("[id:{0}]", kv.Key) : other.Name;
+                                            string otherName = kv.Key;
                                             Console.WriteLine("\t{0}:{1}", otherName, kv.Value);
                                         }
                                     }

@@ -127,6 +127,8 @@
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\Options\OptionsViewModel.cs" />
     <Compile Include="ViewModels\PartyLine\PartyLineViewModel.cs" />
+    <Compile Include="ViewModels\Statistics\GameStatisticsViewModel.cs" />
+    <Compile Include="ViewModels\Statistics\StatisticsViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\WinList\WinListViewModel.cs" />
     <Compile Include="UserControls\CircularProgressBarControl.xaml.cs">
@@ -188,6 +190,9 @@
     </Compile>
     <Compile Include="Views\PartyLine\PartyLineView.xaml.cs">
       <DependentUpon>PartyLineView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Statistics\StatisticsView.xaml.cs">
+      <DependentUpon>StatisticsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Test\TestView.xaml.cs">
       <DependentUpon>TestView.xaml</DependentUpon>
@@ -320,6 +325,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PartyLine\PartyLineView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Statistics\StatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
