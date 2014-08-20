@@ -3,13 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:achievements="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Achievements"
+             xmlns:achievementsViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Achievements"
              xmlns:interfaces="clr-namespace:TetriNET.Client.Interfaces;assembly=TetriNET.Client.Interfaces"
              xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers" 
              IsTabStop="False"
              mc:Ignorable="d" 
              d:DesignHeight="400"
-             d:DataContext="{d:DesignInstance achievements:AchievementsViewModelDesignData, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance achievementsViewModels:AchievementsViewModelDesignData, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="AchievedOnlyOnceDataTemplate" DataType="{x:Type interfaces:IAchievement}">
@@ -130,6 +130,12 @@
         </Grid.RowDefinitions>
 
         <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="0">
+            <ScrollViewer.Resources>
+                <Style TargetType="ScrollBar">
+                    <Setter Property="MinWidth" Value="10"/>
+                    <Setter Property="Width" Value="10"/>
+                </Style>
+            </ScrollViewer.Resources>
             <ListBox
                 HorizontalAlignment="Stretch"
                 Background="Transparent" BorderThickness="0"

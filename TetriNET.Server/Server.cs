@@ -192,7 +192,7 @@ namespace TetriNET.Server
                 _isSuddenDeathActive = false;
                 if (_options.DelayBeforeSuddenDeath > 0)
                 {
-                    _gameStartTime = DateTime.Now.AddMinutes(_options.DelayBeforeSuddenDeath);
+                    _suddenDeathStartTime = DateTime.Now.AddMinutes(_options.DelayBeforeSuddenDeath);
                     _isSuddenDeathActive = true;
                     Log.WriteLine(Log.LogLevels.Info, "Sudden death will be activated after {0} minutes and send lines every {1} seconds", _options.DelayBeforeSuddenDeath, _options.SuddenDeathTick);
                 }

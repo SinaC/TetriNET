@@ -120,43 +120,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             }
         }
 
-        //public ChatViewModel()
-        //{
-        //    AchievementManager manager = new AchievementManager();
-        //    manager.FindAllAchievements(Assembly.Load("TetriNET.Client.Achievements"));
-        //    IAchievement sniper = manager.Achievements.FirstOrDefault(x => x.Title == "Sniper");
-        //    IAchievement fearMyBrain = manager.Achievements.FirstOrDefault(x => x.Title == "Fear my brain !");
-
-        //    AddEntry(new PlayerMessageEntry
-        //    {
-        //        PlayerName = "Dummy1",
-        //        Color = ChatColor.Green,
-        //        Message = "Message with player name visible",
-        //    });
-        //    AddEntry(new ServerMessageEntry
-        //    {
-        //        Color = ChatColor.Red,
-        //        Message = "Message without player name",
-        //    });
-        //    AddEntry(new SelfAchievementEntry
-        //    {
-        //        Color = ChatColor.Blue,
-        //        Achievement = sniper,
-        //    });
-        //    AddEntry(new OtherAchievementEntry
-        //    {
-        //        Color = ChatColor.Blue,
-        //        Achievement = fearMyBrain,
-        //        PlayerName = "Dummy2",
-        //    });
-        //    AddEntry(new InvalidAchievementEntry
-        //    {
-        //        Color = ChatColor.Blue,
-        //        AchievementTitle = "Too good for you",
-        //        PlayerName = "Dummy3",
-        //    });
-        //}
-
         protected void AddEntry(ChatEntry entry)
         {
             ExecuteOnUIThread.Invoke(() =>
@@ -404,39 +367,30 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
     {
         public ChatViewModelDesignData()
         {
-            //AchievementManager manager = new AchievementManager();
-            //manager.FindAllAchievements(Assembly.Load("TetriNET.Client.Achievements"));
-            //IAchievement sniper = manager.Achievements.FirstOrDefault(x => x.Title == "Sniper");
-            //IAchievement fearMyBrain = manager.Achievements.FirstOrDefault(x => x.Title == "Fear my brain !");
-
-            AddEntry(new PlayerMessageEntry
-                {
-                    PlayerName = "Dummy1",
-                    Color = ChatColor.Green,
-                    Message = "Message with player name visible",
-                });
-            AddEntry(new ServerMessageEntry
-                {
-                    Color = ChatColor.Red,
-                    Message = "Message without player name",
-                });
-            //AddEntry(new SelfAchievementEntry
-            //    {
-            //        Color = ChatColor.Blue,
-            //        Achievement = sniper,
-            //    });
-            //AddEntry(new OtherAchievementEntry
-            //    {
-            //        Color = ChatColor.Blue,
-            //        Achievement = fearMyBrain,
-            //        PlayerName = "Dummy2",
-            //    });
-            AddEntry(new InvalidAchievementEntry
-                {
-                    Color = ChatColor.Blue,
-                    AchievementTitle = "Too good for you",
-                    PlayerName = "Dummy3",
-                });
+            ChatEntries.Add(new PlayerMessageEntry
+            {
+                PlayerName = "Dummy1",
+                Color = ChatColor.Green,
+                Message = "Message with player name visible",
+            });
+            ChatEntries.Add(new ServerMessageEntry
+            {
+                Color = ChatColor.Red,
+                Message = "Message without player name",
+            });
+            ChatEntries.Add(new InvalidAchievementEntry
+            {
+                Color = ChatColor.Blue,
+                AchievementTitle = "Too good for you",
+                PlayerName = "Dummy3",
+            });
+            for(int i = 0; i < 50; i++)
+                ChatEntries.Add(new PlayerMessageEntry
+                    {
+                        Color = ChatColor.Orange,
+                        PlayerName = "Player1",
+                        Message = "A dummy message"
+                    });
         }
     }
 }

@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:winList="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.WinList"
+             xmlns:winListViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.WinList"
              IsTabStop="False"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance winList:WinListViewModelDesignData, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance winListViewModels:WinListViewModelDesignData, IsDesignTimeCreatable=True}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -16,7 +16,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <ListView Grid.Row="0" Grid.Column="0" Height="Auto" Background="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,5,0"
+        <ListView Grid.Row="0" Grid.Column="0" Height="Auto" Background="White" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,2"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ItemsSource="{Binding PlayerWinList, Mode=OneWay}">
             <ListView.View>
@@ -30,7 +30,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <ListView Grid.Row="0" Grid.Column="1" Height="Auto" Background="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0,0,0"
+        <ListView Grid.Row="0" Grid.Column="1" Height="Auto" Background="White" HorizontalAlignment="Left" VerticalAlignment="Top"  Margin="5,2"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ItemsSource="{Binding TeamWinList, Mode=OneWay}">
             <ListView.View>
@@ -42,7 +42,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <Button Grid.Row="1" Grid.Column="0" Width="100" HorizontalAlignment="Left"
+        <Button Grid.Row="1" Grid.Column="0" Width="100" HorizontalAlignment="Left" Margin="5,2"
                 IsEnabled="{Binding IsResetEnabled}"
                 Command="{Binding ResetWinListCommand}">
             <TextBlock Text="Reset Scores"/>

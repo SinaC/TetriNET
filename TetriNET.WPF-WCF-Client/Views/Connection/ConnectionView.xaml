@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:views="clr-namespace:TetriNET.WPF_WCF_Client.Views.Connection"
+             xmlns:connectionViews="clr-namespace:TetriNET.WPF_WCF_Client.Views.Connection"
              xmlns:connectionViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
              IsTabStop="False"
              mc:Ignorable="d" 
@@ -18,10 +18,10 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <views:LoginView Grid.Row="0" Grid.Column="0" Margin="0,0,4,0" 
-                         DataContext="{Binding LoginViewModel}"/>
-        <views:ServerListView Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Margin="4,0,0,0" 
-                              DataContext="{Binding ServerListViewModel}" />
+        <connectionViews:LoginView Grid.Row="0" Grid.Column="0" Margin="0,0,4,0" 
+                                   DataContext="{Binding LoginViewModel}"/>
+        <connectionViews:ServerListView Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Margin="4,0,0,0" 
+                                        DataContext="{Binding ServerListViewModel}" />
         <TextBlock Grid.Row="1" Grid.Column="0" 
                    Text="{Binding AssemblyVersion}"/>
     </Grid>

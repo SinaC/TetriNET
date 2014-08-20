@@ -3,12 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:viewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PlayField"
-             xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
+             xmlns:playFieldViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PlayField"
              mc:Ignorable="d"
              DataContextChanged="PlayerGridControl_OnDataContextChanged"
              IsTabStop="False"
-             d:DataContext="{d:DesignInstance viewModels:PlayerViewModel}">
+             d:DataContext="{d:DesignInstance playFieldViewModels:PlayerViewModelDesignData, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>

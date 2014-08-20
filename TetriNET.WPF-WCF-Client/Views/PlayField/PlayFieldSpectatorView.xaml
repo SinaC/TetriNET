@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:playField="clr-namespace:TetriNET.WPF_WCF_Client.Views.PlayField"
-             xmlns:viewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PlayField" 
+             xmlns:playFieldViews="clr-namespace:TetriNET.WPF_WCF_Client.Views.PlayField"
+             xmlns:playFieldviewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PlayField" 
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance viewModels:PlayFieldSpectatorViewModelDesignData, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance playFieldviewModels:PlayFieldSpectatorViewModelDesignData, IsDesignTimeCreatable=True}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="200"/>
@@ -18,20 +18,19 @@
             <ColumnDefinition Width="110"/>
             <ColumnDefinition Width="110"/>
         </Grid.ColumnDefinitions>
-        <playField:InGameChatView Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                                  DataContext="{Binding InGameChatViewModel}" 
-                                  d:DataContext="{d:DesignInstance viewModels:InGameChatViewModelDesignData, IsDesignTimeCreatable=True}"/>
-        <playField:OpponentGridView x:Name="OpponentGrid1" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                                    DataContext="{Binding OpponentsViewModel[0]}"/>
-        <playField:OpponentGridView x:Name="OpponentGrid2" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                                    DataContext="{Binding OpponentsViewModel[1]}"/>
-        <playField:OpponentGridView x:Name="OpponentGrid3" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                                    DataContext="{Binding OpponentsViewModel[2]}"/>
-        <playField:OpponentGridView x:Name="OpponentGrid4" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                                    DataContext="{Binding OpponentsViewModel[3]}"/>
-        <playField:OpponentGridView x:Name="OpponentGrid5" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                                    DataContext="{Binding OpponentsViewModel[4]}"/>
-        <playField:OpponentGridView x:Name="OpponentGrid6" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Top" 
-                                    DataContext="{Binding OpponentsViewModel[5]}"/>
+        <playFieldViews:InGameChatView Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                                       DataContext="{Binding InGameChatViewModel}"/>
+        <playFieldViews:OpponentGridView x:Name="OpponentGrid1" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                                         DataContext="{Binding OpponentsViewModel[0]}"/>
+        <playFieldViews:OpponentGridView x:Name="OpponentGrid2" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                                         DataContext="{Binding OpponentsViewModel[1]}"/>
+        <playFieldViews:OpponentGridView x:Name="OpponentGrid3" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                                         DataContext="{Binding OpponentsViewModel[2]}"/>
+        <playFieldViews:OpponentGridView x:Name="OpponentGrid4" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                                         DataContext="{Binding OpponentsViewModel[3]}"/>
+        <playFieldViews:OpponentGridView x:Name="OpponentGrid5" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                                         DataContext="{Binding OpponentsViewModel[4]}"/>
+        <playFieldViews:OpponentGridView x:Name="OpponentGrid6" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                                         DataContext="{Binding OpponentsViewModel[5]}"/>
     </Grid>
 </UserControl>

@@ -3,11 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:viewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
              xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
              xmlns:userControls="clr-namespace:TetriNET.WPF_WCF_Client.UserControls"
+             xmlns:connectionViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance viewModels:LoginViewModelDesignData, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance connectionViewModels:LoginViewModelDesignData, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -82,9 +82,11 @@
                    Text="{Binding ConnectionResult}" 
                    Foreground="{Binding ConnectionResultColor, Converter={StaticResource ChatColorBrushConverter}}"/>
 
-        <userControls:CircularProgressBarControl 
-            ToolTip="Connecting..." Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" Width="40" Height="40" HorizontalAlignment="Center" VerticalAlignment="Center"
-            StartupDelay="0"
-            Visibility="{Binding IsProgressBarVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        <userControls:CircularProgressBarControl Grid.Row="0" Grid.RowSpan="4" Grid.Column="0" Grid.ColumnSpan="2" 
+                                                 Width="40" Height="40" 
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                 ToolTip="Connecting..." 
+                                                 StartupDelay="0"
+                                                 Visibility="{Binding IsProgressBarVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
     </Grid>
 </UserControl>

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:partyLine="clr-namespace:TetriNET.WPF_WCF_Client.Views.PartyLine"
+             xmlns:partyLineViews="clr-namespace:TetriNET.WPF_WCF_Client.Views.PartyLine"
              xmlns:partyLineViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PartyLine"
              IsTabStop="False"
              d:DataContext="{d:DesignInstance partyLineViewModels:PartyLineViewModelDesignData, IsDesignTimeCreatable=True}"
@@ -31,8 +31,9 @@
                 Command="{Binding UpdateTeamCommand}">
             <TextBlock Text="Update team"/>
         </Button>
-        <partyLine:ChatView Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Width="450" Height="380" 
-                            DataContext="{Binding ChatViewModel}" />
+        <partyLineViews:ChatView Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" 
+                                 Width="450" Height="380" 
+                                 DataContext="{Binding ChatViewModel}" />
         <Grid Grid.Row="2" Grid.Column="1" Margin="2,4,0,4" VerticalAlignment="Bottom">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -49,7 +50,8 @@
                 <TextBlock Text="{Binding StartStopLabel}"/>
             </Button>
         </Grid>
-        <partyLine:PlayersManagerView Grid.Row="1" Grid.Column="1" Height="300" Margin="2,0,0,0" 
-                                      DataContext="{Binding PlayersManagerViewModel}" />
+        <partyLineViews:PlayersManagerView Grid.Row="1" Grid.Column="1" 
+                                           Height="300" Margin="2,0,0,0" 
+                                           DataContext="{Binding PlayersManagerViewModel}" />
     </Grid>
 </UserControl>

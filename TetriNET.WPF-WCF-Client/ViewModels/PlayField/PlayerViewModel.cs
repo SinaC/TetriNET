@@ -142,4 +142,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         #endregion
     }
+
+    public class PlayerViewModelDesignData : PlayerViewModel
+    {
+        public PlayerViewModelDesignData()
+        {
+            PlayerId = 5;
+            Team = "LMA";
+            HasLost = true;
+        }
+    }
 }

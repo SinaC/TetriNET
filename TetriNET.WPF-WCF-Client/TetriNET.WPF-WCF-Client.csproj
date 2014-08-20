@@ -55,6 +55,7 @@
     <ApplicationIcon>TetriNET.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Xml" />
@@ -62,6 +63,7 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -83,8 +85,15 @@
     <Compile Include="Converters\StringColorConverter.cs" />
     <Compile Include="CustomSettings\Achievements.cs" />
     <Compile Include="CustomSettings\PortableSettingsProvider.cs" />
+    <Compile Include="DynamicGrid\DynamicColumn.cs" />
+    <Compile Include="DynamicGrid\DynamicGrid.cs" />
+    <Compile Include="DynamicGrid\DynamicPropertyDescriptor.cs" />
+    <Compile Include="DynamicGrid\DynamicRow.cs" />
+    <Compile Include="DynamicGrid\IDynamicColumn.cs" />
     <Compile Include="Helpers\AssemblyHelper.cs" />
     <Compile Include="Helpers\AttachedFocus.cs" />
+    <Compile Include="Helpers\ComboBoxExtensionMethods.cs" />
+    <Compile Include="Helpers\ComboBoxWidthFromItemsBehavior.cs" />
     <Compile Include="Helpers\ItemsControlExtenders.cs" />
     <Compile Include="Helpers\VisualTree.cs" />
     <Compile Include="Models\ChatColor.cs" />
@@ -190,6 +199,9 @@
     </Compile>
     <Compile Include="Views\PartyLine\PartyLineView.xaml.cs">
       <DependentUpon>PartyLineView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Statistics\GameStatisticsView.xaml.cs">
+      <DependentUpon>GameStatisticsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Statistics\StatisticsView.xaml.cs">
       <DependentUpon>StatisticsView.xaml</DependentUpon>
@@ -325,6 +337,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PartyLine\PartyLineView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Statistics\GameStatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

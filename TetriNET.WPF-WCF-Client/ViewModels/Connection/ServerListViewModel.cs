@@ -102,4 +102,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         #endregion
     }
+
+    public class ServerListViewModelDesignData : ServerListViewModel
+    {
+        public ServerListViewModelDesignData()
+        {
+        }
+    }
 }

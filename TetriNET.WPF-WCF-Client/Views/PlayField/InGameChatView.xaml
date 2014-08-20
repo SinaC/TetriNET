@@ -3,16 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:playField="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PlayField"
              xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
              xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers" mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance playField:InGameChatViewModelDesignData, IsDesignTimeCreatable=True}">
+             xmlns:playFieldViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PlayField"
+             d:DataContext="{d:DesignInstance playFieldViewModels:InGameChatViewModelDesignData, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:SpecialToStringConverter x:Key="SpecialToStringConverter"/>
             <converters:ChatColorBrushConverter x:Key="ChatColorBrushConverter"/>
             <!-- 3 DataTemplate with same DataType but 2 are named so, only unnamed-one is considered as playField:SpecialEntry -->
-            <DataTemplate x:Key="SpecialOnPlayerTemplate" DataType="{x:Type playField:SpecialEntry}">
+            <DataTemplate x:Key="SpecialOnPlayerTemplate" DataType="{x:Type playFieldViewModels:SpecialEntry}">
                 <WrapPanel>
                     <WrapPanel.Resources>
                         <Style TargetType="{x:Type TextBlock}">
@@ -36,7 +36,7 @@
                                Text="{Binding Source}"/>
                 </WrapPanel>
             </DataTemplate>
-            <DataTemplate x:Key="SpecialOnOtherTemplate" DataType="{x:Type playField:SpecialEntry}">
+            <DataTemplate x:Key="SpecialOnOtherTemplate" DataType="{x:Type playFieldViewModels:SpecialEntry}">
                 <WrapPanel>
                     <WrapPanel.Resources>
                         <Style TargetType="{x:Type TextBlock}">
@@ -59,7 +59,7 @@
                                Text="{Binding Source}"/>
                 </WrapPanel>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type playField:SpecialEntry}">
+            <DataTemplate DataType="{x:Type playFieldViewModels:SpecialEntry}">
                 <ContentPresenter x:Name="SpecialEntryContentControl" Content="{Binding}"/>
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding IsOnPlayer}" Value="True">
@@ -70,7 +70,7 @@
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type playField:OneLineAddedEntry}">
+            <DataTemplate DataType="{x:Type playFieldViewModels:OneLineAddedEntry}">
                 <WrapPanel>
                     <WrapPanel.Resources>
                         <Style TargetType="{x:Type TextBlock}">
@@ -89,7 +89,7 @@
                                Text="{Binding Source}"/>
                 </WrapPanel>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type playField:MultiLineAddedEntry}">
+            <DataTemplate DataType="{x:Type playFieldViewModels:MultiLineAddedEntry}">
                 <WrapPanel>
                     <WrapPanel.Resources>
                         <Style TargetType="{x:Type TextBlock}">
@@ -108,7 +108,7 @@
                                Text="{Binding Source}"/>
                 </WrapPanel>
             </DataTemplate>
-            <DataTemplate x:Key="SelfLostTemplate" DataType="{x:Type playField:PlayerLostEntry}">
+            <DataTemplate x:Key="SelfLostTemplate" DataType="{x:Type playFieldViewModels:PlayerLostEntry}">
                 <WrapPanel>
                     <WrapPanel.Resources>
                         <Style TargetType="{x:Type TextBlock}">
@@ -122,7 +122,7 @@
                                Text="You have lost"/>
                 </WrapPanel>
             </DataTemplate>
-            <DataTemplate x:Key="LostTemplate" DataType="{x:Type playField:PlayerLostEntry}">
+            <DataTemplate x:Key="LostTemplate" DataType="{x:Type playFieldViewModels:PlayerLostEntry}">
                 <WrapPanel>
                     <WrapPanel.Resources>
                         <Style TargetType="{x:Type TextBlock}">
@@ -138,7 +138,7 @@
                                Text="has lost"/>
                 </WrapPanel>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type playField:PlayerLostEntry}">
+            <DataTemplate DataType="{x:Type playFieldViewModels:PlayerLostEntry}">
                 <ContentPresenter x:Name="LostEntryContentControl" Content="{Binding}"/>
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding IsOnPlayer}" Value="True">
@@ -149,7 +149,7 @@
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type playField:AchievementEarnedEntry}">
+            <DataTemplate DataType="{x:Type playFieldViewModels:AchievementEarnedEntry}">
                 <WrapPanel>
                     <WrapPanel.Resources>
                         <Style TargetType="{x:Type TextBlock}">
@@ -167,7 +167,7 @@
                                Text="{Binding AchievementTitle, StringFormat={}[{0}]}"/>
                 </WrapPanel>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type playField:SelfAchievementEarnedEntry}">
+            <DataTemplate DataType="{x:Type playFieldViewModels:SelfAchievementEarnedEntry}">
                 <WrapPanel>
                     <WrapPanel.Resources>
                         <Style TargetType="{x:Type TextBlock}">
@@ -183,7 +183,7 @@
                                Text="{Binding AchievementTitle, StringFormat={}[{0}]}"/>
                 </WrapPanel>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type playField:SimpleMessageEntry}">
+            <DataTemplate DataType="{x:Type playFieldViewModels:SimpleMessageEntry}">
                 <WrapPanel>
                     <TextBlock FontSize="10"
                                Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}"
@@ -208,6 +208,12 @@
             Width="300" MaxWidth="300" Height="Auto" 
             BorderBrush="Transparent"
             ItemsSource="{Binding Entries, Mode=OneWay}">
+            <ItemsControl.Resources>
+                <Style TargetType="ScrollBar">
+                    <Setter Property="MinWidth" Value="10"/>
+                    <Setter Property="Width" Value="10"/>
+                </Style>
+            </ItemsControl.Resources>
             <ItemsControl.Template>
                 <ControlTemplate>
                     <ScrollViewer VerticalScrollBarVisibility="Auto">

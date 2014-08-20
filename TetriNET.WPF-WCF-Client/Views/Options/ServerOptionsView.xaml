@@ -3,14 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:options="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Options"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:validators="clr-namespace:TetriNET.WPF_WCF_Client.Validators"
              xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
              xmlns:userControls="clr-namespace:TetriNET.WPF_WCF_Client.UserControls"
+             xmlns:optionsViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Options"
              mc:Ignorable="d" 
              d:DesignHeight="480" d:DesignWidth="640"
-             d:DataContext="{d:DesignInstance options:ServerOptionsViewModelDesignData, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance optionsViewModels:ServerOptionsViewModelDesignData, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

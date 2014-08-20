@@ -8,14 +8,14 @@
              mc:Ignorable="d" 
              IsTabStop="False"
              d:DataContext="{d:DesignInstance statisticsViewModels:StatisticsViewModelDesignData, IsDesignTimeCreatable=True}"
-             d:DesignHeight="480" d:DesignWidth="640">
+             d:DesignHeight="450" d:DesignWidth="700">
     <Grid>
         <TabControl>
             <TabItem Header="Client">
                 <statisticsViews:ClientStatisticsView DataContext="{Binding ClientStatisticsViewModel}"/>
             </TabItem>
             <TabItem Header="Game">
-                <TextBlock Text="Not Yet Implemented"/> <!-- TODO -->
+                <statisticsViews:GameStatisticsView DataContext="{Binding GameStatisticsViewModel}"/>
             </TabItem>
         </TabControl>
     </Grid>

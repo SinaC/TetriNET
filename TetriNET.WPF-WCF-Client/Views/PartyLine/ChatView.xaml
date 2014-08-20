@@ -4,15 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:helpers="clr-namespace:TetriNET.WPF_WCF_Client.Helpers"
-             xmlns:partyLine="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PartyLine"
              xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
+             xmlns:partyLineViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.PartyLine"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance partyLine:ChatViewModelDesignData, IsDesignTimeCreatable=True}"
+             d:DataContext="{d:DesignInstance partyLineViewModels:ChatViewModelDesignData, IsDesignTimeCreatable=True}"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:ChatColorBrushConverter x:Key="ChatColorBrushConverter"/>
-            <DataTemplate DataType="{x:Type partyLine:PlayerMessageEntry}">
+            <DataTemplate DataType="{x:Type partyLineViewModels:PlayerMessageEntry}">
                 <WrapPanel Orientation="Horizontal">
                     <TextBlock TextDecorations="Underline" FontWeight="Bold" 
                                Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}" 
@@ -22,14 +22,14 @@
                         Text="{Binding Message}" />
                 </WrapPanel>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type partyLine:ServerMessageEntry}">
+            <DataTemplate DataType="{x:Type partyLineViewModels:ServerMessageEntry}">
                 <WrapPanel Orientation="Horizontal">
                     <TextBlock
                         Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}"
                         Text="{Binding Message}"/>
                 </WrapPanel>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type partyLine:SelfAchievementEntry}">
+            <DataTemplate DataType="{x:Type partyLineViewModels:SelfAchievementEntry}">
                 <WrapPanel Orientation="Horizontal">
                     <TextBlock 
                         Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}"
@@ -37,7 +37,7 @@
                         Text="{Binding Achievement.Title, StringFormat={}You have earned [{0}]}"/>
                 </WrapPanel>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type partyLine:OtherAchievementEntry}">
+            <DataTemplate DataType="{x:Type partyLineViewModels:OtherAchievementEntry}">
                 <WrapPanel Orientation="Horizontal" ToolTipService.IsEnabled="{Binding IsEarned}">
                     <WrapPanel.ToolTip>
                         <TextBlock 
@@ -57,7 +57,7 @@
                     </TextBlock>
                 </WrapPanel>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type partyLine:InvalidAchievementEntry}">
+            <DataTemplate DataType="{x:Type partyLineViewModels:InvalidAchievementEntry}">
                 <WrapPanel Orientation="Horizontal">
                     <TextBlock 
                         Foreground="{Binding Color, Converter={StaticResource ChatColorBrushConverter}}">
@@ -74,6 +74,7 @@
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -84,6 +85,12 @@
             Grid.Row="0" 
             helpers:ListBoxExtenders.AutoScrollToEnd="True"
             ItemsSource="{Binding ChatEntries, Mode=OneWay}">
+            <ListBox.Resources>
+                <Style TargetType="ScrollBar">
+                    <Setter Property="MinWidth" Value="10"/>
+                    <Setter Property="Width" Value="10"/>
+                </Style>
+            </ListBox.Resources>
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <ContentControl IsTabStop="False"
