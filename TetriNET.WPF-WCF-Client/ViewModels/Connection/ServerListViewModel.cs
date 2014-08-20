@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using TetriNET.Client.WCFProxy;
-using TetriNET.WPF_WCF_Client.Commands;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.MVVM;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 {

@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.DataContracts;
+using TetriNET.WPF_WCF_Client.Messages;
+using TetriNET.WPF_WCF_Client.MVVM;
 using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Options
@@ -91,6 +92,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
                     OnPropertyChanged();
                     Settings.Default.IsDeveloperModeActivated = _isDeveloperModeActivated;
                     Settings.Default.Save();
+                    Mediator.Send(new IsDeveloperModeModifiedMessage
+                    {
+                        IsActivated = IsDeveloperModeActivated
+                    });
                 }
             }
         }

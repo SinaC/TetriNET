@@ -4,8 +4,10 @@ using System.Linq;
 using System.Windows.Input;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
-using TetriNET.WPF_WCF_Client.Commands;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.Messages;
+using TetriNET.WPF_WCF_Client.MVVM;
+using TetriNET.WPF_WCF_Client.ViewModels.Options;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 {
@@ -85,6 +87,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
                     return null;
                 return BuildStatistics(Client.Statistics);
             }
+        }
+
+        public bool IsDeveloperModeActivated
+        {
+            get { return ClientOptionsViewModel.Instance.IsDeveloperModeActivated; }
         }
 
         public int PiecesCountSum
@@ -181,6 +188,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         public ClientStatisticsViewModel()
         {
             RefreshStatisticsCommand = new RelayCommand(Refresh);
+            Mediator.Register<IsDeveloperModeModifiedMessage>(this, _ => OnPropertyChanged("IsDeveloperModeActivated"));
         }
 
         private void Refresh()

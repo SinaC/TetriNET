@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
-using TetriNET.WPF_WCF_Client.Commands;
+using TetriNET.WPF_WCF_Client.MVVM;
 using TetriNET.WPF_WCF_Client.Properties;
 using TetriNET.WPF_WCF_Client.Validators;
 

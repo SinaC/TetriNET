@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Input;
 using TetriNET.Common.Helpers;
+using TetriNET.WPF_WCF_Client.MVVM;
 using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Options

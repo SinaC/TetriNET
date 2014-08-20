@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using TetriNET.Common.Helpers;
 
-namespace TetriNET.WPF_WCF_Client.ViewModels
+namespace TetriNET.WPF_WCF_Client.MVVM
 {
     public abstract class ObservableObject : INotifyPropertyChanged
     {

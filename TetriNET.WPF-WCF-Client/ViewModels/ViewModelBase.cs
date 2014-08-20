@@ -1,5 +1,6 @@
 ﻿using TetriNET.Client.Interfaces;
 using TetriNET.Common.Helpers;
+using TetriNET.WPF_WCF_Client.MVVM;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels
 {

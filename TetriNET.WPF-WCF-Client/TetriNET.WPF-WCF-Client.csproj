@@ -80,8 +80,9 @@
     <Compile Include="Converters\ChatColorBrushConverter.cs" />
     <Compile Include="Converters\SpecialToBrushConverter.cs" />
     <Compile Include="Converters\SpecialToStringConverter.cs" />
-    <Compile Include="Commands\AsyncRelayCommand.cs" />
-    <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Messages\IsDeveloperModeModifiedMessage.cs" />
+    <Compile Include="MVVM\AsyncRelayCommand.cs" />
+    <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="Converters\StringColorConverter.cs" />
     <Compile Include="CustomSettings\Achievements.cs" />
     <Compile Include="CustomSettings\PortableSettingsProvider.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Helpers\ItemsControlExtenders.cs" />
     <Compile Include="Helpers\VisualTree.cs" />
     <Compile Include="Models\ChatColor.cs" />
+    <Compile Include="MVVM\Mediator.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="UserControls\MetroLoadingControl.xaml.cs">
       <DependentUpon>MetroLoadingControl.xaml</DependentUpon>
@@ -114,7 +116,7 @@
     <Compile Include="Validators\StringValidationRule.cs" />
     <Compile Include="ViewModels\Achievements\AchievementsViewModel.cs" />
     <Compile Include="ViewModels\ITabIndex.cs" />
-    <Compile Include="ViewModels\ObservableObject.cs" />
+    <Compile Include="MVVM\ObservableObject.cs" />
     <Compile Include="ViewModels\Options\KeySettingViewModel.cs" />
     <Compile Include="TextureManager\ITextureManager.cs" />
     <Compile Include="ViewModels\Connection\LoginViewModel.cs" />

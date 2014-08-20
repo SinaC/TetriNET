@@ -37,22 +37,32 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
                 {
                     _gameStatistics = value;
                     OnPropertyChanged();
+                    OnPropertyChanged("First3Players");
+                    OnPropertyChanged("Next3Players");
+                    OnPropertyChanged("IsNextPlayersNeeded");
+                    OnPropertyChanged("MatchTime");
                 }
             }
         }
 
-        private double _matchTime;
+        public List<GameStatisticsByPlayer> First3Players
+        {
+            get { return _gameStatistics == null ? Enumerable.Empty<GameStatisticsByPlayer>().ToList() : _gameStatistics.Players.Take(3).ToList(); }
+        }
+
+        public List<GameStatisticsByPlayer> Next3Players
+        {
+            get { return _gameStatistics == null ? Enumerable.Empty<GameStatisticsByPlayer>().ToList() : _gameStatistics.Players.Skip(3).Take(3).ToList(); }
+        }
+
+        public bool IsNextPlayersNeeded
+        {
+            get { return _gameStatistics != null && _gameStatistics.Players.Count > 3; }
+        }
+
         public double MatchTime // In seconds
         {
-            get { return _matchTime; }
-            set
-            {
-                if (Math.Abs(_matchTime - value) > 0.0001)
-                {
-                    _matchTime = value;
-                    OnPropertyChanged();
-                }
-            }
+            get { return _gameStatistics == null ? 0 : _gameStatistics.MatchTime; }
         }
 
         private List<string> _playerList;
@@ -135,7 +145,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
             PlayerList = GameStatistics.Players.Select(x => x.PlayerName).ToList();
             SelectedPlayer = PlayerList.FirstOrDefault(x => x == Client.Name);
-            MatchTime = GameStatistics.MatchTime;
         }
 
         #endregion
@@ -268,14 +277,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
                                     TripleCount = 0,
                                     TetrisCount = 0,
                                 },
-                                new GameStatisticsByPlayer
-                                {
-                                    PlayerName = "Player6",
-                                    SingleCount = 20,
-                                    DoubleCount = 17,
-                                    TripleCount = 5,
-                                    TetrisCount = 2,
-                                },
+                                //new GameStatisticsByPlayer
+                                //{
+                                //    PlayerName = "Player6",
+                                //    SingleCount = 20,
+                                //    DoubleCount = 17,
+                                //    TripleCount = 5,
+                                //    TetrisCount = 2,
+                                //},
                         }
                 };
             PlayerList = new List<string>

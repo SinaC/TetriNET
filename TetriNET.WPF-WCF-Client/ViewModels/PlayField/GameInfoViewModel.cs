@@ -8,6 +8,7 @@ using System.Windows.Data;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.MVVM;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {

@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace TetriNET.WPF_WCF_Client.Commands
+namespace TetriNET.WPF_WCF_Client.MVVM
 {
-    public class AsyncRelayCommand : ICommand
+    public class RelayCommand : ICommand
     {
         private readonly Action _action;
 
-        public AsyncRelayCommand(Action action)
+        public RelayCommand(Action action)
         {
             _action = action;
         }
 
-        #region ICommand
+        #region ICommand Members
 
         public event EventHandler CanExecuteChanged;
 
@@ -22,25 +21,25 @@ namespace TetriNET.WPF_WCF_Client.Commands
             return true;
         }
 
-        public async void Execute(object parameter)
+        public void Execute(object parameter)
         {
             if (_action != null)
-                await Task.Run(() => _action());
+                _action();
         }
 
         #endregion
     }
 
-    public class AsyncRelayCommand<T> : ICommand
+    public class RelayCommand<T> : ICommand
     {
         private readonly Action<T> _action;
 
-        public AsyncRelayCommand(Action<T> action)
+        public RelayCommand(Action<T> action)
         {
             _action = action;
         }
 
-        #region ICommand
+        #region ICommand Members
 
         public event EventHandler CanExecuteChanged;
 
@@ -49,11 +48,12 @@ namespace TetriNET.WPF_WCF_Client.Commands
             return true;
         }
 
-        public async void Execute(object parameter)
+        public void Execute(object parameter)
         {
             if (_action != null)
-                await Task.Run(() => _action((T)parameter));
+                _action((T)parameter);
         }
+
 
         #endregion
     }

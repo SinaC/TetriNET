@@ -13,6 +13,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:SpecialToBrushConverter x:Key="SpecialToBrushConverter"/>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -120,7 +121,8 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </GroupBox>
-        <GroupBox Grid.Row="1" Grid.Column="0" Header="Misc">
+        <GroupBox Grid.Row="1" Grid.Column="0" Header="Misc"
+                  Visibility="{Binding IsDeveloperModeActivated, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

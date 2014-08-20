@@ -7,8 +7,8 @@ using System.Windows.Input;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.Logger;
-using TetriNET.WPF_WCF_Client.Commands;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.MVVM;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 {

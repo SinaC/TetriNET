@@ -1,4 +1,5 @@
 ﻿using System;
+using TetriNET.WPF_WCF_Client.MVVM;
 using TetriNET.WPF_WCF_Client.Properties;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Options
