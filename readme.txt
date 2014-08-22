@@ -16,7 +16,6 @@ right-click on player in players manager to display achievements
 spectator should be able to start/stop game + kick/ban (aka server master)
 merge spectator and player endpoint
 server room: may be specified in RegisterPlayer or by default start in first room with an empty place. Create automatically room when player connects if the room doesn't exist
-game statistics collected at server level and sent to client when game is finished  TODO: display in client
 
 Known issues:
 why user.config is automatically created with default values in $APPDATA$/Local/SinaC/TetriNET WPF WCF Client/  when recompiling a new version
@@ -24,6 +23,14 @@ WPF Client bot: sometimes _handleNextTetriminoEvent is raised but WaitHandle is 
 chat player list is sometimes wrong (2 times the same player) server not yet started and 2 clients try to connect at the same time while server is starting
 server message when someone change team
 score by player not sorted by team
+
+
+!!!!!!
+When adding new settings, don't forget to change Settings class signature in Properties/Settings.Designer.cs
+to
+[global::System.Configuration.SettingsProviderAttribute(typeof(TetriNET.WPF_WCF_Client.CustomSettings.PortableSettingsProvider))]
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
+    { 
 
 wcf + jquery
 http://stackoverflow.com/questions/4336212/return-json-data-from-a-wcf-service-with-nettcpbinding

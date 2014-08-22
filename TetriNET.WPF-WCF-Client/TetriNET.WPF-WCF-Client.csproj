@@ -81,6 +81,7 @@
     <Compile Include="Converters\SpecialToBrushConverter.cs" />
     <Compile Include="Converters\SpecialToStringConverter.cs" />
     <Compile Include="Messages\IsDeveloperModeModifiedMessage.cs" />
+    <Compile Include="Messages\ServerSelectedMessage.cs" />
     <Compile Include="MVVM\AsyncRelayCommand.cs" />
     <Compile Include="MVVM\RelayCommand.cs" />
     <Compile Include="Converters\StringColorConverter.cs" />

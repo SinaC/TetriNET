@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Reflection;
 using TetriNET.Client.Interfaces;
+using TetriNET.Common.DataContracts;
 using TetriNET.WPF_WCF_Client.Helpers;
+using TetriNET.WPF_WCF_Client.MVVM;
+using TetriNET.WPF_WCF_Client.Messages;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 {
@@ -25,14 +28,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         {
             LoginViewModel = new LoginViewModel();
             ServerListViewModel = new ServerListViewModel();
-            ServerListViewModel.OnServerSelected += OnServerSelected;
 
             ClientChanged += OnClientChanged;
+
+            Mediator.Register<ServerSelectedMessage>(this, OnServerSelected);
         }
 
-        private void OnServerSelected(object sender, string serverAddress)
+        private void OnServerSelected(ServerSelectedMessage msg)
         {
-            LoginViewModel.SetAddress(serverAddress);
+            LoginViewModel.SetAddress(msg.ServerAddress);
         }
 
         #region ITabIndex
@@ -53,15 +57,37 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
-            // NOP
+            oldClient.RegisteredAsPlayer -= OnRegisteredAsPlayer;
+            oldClient.RegisteredAsSpectator -= OnRegisteredAsSpectator;
         }
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
-            // NOP
+            newClient.RegisteredAsPlayer += OnRegisteredAsPlayer;
+            newClient.RegisteredAsSpectator += OnRegisteredAsSpectator;
         }
 
         #endregion
+
+        #region IClient events handler
+
+        private void OnRegisteredAsSpectator(RegistrationResults result, int spectatorId)
+        {
+            AddServerToLatest();
+        }
+
+        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
+        {
+            AddServerToLatest();
+        }
+
+        #endregion
+
+        private void AddServerToLatest()
+        {
+            string serverAddress = LoginViewModel.ServerCompletePlayerAddress;
+            ServerListViewModel.AddServerToLatest(serverAddress);
+        }
     }
 
     public class ConnectionViewModelDesignData : ConnectionViewModel

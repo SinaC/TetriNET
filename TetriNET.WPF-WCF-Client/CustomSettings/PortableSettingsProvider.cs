@@ -247,6 +247,18 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
                                 SerializedValue = xmlData
                             };
                     }
+                    else if (t == typeof(StringCollection))
+                    {
+                        XmlSerializer xs = new XmlSerializer(typeof(StringCollection));
+                        StringCollection data = (StringCollection) xs.Deserialize(new XmlTextReader(xmlData, XmlNodeType.Element, null));
+                        return new SettingsPropertyValue(setProp)
+                            {
+                                Deserialized = true,
+                                IsDirty = false,
+                                PropertyValue = data,
+                                SerializedValue = xmlData
+                            };
+                    }
                 }
             }
             catch

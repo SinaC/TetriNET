@@ -113,5 +113,11 @@
     <Setting Name="Hold" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">51</Value>
     </Setting>
+    <Setting Name="LastestServers" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="UseSpecialOnRandomOpponent" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">34</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

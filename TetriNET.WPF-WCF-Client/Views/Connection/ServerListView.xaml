@@ -15,24 +15,41 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ListBox Grid.Row="0" 
+        
+        <TextBlock Grid.Row="0" Margin="0,2"
+                   Text="Recent servers:"/>
+        <ListBox Grid.Row="1" Margin="0,2"
+                 ItemsSource="{Binding LatestServers}" SelectedItem="{Binding SelectedLatestServer}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="LatestServerList_DoubleClick"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+
+        <TextBlock Grid.Row="2" Margin="0,2"
+                   Text="Servers found:"/>
+        <ListBox Grid.Row="3" Margin="0,2"
                  ItemsSource="{Binding Servers}" SelectedItem="{Binding SelectedServer}">
             <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                <Style TargetType="{x:Type ListBoxItem}">
                     <EventSetter Event="MouseDoubleClick" Handler="ServerList_DoubleClick"/>
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
-        <Button Grid.Row="1" Margin="0,4,0,0"
+        <Button Grid.Row="4" Margin="0,4,0,0"
                 IsEnabled="{Binding IsScanForServerEnabled}"
                 Command="{Binding ScanForServerCommand}">
             <TextBlock Text="Scan for servers"/>
         </Button>
         <userControls:CircularProgressBarControl 
-            ToolTip="Searching..." Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="100"
+            ToolTip="Searching..." Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Height="100"
             StartupDelay="0"
             Visibility="{Binding IsProgressBarVisible, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <!--<userControls:MetroLoadingControl
