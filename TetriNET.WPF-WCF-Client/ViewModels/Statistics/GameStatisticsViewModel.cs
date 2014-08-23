@@ -95,6 +95,65 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             set { Set(() => SpecialsToSelectedPlayerGrid, ref _specialsToSelectedPlayerGrid, value); }
         }
 
+        public GameStatisticsViewModel()
+        {
+            //GameStatistics = new GameStatistics
+            //{
+            //    MatchTime = 123.456,
+            //    Players = new List<GameStatisticsByPlayer>
+            //            {
+            //                new GameStatisticsByPlayer
+            //                    {
+            //                        PlayerName = "Player1",
+            //                        SingleCount = 4,
+            //                        DoubleCount = 3,
+            //                        TripleCount = 2,
+            //                        TetrisCount = 1,
+            //                    },
+            //                    new GameStatisticsByPlayer
+            //                    {
+            //                        PlayerName = "Player2",
+            //                        SingleCount = 8,
+            //                        DoubleCount = 6,
+            //                        TripleCount = 4,
+            //                        TetrisCount = 0,
+            //                    },
+            //                    new GameStatisticsByPlayer
+            //                    {
+            //                        PlayerName = "Player3",
+            //                        SingleCount = 1,
+            //                        DoubleCount = 1,
+            //                        TripleCount = 0,
+            //                        TetrisCount = 0,
+            //                    },
+            //                    new GameStatisticsByPlayer
+            //                    {
+            //                        PlayerName = "Player4",
+            //                        SingleCount = 0,
+            //                        DoubleCount = 0,
+            //                        TripleCount = 0,
+            //                        TetrisCount = 1,
+            //                    },
+            //                    new GameStatisticsByPlayer
+            //                    {
+            //                        PlayerName = "Player5",
+            //                        SingleCount = 12,
+            //                        DoubleCount = 7,
+            //                        TripleCount = 0,
+            //                        TetrisCount = 0,
+            //                    },
+            //                    //new GameStatisticsByPlayer
+            //                    //{
+            //                    //    PlayerName = "Player6",
+            //                    //    SingleCount = 20,
+            //                    //    DoubleCount = 17,
+            //                    //    TripleCount = 5,
+            //                    //    TetrisCount = 2,
+            //                    //},
+            //            }
+            //};
+        }
+
         #region ViewModelBase
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
