@@ -36,11 +36,14 @@ namespace TetriNET.Server
         private const bool IsTimeoutDetectionActive = false;
 
         private readonly IPieceProvider _pieceProvider;
-        private readonly ManualResetEvent _stopBackgroundTaskEvent = new ManualResetEvent(false);
         private readonly IPlayerManager _playerManager;
         private readonly ISpectatorManager _spectatorManager;
         private readonly List<IHost> _hosts;
-        
+
+        private CancellationTokenSource _cancellationTokenSource;
+        private Task _timeoutTask;
+        private Task _gameActionsTask;
+
         private GameOptions _options;
 
         private DateTime _gameStartTime;
@@ -116,8 +119,9 @@ namespace TetriNET.Server
 
             SpecialId = 0;
 
-            Task.Factory.StartNew(TimeoutTask);
-            Task.Factory.StartNew(GameActionsTask);
+            _cancellationTokenSource = new CancellationTokenSource();
+            _timeoutTask = Task.Factory.StartNew(TimeoutTask, _cancellationTokenSource.Token);
+            _gameActionsTask = Task.Factory.StartNew(GameActionsTask, _cancellationTokenSource.Token);
 
             // Start hosts
             foreach (IHost host in _hosts)
@@ -134,8 +138,9 @@ namespace TetriNET.Server
             State = States.StoppingServer;
 
             // Stop worker threads
-            _stopBackgroundTaskEvent.Set();
             _cancellationTokenSource.Cancel();
+
+            Task.WaitAll(new[] {_timeoutTask, _gameActionsTask}, 2000);
 
             // Inform players and spectators
             //foreach (IPlayer p in _playerManager.Players)
@@ -806,7 +811,6 @@ namespace TetriNET.Server
         #region Game action queue
 
         private readonly BlockingCollection<Action> _gameActionBlockingCollection = new BlockingCollection<Action>(new ConcurrentQueue<Action>());
-        private CancellationTokenSource _cancellationTokenSource;
 
         private void EnqueueAction(Action action)
         {
@@ -857,10 +861,13 @@ namespace TetriNET.Server
             //    }
             //}
 
-            _cancellationTokenSource = new CancellationTokenSource();
-
             while (true)
             {
+                if (_cancellationTokenSource.IsCancellationRequested)
+                {
+                    Log.WriteLine(Log.LogLevels.Info, "Stop background task event raised");
+                    break;
+                }
                 try
                 {
                     Action action;
@@ -1082,6 +1089,12 @@ namespace TetriNET.Server
 
             while (true)
             {
+                if (_cancellationTokenSource.IsCancellationRequested)
+                {
+                    Log.WriteLine(Log.LogLevels.Info, "Stop background task event raised");
+                    break;
+                }
+
                 // Check sudden death
                 if (State == States.GameStarted && _isSuddenDeathActive)
                 {
@@ -1151,7 +1164,8 @@ namespace TetriNET.Server
 
 
                 // Stop task if stop event is raised
-                if (_stopBackgroundTaskEvent.WaitOne(10))
+                bool signaled = _cancellationTokenSource.Token.WaitHandle.WaitOne(10);
+                if (signaled)
                 {
                     Log.WriteLine(Log.LogLevels.Info, "Stop background task event raised");
                     break;

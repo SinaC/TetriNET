@@ -49,12 +49,16 @@ namespace TetriNET.Client
         private readonly Func<IBoard> _createBoardFunc;
         private readonly PlayerData[] _playersData = new PlayerData[MaxPlayers];
         private readonly SpectatorData[] _spectatorData = new SpectatorData[MaxSpectators];
-        private readonly ManualResetEvent _stopBackgroundTaskEvent = new ManualResetEvent(false);
         private readonly PieceArray _pieces;
         private readonly Inventory _inventory;
         private readonly Statistics _statistics;
         private readonly IAchievementManager _achievementManager;
         private readonly System.Timers.Timer _gameTimer;
+
+        private readonly Task _timeoutTask;
+        private readonly Task _boardActionTask;
+        private readonly CancellationTokenSource _cancellationTokenSource; // TODO: use token to cancel task + wait for task
+
 
         public States State { get; private set; }
         public ServerStates ServerState { get; private set; }
@@ -121,8 +125,9 @@ namespace TetriNET.Client
             _pauseStartTime = DateTime.Now;
             _mutationCount = 0;
 
-            Task.Factory.StartNew(TimeoutTask);
-            Task.Factory.StartNew(BoardActionTask);
+            _cancellationTokenSource = new CancellationTokenSource();
+            _timeoutTask = Task.Factory.StartNew(TimeoutTask, _cancellationTokenSource.Token);
+            _boardActionTask = Task.Factory.StartNew(BoardActionTask, _cancellationTokenSource.Token);
         }
 
         public Client(Func<Pieces, int, int, int, int, bool, IPiece> createPieceFunc, Func<IBoard> createBoardFunc, Func<IAchievementManager> createAchievementManagerFunc)
@@ -1591,6 +1596,12 @@ namespace TetriNET.Client
         {
             while (true)
             {
+                if (_cancellationTokenSource.IsCancellationRequested)
+                {
+                    Log.WriteLine(Log.LogLevels.Info, "Stop background task event raised");
+                    break;
+                }
+
                 if (State == States.Registered || State == States.Playing || State == States.Paused)
                 {
                     // Check server timeout
@@ -1650,7 +1661,8 @@ namespace TetriNET.Client
                 }
 
                 // Stop task if stop event is raised
-                if (_stopBackgroundTaskEvent.WaitOne(10))
+                bool signaled = _cancellationTokenSource.Token.WaitHandle.WaitOne(10);
+                if (signaled)
                 {
                     Log.WriteLine(Log.LogLevels.Info, "Stop background task event raised");
                     break;
@@ -1661,7 +1673,7 @@ namespace TetriNET.Client
         #region Board Action Queue
 
         private readonly BlockingCollection<Action> _boardActionBlockingCollection = new BlockingCollection<Action>(new ConcurrentQueue<Action>());
-        private CancellationTokenSource _cancellationTokenSource;
+        //private CancellationTokenSource _cancellationTokenSource;
 
         private void EnqueueBoardAction(Action action)
         {
@@ -1675,10 +1687,16 @@ namespace TetriNET.Client
         {
             Log.WriteLine(Log.LogLevels.Info, "BoardActionTask started");
 
-            _cancellationTokenSource = new CancellationTokenSource();
+            //_cancellationTokenSource = new CancellationTokenSource();
 
             while (true)
             {
+                if (_cancellationTokenSource.IsCancellationRequested)
+                {
+                    Log.WriteLine(Log.LogLevels.Info, "Stop background task event raised");
+                    break;
+                }
+
                 try
                 {
                     Action action;
