@@ -43,12 +43,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             get { return _username; }
             set
             {
-                if (_username != value)
-                {
-                    _username = value;
-                    OnPropertyChanged();
+                if (Set(() => Username, ref _username, value))
                     OnPropertyChanged("IsConnectDisconnectEnabled");
-                }
             }
         }
 
@@ -56,14 +52,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         public bool IsSpectatorModeChecked
         {
             get { return _isSpectatorModeChecked; }
-            set
-            {
-                if (_isSpectatorModeChecked != value)
-                {
-                    _isSpectatorModeChecked = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => IsSpectatorModeChecked, ref _isSpectatorModeChecked, value); }
         }
 
         private string _serverAddress;
@@ -72,10 +61,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             get { return _serverAddress; }
             set
             {
-                if (_serverAddress != value)
-                {
-                    _serverAddress = value;
-                    OnPropertyChanged();
+                if (Set(() => ServerAddress, ref _serverAddress, value))
+                {                
                     OnPropertyChanged("ServerCompletePlayerAddress");
                     OnPropertyChanged("ServerCompleteSpectatorAddress");
                 }
@@ -88,10 +75,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             get { return _serverPort; }
             set
             {
-                if (_serverPort != value)
+                if (Set(() => ServerPort, ref _serverPort, value))
                 {
-                    _serverPort = value;
-                    OnPropertyChanged();
                     OnPropertyChanged("ServerCompletePlayerAddress");
                     OnPropertyChanged("ServerCompleteSpectatorAddress");
                 }
@@ -125,42 +110,21 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         public string ConnectionResult
         {
             get { return _connectionResult; }
-            set
-            {
-                if (_connectionResult != value)
-                {
-                    _connectionResult = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => ConnectionResult, ref _connectionResult, value); }
         }
 
         private ChatColor _connectionResultColor;
         public ChatColor ConnectionResultColor
         {
             get { return _connectionResultColor; }
-            set
-            {
-                if (_connectionResultColor != value)
-                {
-                    _connectionResultColor = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => ConnectionResultColor, ref _connectionResultColor, value); }
         }
 
         private bool _isProgressBarVisible;
         public bool IsProgressBarVisible
         {
             get { return _isProgressBarVisible; }
-            set
-            {
-                if (_isProgressBarVisible != value)
-                {
-                    _isProgressBarVisible = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => IsProgressBarVisible, ref _isProgressBarVisible, value); }
         }
 
         public LoginViewModel()

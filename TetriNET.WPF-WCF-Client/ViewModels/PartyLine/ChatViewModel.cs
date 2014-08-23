@@ -99,25 +99,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         public bool IsRegistered
         {
             get { return _isRegistered; }
-            set
-            {
-                if (_isRegistered != value)
-                {
-                    _isRegistered = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => IsRegistered, ref _isRegistered, value); }
         }
 
         private bool _isInputFocused;
         public bool IsInputFocused
         {
             get { return _isInputFocused; }
-            set
-            {
-                _isInputFocused = value;
-                OnPropertyChanged();
-            }
+            set { Set(() => IsInputFocused, ref _isInputFocused, value); }
         }
 
         protected void AddEntry(ChatEntry entry)

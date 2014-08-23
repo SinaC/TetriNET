@@ -28,12 +28,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             get { return _team; }
             set
             {
-                if (_team != value)
-                {
-                    _team = value;
-                    OnPropertyChanged();
+                if (Set(() => Team, ref _team, value))
                     OnPropertyChanged("IsTeamNotNullOrEmpty");
-                }
             }
         }
 
@@ -46,14 +42,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         public bool IsServerMaster
         {
             get { return _isServerMaster; }
-            set
-            {
-                if (_isServerMaster != value)
-                {
-                    _isServerMaster = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => IsServerMaster, ref _isServerMaster, value); }
         }
     }
 
@@ -88,7 +77,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         }
 
         private SpectatorData _selectedSpectator;
-        public SpectatorData SelectedSpectator { get { return _selectedSpectator; }
+        public SpectatorData SelectedSpectator 
+        {
+            get { return _selectedSpectator; }
             set
             {
                 if (_selectedSpectator != value)
@@ -105,14 +96,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         public bool IsServerMaster
         {
             get { return _isServerMaster; }
-            set
-            {
-                if (_isServerMaster != value)
-                {
-                    _isServerMaster = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => IsServerMaster, ref _isServerMaster, value); }
         }
 
         public PlayersManagerViewModel()

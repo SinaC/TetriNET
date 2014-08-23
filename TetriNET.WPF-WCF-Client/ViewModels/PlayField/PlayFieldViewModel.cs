@@ -7,7 +7,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
     public class PlayFieldViewModel : PlayFieldViewModelBase
     {
-        private const double Epsilon = 0.00001;
         private const int OpponentCount = 5;
 
         public GameInfoViewModel GameInfoViewModel { get; set; }
@@ -22,28 +21,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         public string Achievement
         {
             get { return _achievement; }
-            set
-            {
-                if (_achievement != value)
-                {
-                    _achievement = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => Achievement, ref _achievement, value); }
         }
 
         private double _achievementOpacity;
         public double AchievementOpacity
         {
             get { return _achievementOpacity; }
-            set
-            {
-                if (Math.Abs(_achievementOpacity - value) > Epsilon)
-                {
-                    _achievementOpacity = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => AchievementOpacity, ref _achievementOpacity, value); }
         }
 
         public PlayFieldViewModel()

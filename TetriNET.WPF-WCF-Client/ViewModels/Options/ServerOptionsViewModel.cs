@@ -24,12 +24,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             get { return _isGameNotStarted; }
             set
             {
-                if (_isGameNotStarted != value)
-                {
-                    _isGameNotStarted = value;
-                    OnPropertyChanged();
+                if (Set(() => IsGameNotStarted, ref _isGameNotStarted, value))
                     OnPropertyChanged("IsEnabled");
-                }
             }
         }
 
@@ -39,12 +35,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             get { return _isServerMaster; }
             set
             {
-                if (_isServerMaster != value)
-                {
-                    _isServerMaster = value;
-                    OnPropertyChanged();
+                if (Set(() => IsServerMaster, ref _isServerMaster, value))
                     OnPropertyChanged("IsEnabled");
-                }
             }
         }
 
@@ -52,14 +44,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         public GameOptions Options
         {
             get { return _options; }
-            set
-            {
-                if (_options != value)
-                {
-                    _options = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => Options, ref _options, value); }
         }
 
         public int PiecesSum

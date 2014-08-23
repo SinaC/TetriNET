@@ -8,121 +8,30 @@ using System.Windows.Data;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.Helpers;
-using TetriNET.WPF_WCF_Client.MVVM;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
-    public class ContinuousEffect : ObservableObject
-    {
-        private const double Epsilon = 0.00001;
-
-        private Specials _special;
-        public Specials Special
-        {
-            get { return _special; }
-            set
-            {
-                if (_special != value)
-                {
-                    _special = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private double _opacity;
-        public double Opacity
-        {
-            get { return _opacity; }
-            set {
-                if (Math.Abs(_opacity-value) > Epsilon)
-                {
-                    _opacity = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private double _totalSeconds;
-        public double TotalSeconds
-        {
-            get { return _totalSeconds; }
-            set
-            {
-                if (Math.Abs(_totalSeconds - value) > Epsilon)
-                {
-                    _totalSeconds = value;
-                    TimeLeft = value;
-                    Opacity = 1.0;
-                    // Restart timer
-                    _timer.Stop();
-                    _timerStarted = DateTime.Now;
-                    _timer.Start();
-                }
-            }
-        }
-
-        public double TimeLeft { get; private set; }
-
-        private DateTime _timerStarted;
-        private readonly Timer _timer;
-
-        public ContinuousEffect()
-        {
-            _timer = new Timer(250);
-            _timer.Elapsed += TimerOnElapsed;
-        }
-
-        private void TimerOnElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
-        {
-            double elapsedSeconds = (DateTime.Now - _timerStarted).TotalSeconds;
-            TimeLeft = TotalSeconds - elapsedSeconds;
-            Opacity = 1.0 - elapsedSeconds/TotalSeconds;
-        }
-    }
-
     public class GameInfoViewModel : ViewModelBase
     {
         private int _level;
         public int Level
         {
             get { return _level; }
-            set
-            {
-                if (_level != value)
-                {
-                    _level = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => Level, ref _level, value); }
         }
 
         private int _linesCleared;
         public int LinesCleared
         {
             get { return _linesCleared; }
-            set
-            {
-                if (_linesCleared != value)
-                {
-                    _linesCleared = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => LinesCleared, ref _linesCleared, value); }
         }
 
         private int _score;
         public int Score
         {
             get { return _score; }
-            set
-            {
-                if (_score != value)
-                {
-                    _score = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => Score, ref _score, value); }
         }
 
         private readonly Timer _timer;
@@ -131,14 +40,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         public TimeSpan ElapsedTime
         {
             get { return _elapsedTime; }
-            set
-            {
-                if (_elapsedTime != value)
-                {
-                    _elapsedTime = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => ElapsedTime, ref _elapsedTime, value); }
         }
 
         public List<ContinuousEffect> Effects { get; private set; }

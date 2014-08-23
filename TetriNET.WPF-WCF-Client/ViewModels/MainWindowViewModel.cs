@@ -35,28 +35,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         public int ActiveTabItemIndex
         {
             get { return _activeTabItemIndex; }
-            set
-            {
-                if (_activeTabItemIndex != value)
-                {
-                    _activeTabItemIndex = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => ActiveTabItemIndex, ref _activeTabItemIndex, value); }
         }
 
         private bool _isRegistered;
         public bool IsRegistered
         {
             get { return _isRegistered; }
-            set
-            {
-                if (_isRegistered != value)
-                {
-                    _isRegistered = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => IsRegistered, ref _isRegistered, value); }
         }
 
         public MainWindowViewModel()

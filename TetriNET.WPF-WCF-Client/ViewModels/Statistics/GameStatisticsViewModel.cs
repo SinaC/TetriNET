@@ -33,10 +33,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             get { return _gameStatistics; }
             set
             {
-                if (_gameStatistics != value)
+                if (Set(() => GameStatistics, ref _gameStatistics, value))
                 {
-                    _gameStatistics = value;
-                    OnPropertyChanged();
                     OnPropertyChanged("First3Players");
                     OnPropertyChanged("Next3Players");
                     OnPropertyChanged("IsNextPlayersNeeded");
@@ -69,14 +67,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         public List<string> PlayerList
         {
             get { return _playerList; }
-            set
-            {
-                if (_playerList != value)
-                {
-                    _playerList = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => PlayerList, ref _playerList, value); }
         }
 
         private string _selectedPlayer;
@@ -85,12 +76,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             get { return _selectedPlayer; }
             set
             {
-                if (_selectedPlayer != value)
-                {
-                    _selectedPlayer = value;
-                    OnPropertyChanged();
+                if (Set(() => SelectedPlayer, ref _selectedPlayer, value))
                     InitializeSpecialsGrid();
-                }
             }
         }
 
@@ -98,28 +85,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         public DynamicGrid<SpecialRow, DynamicColumn> SpecialsFromSelectedPlayerGrid
         {
             get { return _specialsFromSelectedPlayerGrid; }
-            set
-            {
-                if (_specialsFromSelectedPlayerGrid != value)
-                {
-                    _specialsFromSelectedPlayerGrid = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => SpecialsFromSelectedPlayerGrid, ref _specialsFromSelectedPlayerGrid, value); }
         }
 
         private DynamicGrid<SpecialRow, DynamicColumn> _specialsToSelectedPlayerGrid; // Columns: player  Rows: special
         public DynamicGrid<SpecialRow, DynamicColumn> SpecialsToSelectedPlayerGrid
         {
             get { return _specialsToSelectedPlayerGrid; }
-            set
-            {
-                if (_specialsToSelectedPlayerGrid != value)
-                {
-                    _specialsToSelectedPlayerGrid = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => SpecialsToSelectedPlayerGrid, ref _specialsToSelectedPlayerGrid, value); }
         }
 
         #region ViewModelBase

@@ -61,12 +61,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             get { return _team; }
             set
             {
-                if (_team != value)
-                {
-                    _team = value;
-                    OnPropertyChanged();
+                if (Set(() => Team, ref _team,  value))
                     UpdateEnabilityAndLabel();
-                }
             }
         }
 

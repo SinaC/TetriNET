@@ -20,14 +20,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
         public bool IsGameNotStarted
         {
             get { return _isGameNotStarted; }
-            set
-            {
-                if (_isGameNotStarted != value)
-                {
-                    _isGameNotStarted = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => IsGameNotStarted, ref _isGameNotStarted, value); }
         }
 
         // Automatically switch to play field when game is started and to party line when game is over
@@ -37,10 +30,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             get { return _automaticallySwitchToPlayFieldOnGameStarted; }
             set
             {
-                if (_automaticallySwitchToPlayFieldOnGameStarted != value)
+                if (Set(() => AutomaticallySwitchToPlayFieldOnGameStarted, ref _automaticallySwitchToPlayFieldOnGameStarted, value))
                 {
-                    _automaticallySwitchToPlayFieldOnGameStarted = value;
-                    OnPropertyChanged();
                     Settings.Default.AutomaticallySwitchToPlayFieldOnGameStarted = _automaticallySwitchToPlayFieldOnGameStarted;
                     Settings.Default.Save();
                 }
@@ -54,10 +45,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             get { return _automaticallySwitchToPartyLineOnRegistered; }
             set
             {
-                if (_automaticallySwitchToPartyLineOnRegistered != value)
+                if (Set(() => AutomaticallySwitchToPartyLineOnRegistered, ref _automaticallySwitchToPartyLineOnRegistered, value))
                 {
-                    _automaticallySwitchToPartyLineOnRegistered = value;
-                    OnPropertyChanged();
                     Settings.Default.AutomaticallySwitchToPartyLineOnRegistered = _automaticallySwitchToPartyLineOnRegistered;
                     Settings.Default.Save();
                 }
@@ -70,10 +59,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             get { return _displayOpponentsFieldEvenWhenNotPlaying; }
             set
             {
-                if (_displayOpponentsFieldEvenWhenNotPlaying != value)
+                if (Set(() => DisplayOpponentsFieldEvenWhenNotPlaying, ref _displayOpponentsFieldEvenWhenNotPlaying, value))
                 {
-                    _displayOpponentsFieldEvenWhenNotPlaying = value;
-                    OnPropertyChanged();
                     Settings.Default.DisplayOpponentsFieldEvenWhenNotPlaying = _displayOpponentsFieldEvenWhenNotPlaying;
                     Settings.Default.Save();
                 }
@@ -86,10 +73,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             get { return _isDeveloperModeActivated; }
             set
             {
-                if (_isDeveloperModeActivated != value)
+                if (Set(() => IsDeveloperModeActivated, ref _isDeveloperModeActivated, value))
                 {
-                    _isDeveloperModeActivated = value;
-                    OnPropertyChanged();
                     Settings.Default.IsDeveloperModeActivated = _isDeveloperModeActivated;
                     Settings.Default.Save();
                     Mediator.Send(new IsDeveloperModeModifiedMessage
@@ -106,10 +91,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             get { return _displayDropLocation; }
             set
             {
-                if (_displayDropLocation != value)
+                if (Set(() => DisplayDropLocation, ref _displayDropLocation, value))
                 {
-                    _displayDropLocation = value;
-                    OnPropertyChanged();
                     Settings.Default.DisplayDropLocation = _displayDropLocation;
                     Settings.Default.Save();
                 }
@@ -122,10 +105,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             get { return _displayPieceAnchor; }
             set
             {
-                if (_displayPieceAnchor != value)
+                if (Set(() => DisplayPieceAnchor, ref _displayPieceAnchor, value))
                 {
-                    _displayPieceAnchor = value;
-                    OnPropertyChanged();
                     Settings.Default.DisplayPieceAnchor = _displayPieceAnchor;
                     Settings.Default.Save();
                 }

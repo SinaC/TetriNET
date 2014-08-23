@@ -15,10 +15,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             get { return _key; }
             set
             {
-                if (_key != value)
+                if (Set(() => Key, ref _key, value))
                 {
-                    _key = value;
-                    OnPropertyChanged();
                     OnPropertyChanged("KeyDescription");
                     SaveKeySetting();
                 }
@@ -42,12 +40,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             get { return _command; }
             set
             {
-                if (_command != value)
-                {
-                    _command = value;
-                    OnPropertyChanged();
+                if (Set(() => Command, ref _command, value))
                     OnPropertyChanged("CommandDescription");
-                }
             }
         }
 

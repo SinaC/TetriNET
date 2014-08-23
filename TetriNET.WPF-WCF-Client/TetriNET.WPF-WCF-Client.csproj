@@ -126,6 +126,7 @@
     <Compile Include="ViewModels\Options\ClientOptionsViewModel.cs" />
     <Compile Include="ViewModels\Options\SensibilityViewModel.cs" />
     <Compile Include="ViewModels\Options\ServerOptionsViewModel.cs" />
+    <Compile Include="ViewModels\PlayField\ContinousEffect.cs" />
     <Compile Include="ViewModels\PlayField\OpponentViewModel.cs" />
     <Compile Include="ViewModels\PlayField\PlayerViewModel.cs" />
     <Compile Include="ViewModels\PlayField\GameInfoViewModel.cs" />

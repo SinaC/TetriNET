@@ -19,18 +19,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
         private ObservableCollection<IAchievement> _achievements;
         public ObservableCollection<IAchievement> Achievements
         {
-            get
-            {
-                return _achievements;
-            }
-            set
-            {
-                if (_achievements != value)
-                {
-                    _achievements = value;
-                    OnPropertyChanged();
-                }
-            }
+            get { return _achievements; }
+            set { Set(() => Achievements, ref _achievements, value); }
         }
 
         public int TotalPoints
@@ -59,14 +49,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
         public IAchievement SelectedItem
         {
             get { return _selectedItem; }
-            set
-            {
-                if (_selectedItem != value)
-                {
-                    _selectedItem = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => SelectedItem, ref _selectedItem, value); }
         }
 
         public void Select(int achievementId)
@@ -94,15 +77,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
                 return null;
             // Sort by achieve or not, then by first time achieve
             return new ObservableCollection<IAchievement>(
-                    achievements.Where(x => x.IsAchieved).OrderByDescending(x => x.FirstTimeAchieved)
-                .Union(
-                    achievements.Where(x => !x.IsAchieved).OrderBy(x => x.Title))
-            );
+                achievements.Where(x => x.IsAchieved).OrderByDescending(x => x.FirstTimeAchieved)
+                    .Union(
+                        achievements.Where(x => !x.IsAchieved).OrderBy(x => x.Title))
+                );
             //return new ObservableCollection<IAchievement>(achievements.OrderByDescending(x => x.IsAchieved).ThenByDescending(x => x.FirstTimeAchieved));
         }
 
         #region ViewModelBase
-        
+
         private void OnClientChanged(IClient oldClient, IClient newClient)
         {
             Achievements = BuildAchievementList(newClient.Achievements.ToList());
@@ -174,7 +157,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
 
         #region ITabIndex
 
-        public int TabIndex { get { return 5; } }
+        public int TabIndex
+        {
+            get { return 5; }
+        }
 
         #endregion
     }
@@ -197,7 +183,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
             if (fearMyBrain != null)
             {
                 fearMyBrain.IsAchieved = true;
-                fearMyBrain.FirstTimeAchieved =  DateTime.Now.AddDays(-4);
+                fearMyBrain.FirstTimeAchieved = DateTime.Now.AddDays(-4);
                 fearMyBrain.LastTimeAchieved = DateTime.Now.AddDays(-1);
                 fearMyBrain.AchieveCount = 3;
             }

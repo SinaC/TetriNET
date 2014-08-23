@@ -31,57 +31,29 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
         private bool _isScanForServerEnabled;
         public bool IsScanForServerEnabled
         {
-            get { return _isScanForServerEnabled; } 
-            set
-            {
-                if (_isScanForServerEnabled != value)
-                {
-                    _isScanForServerEnabled = value;
-                    OnPropertyChanged();
-                }
-            }
+            get { return _isScanForServerEnabled; }
+            set { Set(() => IsScanForServerEnabled, ref _isScanForServerEnabled, value); }
         }
 
         private bool _isProgressBarVisible;
         public bool IsProgressBarVisible
         {
             get { return _isProgressBarVisible; }
-            set
-            {
-                if (_isProgressBarVisible != value)
-                {
-                    _isProgressBarVisible = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => IsProgressBarVisible, ref _isProgressBarVisible, value); }
         }
 
         private string _selectedServer;
         public string SelectedServer
         {
             get { return _selectedServer; }
-            set
-            {
-                if (_selectedServer != value)
-                {
-                    _selectedServer = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => SelectedServer, ref _selectedServer, value); }
         }
 
         private string _selectedLatestServer;
         public string SelectedLatestServer
         {
             get { return _selectedLatestServer; }
-            set
-            {
-                if (_selectedLatestServer != value)
-                {
-                    _selectedLatestServer = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => SelectedLatestServer, ref _selectedLatestServer, value); }
         }
 
         public ServerListViewModel()

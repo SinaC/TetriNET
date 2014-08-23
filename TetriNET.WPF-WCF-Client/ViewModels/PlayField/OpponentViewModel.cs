@@ -23,14 +23,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         public string PlayerName
         {
             get { return _playerName; }
-            set
-            {
-                if (_playerName != value)
-                {
-                    _playerName = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => PlayerName, ref _playerName, value); }
         }
 
         private string _team;
@@ -39,12 +32,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             get { return _team; }
             set
             {
-                if (_team != value)
-                {
-                    _team = value;
-                    OnPropertyChanged();
+                if (Set(() => Team, ref _team, value))
                     OnPropertyChanged("IsPlayerInTeam");
-                }
             }
         }
 
@@ -54,10 +43,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             get { return _playerId; }
             set
             {
-                if (_playerId != value)
+                if (Set(() => PlayerId, ref _playerId, value))
                 {
-                    _playerId = value;
-                    OnPropertyChanged();
                     OnPropertyChanged("DisplayPlayerId");
                     OnPropertyChanged("IsPlayerIdVisible");
                 }
@@ -68,14 +55,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
         public bool HasLost
         {
             get { return _hasLost; }
-            set
-            {
-                if (_hasLost != value)
-                {
-                    _hasLost = value;
-                    OnPropertyChanged();
-                }
-            }
+            set { Set(() => HasLost, ref _hasLost, value); }
         }
 
         public OpponentViewModel()
