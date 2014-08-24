@@ -145,13 +145,7 @@ namespace TetriNET.Client
         private void OnAchievementEarned(IAchievement achievement, bool firstTime)
         {
             if (firstTime)
-            {
                 _proxy.Do(x => x.EarnAchievement(this, achievement.Id, achievement.Title));
-
-                //_proxy.EarnAchievement(this, achievement.Id, achievement.Title);
-                //string msg = String.Format("You have earned [{0}]", achievement.Title);
-                //ServerPublishMessage(msg);
-            }
 
             AchievementEarned.Do(x => x(achievement, firstTime));
         }
@@ -612,8 +606,6 @@ namespace TetriNET.Client
             Log.WriteLine(Log.LogLevels.Debug, "Special {0}[{1}] from {2} to {3}", special, specialId, playerId, targetId);
 
             ResetTimeout();
-            //if (State == States.Playing)
-            //{
             if (targetId == _clientPlayerId && State == States.Playing)
             {
                 EnqueueBoardAction(() => SpecialUsedAction(special));
@@ -641,7 +633,6 @@ namespace TetriNET.Client
                 if (!IsSpectator)
                     _achievementManager.Do(x => x.OnSpecialUsed(_clientPlayerId, playerId, playerData == null ? null : playerData.Team, playerData == null ? null : playerData.Board, targetId, targetData == null ? null : targetData.Team, targetData == null ? null : targetData.Board, special));
             }
-            //}
         }
 
         public void OnNextPiece(int index, List<Pieces> pieces)
@@ -652,7 +643,6 @@ namespace TetriNET.Client
 
             if (State == States.Playing)
             {
-                //_pieces[index] = piece;
                 for (int i = 0; i < pieces.Count; i++)
                     _pieces[index + i] = pieces[i];
             }
@@ -664,23 +654,20 @@ namespace TetriNET.Client
 
             ResetTimeout();
 
-            //if (State == States.Playing)
-            //{
-                PlayerData playerData = GetPlayer(playerId);
-                if (playerData != null)
+            PlayerData playerData = GetPlayer(playerId);
+            if (playerData != null)
+            {
+                // if modifying own grid, special Switch occured -> remove lines above 16
+                if (playerId == _clientPlayerId)
                 {
-                    // if modifying own grid, special Switch occured -> remove lines above 16
-                    if (playerId == _clientPlayerId)
-                    {
-                        EnqueueBoardAction(() => ModifyGridAction(grid));
-                    }
-                    else
-                    {
-                        playerData.Board.SetCells(grid);
-                        RedrawBoard.Do(x => x(playerId, playerData.Board));
-                    }
+                    EnqueueBoardAction(() => ModifyGridAction(grid));
                 }
-            //}
+                else
+                {
+                    playerData.Board.SetCells(grid);
+                    RedrawBoard.Do(x => x(playerId, playerData.Board));
+                }
+            }
         }
 
         public void OnServerMasterChanged(int playerId)
@@ -727,15 +714,6 @@ namespace TetriNET.Client
             ResetTimeout();
             if (playerId != _clientPlayerId || IsSpectator)
             {
-                //if (ServerPublishMessage != null)
-                //{
-                //    PlayerData player = GetPlayer(playerId);
-                //    if (player != null)
-                //    {
-                //        string msg = String.Format("{0} has earned [{1}]", player.Name, achievementTitle);
-                //        ServerPublishMessage(msg);
-                //    }
-                //}
                 if (PlayerAchievementEarned != null)
                 {
                     PlayerData player = GetPlayer(playerId);
@@ -1049,15 +1027,7 @@ namespace TetriNET.Client
             // Send piece places to server
             _proxy.Do(x => x.PlacePiece(this, _pieceIndex, _pieces.HighestIndex+1, CurrentPiece.Value, CurrentPiece.Orientation, CurrentPiece.PosX, CurrentPiece.PosY, Board.Cells));
 
-            //// Send lines if classic style
-            //if (Options.ClassicStyleMultiplayerRules && deletedRows > 1)
-            //{
-            //    int addLines = deletedRows - 1;
-            //    if (deletedRows >= 4)
-            //        // special case for Tetris and above
-            //        addLines = 4;
-            //    _proxy.Do(x => x.SendLines(this, addLines));
-            //}
+            // Signal to server deleted lines
             if (deletedRows > 0)
             {
                 _proxy.Do(x => x.ClearLines(this, deletedRows));
@@ -1374,9 +1344,6 @@ namespace TetriNET.Client
             _proxy.Do(x => x.UnregisterPlayer(this));
             _proxySpectator.Do(x => x.UnregisterSpectator(this));
 
-            //if (wasSpectator)
-            //    SpectatorUnregistered.Do(x => x());
-            //else
             PlayerUnregistered.Do(x => x());
 
             Disconnect();
@@ -1580,12 +1547,6 @@ namespace TetriNET.Client
 
         #endregion
 
-        //private void MoveDownUntilTotallyInBoard(IPiece piece)
-        //{
-        //    while (!Board.CheckNoConflictWithBoard(piece, true))
-        //        piece.Translate(0, -1);
-        //}
-
         private static char ConvertSpecial(Specials special)
         {
             SpecialAttribute attribute = EnumHelper.GetAttribute<SpecialAttribute>(special);
@@ -1673,21 +1634,15 @@ namespace TetriNET.Client
         #region Board Action Queue
 
         private readonly BlockingCollection<Action> _boardActionBlockingCollection = new BlockingCollection<Action>(new ConcurrentQueue<Action>());
-        //private CancellationTokenSource _cancellationTokenSource;
 
         private void EnqueueBoardAction(Action action)
         {
-            //_boardActionQueue.Enqueue(action);
-            //_actionEnqueuedEvent.Set();
-
             _boardActionBlockingCollection.Add(action);
         }
 
         private void BoardActionTask()
         {
             Log.WriteLine(Log.LogLevels.Info, "BoardActionTask started");
-
-            //_cancellationTokenSource = new CancellationTokenSource();
 
             while (true)
             {

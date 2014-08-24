@@ -44,9 +44,7 @@ namespace TetriNET.Client.WCFProxy
                 Log.WriteLine(Log.LogLevels.Debug, "Connecting to server:{0}", endpointAddress.Uri);
                 Binding binding = new NetTcpBinding(SecurityMode.None);
                 InstanceContext instanceContext = new InstanceContext(callback);
-                //_proxy = DuplexChannelFactory<IWCFTetriNET>.CreateChannel(instanceContext, binding, endpointAddress);
                 _factory = new DuplexChannelFactory<IWCFTetriNET>(instanceContext, binding, endpointAddress);
-                //_factory.Endpoint.Behaviors.Add(new CustomBehavior());
                 _proxy = _factory.CreateChannel(instanceContext);
             }
             else
@@ -159,11 +157,6 @@ namespace TetriNET.Client.WCFProxy
         {
             ExceptionFreeAction(() => _proxy.UseSpecial(targetId, special));
         }
-
-        //public void SendLines(ITetriNETCallback callback, int count)
-        //{
-        //    ExceptionFreeAction(() => _proxy.SendLines(count));
-        //}
 
         public void ClearLines(ITetriNETCallback callback, int count)
         {

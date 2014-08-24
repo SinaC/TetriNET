@@ -65,7 +65,6 @@ namespace TetriNET.Server
             _options = new GameOptions();
             _options.ResetToDefault();
 
-            //_pieceProvider = new PieceQueue(() => RangeRandom.Random(_options.PieceOccurancies));
             _pieceProvider = pieceProvider;
             _pieceProvider.Occurancies = () => _options.PieceOccurancies;
             _playerManager = playerManager;
@@ -84,7 +83,6 @@ namespace TetriNET.Server
                 host.HostMessagePublished += OnPublishMessage;
                 host.HostPiecePlaced += OnPlacePiece;
                 host.HostUseSpecial += OnUseSpecial;
-                //host.HostSendLines += OnSendLines;
                 host.HostClearLines += OnClearLines;
                 host.HostGridModified += OnModifyGrid;
                 host.HostStartGame += OnStartGame;
@@ -143,8 +141,6 @@ namespace TetriNET.Server
             Task.WaitAll(new[] {_timeoutTask, _gameActionsTask}, 2000);
 
             // Inform players and spectators
-            //foreach (IPlayer p in _playerManager.Players)
-            //    p.OnServerStopped();
             foreach (IEntity entity in Entities)
                 entity.OnServerStopped();
 
@@ -167,9 +163,6 @@ namespace TetriNET.Server
             if (State == States.WaitingStartGame)
             {
                 // Reset action list
-                //Action outAction;
-                //while (!_gameActionQueue.IsEmpty)
-                //    _gameActionQueue.TryDequeue(out outAction);
                 while (_gameActionBlockingCollection.Count > 0)
                 {
                     Action item;
@@ -256,7 +249,6 @@ namespace TetriNET.Server
                 State = States.GamePaused;
 
                 // Send game paused to players and spectators
-                //foreach (IPlayer p in _playerManager.Players)
                 foreach (IEntity entity in Entities)
                     entity.OnGamePaused();
 
@@ -277,7 +269,6 @@ namespace TetriNET.Server
                 _lastSuddenDeathAddLines = DateTime.Now; // TODO: a player, could pause<->resume forever to avoid sudden death
 
                 // Send game resumed to players and spectators
-                //foreach (IPlayer p in _playerManager.Players)
                 foreach (IEntity entity in Entities)
                     entity.OnGameResumed();
 
@@ -298,7 +289,6 @@ namespace TetriNET.Server
 
                 // Inform player
                 IPlayer serverMaster = _playerManager.ServerMaster;
-                //foreach (IPlayer p in _playerManager.Players)
                 foreach (IEntity entity in Entities)
                 {
                     entity.OnPublishServerMessage(String.Format("Win list resetted by {0}", serverMaster == null ? "SERVER" : serverMaster.Name));
@@ -502,11 +492,6 @@ namespace TetriNET.Server
         {
             EnqueueAction(() => Special(player, target, special));
         }
-
-        //private void OnSendLines(IPlayer player, int count)
-        //{
-        //    EnqueueAction(() => SendLines(player, count));
-        //}
 
         private void OnClearLines(IPlayer player, int count)
         {
@@ -814,52 +799,12 @@ namespace TetriNET.Server
 
         private void EnqueueAction(Action action)
         {
-            //_gameActionQueue.Enqueue(action);
-            //_actionEnqueuedEvent.Set();
-
             _gameActionBlockingCollection.Add(action);
         }
 
         private void GameActionsTask()
         {
             Log.WriteLine(Log.LogLevels.Info, "GameActionsTask started");
-
-            //WaitHandle[] waitHandles =
-            //{
-            //    _stopBackgroundTaskEvent,
-            //    _actionEnqueuedEvent
-            //};
-
-            //while (true)
-            //{
-            //    int handle = WaitHandle.WaitAny(waitHandles, 20);
-            //    if (handle == 0) // _stopBackgroundTaskEvent
-            //        break; // Stop here
-            //    // Even if WaitAny returned WaitHandle.WaitTimeout, we check action queue
-            //    _actionEnqueuedEvent.Reset();
-            //    // Perform game actions
-            //    if (State == States.GameStarted && !_gameActionQueue.IsEmpty)
-            //    {
-            //        while (!_gameActionQueue.IsEmpty)
-            //        {
-            //            Action action;
-            //            bool dequeue = _gameActionQueue.TryDequeue(out action);
-            //            if (dequeue)
-            //            {
-            //                try
-            //                {
-            //                    Log.WriteLine(Log.LogLevels.Debug, "Dequeue, item in queue {0}", _gameActionQueue.Count);
-            //                    action();
-            //                    Thread.Sleep(1);
-            //                }
-            //                catch (Exception ex)
-            //                {
-            //                    Log.WriteLine(Log.LogLevels.Error, "Exception raised in TaskResolveGameActions. Exception:{0}", ex);
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
 
             while (true)
             {
@@ -910,10 +855,7 @@ namespace TetriNET.Server
             // Set grid
             player.Grid = grid;
             // Get next piece
-            //player.PieceIndex++;
             player.PieceIndex = pieceIndex;
-            //int indexToSend = player.PieceIndex + 2; // indices 0, 1 and 2 have been sent when starting game
-            //Pieces nextPieceToSend = _pieceProvider[indexToSend];
             List<Pieces> nextPiecesToSend = new List<Pieces>();
             Log.WriteLine(Log.LogLevels.Info, "{0} {1} indexes: {2} {3}", _playerManager.GetId(player), player.Name, highestIndex, pieceIndex);
             if (highestIndex < pieceIndex)

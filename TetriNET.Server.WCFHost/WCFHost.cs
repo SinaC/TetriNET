@@ -35,10 +35,8 @@ namespace TetriNET.Server.WCFHost
                     baseAddress = new Uri("net.tcp://localhost:" + Port);
 
                 _serviceHost = new ServiceHost(this, baseAddress);
-                //_serviceHost.AddServiceEndpoint(typeof(IWCFTetriNET), new NetTcpBinding(SecurityMode.None), "");
                 _serviceHost.AddServiceEndpoint(typeof(IWCFTetriNET), new NetTcpBinding(SecurityMode.None), "/TetriNET");
                 _serviceHost.AddServiceEndpoint(typeof(IWCFTetriNETSpectator), new NetTcpBinding(SecurityMode.None), "/TetriNETSpectator");
-                //ServiceHost.AddDefaultEndpoints();
                 _serviceHost.Description.Behaviors.Add(new IPFilterServiceBehavior(_host.BanManager, _host.PlayerManager));
                 _serviceHost.Open();
 
@@ -99,11 +97,6 @@ namespace TetriNET.Server.WCFHost
             {
                 _host.ModifyGrid(Callback, grid);
             }
-
-            //public void SendLines(int count)
-            //{
-            //    _host.SendLines(Callback, count);
-            //}
 
             public void ClearLines(int count)
             {

@@ -328,11 +328,6 @@ namespace TetriNET.Server.TCPHost
                 _host.UseSpecial(callback, targetId, special);
             }
 
-            //public void SendLines(ITetriNETCallback callback, int count)
-            //{
-            //    _host.SendLines(callback, count);
-            //}
-
             public void ClearLines(ITetriNETCallback callback, int count)
             {
                 _host.ClearLines(callback, count);

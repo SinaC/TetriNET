@@ -47,7 +47,6 @@ namespace TetriNET.Server.GenericHost
         public event HostPublishMessageEventHandler HostMessagePublished;
         public event HostPlacePieceEventHandler HostPiecePlaced;
         public event HostUseSpecialEventHandler HostUseSpecial;
-        //public event HostSendLinesEventHandler HostSendLines;
         public event HostClearLinesEventHandler HostClearLines;
         public event HostModifyGridEventHandler HostGridModified;
         public event HostStartGameEventHandler HostStartGame;
@@ -244,24 +243,6 @@ namespace TetriNET.Server.GenericHost
                 Log.WriteLine(Log.LogLevels.Warning, "UseSpecial from unknown player");
             }
         }
-
-        //public virtual void SendLines(ITetriNETCallback callback, int count)
-        //{
-        //    Log.WriteLine(Log.LogLevels.Debug, "SendLines {0}", count);
-
-        //    IPlayer player = PlayerManager[callback];
-        //    if (player != null)
-        //    {
-        //        //
-        //        player.ResetTimeout(); // player alive
-        //        //
-        //        HostSendLines.Do(x => x(player, count));
-        //    }
-        //    else
-        //    {
-        //        Log.WriteLine(Log.LogLevels.Warning, "SendLines from unknown player");
-        //    }
-        //}
 
         public virtual void ClearLines(ITetriNETCallback callback, int count)
         {

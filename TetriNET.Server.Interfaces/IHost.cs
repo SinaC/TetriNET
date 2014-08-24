@@ -9,7 +9,6 @@ namespace TetriNET.Server.Interfaces
     public delegate void HostPublishMessageEventHandler(IPlayer player, string msg);
     public delegate void HostPlacePieceEventHandler(IPlayer player, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid);
     public delegate void HostUseSpecialEventHandler(IPlayer player, IPlayer target, Specials special);
-    //public delegate void HostSendLinesEventHandler(IPlayer player, int count);
     public delegate void HostClearLinesEventHandler(IPlayer player, int count);
     public delegate void HostModifyGridEventHandler(IPlayer player, byte[] grid);
     public delegate void HostStartGameEventHandler(IPlayer player);
@@ -39,7 +38,6 @@ namespace TetriNET.Server.Interfaces
         event HostPublishMessageEventHandler HostMessagePublished;
         event HostPlacePieceEventHandler HostPiecePlaced;
         event HostUseSpecialEventHandler HostUseSpecial;
-        //event HostSendLinesEventHandler HostSendLines;
         event HostClearLinesEventHandler HostClearLines;
         event HostModifyGridEventHandler HostGridModified;
         event HostStartGameEventHandler HostStartGame;
