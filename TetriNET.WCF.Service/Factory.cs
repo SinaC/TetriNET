@@ -17,12 +17,12 @@ namespace TetriNET.WCF.Service
 
         public IPlayerManager CreatePlayerManager(int maxPlayers)
         {
-            return new PlayerManager(maxPlayers);
+            return new PlayerManagerDictionaryBased(maxPlayers);
         }
 
         public ISpectatorManager CreateSpectatorManager(int maxSpectators)
         {
-            return new SpectatorManager(maxSpectators);
+            return new SpectatorManagerDictionaryBased(maxSpectators);
         }
 
         public IPieceProvider CreatePieceProvider()

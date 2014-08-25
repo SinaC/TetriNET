@@ -6,12 +6,12 @@ using TetriNET.Server.Interfaces;
 
 namespace TetriNET.Server.SpectatorManager
 {
-    public class SpectatorManager : ISpectatorManager
+    public class SpectatorManagerArrayBased : ISpectatorManager
     {
         private readonly object _lockObject;
         private readonly ISpectator[] _spectators;
 
-        public SpectatorManager(int maxSpectators)
+        public SpectatorManagerArrayBased(int maxSpectators)
         {
             _lockObject = new object();
             MaxSpectators = maxSpectators;

@@ -5,7 +5,7 @@ using System.Windows.Input;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.ViewModels;
 
-namespace TetriNET.WPF_WCF_Client
+namespace TetriNET.WPF_WCF_Client.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

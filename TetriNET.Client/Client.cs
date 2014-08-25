@@ -18,6 +18,8 @@ namespace TetriNET.Client
 {
     public sealed class Client : ITetriNETCallback, IClient
     {
+        private const int BoardWidth = 12;
+        private const int BoardHeight = 22;
         private const int MaxPlayers = 6;
         private const int MaxSpectators = 10;
         private const int MaxLevel = 100;
@@ -198,7 +200,7 @@ namespace TetriNET.Client
                     {
                         Name = Name,
                         PlayerId = playerId,
-                        Board = _factory.CreateBoard(12, 22),
+                        Board = _factory.CreateBoard(BoardWidth, BoardHeight),
                         State = PlayerData.States.Joined
                     };
                     _playersData[_clientPlayerId] = player;
@@ -207,6 +209,16 @@ namespace TetriNET.Client
                     ServerState = isGameStarted ? ServerStates.Playing : ServerStates.Waiting;// TODO: handle server paused
                     IsServerMaster = isServerMaster;
                     Options = options;
+                    _statistics.Reset();
+                    LinesCleared = 0;
+                    Level = 0;
+                    Score = 0;
+                    _isConfusionActive = false;
+                    _isDarknessActive = false;
+                    _isImmunityActive = false;
+                    _mutationCount = 0;
+                    _holdAlreadyUsed = false;
+                    HoldPiece = null;
 
                     RegisteredAsPlayer.Do(x => x(RegistrationResults.RegistrationSuccessful, playerId, isServerMaster));
 
@@ -250,7 +262,7 @@ namespace TetriNET.Client
                     Name = name,
                     Team = team,
                     PlayerId = playerId,
-                    Board = _factory.CreateBoard(12, 22),
+                    Board = _factory.CreateBoard(BoardWidth, BoardHeight),
                     IsImmune = false,
                     State = PlayerData.States.Joined
                 };
@@ -750,10 +762,21 @@ namespace TetriNET.Client
                     };
                     _spectatorData[_clientSpectatorId] = player;
 
-                    Options = options;
-                    // Set state
                     State = States.Registered;
                     ServerState = isGameStarted ? ServerStates.Playing : ServerStates.Waiting;// TODO: handle server paused
+                    IsServerMaster = false;
+                    Options = options;
+                    _statistics.Reset();
+                    LinesCleared = 0;
+                    Level = 0;
+                    Score = 0;
+                    _isConfusionActive = false;
+                    _isDarknessActive = false;
+                    _isImmunityActive = false;
+                    _mutationCount = 0;
+                    _holdAlreadyUsed = false;
+                    HoldPiece = null;
+
 
                     RegisteredAsSpectator.Do(x => x(RegistrationResults.RegistrationSuccessful, spectatorId));
                 }

@@ -9,14 +9,35 @@
              IsTabStop="False"
              d:DataContext="{d:DesignInstance statisticsViewModels:StatisticsViewModelDesignData, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="700">
+    <UserControl.Resources>
+        <DataTemplate x:Key="PlayerStatisticsDataTemplate">
+            <TabControl>
+                <TabItem Header="Client">
+                    <statisticsViews:ClientStatisticsView DataContext="{Binding ClientStatisticsViewModel}"/>
+                </TabItem>
+                <TabItem Header="Game">
+                    <statisticsViews:GameStatisticsView DataContext="{Binding GameStatisticsViewModel}"/>
+                </TabItem>
+            </TabControl>
+        </DataTemplate>
+        <DataTemplate x:Key="SpectatorStatisticsDataTemplate">
+            <statisticsViews:GameStatisticsView DataContext="{Binding GameStatisticsViewModel}"/>
+        </DataTemplate>
+    </UserControl.Resources>
     <Grid>
-        <TabControl>
-            <TabItem Header="Client">
-                <statisticsViews:ClientStatisticsView DataContext="{Binding ClientStatisticsViewModel}"/>
-            </TabItem>
-            <TabItem Header="Game">
-                <statisticsViews:GameStatisticsView DataContext="{Binding GameStatisticsViewModel}"/>
-            </TabItem>
-        </TabControl>
+        <ContentControl Content="{Binding}">
+            <ContentControl.Style>
+                <Style TargetType="{x:Type ContentControl}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsPlayer}" Value="True">
+                            <Setter Property="ContentTemplate" Value="{StaticResource PlayerStatisticsDataTemplate}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsSpectator}" Value="True">
+                            <Setter Property="ContentTemplate" Value="{StaticResource SpectatorStatisticsDataTemplate}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
     </Grid>
 </UserControl>

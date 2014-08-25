@@ -36,7 +36,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Player.cs" />
-    <Compile Include="PlayerManager.cs" />
+    <Compile Include="PlayerManagerDictionaryBased.cs" />
+    <Compile Include="PlayerManagerArrayBased.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

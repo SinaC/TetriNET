@@ -218,6 +218,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
         public override void UnsubscribeFromClientEvents(IClient oldClient)
         {
+            oldClient.RegisteredAsPlayer -= OnRegisteredAsPlayer;
+            oldClient.RegisteredAsSpectator -= OnRegisteredAsSpectator;
             oldClient.GameStarted -= OnGameStarted;
             oldClient.GameFinished -= OnGameFinished;
             oldClient.GameOver -= OnGameOver;
@@ -225,6 +227,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
         public override void SubscribeToClientEvents(IClient newClient)
         {
+            newClient.RegisteredAsPlayer += OnRegisteredAsPlayer;
+            newClient.RegisteredAsSpectator += OnRegisteredAsSpectator;
             newClient.GameStarted += OnGameStarted;
             newClient.GameFinished += OnGameFinished;
             newClient.GameOver += OnGameOver;
@@ -233,6 +237,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         #endregion
 
         #region IClient events handler
+
+        private void OnRegisteredAsSpectator(RegistrationResults result, int spectatorId)
+        {
+            Refresh();
+        }
+
+        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
+        {
+            Refresh();
+        }
 
         private void OnGameStarted()
         {
