@@ -3,8 +3,15 @@ using TetriNET.Common.Contracts;
 
 namespace TetriNET.Server.Interfaces
 {
+    public delegate void ConnectionLostEventHandler(IEntity entity);
+
     public interface IEntity : ITetriNETCallback
     {
+        event ConnectionLostEventHandler ConnectionLost;
+
+        int Id { get; }
+        string Name { get; }
+
         //
         ITetriNETCallback Callback { get; } // should never be used by anything else then IPlayerManager/ISpectatorManager and IPlayer/ISpectator
 

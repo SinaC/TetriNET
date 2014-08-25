@@ -42,7 +42,7 @@ namespace TetriNET.Server.SpectatorManager
 
         #region ISpectator + IEntity
 
-        public event SpectatorConnectionLostEventHandler ConnectionLost;
+        public event ConnectionLostEventHandler ConnectionLost;
 
         public int Id { get; private set; }
         public string Name { get; private set; }

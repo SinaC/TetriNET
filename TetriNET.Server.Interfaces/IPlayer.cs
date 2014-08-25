@@ -9,14 +9,8 @@ namespace TetriNET.Server.Interfaces
         GameLost
     };
 
-    public delegate void ConnectionLostEventHandler(IPlayer player);
-
     public interface IPlayer : IEntity
     {
-        event ConnectionLostEventHandler ConnectionLost;
-
-        int Id { get; }
-        string Name { get; }
         string Team { get; set; }
         int PieceIndex { get; set; }
         byte[] Grid { get; set; }

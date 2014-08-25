@@ -29,14 +29,12 @@ namespace TetriNET.Server.GenericHost
             CreateSpectatorFunc = createSpectatorFunc;
         }
 
-        protected virtual void PlayerOnConnectionLost(IPlayer player)
+        protected virtual void OnEntityConnectionLost(IEntity entity)
         {
-            HostPlayerLeft.Do(x => x(player, LeaveReasons.ConnectionLost));
-        }
-
-        protected virtual void SpectatorOnConnectionLost(ISpectator spectator)
-        {
-            HostSpectatorLeft.Do(x => x(spectator, LeaveReasons.ConnectionLost));
+            if (entity is IPlayer)
+                HostPlayerLeft.Do(x => x(entity as IPlayer, LeaveReasons.ConnectionLost));
+            else if (entity is ISpectator)
+                HostSpectatorLeft.Do(x => x(entity as ISpectator, LeaveReasons.ConnectionLost));
         }
 
         #region IHost
@@ -115,7 +113,7 @@ namespace TetriNET.Server.GenericHost
                     {
                         player = CreatePlayerFunc(id, playerName, callback);
                         //
-                        player.ConnectionLost += PlayerOnConnectionLost;
+                        player.ConnectionLost += OnEntityConnectionLost;
                         player.Team = team;
                         //
                         added = PlayerManager.Add(player);
@@ -521,7 +519,7 @@ namespace TetriNET.Server.GenericHost
                     {
                         spectator = CreateSpectatorFunc(id, spectatorName, callback);
                         //
-                        spectator.ConnectionLost += SpectatorOnConnectionLost;
+                        spectator.ConnectionLost += OnEntityConnectionLost;
                         //
                         added = SpectatorManager.Add(spectator);
                     }
