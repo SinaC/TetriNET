@@ -163,12 +163,9 @@ namespace TetriNET.ConsoleWCFServer
                         case ConsoleKey.Q:
                             server.ResetWinList();
                             break;
-                        case ConsoleKey.Multiply:
-                            server.ToggleSuddenDeath();
-                            break;
                         case ConsoleKey.O:
                             {
-                                GameOptions options = server.GetOptions();
+                                GameOptions options = server.Options;
                                 foreach (PieceOccurancy occurancy in options.PieceOccurancies)
                                     Console.WriteLine("{0}:{1}", occurancy.Value, occurancy.Occurancy);
                                 foreach (SpecialOccurancy occurancy in options.SpecialOccurancies)

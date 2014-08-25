@@ -41,6 +41,7 @@
     <Compile Include="IPieceProvider.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="IPlayerManager.cs" />
+    <Compile Include="IServer.cs" />
     <Compile Include="ISpectator.cs" />
     <Compile Include="ISpectatorManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

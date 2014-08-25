@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace TetriNET.Common.DataContracts
@@ -7,7 +8,10 @@ namespace TetriNET.Common.DataContracts
     public class GameStatistics
     {
         [DataMember]
-        public double MatchTime { get; set; } // in seconds
+        public DateTime GameStarted { get; set; }
+
+        [DataMember]
+        public DateTime GameFinished { get; set; }
 
         [DataMember]
         public List<GameStatisticsByPlayer> Players { get; set; }

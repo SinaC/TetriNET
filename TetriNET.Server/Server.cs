@@ -13,21 +13,8 @@ using TetriNET.Server.Interfaces;
 
 namespace TetriNET.Server
 {
-    public sealed class Server
+    public sealed class Server : IServer
     {
-        public enum States
-        {
-            WaitingStartServer, // -> StartingServer
-            StartingServer, // -> WaitingStartGame
-            WaitingStartGame, // -> StartingGame
-            StartingGame, // -> GameStarted
-            GameStarted, // -> GameFinished | GamePaused
-            GameFinished, // -> WaitingStartGame
-            StoppingServer, // -> WaitingStartServer
-
-            GamePaused, // -> GameStarted
-        }
-
         private const int PiecesSendOnGameStarted = 5;
         private const int PiecesSendOnPlacePiece = 4;
         private const int HeartbeatDelay = 300; // in ms
@@ -44,29 +31,22 @@ namespace TetriNET.Server
         private Task _timeoutTask;
         private Task _gameActionsTask;
 
-        private GameOptions _options;
-
         private DateTime _gameStartTime;
         private bool _isSuddenDeathActive;
         private DateTime _suddenDeathStartTime;
         private DateTime _lastSuddenDeathAddLines;
         
-        public States State { get; private set; }
-        public int SpecialId { get; private set; }
-        public List<WinEntry> WinList { get; private set; }
-        public Dictionary<string, GameStatisticsByPlayer> PlayerStatistics { get; private set; } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
-
         public Server(IPlayerManager playerManager, ISpectatorManager spectatorManager, IPieceProvider pieceProvider, params IHost[] hosts)
         {
             if (playerManager == null)
                 throw new ArgumentNullException("playerManager");
             if (hosts == null || !hosts.Any())
                 throw new ArgumentNullException("hosts");
-            _options = new GameOptions();
-            _options.ResetToDefault();
+            Options = new GameOptions();
+            Options.ResetToDefault();
 
             _pieceProvider = pieceProvider;
-            _pieceProvider.Occurancies = () => _options.PieceOccurancies;
+            _pieceProvider.Occurancies = () => Options.PieceOccurancies;
             _playerManager = playerManager;
             _spectatorManager = spectatorManager;
             _hosts = hosts.ToList();
@@ -106,61 +86,80 @@ namespace TetriNET.Server
                 Debug.Assert(Check.CheckEvents(host), "Every host events must be handled");
             }
 
-            State = States.WaitingStartServer;
+            State = ServerStates.WaitingStartServer;
         }
+
+        #region IServer
+
+        public ServerStates State { get; private set; }
+        public int SpecialId { get; private set; }
+        public List<WinEntry> WinList { get; private set; }
+        public Dictionary<string, GameStatisticsByPlayer> PlayerStatistics { get; private set; } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
+        public GameOptions Options { get; private set; }
 
         public void StartServer()
         {
             Log.WriteLine(Log.LogLevels.Info, "Starting server");
 
-            State = States.StartingServer;
+            if (State == ServerStates.WaitingStartServer)
+            {
+                State = ServerStates.StartingServer;
 
-            SpecialId = 0;
+                SpecialId = 0;
 
-            _cancellationTokenSource = new CancellationTokenSource();
-            _timeoutTask = Task.Factory.StartNew(TimeoutTask, _cancellationTokenSource.Token);
-            _gameActionsTask = Task.Factory.StartNew(GameActionsTask, _cancellationTokenSource.Token);
+                _cancellationTokenSource = new CancellationTokenSource();
+                _timeoutTask = Task.Factory.StartNew(TimeoutTask, _cancellationTokenSource.Token);
+                _gameActionsTask = Task.Factory.StartNew(GameActionsTask, _cancellationTokenSource.Token);
 
-            // Start hosts
-            foreach (IHost host in _hosts)
-                host.Start();
+                // Start hosts
+                foreach (IHost host in _hosts)
+                    host.Start();
 
-            State = States.WaitingStartGame;
+                State = ServerStates.WaitingStartGame;
 
-            Log.WriteLine(Log.LogLevels.Info, "Server started");
+                Log.WriteLine(Log.LogLevels.Info, "Server started");
+            }
+            else
+                Log.WriteLine(Log.LogLevels.Info, "Server already started");
         }
 
         public void StopServer()
         {
             Log.WriteLine(Log.LogLevels.Info, "Stopping server");
-            State = States.StoppingServer;
 
-            // Stop worker threads
-            _cancellationTokenSource.Cancel();
+            if (State != ServerStates.StoppingServer && State != ServerStates.WaitingStartServer)
+            {
+                State = ServerStates.StoppingServer;
 
-            Task.WaitAll(new[] {_timeoutTask, _gameActionsTask}, 2000);
+                // Stop worker threads
+                _cancellationTokenSource.Cancel();
 
-            // Inform players and spectators
-            foreach (IEntity entity in Entities)
-                entity.OnServerStopped();
+                Task.WaitAll(new[] {_timeoutTask, _gameActionsTask}, 2000);
 
-            // Stop hosts
-            foreach (IHost host in _hosts)
-                host.Stop();
+                // Inform players and spectators
+                foreach (IEntity entity in Entities)
+                    entity.OnServerStopped();
 
-            // Clear player manager
-            _playerManager.Clear();
+                // Stop hosts
+                foreach (IHost host in _hosts)
+                    host.Stop();
 
-            State = States.WaitingStartServer;
+                // Clear player manager
+                _playerManager.Clear();
 
-            Log.WriteLine(Log.LogLevels.Info, "Server stopped");
+                State = ServerStates.WaitingStartServer;
+
+                Log.WriteLine(Log.LogLevels.Info, "Server stopped");
+            }
+            else
+                Log.WriteLine(Log.LogLevels.Info, "Server already stopped or stopping");
         }
 
         public void StartGame()
         {
             Log.WriteLine(Log.LogLevels.Info, "Starting game");
 
-            if (State == States.WaitingStartGame)
+            if (State == ServerStates.WaitingStartGame)
             {
                 // Reset action list
                 while (_gameActionBlockingCollection.Count > 0)
@@ -188,11 +187,11 @@ namespace TetriNET.Server
 
                 // Reset sudden death
                 _isSuddenDeathActive = false;
-                if (_options.DelayBeforeSuddenDeath > 0)
+                if (Options.DelayBeforeSuddenDeath > 0)
                 {
-                    _suddenDeathStartTime = DateTime.Now.AddMinutes(_options.DelayBeforeSuddenDeath);
+                    _suddenDeathStartTime = DateTime.Now.AddMinutes(Options.DelayBeforeSuddenDeath);
                     _isSuddenDeathActive = true;
-                    Log.WriteLine(Log.LogLevels.Info, "Sudden death will be activated after {0} minutes and send lines every {1} seconds", _options.DelayBeforeSuddenDeath, _options.SuddenDeathTick);
+                    Log.WriteLine(Log.LogLevels.Info, "Sudden death will be activated after {0} minutes and send lines every {1} seconds", Options.DelayBeforeSuddenDeath, Options.SuddenDeathTick);
                 }
 
                 // Reset statistics
@@ -211,7 +210,7 @@ namespace TetriNET.Server
                 foreach (ISpectator s in _spectatorManager.Spectators)
                     s.OnGameStarted(pieces);
 
-                State = States.GameStarted;
+                State = ServerStates.GameStarted;
 
                 Log.WriteLine(Log.LogLevels.Info, "Game started");
             }
@@ -223,16 +222,16 @@ namespace TetriNET.Server
         {
             Log.WriteLine(Log.LogLevels.Info, "Stopping game");
 
-            if (State == States.GameStarted || State == States.GamePaused)
+            if (State == ServerStates.GameStarted || State == ServerStates.GamePaused)
             {
-                State = States.GameFinished;
+                State = ServerStates.GameFinished;
 
                 GameStatistics statistics = PrepareGameStatistics();
                 // Send game finished to players and spectators
                 foreach (IEntity entity in Entities)
                     entity.OnGameFinished(statistics);
 
-                State = States.WaitingStartGame;
+                State = ServerStates.WaitingStartGame;
 
                 Log.WriteLine(Log.LogLevels.Info, "Game stopped");
             }
@@ -244,9 +243,9 @@ namespace TetriNET.Server
         {
             Log.WriteLine(Log.LogLevels.Info, "Pausing game");
 
-            if (State == States.GameStarted)
+            if (State == ServerStates.GameStarted)
             {
-                State = States.GamePaused;
+                State = ServerStates.GamePaused;
 
                 // Send game paused to players and spectators
                 foreach (IEntity entity in Entities)
@@ -261,9 +260,9 @@ namespace TetriNET.Server
         public void ResumeGame()
         {
             Log.WriteLine(Log.LogLevels.Info, "Resuming game");
-            if (State == States.GamePaused)
+            if (State == ServerStates.GamePaused)
             {
-                State = States.GameStarted;
+                State = ServerStates.GameStarted;
 
                 // Reset sudden death
                 _lastSuddenDeathAddLines = DateTime.Now; // TODO: a player, could pause<->resume forever to avoid sudden death
@@ -282,7 +281,7 @@ namespace TetriNET.Server
         {
             Log.WriteLine(Log.LogLevels.Info, "Resetting win list");
 
-            if (State == States.WaitingStartGame)
+            if (State == ServerStates.WaitingStartGame)
             {
                 // Reset
                 WinList.Clear();
@@ -300,29 +299,7 @@ namespace TetriNET.Server
                 Log.WriteLine(Log.LogLevels.Info, "Cannot reset win list");
         }
 
-        public void ToggleSuddenDeath()
-        {
-            if (_options.DelayBeforeSuddenDeath == 0)
-            {
-                Log.WriteLine(Log.LogLevels.Info, "Activating SUDDEN DEATH");
-                _isSuddenDeathActive = true;
-                _options.DelayBeforeSuddenDeath = 1;
-                _options.SuddenDeathTick = 1;
-                _suddenDeathStartTime = DateTime.Now.AddMinutes(-_options.DelayBeforeSuddenDeath);
-            }
-            else
-            {
-                Log.WriteLine(Log.LogLevels.Info, "Disabling SUDDEN DEATH");
-                _isSuddenDeathActive = false;
-                _options.DelayBeforeSuddenDeath = 0;
-                _options.SuddenDeathTick = 0;
-            }
-        }
-
-        public GameOptions GetOptions()
-        {
-            return _options;
-        }
+        #endregion
 
         private void ResetStatistics()
         {
@@ -337,7 +314,7 @@ namespace TetriNET.Server
                         PlayerName = player.Name,
                         SpecialsUsed = new Dictionary<Specials, Dictionary<string, int>>()
                     };
-                foreach (SpecialOccurancy occurancy in _options.SpecialOccurancies.Where(x => x.Occurancy > 0))
+                foreach (SpecialOccurancy occurancy in Options.SpecialOccurancies.Where(x => x.Occurancy > 0))
                 {
                     Dictionary<string, int> specialsByPlayer = _playerManager.Players.Select(p => p.Name).ToDictionary(x => x, x => 0);
                     stats.SpecialsUsed.Add(occurancy.Value, specialsByPlayer);
@@ -373,7 +350,8 @@ namespace TetriNET.Server
         {
             GameStatistics statistics = new GameStatistics
                 {
-                    MatchTime = (DateTime.Now - _gameStartTime).TotalSeconds,
+                    GameStarted = _gameStartTime,
+                    GameFinished = DateTime.Now,
                     Players = PlayerStatistics.Select(x => x.Value).ToList()
                 };
             return statistics;
@@ -407,7 +385,7 @@ namespace TetriNET.Server
             Log.WriteLine(Log.LogLevels.Info, "New player:[{0}]{1}|{2}", playerId, player.Name, player.Team);
 
             // Send player id back to player
-            player.OnPlayerRegistered(RegistrationResults.RegistrationSuccessful, playerId, State == States.GameStarted || State == States.GamePaused, _playerManager.ServerMaster == player, _options);
+            player.OnPlayerRegistered(RegistrationResults.RegistrationSuccessful, playerId, State == ServerStates.GameStarted || State == ServerStates.GamePaused, _playerManager.ServerMaster == player, Options);
 
             // Inform new player about other players
             foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
@@ -433,7 +411,7 @@ namespace TetriNET.Server
             }
 
             // If game is running, send grid for playing player and game lost for dead player
-            if (State == States.GamePaused || State == States.GameStarted)
+            if (State == ServerStates.GamePaused || State == ServerStates.GameStarted)
             {
                 foreach(IPlayer p in _playerManager.Players)
                 {
@@ -487,7 +465,7 @@ namespace TetriNET.Server
         private void OnClearLines(IPlayer player, int count)
         {
             UpdateStatistics(player.Name, count);
-            if (_options.ClassicStyleMultiplayerRules && count > 1)
+            if (Options.ClassicStyleMultiplayerRules && count > 1)
             {
                 int addLines = count - 1;
                 if (addLines >= 4)
@@ -556,7 +534,7 @@ namespace TetriNET.Server
             Log.WriteLine(Log.LogLevels.Info, "ChangeOptions:{0} {1}", player.Name, options);
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
-            if (masterPlayer == player && State == States.WaitingStartGame)
+            if (masterPlayer == player && State == ServerStates.WaitingStartGame)
             {
                 // Remove duplicates (just in case)
                 options.SpecialOccurancies = options.SpecialOccurancies.GroupBy(x => x.Value).Select(x => x.First()).ToList();
@@ -574,10 +552,10 @@ namespace TetriNET.Server
                     options.StartingLevel >= 0 && options.StartingLevel <= 100;
                 if (accepted)
                 {
-                    _options = options; // Options will be sent to players when starting a new game
+                    Options = options; // Options will be sent to players when starting a new game
                     // Inform other players/spectators about options modification
                     foreach (IEntity entity in Entities.Where(e => e != player))
-                        entity.OnOptionsChanged(_options);
+                        entity.OnOptionsChanged(Options);
                 }
                 else
                     Log.WriteLine(Log.LogLevels.Info, "Invalid options");
@@ -592,7 +570,7 @@ namespace TetriNET.Server
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
             IPlayer kickedPlayer = _playerManager[playerId];
-            if (masterPlayer == player && State == States.WaitingStartGame && kickedPlayer != null)
+            if (masterPlayer == player && State == ServerStates.WaitingStartGame && kickedPlayer != null)
             {
                 // Send server stopped
                 kickedPlayer.OnServerStopped();
@@ -609,7 +587,7 @@ namespace TetriNET.Server
 
             IPlayer masterPlayer = _playerManager.ServerMaster;
             IPlayer bannedPlayer = _playerManager[playerId];
-            if (masterPlayer == player && State == States.WaitingStartGame && bannedPlayer != null)
+            if (masterPlayer == player && State == ServerStates.WaitingStartGame && bannedPlayer != null)
             {
                 // Send server stopped
                 bannedPlayer.OnServerStopped();
@@ -652,7 +630,7 @@ namespace TetriNET.Server
             Log.WriteLine(Log.LogLevels.Info, "New spectator:[{0}]{1}", spectatorId, spectator.Name);
 
             // Send spectator id back to spectator
-            spectator.OnSpectatorRegistered(RegistrationResults.RegistrationSuccessful, spectatorId, State == States.GameStarted || State == States.GamePaused, _options);
+            spectator.OnSpectatorRegistered(RegistrationResults.RegistrationSuccessful, spectatorId, State == ServerStates.GameStarted || State == ServerStates.GamePaused, Options);
 
             // Inform new spectator about players
             foreach (IPlayer p in _playerManager.Players)
@@ -666,7 +644,7 @@ namespace TetriNET.Server
                 entity.OnSpectatorJoined(spectatorId, spectator.Name);
 
             // If game is running, send grid for playing player and game lost for dead player
-            if (State == States.GamePaused || State == States.GameStarted)
+            if (State == ServerStates.GamePaused || State == ServerStates.GameStarted)
             {
                 foreach (IPlayer p in _playerManager.Players)
                 {
@@ -717,18 +695,18 @@ namespace TetriNET.Server
                 host.RemovePlayer(player);
 
             // If game was running and player was playing, check if only one player left (see GameLostHandler)
-            if ((State == States.GameStarted || State == States.GamePaused) && player.State == PlayerStates.Playing)
+            if ((State == ServerStates.GameStarted || State == ServerStates.GamePaused) && player.State == PlayerStates.Playing)
             {
                 int playingCount = _playerManager.Players.Count(p => p.State == PlayerStates.Playing);
                 if (playingCount == 0 || playingCount == 1)
                 {
                     Log.WriteLine(Log.LogLevels.Info, "Game finished by forfeit no winner");
-                    State = States.GameFinished;
+                    State = ServerStates.GameFinished;
                     GameStatistics statistics = PrepareGameStatistics();
                     // Send game finished (no winner)
                     foreach (IEntity entity in Entities.Where(x => x != player))
                         entity.OnGameFinished(statistics);
-                    State = States.WaitingStartGame;
+                    State = ServerStates.WaitingStartGame;
                 }
             }
 
@@ -936,17 +914,17 @@ namespace TetriNET.Server
                 if (playingCount == 0) // there were only one playing player
                 {
                     Log.WriteLine(Log.LogLevels.Info, "Game finished with only one player playing, no winner");
-                    State = States.GameFinished;
+                    State = ServerStates.GameFinished;
                     // Send game finished (no winner) to players and spectators
                     GameStatistics statistics = PrepareGameStatistics();
                     foreach (IEntity entity in Entities)
                         entity.OnGameFinished(statistics);
-                    State = States.WaitingStartGame;
+                    State = ServerStates.WaitingStartGame;
                 }
                 else if (playingCount == 1) // only one playing left
                 {
                     Log.WriteLine(Log.LogLevels.Info, "Game finished checking winner");
-                    State = States.GameFinished;
+                    State = ServerStates.GameFinished;
                     // Game won
                     IPlayer winner = _playerManager.Players.Single(p => p.State == PlayerStates.Playing);
                     winner.State = PlayerStates.Registered;
@@ -971,7 +949,7 @@ namespace TetriNET.Server
                         entity.OnGameFinished(statistics);
                         entity.OnWinListModified(WinList);
                     }
-                    State = States.WaitingStartGame;
+                    State = ServerStates.WaitingStartGame;
                 }
             }
             else
@@ -1002,12 +980,12 @@ namespace TetriNET.Server
                 }
 
                 // Check sudden death
-                if (State == States.GameStarted && _isSuddenDeathActive)
+                if (State == ServerStates.GameStarted && _isSuddenDeathActive)
                 {
                     if (DateTime.Now > _suddenDeathStartTime)
                     {
                         TimeSpan timespan = DateTime.Now - _lastSuddenDeathAddLines;
-                        if (timespan.TotalSeconds >= _options.SuddenDeathTick)
+                        if (timespan.TotalSeconds >= Options.SuddenDeathTick)
                         {
                             Log.WriteLine(Log.LogLevels.Info, "Sudden death tick");
                             // Delay elapsed, send lines
@@ -1019,7 +997,7 @@ namespace TetriNET.Server
                 }
 
                 // Check running game without any player
-                if (State == States.GameStarted || State == States.GamePaused)
+                if (State == ServerStates.GameStarted || State == ServerStates.GamePaused)
                 {
                     if (_playerManager.Players.Count(x => x.State == PlayerStates.Playing) == 0)
                     {

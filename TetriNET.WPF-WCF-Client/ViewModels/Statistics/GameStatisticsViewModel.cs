@@ -60,7 +60,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
         public double MatchTime // In seconds
         {
-            get { return _gameStatistics == null ? 0 : _gameStatistics.MatchTime; }
+            get { return _gameStatistics == null ? 0 : (_gameStatistics.GameFinished - _gameStatistics.GameStarted).TotalSeconds; }
         }
 
         private List<string> _playerList;
@@ -99,7 +99,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         {
             //GameStatistics = new GameStatistics
             //{
-            //    MatchTime = 123.456,
+            //    GameStarted = DateTime.Now.AddMinutes(-10),
+            //    GameFinished = DateTime.Now.AddMinutes(-5),
             //    Players = new List<GameStatisticsByPlayer>
             //            {
             //                new GameStatisticsByPlayer
@@ -266,7 +267,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         {
             GameStatistics = new GameStatistics
                 {
-                    MatchTime = 123.456,
+                    GameStarted = DateTime.Now.AddMinutes(-10),
+                    GameFinished = DateTime.Now.AddMinutes(-5),
                     Players = new List<GameStatisticsByPlayer>
                         {
                             new GameStatisticsByPlayer
