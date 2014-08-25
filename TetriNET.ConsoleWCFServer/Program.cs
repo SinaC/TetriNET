@@ -59,8 +59,8 @@ namespace TetriNET.ConsoleWCFServer
                 playerManager, 
                 spectatorManager, 
                 banManager, 
-                (playerName, callback) => new Player(playerName, callback),
-                (spectatorName, callback) => new Spectator(spectatorName, callback))
+                (id, playerName, callback) => new Player(id, playerName, callback),
+                (id, spectatorName, callback) => new Spectator(id, spectatorName, callback))
             {
                 Port = ConfigurationManager.AppSettings["port"]
             };
@@ -70,15 +70,15 @@ namespace TetriNET.ConsoleWCFServer
                 playerManager,
                 spectatorManager,
                 banManager,
-                (playerName, callback) => new Player(playerName, callback),
-                (spectatorName, callback) => new Spectator(spectatorName, callback));
+                (id, playerName, callback) => new Player(id, playerName, callback),
+                (id, spectatorName, callback) => new Spectator(id, spectatorName, callback));
 
 
             TCPHost socketHost = new TCPHost(playerManager,
                 spectatorManager,
                 banManager,
-                (playerName, callback) => new Player(playerName, callback),
-                (spectatorName, callback) => new Spectator(spectatorName, callback))
+                (id, playerName, callback) => new Player(id, playerName, callback),
+                (id, spectatorName, callback) => new Spectator(id, spectatorName, callback))
             {
                 Port = 5656
             };

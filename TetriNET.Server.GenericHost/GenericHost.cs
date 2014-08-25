@@ -10,10 +10,10 @@ namespace TetriNET.Server.GenericHost
 {
     public abstract class GenericHost : IHost
     {
-        protected readonly Func<string, ITetriNETCallback, IPlayer> CreatePlayerFunc;
-        protected readonly Func<string, ITetriNETCallback, ISpectator> CreateSpectatorFunc;
+        protected readonly Func<int, string, ITetriNETCallback, IPlayer> CreatePlayerFunc;
+        protected readonly Func<int, string, ITetriNETCallback, ISpectator> CreateSpectatorFunc;
 
-        protected GenericHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc, Func<string, ITetriNETCallback, ISpectator> createSpectatorFunc)
+        protected GenericHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, Func<int, string, ITetriNETCallback, IPlayer> createPlayerFunc, Func<int, string, ITetriNETCallback, ISpectator> createSpectatorFunc)
         {
             if (playerManager == null)
                 throw new ArgumentNullException("playerManager");
@@ -90,6 +90,7 @@ namespace TetriNET.Server.GenericHost
             RegistrationResults result = RegistrationResults.RegistrationSuccessful;
             IPlayer player = null;
             int id = -1;
+            bool added = false;
             lock (PlayerManager.LockObject)
             {
                 if (String.IsNullOrEmpty(playerName) || playerName.Length > 20)
@@ -109,15 +110,19 @@ namespace TetriNET.Server.GenericHost
                 }
                 else
                 {
-                    player = CreatePlayerFunc(playerName, callback);
-                    //
-                    player.ConnectionLost += PlayerOnConnectionLost;
-                    player.Team = team;
-                    //
-                    id = PlayerManager.Add(player);
+                    id = PlayerManager.FirstAvailableId;
+                    if (id != -1)
+                    {
+                        player = CreatePlayerFunc(id, playerName, callback);
+                        //
+                        player.ConnectionLost += PlayerOnConnectionLost;
+                        player.Team = team;
+                        //
+                        added = PlayerManager.Add(player);
+                    }
                 }
             }
-            if (id >= 0 && player != null && result == RegistrationResults.RegistrationSuccessful)
+            if (added && id != -1 && result == RegistrationResults.RegistrationSuccessful)
             {
                 //
                 player.ResetTimeout(); // player alive
@@ -491,6 +496,7 @@ namespace TetriNET.Server.GenericHost
             RegistrationResults result = RegistrationResults.RegistrationSuccessful;
             ISpectator spectator = null;
             int id = -1;
+            bool added = false;
             lock (SpectatorManager.LockObject)
             {
                 if (String.IsNullOrEmpty(spectatorName) || spectatorName.Length > 20)
@@ -510,14 +516,18 @@ namespace TetriNET.Server.GenericHost
                 }
                 else
                 {
-                    spectator = CreateSpectatorFunc(spectatorName, callback);
-                    //
-                    spectator.ConnectionLost += SpectatorOnConnectionLost;
-                    //
-                    id = SpectatorManager.Add(spectator);
+                    id = SpectatorManager.FirstAvailableId;
+                    if (id != -1)
+                    {
+                        spectator = CreateSpectatorFunc(id, spectatorName, callback);
+                        //
+                        spectator.ConnectionLost += SpectatorOnConnectionLost;
+                        //
+                        added = SpectatorManager.Add(spectator);
+                    }
                 }
             }
-            if (id >= 0 && spectator != null && result == RegistrationResults.RegistrationSuccessful)
+            if (added && id != -1 && result == RegistrationResults.RegistrationSuccessful)
             {
                 //
                 spectator.ResetTimeout(); // spectator alive

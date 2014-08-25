@@ -21,7 +21,7 @@ namespace TetriNET.Server.PlayerManager
 
         #region IPlayerManager
 
-        public int Add(IPlayer player)
+        public bool Add(IPlayer player)
         {
             bool alreadyExists = _players.Any(x => x != null && (x == player || x.Name == player.Name));
             if (!alreadyExists)
@@ -31,12 +31,12 @@ namespace TetriNET.Server.PlayerManager
                     if (_players[i] == null)
                     {
                         _players[i] = player;
-                        return i;
+                        return true;
                     }
             }
             else
                 Log.WriteLine(Log.LogLevels.Warning, "{0} already registered", player.Name);
-            return -1;
+            return false;
         }
 
         public bool Remove(IPlayer player)
@@ -60,26 +60,28 @@ namespace TetriNET.Server.PlayerManager
 
         public int PlayerCount
         {
-            get
-            {
-                return _players.Count(x => x != null);
-            }
+            get { return _players.Count(x => x != null); }
         }
 
         public object LockObject
         {
+            get { return _lockObject; }
+        }
+
+        public int FirstAvailableId
+        {
             get
             {
-                return _lockObject;
+                for (int i = 0; i < MaxPlayers; i++)
+                    if (_players[i] == null)
+                        return i;
+                return -1;
             }
         }
 
         public IEnumerable<IPlayer> Players
         {
-            get
-            {
-                return _players.Where(x => x != null);
-            }
+            get { return _players.Where(x => x != null); }
         }
 
         public int GetId(IPlayer player)
@@ -89,18 +91,12 @@ namespace TetriNET.Server.PlayerManager
 
         public IPlayer ServerMaster
         {
-            get
-            {
-                return _players.FirstOrDefault(x => x != null);
-            }
+            get { return _players.FirstOrDefault(x => x != null); }
         }
 
         public IPlayer this[string name]
         {
-            get
-            {
-                return _players.FirstOrDefault(x => x != null && x.Name == name);
-            }
+            get { return _players.FirstOrDefault(x => x != null && x.Name == name); }
         }
 
         public IPlayer this[int index]
@@ -115,10 +111,7 @@ namespace TetriNET.Server.PlayerManager
 
         public IPlayer this[ITetriNETCallback callback]
         {
-            get
-            {
-                return _players.FirstOrDefault(x => x != null && x.Callback == callback);
-            }
+            get { return _players.FirstOrDefault(x => x != null && x.Callback == callback); }
         }
 
         #endregion

@@ -209,7 +209,7 @@ namespace TetriNET.Server.WCFHost
             set { _serviceHost.Port = value; }
         }
 
-        public WCFHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc, Func<string, ITetriNETCallback, ISpectator> createSpectatorFunc)
+        public WCFHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, Func<int, string, ITetriNETCallback, IPlayer> createPlayerFunc, Func<int, string, ITetriNETCallback, ISpectator> createSpectatorFunc)
             : base(playerManager, spectatorManager, banManager, createPlayerFunc, createSpectatorFunc)
         {
             _serviceHost = new WCFServiceHost(this);

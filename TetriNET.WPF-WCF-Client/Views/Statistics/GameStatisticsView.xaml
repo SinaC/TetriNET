@@ -12,6 +12,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:SpecialToBrushConverter x:Key="SpecialToBrushConverter"/>
+            <converters:SpecialToStringConverter x:Key="SpecialToStringConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -126,7 +127,9 @@
                         <DataGridTemplateColumn Header="-&gt;" IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Rectangle Stretch="Fill" Width="16" Height="16" Fill="{Binding Special, Converter={StaticResource SpecialToBrushConverter}}"/>
+                                    <Rectangle Stretch="Fill" Width="16" Height="16" 
+                                               ToolTip="{Binding Special, Converter={StaticResource SpecialToStringConverter}}"
+                                               Fill="{Binding Special, Converter={StaticResource SpecialToBrushConverter}}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -157,7 +160,9 @@
                         <DataGridTemplateColumn Header="&lt;-" IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Rectangle Stretch="Fill" Width="16" Height="16" Fill="{Binding Special, Converter={StaticResource SpecialToBrushConverter}}"/>
+                                    <Rectangle Stretch="Fill" Width="16" Height="16" 
+                                               ToolTip="{Binding Special, Converter={StaticResource SpecialToStringConverter}}"
+                                               Fill="{Binding Special, Converter={StaticResource SpecialToBrushConverter}}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

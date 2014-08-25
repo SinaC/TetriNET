@@ -81,8 +81,8 @@ namespace TetriNET.WCF.Service
                 playerManager,
                 spectatorManager,
                 banManager,
-                (playerName, callback) => new Player(playerName, callback),
-                (spectatorName, callback) => new Spectator(spectatorName, callback))
+                (id, playerName, callback) => new Player(id, playerName, callback),
+                (id, spectatorName, callback) => new Spectator(id, spectatorName, callback))
             {
                 Port = ConfigurationManager.AppSettings["port"]
             };

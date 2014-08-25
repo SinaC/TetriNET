@@ -13,6 +13,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:SpecialToBrushConverter x:Key="SpecialToBrushConverter"/>
+            <converters:SpecialToStringConverter x:Key="SpecialToStringConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -269,7 +270,9 @@
                         <GridViewColumn Width="30">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Rectangle Stretch="Fill" Width="16" Height="16" Fill="{Binding Key, Converter={StaticResource SpecialToBrushConverter}}"/>
+                                    <Rectangle Stretch="Fill" Width="16" Height="16" 
+                                               ToolTip="{Binding Key, Converter={StaticResource SpecialToStringConverter}}"
+                                               Fill="{Binding Key, Converter={StaticResource SpecialToBrushConverter}}"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>

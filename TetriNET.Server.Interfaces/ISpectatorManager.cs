@@ -5,7 +5,7 @@ namespace TetriNET.Server.Interfaces
 {
     public interface ISpectatorManager
     {
-        int Add(ISpectator spectator);
+        bool Add(ISpectator spectator);
         bool Remove(ISpectator spectator);
         void Clear();
 
@@ -13,9 +13,9 @@ namespace TetriNET.Server.Interfaces
         int SpectatorCount { get; }
         object LockObject { get; }
 
-        IEnumerable<ISpectator> Spectators { get; }
+        int FirstAvailableId { get; }
 
-        int GetId(ISpectator spectator);
+        IEnumerable<ISpectator> Spectators { get; }
 
         ISpectator this[string name] { get; }
         ISpectator this[int index] { get; }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.Logger;
@@ -21,7 +20,7 @@ namespace TetriNET.Server.SpectatorManager
 
         #region ISpectatorManager
 
-        public int Add(ISpectator spectator)
+        public bool Add(ISpectator spectator)
         {
             bool alreadyExists = _spectators.Any(x => x != null && (x == spectator || x.Name == spectator.Name));
             if (!alreadyExists)
@@ -31,12 +30,12 @@ namespace TetriNET.Server.SpectatorManager
                     if (_spectators[i] == null)
                     {
                         _spectators[i] = spectator;
-                        return i;
+                        return true;
                     }
             }
             else
                 Log.WriteLine(Log.LogLevels.Warning, "{0} already registered", spectator.Name);
-            return -1;
+            return false;
         }
 
         public bool Remove(ISpectator spectator)
@@ -60,39 +59,33 @@ namespace TetriNET.Server.SpectatorManager
 
         public int SpectatorCount
         {
-            get
-            {
-                return _spectators.Count(x => x != null);
-            }
+            get { return _spectators.Count(x => x != null); }
         }
 
         public object LockObject
         {
+            get { return _lockObject; }
+        }
+
+        public int FirstAvailableId
+        {
             get
             {
-                return _lockObject;
+                for (int i = 0; i < MaxSpectators; i++)
+                    if (_spectators[i] == null)
+                        return i;
+                return -1;
             }
         }
 
         public IEnumerable<ISpectator> Spectators
         {
-            get
-            {
-                return _spectators.Where(x => x != null);
-            }
-        }
-
-        public int GetId(ISpectator spectator)
-        {
-            return spectator == null ? -1 : Array.IndexOf(_spectators, spectator);
+            get { return _spectators.Where(x => x != null); }
         }
 
         public ISpectator this[string name]
         {
-            get
-            {
-                return _spectators.FirstOrDefault(x => x != null && x.Name == name);
-            }
+            get { return _spectators.FirstOrDefault(x => x != null && x.Name == name); }
         }
 
         public ISpectator this[int index]
@@ -107,10 +100,7 @@ namespace TetriNET.Server.SpectatorManager
 
         public ISpectator this[ITetriNETCallback callback]
         {
-            get
-            {
-                return _spectators.FirstOrDefault(x => x != null && x.Callback == callback);
-            }
+            get { return _spectators.FirstOrDefault(x => x != null && x.Callback == callback); }
         }
 
         #endregion

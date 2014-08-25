@@ -12,8 +12,9 @@ namespace TetriNET.Server.SpectatorManager
 {
     public sealed class Spectator : ISpectator
     {
-        public Spectator(string name, ITetriNETCallback callback)
+        public Spectator(int id, string name, ITetriNETCallback callback)
         {
+            Id = id;
             Name = name;
             Callback = callback;
             LastActionToClient = DateTime.Now;
@@ -43,6 +44,7 @@ namespace TetriNET.Server.SpectatorManager
 
         public event SpectatorConnectionLostEventHandler ConnectionLost;
 
+        public int Id { get; private set; }
         public string Name { get; private set; }
 
         //

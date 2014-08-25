@@ -12,8 +12,9 @@ namespace TetriNET.Server.PlayerManager
 {
     public sealed class Player : IPlayer
     {
-        public Player(string name, ITetriNETCallback callback)
+        public Player(int id, string name, ITetriNETCallback callback)
         {
+            Id = id;
             Name = name;
             Callback = callback;
             PieceIndex = 0;
@@ -45,6 +46,7 @@ namespace TetriNET.Server.PlayerManager
 
         public event ConnectionLostEventHandler ConnectionLost;
 
+        public int Id { get; private set; }
         public string Name { get; private set; }
         public string Team { get; set; }
         public int PieceIndex { get; set; }

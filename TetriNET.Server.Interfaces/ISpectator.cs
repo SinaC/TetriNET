@@ -6,6 +6,7 @@
     {
         event SpectatorConnectionLostEventHandler ConnectionLost;
 
+        int Id { get; }
         string Name { get; }
     }
 }

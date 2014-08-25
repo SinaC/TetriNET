@@ -7,7 +7,7 @@ namespace TetriNET.ConsoleWCFServer.Host
 {
     public sealed class BuiltInHost : GenericHost
     {
-        public BuiltInHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, Func<string, ITetriNETCallback, IPlayer> createPlayerFunc, Func<string, ITetriNETCallback, ISpectator> createSpectatorFunc)
+        public BuiltInHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, Func<int, string, ITetriNETCallback, IPlayer> createPlayerFunc, Func<int, string, ITetriNETCallback, ISpectator> createSpectatorFunc)
             : base(playerManager, spectatorManager, banManager, createPlayerFunc, createSpectatorFunc)
         {
         }

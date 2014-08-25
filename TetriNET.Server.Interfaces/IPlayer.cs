@@ -15,6 +15,7 @@ namespace TetriNET.Server.Interfaces
     {
         event ConnectionLostEventHandler ConnectionLost;
 
+        int Id { get; }
         string Name { get; }
         string Team { get; set; }
         int PieceIndex { get; set; }

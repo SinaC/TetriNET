@@ -5,7 +5,7 @@ namespace TetriNET.Server.Interfaces
 {
     public interface IPlayerManager
     {
-        int Add(IPlayer player);
+        bool Add(IPlayer player);
         bool Remove(IPlayer player);
         void Clear();
 
@@ -13,9 +13,9 @@ namespace TetriNET.Server.Interfaces
         int PlayerCount { get; }
         object LockObject { get; }
 
-        IEnumerable<IPlayer> Players { get; }
+        int FirstAvailableId { get; }
 
-        int GetId(IPlayer player);
+        IEnumerable<IPlayer> Players { get; }
 
         IPlayer ServerMaster { get; }
 
