@@ -30,10 +30,34 @@
         </Grid.RowDefinitions>
 
         <!-- Match time-->
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,2">
             <TextBlock Text="Match time: "/>
             <TextBlock Text="{Binding MatchTime, StringFormat={}{0:0.00} seconds}"/>
         </StackPanel>
+        
+        <!-- History -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,2"
+                    Visibility="{Binding IsHistoryVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Text="Select a game:"/>
+            <ComboBox helpers:ComboBoxWidthFromItemsBehavior.ComboBoxWidthFromItems="True"
+                      Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}"
+                      ItemsSource="{Binding GameStatisticsHistory}"
+                      SelectedItem="{Binding SelectedGameStatistics}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock HorizontalAlignment="Center">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0:HH:mm:ss} - {1:HH:mm:ss}">
+                                    <Binding Path="GameStarted" Mode="OneWay"/>
+                                    <Binding Path="GameFinished" Mode="OneWay"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+        
 
         <!-- Lines -->
         <Grid Grid.Row="1">
@@ -80,11 +104,12 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-        
-            <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top">
-                <TextBlock VerticalAlignment="Center" Margin="5,2"
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" Margin="5,2">
+                <TextBlock VerticalAlignment="Center"
                            Text="Player:"/>
-                <ComboBox helpers:ComboBoxWidthFromItemsBehavior.ComboBoxWidthFromItems="True" Height="22" Margin="5,2"
+                <ComboBox helpers:ComboBoxWidthFromItemsBehavior.ComboBoxWidthFromItems="True" Height="22"
+                          Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}"
                           ItemsSource="{Binding PlayerList}"
                           SelectedItem="{Binding SelectedPlayer}"/>
             </StackPanel>

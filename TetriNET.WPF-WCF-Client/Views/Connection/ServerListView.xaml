@@ -43,7 +43,7 @@
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
-        <Button Grid.Row="4" Margin="0,4,0,0"
+        <Button Grid.Row="4" Margin="0,4,0,2"
                 IsEnabled="{Binding IsScanForServerEnabled}"
                 Command="{Binding ScanForServerCommand}">
             <TextBlock Text="Scan for servers"/>
