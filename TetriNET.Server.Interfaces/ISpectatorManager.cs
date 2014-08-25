@@ -15,7 +15,7 @@ namespace TetriNET.Server.Interfaces
 
         int FirstAvailableId { get; }
 
-        IEnumerable<ISpectator> Spectators { get; }
+        List<ISpectator> Spectators { get; }
 
         ISpectator this[string name] { get; }
         ISpectator this[int id] { get; }

@@ -6,12 +6,7 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common.Logger;
-using TetriNET.Common.Randomizer;
-using TetriNET.Server.BanManager;
 using TetriNET.Server.Interfaces;
-using TetriNET.Server.PieceProvider;
-using TetriNET.Server.PlayerManager;
-using TetriNET.Server.SpectatorManager;
 
 namespace TetriNET.WCF.Service
 {
@@ -93,7 +88,7 @@ namespace TetriNET.WCF.Service
             IPieceProvider pieceProvider = factory.CreatePieceProvider();
 
             //
-            Server.Server server = new Server.Server(playerManager, spectatorManager, pieceProvider, wcfHost);
+            IServer server = new Server.Server(playerManager, spectatorManager, pieceProvider, wcfHost);
 
             //
             server.StartServer();

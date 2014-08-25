@@ -15,7 +15,7 @@ namespace TetriNET.Server.Interfaces
 
         int FirstAvailableId { get; }
 
-        IEnumerable<IPlayer> Players { get; }
+        List<IPlayer> Players { get; }
 
         IPlayer ServerMaster { get; }
 

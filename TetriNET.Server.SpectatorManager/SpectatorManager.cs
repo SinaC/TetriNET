@@ -78,9 +78,9 @@ namespace TetriNET.Server.SpectatorManager
             }
         }
 
-        public IEnumerable<ISpectator> Spectators
+        public List<ISpectator> Spectators
         {
-            get { return _spectators.Where(x => x != null); }
+            get { return _spectators.Where(x => x != null).ToList(); }
         }
 
         public ISpectator this[string name]

@@ -51,7 +51,7 @@ namespace TetriNET.Server
             _spectatorManager = spectatorManager;
             _hosts = hosts.ToList();
 
-            PlayerStatistics = new Dictionary<string, GameStatisticsByPlayer>();
+            GameStatistics = new Dictionary<string, GameStatisticsByPlayer>();
 
             WinList = new List<WinEntry>();
 
@@ -94,7 +94,7 @@ namespace TetriNET.Server
         public ServerStates State { get; private set; }
         public int SpecialId { get; private set; }
         public List<WinEntry> WinList { get; private set; }
-        public Dictionary<string, GameStatisticsByPlayer> PlayerStatistics { get; private set; } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
+        public Dictionary<string, GameStatisticsByPlayer> GameStatistics { get; private set; } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
         public GameOptions Options { get; private set; }
 
         public void StartServer()
@@ -304,7 +304,7 @@ namespace TetriNET.Server
         private void ResetStatistics()
         {
             // Delete previous stats
-            PlayerStatistics.Clear();
+            GameStatistics.Clear();
             // Create GameStatisticsByPlayer for each player
             foreach (IPlayer player in _playerManager.Players)
             {
@@ -320,30 +320,30 @@ namespace TetriNET.Server
                     stats.SpecialsUsed.Add(occurancy.Value, specialsByPlayer);
                 }
                 // Add stats
-                PlayerStatistics.Add(player.Name, stats);
+                GameStatistics.Add(player.Name, stats);
             }
         }
 
         private void UpdateStatistics(string playerName, int linesCount)
         {
             if (linesCount == 1)
-                PlayerStatistics[playerName].SingleCount++;
+                GameStatistics[playerName].SingleCount++;
             else if (linesCount == 2)
-                PlayerStatistics[playerName].DoubleCount++;
+                GameStatistics[playerName].DoubleCount++;
             else if (linesCount == 3)
-                PlayerStatistics[playerName].TripleCount++;
+                GameStatistics[playerName].TripleCount++;
             else if (linesCount >= 4)
-                PlayerStatistics[playerName].TetrisCount++;
+                GameStatistics[playerName].TetrisCount++;
         }
 
         private void UpdateStatistics(string playerName, string targetName, Specials special)
         {
-            PlayerStatistics[playerName].SpecialsUsed[special][targetName]++;
+            GameStatistics[playerName].SpecialsUsed[special][targetName]++;
         }
 
         private void UpdateStatistics(string playerName, DateTime gameStartTime, DateTime lossTime)
         {
-            PlayerStatistics[playerName].PlayingTime = (lossTime - gameStartTime).TotalSeconds;
+            GameStatistics[playerName].PlayingTime = (lossTime - gameStartTime).TotalSeconds;
         }
 
         private GameStatistics PrepareGameStatistics()
@@ -352,7 +352,7 @@ namespace TetriNET.Server
                 {
                     GameStarted = _gameStartTime,
                     GameFinished = DateTime.Now,
-                    Players = PlayerStatistics.Select(x => x.Value).ToList()
+                    Players = GameStatistics.Select(x => x.Value).ToList()
                 };
             return statistics;
         }

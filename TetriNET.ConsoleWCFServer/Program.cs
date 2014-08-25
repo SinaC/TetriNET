@@ -6,13 +6,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Logger;
-using TetriNET.Common.Randomizer;
 using TetriNET.ConsoleWCFServer.Host;
-using TetriNET.Server.BanManager;
 using TetriNET.Server.Interfaces;
-using TetriNET.Server.PieceProvider;
-using TetriNET.Server.PlayerManager;
-using TetriNET.Server.SpectatorManager;
 using TetriNET.Server.TCPHost;
 
 namespace TetriNET.ConsoleWCFServer
@@ -94,7 +89,7 @@ namespace TetriNET.ConsoleWCFServer
             IPieceProvider pieceProvider = factory.CreatePieceProvider();
 
             //
-            Server.Server server = new Server.Server(playerManager, spectatorManager, pieceProvider, wcfHost, builtInHost, socketHost);
+            IServer server = new Server.Server(playerManager, spectatorManager, pieceProvider, wcfHost, builtInHost, socketHost);
 
             //
             server.StartServer();
@@ -174,7 +169,7 @@ namespace TetriNET.ConsoleWCFServer
                             break;
                         case ConsoleKey.I:
                             {
-                                foreach(KeyValuePair<string, GameStatisticsByPlayer> byPlayer in server.PlayerStatistics)
+                                foreach(KeyValuePair<string, GameStatisticsByPlayer> byPlayer in server.GameStatistics)
                                 {
                                     GameStatisticsByPlayer stats = byPlayer.Value;
                                     string playerName = byPlayer.Key;
