@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Configuration;
-using TetriNET.Client.Achievements;
-using TetriNET.Client.Board;
 using TetriNET.Client.Interfaces;
-using TetriNET.Client.Pieces;
-using TetriNET.Client.WCFProxy;
 using TetriNET.Common.Logger;
 using TetriNET.ConsoleWCFClient.AI;
 using TetriNET.ConsoleWCFClient.UI;
@@ -30,20 +26,16 @@ namespace TetriNET.ConsoleWCFClient
             Log.Initialize(ConfigurationManager.AppSettings["logpath"], name+".log");
 
             //
+            IFactory factory = new Factory();
+
+            //
             //string baseAddress = @"net.tcp://localhost:8765/TetriNET";
-            AchievementManager manager = new AchievementManager();
+            IAchievementManager manager = factory.CreateAchievementManager();
             manager.FindAllAchievements();
-            IClient client = new Client.Client(Piece.CreatePiece, () => new Board(12, 22), () => manager);
-            //client.OnRegisteredAsPlayer +=
-            //    (result, id, master) =>
-            //    {
-            //        if (result == RegistrationResults.RegistrationSuccessful)
-            //            client.ChangeTeam(team);
-            //    };
-            //IClient client = new Client.Client((piece, posX, posY, orientation, index) => new MutatedZ(posX, posY, orientation, index), () => new Board(12, 22));
+            IClient client = new Client.Client(factory, manager);
 
             string baseAddress = ConfigurationManager.AppSettings["address"];
-            client.ConnectAndRegisterAsPlayer(callback => new WCFProxy(callback, baseAddress), name, team);
+            client.ConnectAndRegisterAsPlayer(baseAddress, name, team);
 
             //
             GameController.GameController controller = new GameController.GameController(client);

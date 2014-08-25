@@ -9,6 +9,7 @@ namespace TetriNET.Client.Interfaces
 
         event AchievedEventHandler Achieved;
 
+        void FindAllAchievements();
         void Reset();
         
         void OnGameStarted(GameOptions options);

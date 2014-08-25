@@ -13,8 +13,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
     {
         public static ClientOptionsViewModel Instance { get; private set; }
 
-        public const int Width = 12;
-        public const int Height = 22;
+        public const int Width = 12; // TODO: should depend on Server
+        public const int Height = 22; // TODO: should depend on Server
 
         private bool _isGameNotStarted;
         public bool IsGameNotStarted

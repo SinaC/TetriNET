@@ -48,37 +48,37 @@ namespace TetriNET.ConsoleWCFServer
             Log.WriteLine(Log.LogLevels.Info, "{0} {1}.{2} by {3}", product, version.Major, version.Minor, company);
 
             //
-            BanManager banManager = new BanManager();
+            IFactory factory = new Factory();
 
             //
-            PlayerManager playerManager = new PlayerManager(6);
-            SpectatorManager spectatorManager = new SpectatorManager(10);
+            IBanManager banManager = factory.CreateBanManager();
 
             //
-            Server.WCFHost.WCFHost wcfHost = new Server.WCFHost.WCFHost(
+            IPlayerManager playerManager = factory.CreatePlayerManager(6);
+            ISpectatorManager spectatorManager = factory.CreateSpectatorManager(10);
+
+            //
+            IHost wcfHost = new Server.WCFHost.WCFHost(
                 playerManager, 
                 spectatorManager, 
                 banManager, 
-                (id, playerName, callback) => new Player(id, playerName, callback),
-                (id, spectatorName, callback) => new Spectator(id, spectatorName, callback))
+                factory)
             {
                 Port = ConfigurationManager.AppSettings["port"]
             };
 
             //
-            BuiltInHost builtInHost = new BuiltInHost(
+            IHost builtInHost = new BuiltInHost(
                 playerManager,
                 spectatorManager,
                 banManager,
-                (id, playerName, callback) => new Player(id, playerName, callback),
-                (id, spectatorName, callback) => new Spectator(id, spectatorName, callback));
+                factory);
 
 
-            TCPHost socketHost = new TCPHost(playerManager,
+            IHost socketHost = new TCPHost(playerManager,
                 spectatorManager,
                 banManager,
-                (id, playerName, callback) => new Player(id, playerName, callback),
-                (id, spectatorName, callback) => new Spectator(id, spectatorName, callback))
+                factory)
             {
                 Port = 5656
             };
@@ -91,8 +91,7 @@ namespace TetriNET.ConsoleWCFServer
             };
 
             //
-            PieceBag pieceProvider = new PieceBag(RangeRandom.Random, 4);
-            //PieceQueue pieceProvider = new PieceQueue(RangeRandom.Random);
+            IPieceProvider pieceProvider = factory.CreatePieceProvider();
 
             //
             Server.Server server = new Server.Server(playerManager, spectatorManager, pieceProvider, wcfHost, builtInHost, socketHost);
@@ -150,8 +149,12 @@ namespace TetriNET.ConsoleWCFServer
                                 break;
                             }
                         case ConsoleKey.D:
+                            Console.WriteLine("Players:");
                             foreach (IPlayer p in playerManager.Players)
-                                Console.WriteLine("{0}) {1} [{2}] {3} {4} {5:HH:mm:ss.fff} {6:HH:mm:ss.fff}", playerManager.GetId(p), p.Name, p.Team, p.State, p.PieceIndex, p.LastActionFromClient, p.LastActionToClient);
+                                Console.WriteLine("{0}) {1} [{2}] {3} {4} {5:HH:mm:ss.fff} {6:HH:mm:ss.fff}", p.Id, p.Name, p.Team, p.State, p.PieceIndex, p.LastActionFromClient, p.LastActionToClient);
+                            Console.WriteLine("Spectators:");
+                            foreach (ISpectator s in spectatorManager.Spectators)
+                                Console.WriteLine("{0}) {1} {2:HH:mm:ss.fff} {3:HH:mm:ss.fff}", s.Id, s.Name, s.LastActionFromClient, s.LastActionToClient);
                             break;
                         case ConsoleKey.W:
                             foreach (WinEntry e in server.WinList)

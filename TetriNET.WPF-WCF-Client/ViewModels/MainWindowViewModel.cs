@@ -1,9 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Windows;
-using TetriNET.Client.Achievements;
-using TetriNET.Client.Board;
-using TetriNET.Client.Pieces;
-using TetriNET.Client.WCFProxy;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.CustomSettings;
@@ -47,12 +43,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
         public MainWindowViewModel()
         {
-            AchievementManager manager = null;
+            //
+            IFactory factory = new Factory();
+
+            //
+            IAchievementManager manager = null;
             bool isDesignMode = DesignerProperties.GetIsInDesignMode(new DependencyObject());
             if (!isDesignMode)
             {
                 //
-                manager = new AchievementManager();
+                manager = factory.CreateAchievementManager();
                 manager.FindAllAchievements();
                 Settings.Default.Achievements = Settings.Default.Achievements ?? new AchievementsSettings();
                 Settings.Default.Achievements.Load(manager.Achievements);
@@ -78,20 +78,16 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             if (!isDesignMode)
             {
                 // Create client
-                Client = new Client.Client(Piece.CreatePiece, () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height), () => manager);
-                //Client = new Client.Client(
-                //    (pieces, i, arg3, arg4, arg5, arg6) => Piece.CreatePiece(Pieces.TetriminoI, i, arg3, arg4, arg5, arg6),
-                //    () => new BoardWithWallKick(ClientOptionsViewModel.Width, ClientOptionsViewModel.Height),
-                //    () => manager);
+                Client = new Client.Client(factory, manager);
             }
         }
 
         private void OnConnect(ConnectEventArgs e)
         {
             if (e.IsSpectator)
-                e.Success = Client.ConnectAndRegisterAsSpectator(callback => new WCFSpectatorProxy(callback, ConnectionViewModel.LoginViewModel.ServerCompleteSpectatorAddress), ConnectionViewModel.LoginViewModel.Username);
+                e.Success = Client.ConnectAndRegisterAsSpectator(ConnectionViewModel.LoginViewModel.ServerCompleteSpectatorAddress, ConnectionViewModel.LoginViewModel.Username);
             else
-                e.Success = Client.ConnectAndRegisterAsPlayer(callback => new WCFProxy(callback, ConnectionViewModel.LoginViewModel.ServerCompletePlayerAddress), ConnectionViewModel.LoginViewModel.Username, PartyLineViewModel.Team);
+                e.Success = Client.ConnectAndRegisterAsPlayer(ConnectionViewModel.LoginViewModel.ServerCompletePlayerAddress, ConnectionViewModel.LoginViewModel.Username, PartyLineViewModel.Team);
         }
 
         #region ViewModelBase

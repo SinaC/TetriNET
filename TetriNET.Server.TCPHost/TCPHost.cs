@@ -424,8 +424,8 @@ namespace TetriNET.Server.TCPHost
             set { _serviceHost.Port = value; }
         }
 
-        public TCPHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, Func<int, string, ITetriNETCallback, IPlayer> createPlayerFunc, Func<int, string, ITetriNETCallback, ISpectator> createSpectatorFunc)
-            : base(playerManager, spectatorManager, banManager, createPlayerFunc, createSpectatorFunc)
+        public TCPHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
+            : base(playerManager, spectatorManager, banManager, factory)
         {
             _serviceHost = new SocketServiceHost(this);
         }

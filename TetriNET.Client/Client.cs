@@ -45,8 +45,7 @@ namespace TetriNET.Client
             Paused
         }
 
-        private readonly Func<Pieces, int, int, int, int, bool, IPiece> _createPieceFunc;
-        private readonly Func<IBoard> _createBoardFunc;
+        private readonly IFactory _factory;
         private readonly PlayerData[] _playersData = new PlayerData[MaxPlayers];
         private readonly SpectatorData[] _spectatorData = new SpectatorData[MaxSpectators];
         private readonly PieceArray _pieces;
@@ -86,15 +85,12 @@ namespace TetriNET.Client
             get { return _clientPlayerId >= 0 && _clientPlayerId <= MaxPlayers ? _playersData[_clientPlayerId] : null; }
         }
 
-        public Client(Func<Pieces, int, int, int, int, bool, IPiece> createPieceFunc, Func<IBoard> createBoardFunc)
+        public Client(IFactory factory)
         {
-            if (createPieceFunc == null)
-                throw new ArgumentNullException("createPieceFunc");
-            if (createBoardFunc == null)
-                throw new ArgumentNullException("createBoardFunc");
+            if (factory == null)
+                throw new ArgumentNullException("factory");
 
-            _createPieceFunc = createPieceFunc;
-            _createBoardFunc = createBoardFunc;
+            _factory = factory;
 
             // default options
             Options = new GameOptions();
@@ -130,13 +126,15 @@ namespace TetriNET.Client
             _boardActionTask = Task.Factory.StartNew(BoardActionTask, _cancellationTokenSource.Token);
         }
 
-        public Client(Func<Pieces, int, int, int, int, bool, IPiece> createPieceFunc, Func<IBoard> createBoardFunc, Func<IAchievementManager> createAchievementManagerFunc)
-            : this(createPieceFunc, createBoardFunc)
+        public Client(IFactory factory, IAchievementManager achievementManager)
+            : this(factory)
         {
-            if (createAchievementManagerFunc == null)
-                throw new ArgumentNullException("createAchievementManagerFunc");
+            if (factory == null)
+                throw new ArgumentNullException("factory");
+            if (achievementManager == null)
+                throw new ArgumentNullException("achievementManager");
 
-            _achievementManager = createAchievementManagerFunc();
+            _achievementManager = achievementManager;
             _achievementManager.Achieved += OnAchievementEarned;
         }
 
@@ -200,7 +198,7 @@ namespace TetriNET.Client
                     {
                         Name = Name,
                         PlayerId = playerId,
-                        Board = _createBoardFunc(),
+                        Board = _factory.CreateBoard(12, 22),
                         State = PlayerData.States.Joined
                     };
                     _playersData[_clientPlayerId] = player;
@@ -252,7 +250,7 @@ namespace TetriNET.Client
                     Name = name,
                     Team = team,
                     PlayerId = playerId,
-                    Board = _createBoardFunc(),
+                    Board = _factory.CreateBoard(12, 22),
                     IsImmune = false,
                     State = PlayerData.States.Joined
                 };
@@ -415,9 +413,9 @@ namespace TetriNET.Client
             for (int i = 0; i < pieces.Count; i++)
                 _pieces[i] = pieces[i];
             _pieceIndex = 0;
-            CurrentPiece = _createPieceFunc(_pieces[0], Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, 0, false);
+            CurrentPiece = _factory.CreatePiece(_pieces[0], Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, 0, false);
             MoveCurrentPieceToBoardTop();
-            NextPiece = _createPieceFunc(_pieces[1], Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, 1, false);
+            NextPiece = _factory.CreatePiece(_pieces[1], Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, 1, false);
             // Update statistics
             if (_statistics.PieceCount.ContainsKey(_pieces[0]))
                 _statistics.PieceCount[_pieces[0]]++;
@@ -901,7 +899,7 @@ namespace TetriNET.Client
             // Set new current piece to next, increment piece index and create next piece
             if (_mutationCount > 0)
             {
-                CurrentPiece = _createPieceFunc(NextPiece.Value, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, NextPiece.Index + 1, true);
+                CurrentPiece = _factory.CreatePiece(NextPiece.Value, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, NextPiece.Index + 1, true);
                 _mutationCount--;
             }
             else
@@ -929,7 +927,7 @@ namespace TetriNET.Client
                 Log.WriteLine(Log.LogLevels.Warning, "Next piece not yet received from server, server is definitively too slow or we are too fast {0}", _pieceIndex + 1);
                 _statistics.NextPieceNotYetReceived++;
             }
-            NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, _pieceIndex + 1, _mutationCount > 0);
+            NextPiece = _factory.CreatePiece(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, _pieceIndex + 1, _mutationCount > 0);
 
             NextPieceModified.Do(x => x());
 
@@ -1279,17 +1277,19 @@ namespace TetriNET.Client
             // TODO: current & next piece
         }
 
-        public bool ConnectAndRegisterAsPlayer(Func<ITetriNETCallback, IProxy> createProxyFunc, string name, string team)
+        public bool ConnectAndRegisterAsPlayer(string address, string name, string team)
         {
-            if (createProxyFunc == null)
-                throw new ArgumentNullException("createProxyFunc");
+            if (address == null)
+                throw new ArgumentNullException("address");
+            if (name == null)
+                throw new ArgumentNullException("name");
 
             if (_proxy != null || _proxySpectator != null)
                 return false; // should disconnect first
 
             try
             {
-                _proxy = createProxyFunc(this);
+                _proxy = _factory.CreatePlayerProxy(this, address);
                 _proxy.ConnectionLost += OnConnectionLost;
 
                 State = States.Registering;
@@ -1306,17 +1306,19 @@ namespace TetriNET.Client
             }
         }
 
-        public bool ConnectAndRegisterAsSpectator(Func<ITetriNETCallback, ISpectatorProxy> createSpectatorProxyFunc, string name)
+        public bool ConnectAndRegisterAsSpectator(string address, string name)
         {
-            if (createSpectatorProxyFunc == null)
-                throw new ArgumentNullException("createSpectatorProxyFunc");
+            if (address == null)
+                throw new ArgumentNullException("address");
+            if (name == null)
+                throw new ArgumentNullException("name");
 
             if (_proxy != null || _proxySpectator != null)
                 return false; // should disconnect first
 
             try
             {
-                _proxySpectator = createSpectatorProxyFunc(this);
+                _proxySpectator = _factory.CreateSpectatorProxy(this, address);
                 _proxySpectator.ConnectionLost += OnConnectionLost;
 
                 State = States.Registering;
@@ -1770,7 +1772,7 @@ namespace TetriNET.Client
                     Log.WriteLine(Log.LogLevels.Warning, "Next piece not yet received from server, server is definitively too slow or we are too fast {0}", _pieceIndex + 1);
                     _statistics.NextPieceNotYetReceived++;
                 }
-                NextPiece = _createPieceFunc(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, _pieceIndex + 1, _mutationCount > 1);
+                NextPiece = _factory.CreatePiece(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, _pieceIndex + 1, _mutationCount > 1);
 
                 NextPieceModified.Do(x => x());
             }

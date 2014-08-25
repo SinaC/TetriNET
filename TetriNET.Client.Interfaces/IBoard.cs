@@ -27,7 +27,6 @@ namespace TetriNET.Client.Interfaces
         int PieceSpawnY { get; }
 
         bool CheckNoConflict(IPiece piece, bool checkTop = false);
-        //bool CheckNoConflictWithBoard(IPiece piece, bool checkTop = false);
         int CollapseCompletedRows();
         int CollapseCompletedRows(out List<Specials> specials, out List<Pieces> pieces);
         void CommitPiece(IPiece piece);

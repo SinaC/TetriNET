@@ -39,6 +39,7 @@
     <Compile Include="IBoard.cs" />
     <Compile Include="IClient.cs" />
     <Compile Include="IClientStatistics.cs" />
+    <Compile Include="IFactory.cs" />
     <Compile Include="IGameController.cs" />
     <Compile Include="IOpponent.cs" />
     <Compile Include="IPiece.cs" />

@@ -10,23 +10,21 @@ namespace TetriNET.Server.GenericHost
 {
     public abstract class GenericHost : IHost
     {
-        protected readonly Func<int, string, ITetriNETCallback, IPlayer> CreatePlayerFunc;
-        protected readonly Func<int, string, ITetriNETCallback, ISpectator> CreateSpectatorFunc;
+        protected readonly IFactory Factory;
 
-        protected GenericHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, Func<int, string, ITetriNETCallback, IPlayer> createPlayerFunc, Func<int, string, ITetriNETCallback, ISpectator> createSpectatorFunc)
+        protected GenericHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
         {
             if (playerManager == null)
                 throw new ArgumentNullException("playerManager");
             if (banManager == null)
                 throw new ArgumentNullException("banManager");
-            if (createPlayerFunc == null)
-                throw new ArgumentNullException("createPlayerFunc");
+            if (factory == null)
+                throw new ArgumentNullException("factory");
 
             PlayerManager = playerManager;
             SpectatorManager = spectatorManager;
             BanManager = banManager;
-            CreatePlayerFunc = createPlayerFunc;
-            CreateSpectatorFunc = createSpectatorFunc;
+            Factory = factory;
         }
 
         protected virtual void OnEntityConnectionLost(IEntity entity)
@@ -111,7 +109,7 @@ namespace TetriNET.Server.GenericHost
                     id = PlayerManager.FirstAvailableId;
                     if (id != -1)
                     {
-                        player = CreatePlayerFunc(id, playerName, callback);
+                        player = Factory.CreatePlayer(id, playerName, callback);
                         //
                         player.ConnectionLost += OnEntityConnectionLost;
                         player.Team = team;
@@ -517,7 +515,7 @@ namespace TetriNET.Server.GenericHost
                     id = SpectatorManager.FirstAvailableId;
                     if (id != -1)
                     {
-                        spectator = CreateSpectatorFunc(id, spectatorName, callback);
+                        spectator = Factory.CreateSpectator(id, spectatorName, callback);
                         //
                         spectator.ConnectionLost += OnEntityConnectionLost;
                         //

@@ -42,24 +42,19 @@ namespace TetriNET.Server.PlayerManager
             }
         }
 
-        #region IPlayer + IEntity
+        #region IEntity
 
         public event ConnectionLostEventHandler ConnectionLost;
 
         public int Id { get; private set; }
         public string Name { get; private set; }
-        public string Team { get; set; }
-        public int PieceIndex { get; set; }
-        public byte[] Grid { get; set; }
+
         //
         public ITetriNETCallback Callback { get; private set; }
-        //
-        public PlayerStates State { get; set; }
-        public DateTime LossTime { get; set; }
-        public int MutationCount { get; set; }
 
         // Heartbeat management
         public DateTime LastActionToClient { get; private set; } // used to check if heartbeat is needed
+
         // Timeout management
         public DateTime LastActionFromClient { get; private set; }
         public int TimeoutCount { get; private set; }
@@ -75,6 +70,17 @@ namespace TetriNET.Server.PlayerManager
             TimeoutCount++;
             LastActionFromClient = DateTime.Now;
         }
+
+        #endregion
+
+        #region IPlayer
+
+        public string Team { get; set; }
+        public int PieceIndex { get; set; }
+        public byte[] Grid { get; set; }
+
+        public PlayerStates State { get; set; }
+        public DateTime LossTime { get; set; }
 
         #endregion
 

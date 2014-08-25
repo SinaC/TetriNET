@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using TetriNET.Common.Contracts;
+﻿using System.Collections.Generic;
 using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Interfaces
@@ -127,8 +125,8 @@ namespace TetriNET.Client.Interfaces
         //bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc);
         //bool Disconnect();
 
-        bool ConnectAndRegisterAsPlayer(Func<ITetriNETCallback, IProxy> createProxyFunc, string name, string team);
-        bool ConnectAndRegisterAsSpectator(Func<ITetriNETCallback, ISpectatorProxy> createSpectatorProxyFunc, string name);
+        bool ConnectAndRegisterAsPlayer(string address, string name, string team);
+        bool ConnectAndRegisterAsSpectator(string address, string name);
         bool UnregisterAndDisconnect();
 
         // Client->Server command

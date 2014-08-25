@@ -84,11 +84,6 @@ namespace TetriNET.Server.PlayerManager
             get { return _players.Where(x => x != null); }
         }
 
-        public int GetId(IPlayer player)
-        {
-            return player == null ? -1 : Array.IndexOf(_players, player);
-        }
-
         public IPlayer ServerMaster
         {
             get { return _players.FirstOrDefault(x => x != null); }
@@ -99,14 +94,9 @@ namespace TetriNET.Server.PlayerManager
             get { return _players.FirstOrDefault(x => x != null && x.Name == name); }
         }
 
-        public IPlayer this[int index]
+        public IPlayer this[int id]
         {
-            get
-            {
-                if (index >= MaxPlayers)
-                    return null;
-                return _players[index];
-            }
+            get { return _players.FirstOrDefault(x => x != null && x.Id == id); }
         }
 
         public IPlayer this[ITetriNETCallback callback]

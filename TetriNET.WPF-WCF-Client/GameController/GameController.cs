@@ -10,19 +10,19 @@ namespace TetriNET.WPF_WCF_Client.GameController
 {
     public class GameController : IGameController
     {
-        private static readonly Client.Interfaces.Commands[] CommandsAvailableForConfusion =
+        private static readonly Commands[] CommandsAvailableForConfusion =
             {
-                TetriNET.Client.Interfaces.Commands.Drop,
-                TetriNET.Client.Interfaces.Commands.Down,
-                TetriNET.Client.Interfaces.Commands.Left,
-                TetriNET.Client.Interfaces.Commands.Right,
-                TetriNET.Client.Interfaces.Commands.RotateClockwise,
-                TetriNET.Client.Interfaces.Commands.RotateCounterclockwise
+                Commands.Drop,
+                Commands.Down,
+                Commands.Left,
+                Commands.Right,
+                Commands.RotateClockwise,
+                Commands.RotateCounterclockwise
             };
 
         private readonly Random _random;
-        private readonly Dictionary<Client.Interfaces.Commands, DispatcherTimer> _timers = new Dictionary<Client.Interfaces.Commands, DispatcherTimer>();
-        private readonly Dictionary<Client.Interfaces.Commands, Client.Interfaces.Commands> _confusionMapping = new Dictionary<Client.Interfaces.Commands, Client.Interfaces.Commands>();
+        private readonly Dictionary<Commands, DispatcherTimer> _timers = new Dictionary<Commands, DispatcherTimer>();
+        private readonly Dictionary<Commands, Commands> _confusionMapping = new Dictionary<Commands, Commands>();
 
         private bool _isConfusionActive;
 
@@ -45,7 +45,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
 
         public IClient Client { get; private set; }
 
-        public void AddSensibility(Client.Interfaces.Commands cmd, int interval)
+        public void AddSensibility(Commands cmd, int interval)
         {
             DispatcherTimer timer;
             if (_timers.TryGetValue(cmd, out timer))
@@ -68,7 +68,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
                 }
         }
 
-        public void RemoveSensibility(Client.Interfaces.Commands cmd)
+        public void RemoveSensibility(Commands cmd)
         {
             if (_timers.ContainsKey(cmd))
                 RemoveTimer(cmd);
@@ -82,13 +82,13 @@ namespace TetriNET.WPF_WCF_Client.GameController
             Client.ContinuousEffectToggled -= OnContinuousEffectToggled;
         }
 
-        public void KeyDown(Client.Interfaces.Commands cmd)
+        public void KeyDown(Commands cmd)
         {
             if (Client.IsPlaying)
             {
                 if (_isConfusionActive)
                 {
-                    Client.Interfaces.Commands confusedCmd;
+                    Commands confusedCmd;
                     if (_confusionMapping.TryGetValue(cmd, out confusedCmd))
                         cmd = confusedCmd;
                 }
@@ -160,7 +160,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
             }
         }
 
-        public void KeyUp(Client.Interfaces.Commands cmd)
+        public void KeyUp(Commands cmd)
         {
             if (_timers.ContainsKey(cmd))
                 _timers[cmd].Stop();
@@ -196,7 +196,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
                 {
                     _confusionMapping.Clear();
                     //List<Commands> commands = Enum.GetValues(typeof(Commands)).Cast<Commands>().Where(x => x != Commands.Invalid).ToList();
-                    List<Client.Interfaces.Commands> shuffled = Shuffle(_random, CommandsAvailableForConfusion);
+                    List<Commands> shuffled = Shuffle(_random, CommandsAvailableForConfusion);
                     for (int i = 0; i < CommandsAvailableForConfusion.Length; i++)
                     {
                         _confusionMapping.Add(CommandsAvailableForConfusion[i], shuffled[i]);
@@ -228,7 +228,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
             Client.MoveRight();
         }
 
-        private void AddTimer(Client.Interfaces.Commands cmd, double interval, EventHandler handler)
+        private void AddTimer(Commands cmd, double interval, EventHandler handler)
         {
             if (!_timers.ContainsKey(cmd))
             {
@@ -238,7 +238,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
             }
         }
 
-        private void RemoveTimer(Client.Interfaces.Commands cmd)
+        private void RemoveTimer(Commands cmd)
         {
             DispatcherTimer timer;
             if (_timers.TryGetValue(cmd, out timer))

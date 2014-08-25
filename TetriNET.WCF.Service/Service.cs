@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TetriNET.Common.Logger;
 using TetriNET.Common.Randomizer;
 using TetriNET.Server.BanManager;
+using TetriNET.Server.Interfaces;
 using TetriNET.Server.PieceProvider;
 using TetriNET.Server.PlayerManager;
 using TetriNET.Server.SpectatorManager;
@@ -71,24 +72,25 @@ namespace TetriNET.WCF.Service
         private void ServiceMainLoop()
         {
             //
-            BanManager banManager = new BanManager();
+            IFactory factory = new Factory();
             //
-            PlayerManager playerManager = new PlayerManager(6);
-            SpectatorManager spectatorManager = new SpectatorManager(10);
+            IBanManager banManager = factory.CreateBanManager();
+            //
+            IPlayerManager playerManager = factory.CreatePlayerManager(6);
+            ISpectatorManager spectatorManager = factory.CreateSpectatorManager(10);
 
             //
-            Server.WCFHost.WCFHost wcfHost = new Server.WCFHost.WCFHost(
+            IHost wcfHost = new Server.WCFHost.WCFHost(
                 playerManager,
                 spectatorManager,
                 banManager,
-                (id, playerName, callback) => new Player(id, playerName, callback),
-                (id, spectatorName, callback) => new Spectator(id, spectatorName, callback))
+                factory)
             {
                 Port = ConfigurationManager.AppSettings["port"]
             };
 
             //
-            PieceBag pieceProvider = new PieceBag(RangeRandom.Random, 4);
+            IPieceProvider pieceProvider = factory.CreatePieceProvider();
 
             //
             Server.Server server = new Server.Server(playerManager, spectatorManager, pieceProvider, wcfHost);

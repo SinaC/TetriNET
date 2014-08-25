@@ -88,14 +88,9 @@ namespace TetriNET.Server.SpectatorManager
             get { return _spectators.FirstOrDefault(x => x != null && x.Name == name); }
         }
 
-        public ISpectator this[int index]
+        public ISpectator this[int id]
         {
-            get
-            {
-                if (index >= MaxSpectators)
-                    return null;
-                return _spectators[index];
-            }
+            get { return _spectators.FirstOrDefault(x => x != null && x.Id == id); }
         }
 
         public ISpectator this[ITetriNETCallback callback]

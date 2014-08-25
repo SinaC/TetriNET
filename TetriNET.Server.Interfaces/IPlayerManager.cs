@@ -20,7 +20,7 @@ namespace TetriNET.Server.Interfaces
         IPlayer ServerMaster { get; }
 
         IPlayer this[string name] { get; }
-        IPlayer this[int index] { get; }
+        IPlayer this[int id] { get; }
         IPlayer this[ITetriNETCallback callback] { get; } // Callback property from IPlayer should only be used here
     }
 }

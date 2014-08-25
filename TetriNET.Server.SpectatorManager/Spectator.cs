@@ -40,7 +40,7 @@ namespace TetriNET.Server.SpectatorManager
             }
         }
 
-        #region ISpectator + IEntity
+        #region IEntity
 
         public event ConnectionLostEventHandler ConnectionLost;
 
@@ -68,6 +68,12 @@ namespace TetriNET.Server.SpectatorManager
             TimeoutCount++;
             LastActionFromClient = DateTime.Now;
         }
+
+        #endregion
+
+        #region ISpectator
+
+        // NOP
 
         #endregion
 

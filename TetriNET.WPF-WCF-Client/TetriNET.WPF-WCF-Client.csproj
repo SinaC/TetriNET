@@ -80,6 +80,7 @@
     <Compile Include="Converters\ChatColorBrushConverter.cs" />
     <Compile Include="Converters\SpecialToBrushConverter.cs" />
     <Compile Include="Converters\SpecialToStringConverter.cs" />
+    <Compile Include="Factory.cs" />
     <Compile Include="Messages\IsDeveloperModeModifiedMessage.cs" />
     <Compile Include="Messages\ServerSelectedMessage.cs" />
     <Compile Include="MVVM\AsyncRelayCommand.cs" />

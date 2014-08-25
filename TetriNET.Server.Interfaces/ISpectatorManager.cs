@@ -18,7 +18,7 @@ namespace TetriNET.Server.Interfaces
         IEnumerable<ISpectator> Spectators { get; }
 
         ISpectator this[string name] { get; }
-        ISpectator this[int index] { get; }
+        ISpectator this[int id] { get; }
         ISpectator this[ITetriNETCallback callback] { get; } // Callback property from ISpectator should only be used here
     }
 }
