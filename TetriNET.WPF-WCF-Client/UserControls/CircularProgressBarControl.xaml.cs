@@ -3,9 +3,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-
 //http://blogs.u2u.be/diederik/post/2010/02/26/Yet-another-Circular-ProgressBar-control-for-WPF.aspx
 //http://sachabarbs.wordpress.com/2009/12/29/better-wpf-circular-progress-bar/
+using TetriNET.WPF_WCF_Client.Helpers;
+
 namespace TetriNET.WPF_WCF_Client.UserControls
 {
     /// <summary>
@@ -202,7 +203,7 @@ namespace TetriNET.WPF_WCF_Client.UserControls
         private void HandleVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             // Don't give the developer a headache.
-            if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+            if (DesignMode.IsInDesignModeStatic)
                 return;
 
             bool isVisible = (bool)e.NewValue;

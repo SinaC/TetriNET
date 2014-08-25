@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -7,6 +6,7 @@ using TetriNET.Client.Interfaces;
 using TetriNET.Client.Pieces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
+using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.TextureManager;
 
 namespace TetriNET.WPF_WCF_Client.Views.Test
@@ -22,7 +22,7 @@ namespace TetriNET.WPF_WCF_Client.Views.Test
         {
             InitializeComponent();
 
-            if (!DesignerProperties.GetIsInDesignMode(this))
+            if (!DesignMode.IsInDesignModeStatic)
             {
                 int i;
                 // Add textures to Canvas

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -32,10 +31,10 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         {
             InitializeComponent();
 
-            if (!DesignerProperties.GetIsInDesignMode(this))
-            {
+            if (!DesignMode.IsInDesignModeStatic)
                 Canvas.Background = TextureManager.TextureManager.TexturesSingleInstance.Instance.GetSmallBackground();
-            }
+            else
+                Canvas.Background = new SolidColorBrush(Colors.Black);
 
             for (int y = 0; y < ClientOptionsViewModel.Height; y++)
                 for (int x = 0; x < ClientOptionsViewModel.Width; x++)

@@ -7,8 +7,14 @@ namespace TetriNET.WPF_WCF_Client.Helpers
     //http://stackoverflow.com/questions/1356045/set-focus-on-textbox-in-wpf-from-view-model-c-wpf
     //http://zamjad.wordpress.com/2011/01/24/difference-between-coercevaluecallback-and-propertychangedcallback/
     //use CoerceValueCallback to ensure event is raised even if value is not modified
-    public static class AttachedFocus
+    public static class AttachedFocusBehavior
     {
+        public static readonly DependencyProperty IsFocusedProperty = DependencyProperty.RegisterAttached(
+            "IsFocused",
+            typeof(bool),
+            typeof(AttachedFocusBehavior),
+            new PropertyMetadata(false, null, OnIsFocusedPropertyChanged));
+
         public static bool GetIsFocused(DependencyObject obj)
         {
             return (bool)obj.GetValue(IsFocusedProperty);
@@ -18,8 +24,6 @@ namespace TetriNET.WPF_WCF_Client.Helpers
         {
             obj.SetValue(IsFocusedProperty, value);
         }
-
-        public static readonly DependencyProperty IsFocusedProperty = DependencyProperty.RegisterAttached("IsFocused", typeof(bool), typeof(AttachedFocus), new PropertyMetadata(false, null, OnIsFocusedPropertyChanged));
 
         private static object OnIsFocusedPropertyChanged(DependencyObject d, object value)
         {

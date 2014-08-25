@@ -1,14 +1,6 @@
 ﻿//using POC.Client_POC;
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.ServiceModel;
-using System.ServiceModel.Activation;
-using System.ServiceModel.Web;
-using POC.JQuery_WCF;
 using POC.SignalR;
 
 namespace POC

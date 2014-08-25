@@ -1,8 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
+using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.ViewModels;
 
 namespace TetriNET.WPF_WCF_Client
@@ -27,7 +27,7 @@ namespace TetriNET.WPF_WCF_Client
             //MinimizeButton.Visibility = Visibility.Collapsed;
 
 
-            if (!DesignerProperties.GetIsInDesignMode(this))
+            if (!DesignMode.IsInDesignModeStatic)
                 DataContext = new MainWindowViewModel();
         }
 

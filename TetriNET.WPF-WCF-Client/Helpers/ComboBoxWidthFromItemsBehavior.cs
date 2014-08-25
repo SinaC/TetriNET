@@ -16,16 +16,18 @@ namespace TetriNET.WPF_WCF_Client.Helpers
                 typeof(ComboBoxWidthFromItemsBehavior),
                 new UIPropertyMetadata(false, OnComboBoxWidthFromItemsPropertyChanged)
             );
+
         public static bool GetComboBoxWidthFromItems(DependencyObject obj)
         {
             return (bool)obj.GetValue(ComboBoxWidthFromItemsProperty);
         }
+
         public static void SetComboBoxWidthFromItems(DependencyObject obj, bool value)
         {
             obj.SetValue(ComboBoxWidthFromItemsProperty, value);
         }
-        private static void OnComboBoxWidthFromItemsPropertyChanged(DependencyObject dpo,
-                                                                    DependencyPropertyChangedEventArgs e)
+
+        private static void OnComboBoxWidthFromItemsPropertyChanged(DependencyObject dpo, DependencyPropertyChangedEventArgs e)
         {
             ComboBox comboBox = dpo as ComboBox;
             if (comboBox != null)
@@ -40,6 +42,7 @@ namespace TetriNET.WPF_WCF_Client.Helpers
                 }
             }
         }
+
         private static void OnComboBoxLoaded(object sender, RoutedEventArgs e)
         {
             ComboBox comboBox = sender as ComboBox;

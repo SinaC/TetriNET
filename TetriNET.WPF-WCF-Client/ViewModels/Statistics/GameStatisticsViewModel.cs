@@ -212,7 +212,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             if (SelectedGameStatistics != null && SelectedGameStatistics.Players != null)
             {
                 PlayerList = SelectedGameStatistics.Players.Select(x => x.PlayerName).ToList();
-                SelectedPlayer = PlayerList.FirstOrDefault(x => x == Client.Name);
+                if (IsInDesignMode)
+                    SelectedPlayer = PlayerList.FirstOrDefault();
+                else
+                    SelectedPlayer = PlayerList.FirstOrDefault(x => x == Client.Name);
             }
             else
             {

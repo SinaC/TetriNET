@@ -81,6 +81,7 @@
     <Compile Include="Converters\SpecialToBrushConverter.cs" />
     <Compile Include="Converters\SpecialToStringConverter.cs" />
     <Compile Include="Factory.cs" />
+    <Compile Include="Helpers\DesignMode.cs" />
     <Compile Include="Messages\IsDeveloperModeModifiedMessage.cs" />
     <Compile Include="Messages\ServerSelectedMessage.cs" />
     <Compile Include="MVVM\AsyncRelayCommand.cs" />
@@ -94,7 +95,7 @@
     <Compile Include="DynamicGrid\DynamicRow.cs" />
     <Compile Include="DynamicGrid\IDynamicColumn.cs" />
     <Compile Include="Helpers\AssemblyHelper.cs" />
-    <Compile Include="Helpers\AttachedFocus.cs" />
+    <Compile Include="Helpers\AttachedFocusBehavior.cs" />
     <Compile Include="Helpers\ComboBoxExtensionMethods.cs" />
     <Compile Include="Helpers\ComboBoxWidthFromItemsBehavior.cs" />
     <Compile Include="Helpers\ItemsControlExtenders.cs" />

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows;
-using TetriNET.Common.DataContracts;
+﻿using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.CustomSettings;
 using TetriNET.WPF_WCF_Client.Properties;
@@ -48,8 +46,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
             //
             IAchievementManager manager = null;
-            bool isDesignMode = DesignerProperties.GetIsInDesignMode(new DependencyObject());
-            if (!isDesignMode)
+            if (!IsInDesignMode)
             {
                 //
                 manager = factory.CreateAchievementManager();
@@ -75,7 +72,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             //
             ClientChanged += OnClientChanged;
 
-            if (!isDesignMode)
+            if (!IsInDesignMode)
             {
                 // Create client
                 Client = new Client.Client(factory, manager);

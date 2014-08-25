@@ -102,7 +102,7 @@
             x:Name="TxtInputChat" Grid.Row="1" HorizontalAlignment="Stretch" FontSize="10"
             Focusable="True"
             IsEnabled="{Binding IsRegistered}"
-            helpers:AttachedFocus.IsFocused="{Binding IsInputFocused}"
+            helpers:AttachedFocusBehavior.IsFocused="{Binding IsInputFocused}"
             Text="{Binding InputChat, Mode=Default, UpdateSourceTrigger=Explicit}" 
             KeyUp="InputChat_OnKeyUp"/>
     </Grid>

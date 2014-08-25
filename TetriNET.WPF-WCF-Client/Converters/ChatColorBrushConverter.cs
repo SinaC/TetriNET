@@ -1,7 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using TetriNET.WPF_WCF_Client.Models;
@@ -28,15 +26,10 @@ namespace TetriNET.WPF_WCF_Client.Converters
         private static readonly Brush DodgerBlue = new SolidColorBrush(Colors.DodgerBlue);
         private static readonly Brush DeepPink = new SolidColorBrush(Colors.DeepPink); // default value
 
-        private static bool ApplicationIsInDesignMode
-        {
-            get { return (bool)(DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(DependencyObject)).DefaultValue); }
-        }
-
         // ChatColor -> Brush
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (ApplicationIsInDesignMode)
+            if (Helpers.DesignMode.IsInDesignModeStatic)
                 return DeepPink;
             if (!(value is ChatColor))
                 throw new ArgumentException("value not of type ChatColor");

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -52,7 +51,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             _isHintActivated = false;
             //_displayDropLocation = false;
 
-            if (!DesignerProperties.GetIsInDesignMode(this))
+            if (!DesignMode.IsInDesignModeStatic)
                 Canvas.Background = TextureManager.TextureManager.TexturesSingleInstance.Instance.GetBigBackground();
             else
                 Canvas.Background = new SolidColorBrush(Colors.Black);
