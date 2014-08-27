@@ -58,6 +58,8 @@ namespace TetriNET.Server.PlayerManager
                     else
                         _serverMaster = kv.Value;
                 }
+                else
+                    _serverMaster = null;
             }
             return removed;
         }
