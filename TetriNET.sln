@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.ConsoleWCFClient", "TetriNET.ConsoleWCFClient\TetriNET.ConsoleWCFClient.csproj", "{DF0E62BB-86B0-4FAC-B731-0CD62C90CEB7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Common", "TetriNET.Common\TetriNET.Common.csproj", "{195BE21E-603A-4858-A805-09C59107C5A7}"
@@ -87,6 +85,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Server.TCPHost", "TetriNET.Server.TCPHost\TetriNET.Server.TCPHost.csproj", "{329E516D-8DD7-4435-A086-C66D2C8DB9A9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Client.TCPProxy", "TetriNET.Client.TCPProxy\TetriNET.Client.TCPProxy.csproj", "{100AAF67-91BC-41E7-8ABB-4A6B4449B119}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetriNET.Tests.Server", "TetriNET.Tests.Server\TetriNET.Tests.Server.csproj", "{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -502,6 +502,21 @@ Global
 		{100AAF67-91BC-41E7-8ABB-4A6B4449B119}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{100AAF67-91BC-41E7-8ABB-4A6B4449B119}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{100AAF67-91BC-41E7-8ABB-4A6B4449B119}.Release|x86.ActiveCfg = Release|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Design|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Design|Any CPU.Build.0 = Debug|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Design|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Design|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Design|x86.ActiveCfg = Debug|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -537,6 +552,7 @@ Global
 		{DF0E62BB-86B0-4FAC-B731-0CD62C90CEB7} = {9CB02949-4BE2-4196-85FD-98B440F28216}
 		{C412C1E3-BDEC-405C-905B-B24F6EF053FF} = {9CB02949-4BE2-4196-85FD-98B440F28216}
 		{26093219-1A7A-4806-9EBE-1E2CE21CF5E8} = {8CF53BA9-1FD4-4929-9682-F9DFBCF2E2F0}
+		{AB51DB95-B44D-4F1D-8CC1-1F4EE7167748} = {8CF53BA9-1FD4-4929-9682-F9DFBCF2E2F0}
 		{A2BAD88B-73BB-4B79-B30B-ABFB4FD2C1C4} = {5BB43239-C825-41D5-AA08-82AA5BDFD993}
 		{1682C01C-8662-47B4-8B1F-A64BE59940A6} = {5BB43239-C825-41D5-AA08-82AA5BDFD993}
 	EndGlobalSection

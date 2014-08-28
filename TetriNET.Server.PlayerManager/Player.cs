@@ -14,6 +14,11 @@ namespace TetriNET.Server.PlayerManager
     {
         public Player(int id, string name, ITetriNETCallback callback)
         {
+            if (name == null)
+                throw new ArgumentNullException("name");
+            if (callback == null)
+                throw new ArgumentNullException("callback");
+
             Id = id;
             Name = name;
             Callback = callback;

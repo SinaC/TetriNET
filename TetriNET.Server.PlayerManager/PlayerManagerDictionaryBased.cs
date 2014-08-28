@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.Logger;
@@ -15,11 +16,15 @@ namespace TetriNET.Server.PlayerManager
 
         public PlayerManagerDictionaryBased(int maxPlayers)
         {
+            if (maxPlayers <= 0)
+                throw new ArgumentOutOfRangeException("maxPlayers", "maxPlayers must be strictly positive");
             _lockObject = new object();
             MaxPlayers = maxPlayers;
             _players = new Dictionary<ITetriNETCallback, IPlayer>();
             _serverMaster = null;
         }
+
+        #region IPlayerManager
 
         public bool Add(IPlayer player)
         {
@@ -138,5 +143,7 @@ namespace TetriNET.Server.PlayerManager
                 return player;
             }
         }
+
+        #endregion
     }
 }
