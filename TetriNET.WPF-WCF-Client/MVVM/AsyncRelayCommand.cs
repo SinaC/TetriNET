@@ -58,6 +58,83 @@ namespace TetriNET.WPF_WCF_Client.MVVM
         #endregion
     }
 
+    public class AsyncRelayCommand2<T> : ICommand
+    {
+        private readonly Action<T> _execute;
+        private readonly Action<T> _completed;
+        private readonly Func<T, bool> _canExecute;
+
+        public AsyncRelayCommand2(Action<T> execute)
+            : this(execute, null, null)
+        {
+        }
+
+        public AsyncRelayCommand2(Action<T> execute, Action<T> completed)
+            : this(execute, completed, null)
+        {
+        }
+
+        public AsyncRelayCommand2(Action<T> execute, Action<T> completed, Func<T, bool> canExecute)
+        {
+            if (execute == null)
+                throw new ArgumentNullException("execute");
+
+            _execute = execute;
+            _completed = completed;
+            _canExecute = canExecute;
+        }
+
+        #region ICommand
+
+        public bool CanExecute(object parameter)
+        {
+            return _canExecute == null || _canExecute((T) parameter);
+        }
+
+        public event EventHandler CanExecuteChanged
+        {
+            add { CommandManager.RequerySuggested += value; }
+            remove { CommandManager.RequerySuggested -= value; }
+        }
+
+        public async void Execute(object parameter)
+        {
+            var val = parameter;
+
+            if (parameter != null && parameter.GetType() != typeof (T) && parameter is IConvertible)
+                val = Convert.ChangeType(parameter, typeof (T), null);
+
+            if (CanExecute(val) && _execute != null)
+            {
+                try
+                {
+                    if (val == null)
+                        if (typeof (T).IsValueType)
+                            await InternalExecute(default(T));
+                        else
+                            await InternalExecute((T)val);
+                    else
+                        await InternalExecute((T)val);
+                }
+                catch(Exception ex)
+                {
+                    // TODO
+                }
+            }
+        }
+
+        #endregion
+
+        private async Task InternalExecute(T parameter)
+        {
+            if (_completed == null)
+                await Task.Run(() => _execute(parameter));
+            else
+                await Task.Run(() => _execute(parameter))
+                    .ContinueWith(t => _completed);
+        }
+    }
+
     //http://jake.ginnivan.net/awaitable-delegatecommand/
     //public interface IAsyncCommand : IAsyncCommand<object>
     //{
