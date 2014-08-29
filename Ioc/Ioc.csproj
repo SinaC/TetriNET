@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{26093219-1A7A-4806-9EBE-1E2CE21CF5E8}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{E92A96CE-F753-416E-98DF-EB0BFA32A0B2}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TetriNET.Tests</RootNamespace>
-    <AssemblyName>TetriNET.Tests</AssemblyName>
+    <RootNamespace>Ioc</RootNamespace>
+    <AssemblyName>Ioc</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,41 +32,15 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Channels" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="SimpleIoc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Ioc\Ioc.csproj">
-      <Project>{e92a96ce-f753-416e-98df-eb0bfa32a0b2}</Project>
-      <Name>Ioc</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Client.Board\TetriNET.Client.Board.csproj">
-      <Project>{c1d244a2-a501-455e-8522-354f3e5470f8}</Project>
-      <Name>TetriNET.Client.Board</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Client.Interfaces\TetriNET.Client.Interfaces.csproj">
-      <Project>{85b3313b-f31a-45be-8bf6-8ae55ae484b0}</Project>
-      <Name>TetriNET.Client.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
-      <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
-      <Name>TetriNET.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Client.Pieces\TetriNET.Client.Pieces.csproj">
-      <Project>{2bd5936f-015d-473f-9161-6b837ef3a3ba}</Project>
-      <Name>TetriNET.Client.Pieces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Client.Strategy\TetriNET.Client.Strategy.csproj">
-      <Project>{b77d651e-658c-45d4-972a-3c0d569d689e}</Project>
-      <Name>TetriNET.Client.Strategy</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
