@@ -15,7 +15,7 @@ namespace TetriNET.Client.Interfaces
         int DoubleCount { get; }
         int TripleCount { get; }
         int TetrisCount { get; }
-        int EndOfPieceQueueReached { get; }
+        int EndOfPieceProviderReached { get; }
         int NextPieceNotYetReceived { get; }
 
         int GameWon { get; }

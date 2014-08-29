@@ -114,9 +114,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.SpecialDiscarded.Values.Sum(); }
         }
 
-        public int EndOfPieceQueueReached
+        public int EndOfPieceProviderReached
         {
-            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.EndOfPieceQueueReached; }
+            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.EndOfPieceProviderReached; }
         }
         
         public int NextPieceNotYetReceived
@@ -206,7 +206,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             OnPropertyChanged("TripleCount");
             OnPropertyChanged("DoubleCount");
             OnPropertyChanged("SingleCount");
-            OnPropertyChanged("EndOfPieceQueueReached");
+            OnPropertyChanged("EndOfPieceProviderReached");
             OnPropertyChanged("NextPieceNotYetReceived");
             OnPropertyChanged("LinesPerMinute");
             OnPropertyChanged("MovesPerMinute");
@@ -340,7 +340,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             public int DoubleCount { get; set; }
             public int TripleCount { get; set; }
             public int TetrisCount { get; set; }
-            public int EndOfPieceQueueReached { get; set; }
+            public int EndOfPieceProviderReached { get; set; }
             public int NextPieceNotYetReceived { get; set; }
             public int GameWon { get; set; }
             public int GameLost { get; set; }

@@ -17,7 +17,7 @@ namespace TetriNET.Client
         public int DoubleCount { get; set; }
         public int TripleCount { get; set; }
         public int TetrisCount { get; set; }
-        public int EndOfPieceQueueReached { get; set; }
+        public int EndOfPieceProviderReached { get; set; }
         public int NextPieceNotYetReceived { get; set; }
 
         public int GameWon { get; set; }
@@ -55,7 +55,7 @@ namespace TetriNET.Client
             DoubleCount = 0;
             TripleCount = 0;
             TetrisCount = 0;
-            EndOfPieceQueueReached = 0;
+            EndOfPieceProviderReached = 0;
             NextPieceNotYetReceived = 0;
             // No reset for GameWon and GameLost
         }

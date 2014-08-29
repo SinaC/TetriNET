@@ -942,8 +942,8 @@ namespace TetriNET.Client
                 nextPiece = _pieces[_pieceIndex + 1];
             else
             {
-                Log.WriteLine(Log.LogLevels.Warning, "End of PieceArray reached, server is definitively too slow or we are too fast {0}", _pieceIndex+1);
-                _statistics.EndOfPieceQueueReached++;
+                Log.WriteLine(Log.LogLevels.Warning, "End of PieceProvider reached, server is definitively too slow or we are too fast {0}", _pieceIndex+1);
+                _statistics.EndOfPieceProviderReached++;
             }
             if (nextPiece == Pieces.Invalid)
             {
@@ -1787,8 +1787,8 @@ namespace TetriNET.Client
                     nextPiece = _pieces[_pieceIndex + 1];
                 else
                 {
-                    Log.WriteLine(Log.LogLevels.Warning, "End of PieceArray reached, server is definitively too slow or we are too fast {0}", _pieceIndex + 1);
-                    _statistics.EndOfPieceQueueReached++;
+                    Log.WriteLine(Log.LogLevels.Warning, "End of PieceProvider reached, server is definitively too slow or we are too fast {0}", _pieceIndex + 1);
+                    _statistics.EndOfPieceProviderReached++;
                 }
                 if (nextPiece == Pieces.Invalid)
                 {

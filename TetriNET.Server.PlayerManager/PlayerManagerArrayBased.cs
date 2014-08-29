@@ -26,7 +26,9 @@ namespace TetriNET.Server.PlayerManager
 
         public bool Add(IPlayer player)
         {
-            bool alreadyExists = _players.Any(x => x != null && (x == player || x.Name == player.Name));
+            if (player == null)
+                return false;
+            bool alreadyExists = _players.Any(x => x != null && (x == player || x.Name == player.Name || x.Id == player.Id || x.Callback == player.Callback));
             if (!alreadyExists)
             {
                 // insert in first empty slot
@@ -45,6 +47,8 @@ namespace TetriNET.Server.PlayerManager
 
         public bool Remove(IPlayer player)
         {
+            if (player == null)
+                return false;
             for (int i = 0; i < MaxPlayers; i++)
                 if (_players[i] == player)
                 {

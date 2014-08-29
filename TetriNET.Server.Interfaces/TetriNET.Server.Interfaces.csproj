@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="IBanManager.cs" />
     <Compile Include="IEntity.cs" />
+    <Compile Include="IEntityManager.cs" />
     <Compile Include="IFactory.cs" />
     <Compile Include="IHost.cs" />
     <Compile Include="IPieceProvider.cs" />

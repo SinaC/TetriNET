@@ -3,7 +3,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TetriNET.Server.Interfaces;
 using TetriNET.Server.PlayerManager;
-using TetriNET.Tests.Server.Implementations;
+using TetriNET.Tests.Server.Mocking;
 
 namespace TetriNET.Tests.Server
 {
@@ -15,7 +15,7 @@ namespace TetriNET.Tests.Server
         {
             try
             {
-                IPlayer player = new Player(0, null, new NullLoopTetriNETCallback());
+                IPlayer player = new Player(0, null, new CountCallTetriNETCallback());
 
                 Assert.Fail("ArgumentNullException on name not raised");
             }
@@ -43,7 +43,7 @@ namespace TetriNET.Tests.Server
         [TestMethod]
         public void TestLastActionToClientUpdate()
         {
-            IPlayer player = new Player(0, "player1", new NullLoopTetriNETCallback());
+            IPlayer player = new Player(0, "player1", new CountCallTetriNETCallback());
             DateTime lastActionToClient = player.LastActionToClient;
 
             Thread.Sleep(1);
@@ -78,7 +78,7 @@ namespace TetriNET.Tests.Server
         public void TestConnectionLostNotCalledOnNoException()
         {
             bool called = false;
-            IPlayer player = new Player(0, "player1", new NullLoopTetriNETCallback());
+            IPlayer player = new Player(0, "player1", new CountCallTetriNETCallback());
             player.ConnectionLost += entity => called = true;
 
             player.OnHeartbeatReceived();
@@ -89,7 +89,7 @@ namespace TetriNET.Tests.Server
         [TestMethod]
         public void TestSetTimeout()
         {
-            IPlayer player = new Player(0, "joel", new NullLoopTetriNETCallback());
+            IPlayer player = new Player(0, "joel", new CountCallTetriNETCallback());
             DateTime lastActionFromClient = DateTime.Now;
 
             Thread.Sleep(1);
@@ -102,7 +102,7 @@ namespace TetriNET.Tests.Server
         [TestMethod]
         public void TestResetTimeout()
         {
-            IPlayer player = new Player(0, "joel", new NullLoopTetriNETCallback());
+            IPlayer player = new Player(0, "joel", new CountCallTetriNETCallback());
             player.SetTimeout();
             DateTime lastActionFromClient = DateTime.Now;
 

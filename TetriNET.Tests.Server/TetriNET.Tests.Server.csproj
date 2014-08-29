@@ -50,7 +50,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Implementations\ITetriNETCallbackImplementations.cs" />
+    <Compile Include="GenericHostUnitTest.cs" />
+    <Compile Include="Mocking\RaiseExceptionTetriNETCallback.cs" />
+    <Compile Include="Mocking\CountCallTetriNETCallback.cs" />
+    <Compile Include="PieceProviderUnitTest.cs" />
     <Compile Include="PlayerManagerUnitTest.cs" />
     <Compile Include="PlayerUnitTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,13 +63,29 @@
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Server.BanManager\TetriNET.Server.BanManager.csproj">
+      <Project>{da133f38-8ec8-4383-9cda-7cdd5f967803}</Project>
+      <Name>TetriNET.Server.BanManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Server.GenericHost\TetriNET.Server.GenericHost.csproj">
+      <Project>{010b434d-86f0-4bff-b17b-702bcccf69f5}</Project>
+      <Name>TetriNET.Server.GenericHost</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Server.Interfaces\TetriNET.Server.Interfaces.csproj">
       <Project>{546c0189-9339-4de6-902a-f38550c5a517}</Project>
       <Name>TetriNET.Server.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Server.PieceProvider\TetriNET.Server.PieceProvider.csproj">
+      <Project>{87b820fe-0848-41a3-9cee-05c5da7ff1f7}</Project>
+      <Name>TetriNET.Server.PieceProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Server.PlayerManager\TetriNET.Server.PlayerManager.csproj">
       <Project>{a307d5d9-198a-4ca3-8c03-de5bffe9c87d}</Project>
       <Name>TetriNET.Server.PlayerManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Server.SpectatorManager\TetriNET.Server.SpectatorManager.csproj">
+      <Project>{1395a243-12d6-44be-a852-2b52db545cbe}</Project>
+      <Name>TetriNET.Server.SpectatorManager</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

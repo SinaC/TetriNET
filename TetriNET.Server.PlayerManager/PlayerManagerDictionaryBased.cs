@@ -28,6 +28,8 @@ namespace TetriNET.Server.PlayerManager
 
         public bool Add(IPlayer player)
         {
+            if (player == null)
+                return false;
             if (_players.Count >= MaxPlayers)
             {
                 Log.WriteLine(Log.LogLevels.Warning, "Too many players");
@@ -39,6 +41,13 @@ namespace TetriNET.Server.PlayerManager
                 Log.WriteLine(Log.LogLevels.Warning, "{0} already registered", player.Name);
                 return false;
             }
+
+            if (_players.Any(x => x.Value.Name == player.Name || x.Value.Id == player.Id))
+            {
+                Log.WriteLine(Log.LogLevels.Warning, "{0} already registered", player.Name);
+                return false;
+            }
+
             //
             _players.Add(player.Callback, player);
             // ServerMaster
@@ -50,6 +59,8 @@ namespace TetriNET.Server.PlayerManager
 
         public bool Remove(IPlayer player)
         {
+            if (player == null)
+                return false;
             bool removed = _players.Remove(player.Callback);
             // ServerMaster
             if (player == _serverMaster)
@@ -71,6 +82,7 @@ namespace TetriNET.Server.PlayerManager
 
         public void Clear()
         {
+            _serverMaster = null;
             _players.Clear();
         }
 
