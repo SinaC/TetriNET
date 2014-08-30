@@ -45,10 +45,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Ioc\Ioc.csproj">
-      <Project>{e92a96ce-f753-416e-98df-eb0bfa32a0b2}</Project>
-      <Name>Ioc</Name>
-    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Client.Board\TetriNET.Client.Board.csproj">
       <Project>{c1d244a2-a501-455e-8522-354f3e5470f8}</Project>
       <Name>TetriNET.Client.Board</Name>

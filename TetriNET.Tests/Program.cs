@@ -24,10 +24,6 @@ namespace TetriNET.Tests
 
         static void Main(string[] args)
         {
-            Ioc.EasyIoc.Default.Register<IMoveStrategy, PierreDellacherieOnePiece>();
-            bool registered = Ioc.EasyIoc.Default.IsRegistered<IMoveStrategy>();
-            IMoveStrategy strategy = Ioc.EasyIoc.Default.Resolve<IMoveStrategy>();
-
             //Program p = new Program();
             //p.TestSpectator();
 
