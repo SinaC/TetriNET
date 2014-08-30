@@ -24,6 +24,8 @@ namespace TetriNET.Server.Interfaces
         Dictionary<string, GameStatisticsByPlayer> GameStatistics { get; } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
         GameOptions Options { get; }
 
+        bool AddHost(IHost host);
+
         void StartServer();
         void StopServer();
 

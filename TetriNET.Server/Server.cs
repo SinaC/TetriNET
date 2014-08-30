@@ -36,12 +36,11 @@ namespace TetriNET.Server
         private DateTime _suddenDeathStartTime;
         private DateTime _lastSuddenDeathAddLines;
         
-        public Server(IPlayerManager playerManager, ISpectatorManager spectatorManager, IPieceProvider pieceProvider, params IHost[] hosts)
+        public Server(IPlayerManager playerManager, ISpectatorManager spectatorManager, IPieceProvider pieceProvider)
         {
             if (playerManager == null)
                 throw new ArgumentNullException("playerManager");
-            if (hosts == null || !hosts.Any())
-                throw new ArgumentNullException("hosts");
+
             Options = new GameOptions();
             Options.ResetToDefault();
 
@@ -49,42 +48,11 @@ namespace TetriNET.Server
             _pieceProvider.Occurancies = () => Options.PieceOccurancies;
             _playerManager = playerManager;
             _spectatorManager = spectatorManager;
-            _hosts = hosts.ToList();
+            _hosts = new List<IHost>();
 
             GameStatistics = new Dictionary<string, GameStatisticsByPlayer>();
 
             WinList = new List<WinEntry>();
-
-            foreach (IHost host in _hosts)
-            {
-                host.HostPlayerRegistered += OnRegisterPlayer;
-                host.HostPlayerUnregistered += OnUnregisterPlayer;
-                host.HostPlayerTeamChanged += OnPlayerTeam;
-                host.HostMessagePublished += OnPublishMessage;
-                host.HostPiecePlaced += OnPlacePiece;
-                host.HostUseSpecial += OnUseSpecial;
-                host.HostClearLines += OnClearLines;
-                host.HostGridModified += OnModifyGrid;
-                host.HostStartGame += OnStartGame;
-                host.HostStopGame += OnStopGame;
-                host.HostPauseGame += OnPauseGame;
-                host.HostResumeGame += OnResumeGame;
-                host.HostGameLost += OnGameLost;
-                host.HostChangeOptions += OnChangeOptions;
-                host.HostKickPlayer += OnKickPlayer;
-                host.HostBanPlayer += OnBanPlayer;
-                host.HostResetWinList += OnResetWinList;
-                host.HostFinishContinuousSpecial += OnFinishContinuousSpecial;
-                host.HostEarnAchievement += OnEarnAchievement;
-                host.HostSpectatorRegistered += OnRegisterSpectator;
-                host.HostSpectatorUnregistered += OnUnregisterSpectator;
-                host.HostSpectatorMessagePublished += OnPublishSpectatorMessage;
-
-                host.HostPlayerLeft += OnPayerLeft;
-                host.HostSpectatorLeft += OnSpectatorLeft;
-
-                Debug.Assert(Check.CheckEvents(host), "Every host events must be handled");
-            }
 
             State = ServerStates.WaitingStartServer;
         }
@@ -96,6 +64,53 @@ namespace TetriNET.Server
         public List<WinEntry> WinList { get; private set; }
         public Dictionary<string, GameStatisticsByPlayer> GameStatistics { get; private set; } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
         public GameOptions Options { get; private set; }
+
+        public bool AddHost(IHost host)
+        {
+            if (_hosts.Any(x => x == host))
+            {
+                Log.WriteLine(Log.LogLevels.Error, "Trying to add host more than once");
+                return false;
+            }
+
+            if (State != ServerStates.WaitingStartServer)
+            {
+                Log.WriteLine(Log.LogLevels.Error, "Trying to add host when server is already started");
+                return false;
+            }
+
+            _hosts.Add(host);
+
+            host.HostPlayerRegistered += OnRegisterPlayer;
+            host.HostPlayerUnregistered += OnUnregisterPlayer;
+            host.HostPlayerTeamChanged += OnPlayerTeam;
+            host.HostMessagePublished += OnPublishMessage;
+            host.HostPiecePlaced += OnPlacePiece;
+            host.HostUseSpecial += OnUseSpecial;
+            host.HostClearLines += OnClearLines;
+            host.HostGridModified += OnModifyGrid;
+            host.HostStartGame += OnStartGame;
+            host.HostStopGame += OnStopGame;
+            host.HostPauseGame += OnPauseGame;
+            host.HostResumeGame += OnResumeGame;
+            host.HostGameLost += OnGameLost;
+            host.HostChangeOptions += OnChangeOptions;
+            host.HostKickPlayer += OnKickPlayer;
+            host.HostBanPlayer += OnBanPlayer;
+            host.HostResetWinList += OnResetWinList;
+            host.HostFinishContinuousSpecial += OnFinishContinuousSpecial;
+            host.HostEarnAchievement += OnEarnAchievement;
+            host.HostSpectatorRegistered += OnRegisterSpectator;
+            host.HostSpectatorUnregistered += OnUnregisterSpectator;
+            host.HostSpectatorMessagePublished += OnPublishSpectatorMessage;
+
+            host.HostPlayerLeft += OnPayerLeft;
+            host.HostSpectatorLeft += OnSpectatorLeft;
+
+            Debug.Assert(Check.CheckEvents(host), "Every host events must be handled");
+
+            return true;
+        }
 
         public void StartServer()
         {

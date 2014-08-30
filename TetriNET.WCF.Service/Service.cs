@@ -88,7 +88,8 @@ namespace TetriNET.WCF.Service
             IPieceProvider pieceProvider = factory.CreatePieceProvider();
 
             //
-            IServer server = new Server.Server(playerManager, spectatorManager, pieceProvider, wcfHost);
+            IServer server = new Server.Server(playerManager, spectatorManager, pieceProvider);
+            server.AddHost(wcfHost);
 
             //
             server.StartServer();
