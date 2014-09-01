@@ -35,12 +35,12 @@ namespace TetriNET.ConsoleWCFServer
 
         static void Main(string[] args)
         {
-            Log.Initialize(ConfigurationManager.AppSettings["logpath"], "server.log");
+            Log.Default.Initialize(ConfigurationManager.AppSettings["logpath"], "server.log");
 
             Version version = Assembly.GetEntryAssembly().GetName().Version;
             string company = ((AssemblyCompanyAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyCompanyAttribute), false)).Company;
             string product = ((AssemblyProductAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyProductAttribute), false)).Product;
-            Log.WriteLine(Log.LogLevels.Info, "{0} {1}.{2} by {3}", product, version.Major, version.Minor, company);
+            Log.Default.WriteLine(LogLevels.Info, "{0} {1}.{2} by {3}", product, version.Major, version.Minor, company);
 
             //
             IFactory factory = new Factory();

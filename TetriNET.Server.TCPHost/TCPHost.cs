@@ -254,12 +254,12 @@ namespace TetriNET.Server.TCPHost
                 }
                 catch (SocketException ex)
                 {
-                    Log.WriteLine(Log.LogLevels.Error, "OnReceivedClientData: SocketException: {0}", ex);
+                    Log.Default.WriteLine(LogLevels.Error, "OnReceivedClientData: SocketException: {0}", ex);
                     OnClientDisconnected(stateObject.Socket);
                 }
                 catch(Exception ex)
                 {
-                    Log.WriteLine(Log.LogLevels.Error, "OnReceivedClientData: Exception: {0}", ex);
+                    Log.Default.WriteLine(LogLevels.Error, "OnReceivedClientData: Exception: {0}", ex);
                     OnClientDisconnected(stateObject.Socket);
                 }
             }
@@ -268,15 +268,15 @@ namespace TetriNET.Server.TCPHost
             {
                 if (socket == null)
                 {
-                    Log.WriteLine(Log.LogLevels.Error, "OnClientDisconnected: client socket is null, cannot remove it from connected client collection");
+                    Log.Default.WriteLine(LogLevels.Error, "OnClientDisconnected: client socket is null, cannot remove it from connected client collection");
                 }
                 else if (!_connections.ContainsKey(socket))
                 {
-                    Log.WriteLine(Log.LogLevels.Error, "OnClientDisconnected: client already removed from connected client collection");
+                    Log.Default.WriteLine(LogLevels.Error, "OnClientDisconnected: client already removed from connected client collection");
                 }
                 else
                 {
-                    Log.WriteLine(Log.LogLevels.Info, "Client disconnected");
+                    Log.Default.WriteLine(LogLevels.Info, "Client disconnected");
                     // Remove from collection
                     _connections.Remove(socket);
                     // Shutdown socket

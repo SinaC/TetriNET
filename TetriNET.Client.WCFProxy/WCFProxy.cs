@@ -41,7 +41,7 @@ namespace TetriNET.Client.WCFProxy
             // Create WCF proxy from endpoint
             if (endpointAddress != null)
             {
-                Log.WriteLine(Log.LogLevels.Debug, "Connecting to server:{0}", endpointAddress.Uri);
+                Log.Default.WriteLine(LogLevels.Debug, "Connecting to server:{0}", endpointAddress.Uri);
                 Binding binding = new NetTcpBinding(SecurityMode.None);
                 InstanceContext instanceContext = new InstanceContext(callback);
                 _factory = new DuplexChannelFactory<IWCFTetriNET>(instanceContext, binding, endpointAddress);
@@ -59,19 +59,19 @@ namespace TetriNET.Client.WCFProxy
 
         private static IEnumerable<EndpointAddress> DiscoverEndpoints()
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Searching IWCFTetriNET server");
+            Log.Default.WriteLine(LogLevels.Debug, "Searching IWCFTetriNET server");
             EndpointAddress[] endpointAddresses = DiscoveryHelper.DiscoverAddresses<IWCFTetriNET>();
             if (endpointAddresses != null && endpointAddresses.Any())
             {
                 foreach (EndpointAddress endpoint in endpointAddresses)
-                    Log.WriteLine(Log.LogLevels.Debug, "{0}:\t{1}", Array.IndexOf(endpointAddresses, endpoint), endpoint.Uri);
-                Log.WriteLine(Log.LogLevels.Debug, "Selecting first server");
+                    Log.Default.WriteLine(LogLevels.Debug, "{0}:\t{1}", Array.IndexOf(endpointAddresses, endpoint), endpoint.Uri);
+                Log.Default.WriteLine(LogLevels.Debug, "Selecting first server");
 
                 return endpointAddresses;
             }
             else
             {
-                Log.WriteLine(Log.LogLevels.Debug, "No server found");
+                Log.Default.WriteLine(LogLevels.Debug, "No server found");
                 return Enumerable.Empty<EndpointAddress>();
             }
         }
@@ -85,7 +85,7 @@ namespace TetriNET.Client.WCFProxy
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Exception:{0} {1}", actionName, ex);
+                Log.Default.WriteLine(LogLevels.Error, "Exception:{0} {1}", actionName, ex);
                 ConnectionLost.Do(x => x());
                 _factory.Do(x => x.Abort());
             }
@@ -107,7 +107,7 @@ namespace TetriNET.Client.WCFProxy
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Warning, "Exception:{0}", ex);
+                Log.Default.WriteLine(LogLevels.Warning, "Exception:{0}", ex);
                 _factory.Abort();
             }
             _factory = null;

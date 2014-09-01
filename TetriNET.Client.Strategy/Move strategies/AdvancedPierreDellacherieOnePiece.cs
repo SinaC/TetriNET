@@ -40,7 +40,7 @@ namespace TetriNET.Client.Strategy
                     tempPiece.GetCellAbsolutePosition(i, out x, out y);
                     sb.Append(String.Format("[{0}->{1},{2}]", i, x - tempPiece.PosX, y - tempPiece.PosY));
                 }
-                //Log.Log.WriteLine("{0} {1} -> {2}  {3}", trialRotationDelta, minDeltaX, maxDeltaX, sb.ToString());
+                //Log.Log.Default.WriteLine("{0} {1} -> {2}  {3}", trialRotationDelta, minDeltaX, maxDeltaX, sb.ToString());
                 if (isMovePossible)
                 {
                     // Consider all allowed translations
@@ -68,7 +68,7 @@ namespace TetriNET.Client.Strategy
                             int trialPriority;
                             EvaluteMove(tempBoard, tempPiece, out trialRating, out trialPriority);
 
-                            //Log.Log.WriteLine("R:{0:0.0000} P:{1} R:{2} T:{3}", trialRating, trialPriority, trialRotationDelta, trialTranslationDelta);
+                            //Log.Log.Default.WriteLine("R:{0:0.0000} P:{1} R:{2} T:{3}", trialRating, trialPriority, trialRotationDelta, trialTranslationDelta);
 
                             // Check if better than previous best
                             if (trialRating > currentBestRating || (Math.Abs(trialRating - currentBestRating) < 0.0001 && trialPriority > currentBestPriority))

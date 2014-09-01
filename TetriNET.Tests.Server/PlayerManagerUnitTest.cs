@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TetriNET.Common.Contracts;
+using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 using TetriNET.Server.PlayerManager;
 using TetriNET.Tests.Server.Mocking;
@@ -12,6 +13,12 @@ namespace TetriNET.Tests.Server
     public abstract class PlayerManagerUnitTest
     {
         protected abstract IPlayerManager CreatePlayerManager(int maxPlayers);
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            Log.SetLogger(new LogMock());
+        }
 
         [TestMethod]
         public void TestStrictlyPositiveMaxPlayers()

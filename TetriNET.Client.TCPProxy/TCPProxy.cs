@@ -60,14 +60,14 @@ namespace TetriNET.Client.TCPProxy
                 _socket.EndConnect(ar);
 
                 //
-                Log.WriteLine(Log.LogLevels.Info, "Socket connected to {0}", _socket.RemoteEndPoint);
+                Log.Default.WriteLine(LogLevels.Info, "Socket connected to {0}", _socket.RemoteEndPoint);
 
                 // Ready to send
                 _readyToSend = true;
             }
             catch (Exception e)
             {
-                Log.WriteLine(Log.LogLevels.Error, "OnConnectedToServer: {0}", e);
+                Log.Default.WriteLine(LogLevels.Error, "OnConnectedToServer: {0}", e);
             }
         }
 
@@ -79,7 +79,7 @@ namespace TetriNET.Client.TCPProxy
                 int bytesSent = _socket.EndSend(ar);
 
                 //
-                Log.WriteLine(Log.LogLevels.Info, "Sent {0} bytes to server.", bytesSent);
+                Log.Default.WriteLine(LogLevels.Info, "Sent {0} bytes to server.", bytesSent);
 
                 // Ready to send
                 _readyToSend = false;
@@ -87,12 +87,12 @@ namespace TetriNET.Client.TCPProxy
             catch (SocketException e)
             {
                 // TODO: handle exception
-                Log.WriteLine(Log.LogLevels.Error, "OnSendCompleted: SocketException: {0}", e);
+                Log.Default.WriteLine(LogLevels.Error, "OnSendCompleted: SocketException: {0}", e);
             }
             catch (Exception e)
             {
                 // TODO: handle exception
-                Log.WriteLine(Log.LogLevels.Error, "OnSendCompleted: Exception: {0}", e);
+                Log.Default.WriteLine(LogLevels.Error, "OnSendCompleted: Exception: {0}", e);
             }
         }
 

@@ -38,10 +38,10 @@ namespace TetriNET.Server.PlayerManager
                         _players[i] = player;
                         return true;
                     }
-                Log.WriteLine(Log.LogLevels.Warning, "No empty slot");
+                Log.Default.WriteLine(LogLevels.Warning, "No empty slot");
             }
             else
-                Log.WriteLine(Log.LogLevels.Warning, "{0} already registered", player.Name);
+                Log.Default.WriteLine(LogLevels.Warning, "{0} already registered", player.Name);
             return false;
         }
 

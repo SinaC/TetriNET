@@ -182,7 +182,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Invalid texture file {0}. Exception: {1}", filename, ex);
+                Log.Default.WriteLine(LogLevels.Error, "Invalid texture file {0}. Exception: {1}", filename, ex);
 
                 // Set default values
                 BigBackground = new SolidColorBrush(Colors.Black);
@@ -294,7 +294,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Error while extracting background texture. Image {0}. Exception: {1}", image.BaseUri, ex);
+                Log.Default.WriteLine(LogLevels.Error, "Error while extracting background texture. Image {0}. Exception: {1}", image.BaseUri, ex);
                 background = new SolidColorBrush(Colors.Black);
             }
             return background;
@@ -314,7 +314,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Error while extracting texture for {0}. Image {1}. Exception: {2}", piece, image.BaseUri, ex);
+                Log.Default.WriteLine(LogLevels.Error, "Error while extracting texture for {0}. Image {1}. Exception: {2}", piece, image.BaseUri, ex);
                 specialBrush = CreateDummyPieceBrush(piece, isSmall);
             }
             return specialBrush;
@@ -334,7 +334,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             }
             catch(Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Error while extracting texture for {0}. Image {1}. Exception: {2}", special, image.BaseUri, ex);
+                Log.Default.WriteLine(LogLevels.Error, "Error while extracting texture for {0}. Image {1}. Exception: {2}", special, image.BaseUri, ex);
                 specialBrush = CreateDummySpecialBrush(special, isSmall);
             }
             return specialBrush;
@@ -349,7 +349,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Error while reading background file {0}. Exception: {1}", filename, ex);
+                Log.Default.WriteLine(LogLevels.Error, "Error while reading background file {0}. Exception: {1}", filename, ex);
                 background = new SolidColorBrush(Colors.Black);
             }
             return background;
@@ -364,7 +364,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Error while reading texture for {0}. File {1}. Exception: {2}", piece, filename, ex);
+                Log.Default.WriteLine(LogLevels.Error, "Error while reading texture for {0}. File {1}. Exception: {2}", piece, filename, ex);
                 brush = CreateDummyPieceBrush(piece, isSmall);
             }
             return brush;
@@ -379,7 +379,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Error while reading texture for {0}. File {1}. Exception: {2}", special, filename, ex);
+                Log.Default.WriteLine(LogLevels.Error, "Error while reading texture for {0}. File {1}. Exception: {2}", special, filename, ex);
                 specialBrush = CreateDummySpecialBrush(special, isSmall);
             }
             return specialBrush;

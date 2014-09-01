@@ -21,7 +21,7 @@ namespace TetriNET.WPF_WCF_Client.Helpers
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Exception raised in ExecuteOnUIThread. {0}", ex);
+                Log.Default.WriteLine(LogLevels.Error, "Exception raised in ExecuteOnUIThread. {0}", ex);
             }
         }
 
@@ -33,7 +33,7 @@ namespace TetriNET.WPF_WCF_Client.Helpers
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Exception raised in ExecuteOnUIThread. {0}", ex);
+                Log.Default.WriteLine(LogLevels.Error, "Exception raised in ExecuteOnUIThread. {0}", ex);
             }
         }
     }

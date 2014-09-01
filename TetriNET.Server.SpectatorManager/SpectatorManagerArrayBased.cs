@@ -34,7 +34,7 @@ namespace TetriNET.Server.SpectatorManager
                     }
             }
             else
-                Log.WriteLine(Log.LogLevels.Warning, "{0} already registered", spectator.Name);
+                Log.Default.WriteLine(LogLevels.Warning, "{0} already registered", spectator.Name);
             return false;
         }
 

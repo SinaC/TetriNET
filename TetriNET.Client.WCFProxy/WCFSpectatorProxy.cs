@@ -26,7 +26,7 @@ namespace TetriNET.Client.WCFProxy
             EndpointAddress endpointAddress = new EndpointAddress(address);
 
             // Create WCF proxy from endpoint
-            Log.WriteLine(Log.LogLevels.Debug, "Connecting to server:{0}", endpointAddress.Uri);
+            Log.Default.WriteLine(LogLevels.Debug, "Connecting to server:{0}", endpointAddress.Uri);
             Binding binding = new NetTcpBinding(SecurityMode.None);
             InstanceContext instanceContext = new InstanceContext(callback);
             _factory = new DuplexChannelFactory<IWCFTetriNETSpectator>(instanceContext, binding, endpointAddress);
@@ -42,7 +42,7 @@ namespace TetriNET.Client.WCFProxy
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Exception:{0} {1}", actionName, ex);
+                Log.Default.WriteLine(LogLevels.Error, "Exception:{0} {1}", actionName, ex);
                 ConnectionLost.Do(x => x());
                 _factory.Do(x => x.Abort());
             }
@@ -64,7 +64,7 @@ namespace TetriNET.Client.WCFProxy
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Warning, "Exception:{0}", ex);
+                Log.Default.WriteLine(LogLevels.Warning, "Exception:{0}", ex);
                 _factory.Abort();
             }
             _factory = null;

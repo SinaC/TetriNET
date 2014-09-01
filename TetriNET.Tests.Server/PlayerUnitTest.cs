@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 using TetriNET.Server.PlayerManager;
 using TetriNET.Tests.Server.Mocking;
@@ -10,6 +11,12 @@ namespace TetriNET.Tests.Server
     [TestClass]
     public class PlayerUnitTest
     {
+        [TestInitialize]
+        public void Initialize()
+        {
+            Log.SetLogger(new LogMock());
+        }
+
         [TestMethod]
         public void TestNonNullName()
         {

@@ -50,7 +50,7 @@ namespace TetriNET.Server.WCFHost
                 // If ip address is denied clear the request mesage so service method does not get execute
                 if (_verifier.IsBanned(address))
                 {
-                    Log.WriteLine(Log.LogLevels.Warning, "Banned player {0} tried to connect", address);
+                    Log.Default.WriteLine(LogLevels.Warning, "Banned player {0} tried to connect", address);
 
                     request = null;
                     object result = (channel.LocalAddress.Uri.Scheme.Equals(Uri.UriSchemeHttp) ||
@@ -67,7 +67,7 @@ namespace TetriNET.Server.WCFHost
                 //    if (player != null)
                 //    {
                 //        TimeSpan timeSpan = DateTime.Now - player.LastActionFromClient;
-                //        //Log.WriteLine(Log.LogLevels.Debug, "DELAY BETWEEN LAST MSG AND NOW:{0} | {1}", timeSpan.TotalMilliseconds, player.LastActionFromClient);
+                //        //Log.Default.WriteLine(LogLevels.Debug, "DELAY BETWEEN LAST MSG AND NOW:{0} | {1}", timeSpan.TotalMilliseconds, player.LastActionFromClient);
                 //    }
                 //}
             }

@@ -21,11 +21,11 @@ namespace TetriNET.WPF_WCF_Client
 
             // Initialize Log
             string logFilename = "WPF_" + Guid.NewGuid().ToString().Substring(0, 5) + ".log";
-            Log.Initialize(ConfigurationManager.AppSettings["logpath"], logFilename);
+            Log.Default.Initialize(ConfigurationManager.AppSettings["logpath"], logFilename);
             
             //// Log user settings path
             //Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
-            //Log.WriteLine(Log.LogLevels.Info, "Local user config path: {0}", config.FilePath);
+            //Log.Default.WriteLine(LogLevels.Info, "Local user config path: {0}", config.FilePath);
 
             //// TODO: if PortableSettingsProvider file doesn't exist, copy config.FilePath to PortableSettingsProvider path
 
@@ -41,7 +41,7 @@ namespace TetriNET.WPF_WCF_Client
                     string oldPath = Path.Combine(PortableSettingsProvider.SettingsPath, "user.config");
                     if (File.Exists(oldPath))
                     {
-                        Log.WriteLine(Log.LogLevels.Info, @"User settings file not found. Rename {0} to {1}", oldPath, newPath);
+                        Log.Default.WriteLine(LogLevels.Info, @"User settings file not found. Rename {0} to {1}", oldPath, newPath);
                         File.Move(oldPath, newPath);
                     }
                     else
@@ -50,7 +50,7 @@ namespace TetriNET.WPF_WCF_Client
                         Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal);
                         if (File.Exists(config.FilePath))
                         {
-                            Log.WriteLine(Log.LogLevels.Info, "User settings file not found. Copy {0} to {1}", config.FilePath, newPath);
+                            Log.Default.WriteLine(LogLevels.Info, "User settings file not found. Copy {0} to {1}", config.FilePath, newPath);
                             File.Copy(config.FilePath, newPath);
                         }
                     }
@@ -58,7 +58,7 @@ namespace TetriNET.WPF_WCF_Client
             }
             catch(Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Error while creating new config file from old one. Exception: {0}", ex.ToString());
+                Log.Default.WriteLine(LogLevels.Error, "Error while creating new config file from old one. Exception: {0}", ex.ToString());
             }
 
 

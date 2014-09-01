@@ -113,7 +113,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
 
         private void OnAchievementEarned(IAchievement achievement, bool firstTime)
         {
-            Log.WriteLine(Log.LogLevels.Info, "Achievement: {0} {1} {2:dd/MM/yyyy HH:mm:ss}", achievement.Title, firstTime, achievement.LastTimeAchieved);
+            Log.Default.WriteLine(LogLevels.Info, "Achievement: {0} {1} {2:dd/MM/yyyy HH:mm:ss}", achievement.Title, firstTime, achievement.LastTimeAchieved);
 
             Settings.Default.Achievements.Save(Client.Achievements.ToList());
             Settings.Default.Save();

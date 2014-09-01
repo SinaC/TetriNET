@@ -51,6 +51,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="GenericHostUnitTest.cs" />
+    <Compile Include="Mocking\LogMock.cs" />
     <Compile Include="Mocking\RaiseExceptionTetriNETCallback.cs" />
     <Compile Include="Mocking\CountCallTetriNETCallback.cs" />
     <Compile Include="PieceProviderUnitTest.cs" />
@@ -61,6 +62,10 @@
     <Compile Include="ServerTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TetriNET.Common.Logger\TetriNET.Common.Logger.csproj">
+      <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>
+      <Name>TetriNET.Common.Logger</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>

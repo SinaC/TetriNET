@@ -36,7 +36,7 @@ namespace TetriNET.Client.Achievements
                     {
                         IAchievement alreadyExists = Achievements.FirstOrDefault(x => x.Id == achievement.Id);
                         if (alreadyExists != null)
-                            Log.WriteLine(Log.LogLevels.Error, "Achievement {0} and {1} share the same id {2}", achievement.Title, alreadyExists.Title, achievement.Id);
+                            Log.Default.WriteLine(LogLevels.Error, "Achievement {0} and {1} share the same id {2}", achievement.Title, alreadyExists.Title, achievement.Id);
                         else
                         {
                             Achievements.Add(achievement);
@@ -44,11 +44,11 @@ namespace TetriNET.Client.Achievements
                         }
                     }
                     else
-                        Log.WriteLine(Log.LogLevels.Warning, "Achievement {0} cannot be instantiated and casted to right IAchievement", type.FullName);
+                        Log.Default.WriteLine(LogLevels.Warning, "Achievement {0} cannot be instantiated and casted to right IAchievement", type.FullName);
                 }
                 catch (Exception ex)
                 {
-                    Log.WriteLine(Log.LogLevels.Warning, "Achievement {0} cannot be instantiated. Exception: {1}", type.FullName, ex.ToString());
+                    Log.Default.WriteLine(LogLevels.Warning, "Achievement {0} cannot be instantiated. Exception: {1}", type.FullName, ex.ToString());
                 }
             }
         }

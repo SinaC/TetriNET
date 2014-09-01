@@ -160,7 +160,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                     if (p != null)
                         PlayerList.Remove(p);
                     else
-                        Log.WriteLine(Log.LogLevels.Warning, "Trying to delete unknown player {0}[{1}] from player list", playerId, playerName);
+                        Log.Default.WriteLine(LogLevels.Warning, "Trying to delete unknown player {0}[{1}] from player list", playerId, playerName);
                 });
         }
 
@@ -181,7 +181,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                 if (s != null)
                     SpectatorList.Remove(s);
                 else
-                    Log.WriteLine(Log.LogLevels.Warning, "Trying to delete unknown spectator {0}[{1}] from spectator list", spectatorId, spectatorName);
+                    Log.Default.WriteLine(LogLevels.Warning, "Trying to delete unknown spectator {0}[{1}] from spectator list", spectatorId, spectatorName);
             });
         }
 

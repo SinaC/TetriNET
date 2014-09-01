@@ -200,7 +200,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
                     for (int i = 0; i < CommandsAvailableForConfusion.Length; i++)
                     {
                         _confusionMapping.Add(CommandsAvailableForConfusion[i], shuffled[i]);
-                        Log.WriteLine(Log.LogLevels.Debug, "Confusion mapping {0} -> {1}", CommandsAvailableForConfusion[i], shuffled[i]);
+                        Log.Default.WriteLine(LogLevels.Debug, "Confusion mapping {0} -> {1}", CommandsAvailableForConfusion[i], shuffled[i]);
                     }
                 }
             }

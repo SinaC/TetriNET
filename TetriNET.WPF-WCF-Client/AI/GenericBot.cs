@@ -25,7 +25,7 @@ namespace TetriNET.WPF_WCF_Client.AI
         public bool Activated { get { return _activated; }
             set
             {
-                Log.WriteLine(Log.LogLevels.Debug, "Bot activation {0}", value);
+                Log.Default.WriteLine(LogLevels.Debug, "Bot activation {0}", value);
                 _activated = value;
                 if (_activated)
                 {
@@ -83,7 +83,7 @@ namespace TetriNET.WPF_WCF_Client.AI
                 _isConfusionActive = active;
                 if (!_isConfusionActive)
                 {
-                    Log.WriteLine(Log.LogLevels.Debug, "Confusion ended, raise next piece event");
+                    Log.Default.WriteLine(LogLevels.Debug, "Confusion ended, raise next piece event");
                     _handleNextPieceEvent.Set();
                 }
             }
@@ -93,7 +93,7 @@ namespace TetriNET.WPF_WCF_Client.AI
         {
             if (Activated)
             {
-                Log.WriteLine(Log.LogLevels.Debug, "Raise next piece event");
+                Log.Default.WriteLine(LogLevels.Debug, "Raise next piece event");
                 _handleNextPieceEvent.Set();
             }
         }
@@ -127,7 +127,7 @@ namespace TetriNET.WPF_WCF_Client.AI
                 int handle = WaitHandle.WaitAny(waitHandles, SleepTime);
                 if (!_handleNextPieceEvent.WaitOne(0) && _client.IsPlaying && !_isConfusionActive)
                 {
-                    Log.WriteLine(Log.LogLevels.Warning, "!!!!!!!!!!! NextPieceEvent not raised  {0}  {1}", handle, _client.CurrentPiece == null ? -1 : _client.CurrentPiece.Index);
+                    Log.Default.WriteLine(LogLevels.Warning, "!!!!!!!!!!! NextPieceEvent not raised  {0}  {1}", handle, _client.CurrentPiece == null ? -1 : _client.CurrentPiece.Index);
                 }
                 _handleNextPieceEvent.Reset();
                 _stopEvent.Reset();
@@ -136,10 +136,10 @@ namespace TetriNET.WPF_WCF_Client.AI
                     break;
                 if (handle == 0 /*next piece event*/ && _client.IsPlaying && _client.Board != null && _client.CurrentPiece != null && _client.NextPiece != null)
                 {
-                    Log.WriteLine(Log.LogLevels.Debug, "NextPieceEvent was raised");
+                    Log.Default.WriteLine(LogLevels.Debug, "NextPieceEvent was raised");
 
                     int currentPieceIndex = _client.CurrentPiece.Index;
-                    //Log.WriteLine(Log.LogLevels.Debug, "Searching best move for Piece {0} {1}", _client.CurrentPiece.Value, _client.CurrentPiece.Index);
+                    //Log.Default.WriteLine(LogLevels.Debug, "Searching best move for Piece {0} {1}", _client.CurrentPiece.Value, _client.CurrentPiece.Index);
 
                     DateTime searchBestMoveStartTime = DateTime.Now;
 
@@ -178,7 +178,7 @@ namespace TetriNET.WPF_WCF_Client.AI
                     // No move evaluation if confusion is active
                     if (_isConfusionActive)
                     {
-                        Log.WriteLine(Log.LogLevels.Info, "Confusion is active, no move evaluated");
+                        Log.Default.WriteLine(LogLevels.Info, "Confusion is active, no move evaluated");
                         continue;
                     }
 
@@ -193,13 +193,13 @@ namespace TetriNET.WPF_WCF_Client.AI
                         // TODO: could use an event linked to Client.OnRoundFinished
                         if (_client.CurrentPiece.Index != currentPieceIndex)
                         {
-                            Log.WriteLine(Log.LogLevels.Warning, "BOT IS TOO SLOW COMPARED TO AUTOMATIC DROP, skipping to next piece {0} != {1}", _client.CurrentPiece.Index, currentPieceIndex);
+                            Log.Default.WriteLine(LogLevels.Warning, "BOT IS TOO SLOW COMPARED TO AUTOMATIC DROP, skipping to next piece {0} != {1}", _client.CurrentPiece.Index, currentPieceIndex);
                             continue;
                         }
 
                         DateTime searchBestModeEndTime = DateTime.Now;
 
-                        //Log.WriteLine(Log.LogLevels.Debug, "Rotation: {0} Translation {1}  {2}", bestRotationDelta, bestTranslationDelta, rotationBeforeTranslation);
+                        //Log.Default.WriteLine(LogLevels.Debug, "Rotation: {0} Translation {1}  {2}", bestRotationDelta, bestTranslationDelta, rotationBeforeTranslation);
 
                         // Perform move
 
@@ -226,20 +226,20 @@ namespace TetriNET.WPF_WCF_Client.AI
                         bool stopped = _stopEvent.WaitOne((int) sleepTime);
                         if (stopped)
                         {
-                            //Log.WriteLine(Log.LogLevels.Debug, "Stop bot received while sleeping before next move");
+                            //Log.Default.WriteLine(LogLevels.Debug, "Stop bot received while sleeping before next move");
                             break;
                         }
                         // TODO: could use an event linked to Client.OnRoundFinished
                         if (_client.CurrentPiece.Index != currentPieceIndex)
                         {
-                            Log.WriteLine(Log.LogLevels.Warning, "BOT IS TOO SLOW COMPARED TO AUTOMATIC DROP, skipping to next piece {0} != {1}", _client.CurrentPiece.Index, currentPieceIndex);
+                            Log.Default.WriteLine(LogLevels.Warning, "BOT IS TOO SLOW COMPARED TO AUTOMATIC DROP, skipping to next piece {0} != {1}", _client.CurrentPiece.Index, currentPieceIndex);
                             continue;
                         }
                         // Drop
                         Drop();
                     }
                     //
-                    //Log.WriteLine(Log.LogLevels.Debug, "BEST MOVE found in {0} ms and special in {1} ms  {2} {3}", (searchBestModeEndTime - specialManaged).TotalMilliseconds, (specialManaged - searchBestMoveStartTime).TotalMilliseconds, _client.CurrentPiece.Value, _client.CurrentPiece.Index);
+                    //Log.Default.WriteLine(LogLevels.Debug, "BEST MOVE found in {0} ms and special in {1} ms  {2} {3}", (searchBestModeEndTime - specialManaged).TotalMilliseconds, (specialManaged - searchBestMoveStartTime).TotalMilliseconds, _client.CurrentPiece.Value, _client.CurrentPiece.Index);
                 }
             }
         }

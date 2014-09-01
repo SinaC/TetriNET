@@ -165,7 +165,7 @@ namespace TetriNET.ConsoleWCFClient.AI
             System.Threading.Thread.Sleep((int) sleepTime); // delay drop instead of animating
             Client.Drop();
             //
-            Log.WriteLine(Log.LogLevels.Info, "BEST MOVE found in {0} ms and special in {1} ms", (searchBestModeEndTime - specialManaged).TotalMilliseconds, (specialManaged - searchBestMoveStartTime).TotalMilliseconds);
+            Log.Default.WriteLine(LogLevels.Info, "BEST MOVE found in {0} ms and special in {1} ms", (searchBestModeEndTime - specialManaged).TotalMilliseconds, (specialManaged - searchBestMoveStartTime).TotalMilliseconds);
         }
 
         private void Rotate(int rotationDelta)

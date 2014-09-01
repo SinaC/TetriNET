@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TetriNET.Common.Contracts;
+using TetriNET.Common.Logger;
 using TetriNET.Server.BanManager;
 using TetriNET.Server.GenericHost;
 using TetriNET.Server.Interfaces;
@@ -19,6 +20,12 @@ namespace TetriNET.Tests.Server
         {
             IFactory factory = new MockFactory();
             return new MockHost(factory.CreatePlayerManager(6), factory.CreateSpectatorManager(10), factory.CreateBanManager(), factory);
+        }
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            Log.SetLogger(new LogMock());
         }
 
         // TODO: GenericHost API: check HostXXX callback

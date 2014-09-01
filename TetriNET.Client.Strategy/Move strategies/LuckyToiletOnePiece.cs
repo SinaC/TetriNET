@@ -17,7 +17,7 @@ namespace TetriNET.Client.Strategy
             IBoard tempBoard = board.Clone();
             IPiece tempPiece = current.Clone();
 
-            //Log.WriteLine(Log.LogLevels.Debug, "Get Best Move for Piece {0} {1}", tempPiece.Value, tempPiece.Index);
+            //Log.Default.WriteLine(LogLevels.Debug, "Get Best Move for Piece {0} {1}", tempPiece.Value, tempPiece.Index);
 
             // Consider all possible rotations
             for (int trialRotationDelta = 0; trialRotationDelta < current.MaxOrientations; trialRotationDelta++)
@@ -33,7 +33,7 @@ namespace TetriNET.Client.Strategy
                 int maxDeltaX;
                 BoardHelper.GetAccessibleTranslationsForOrientation(board, tempPiece, out isMovePossible, out minDeltaX, out maxDeltaX);
 
-                //Log.WriteLine(Log.LogLevels.Debug, "Accessible translation {0} {1} {2} {3} {4}  {5} {6}", minDeltaX, maxDeltaX, trialRotationDelta, current.PosX, current.PosY, tempPiece.Value, tempPiece.Index);
+                //Log.Default.WriteLine(LogLevels.Debug, "Accessible translation {0} {1} {2} {3} {4}  {5} {6}", minDeltaX, maxDeltaX, trialRotationDelta, current.PosX, current.PosY, tempPiece.Value, tempPiece.Index);
 
                 //StringBuilder sb = new StringBuilder();
                 //for (int i = 1; i <= tempPiece.TotalCells; i++)
@@ -42,7 +42,7 @@ namespace TetriNET.Client.Strategy
                 //    tempPiece.GetCellAbsolutePosition(i, out x, out y);
                 //    sb.Append(String.Format("[{0}->{1},{2}]", i, x - tempPiece.PosX, y - tempPiece.PosY));
                 //}
-                //Log.Log.WriteLine("{0} {1} -> {2}  {3}", trialRotationDelta, minDeltaX, maxDeltaX, sb.ToString());
+                //Log.Log.Default.WriteLine("{0} {1} -> {2}  {3}", trialRotationDelta, minDeltaX, maxDeltaX, sb.ToString());
                 if (isMovePossible)
                 {
                     // Consider all allowed translations
@@ -68,7 +68,7 @@ namespace TetriNET.Client.Strategy
                             // Evaluate
                             double trialRating = EvaluteMove(tempBoard, tempPiece);
 
-                            //Log.Log.WriteLine("R:{0:0.0000} P:{1} R:{2} T:{3}", trialRating, trialRotationDelta, trialTranslationDelta);
+                            //Log.Log.Default.WriteLine("R:{0:0.0000} P:{1} R:{2} T:{3}", trialRating, trialRotationDelta, trialTranslationDelta);
 
                             // Check if better than previous best
                             if (trialRating > currentBestRating)
@@ -87,7 +87,7 @@ namespace TetriNET.Client.Strategy
             bestTranslationDelta = currentBestTranslationDelta;
             bestRotationDelta = currentBestRotationDelta;
 
-            // Log.WriteLine(Log.LogLevels.Debug, "{0} {1} {2:0.000}", bestRotationDelta, bestTranslationDelta, currentBestRating);
+            // Log.Default.WriteLine(LogLevels.Debug, "{0} {1} {2:0.000}", bestRotationDelta, bestTranslationDelta, currentBestRating);
 
             return true;
         }

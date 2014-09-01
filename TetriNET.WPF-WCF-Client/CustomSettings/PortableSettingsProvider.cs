@@ -133,7 +133,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Error writing configuration file to disk. Exception: {0}", ex.ToString());
+                Log.Default.WriteLine(LogLevels.Error, "Error writing configuration file to disk. Exception: {0}", ex.ToString());
             }
         }
 

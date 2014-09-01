@@ -40,7 +40,7 @@ namespace TetriNET.WCF.Service
                     Source = EventLogSource,
                 };
             //
-            Log.Initialize(ConfigurationManager.AppSettings["logpath"], "serverservice.log");
+            Log.Default.Initialize(ConfigurationManager.AppSettings["logpath"], "serverservice.log");
         }
 
         protected override void OnStart(string[] args)
@@ -48,8 +48,8 @@ namespace TetriNET.WCF.Service
             Version version = Assembly.GetEntryAssembly().GetName().Version;
             string company = ((AssemblyCompanyAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyCompanyAttribute), false)).Company;
             string product = ((AssemblyProductAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyProductAttribute), false)).Product;
-            Log.WriteLine(Log.LogLevels.Info, "{0} {1}.{2} by {3}", product, version.Major, version.Minor, company);
-            Log.WriteLine(Log.LogLevels.Info, "Starting");
+            Log.Default.WriteLine(LogLevels.Info, "{0} {1}.{2} by {3}", product, version.Major, version.Minor, company);
+            Log.Default.WriteLine(LogLevels.Info, "Starting");
 
             _cancellationTokenSource = new CancellationTokenSource();
             _mainLoopTask = Task.Factory.StartNew(ServiceMainLoop, _cancellationTokenSource.Token);
@@ -57,7 +57,7 @@ namespace TetriNET.WCF.Service
 
         protected override void OnStop()
         {
-            Log.WriteLine(Log.LogLevels.Info, "Stopping");
+            Log.Default.WriteLine(LogLevels.Info, "Stopping");
 
             _cancellationTokenSource.Cancel();
 

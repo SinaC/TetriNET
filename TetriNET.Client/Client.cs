@@ -190,7 +190,7 @@ namespace TetriNET.Client
             ResetTimeout();
             if (result == RegistrationResults.RegistrationSuccessful && State == States.Registering)
             {
-                Log.WriteLine(Log.LogLevels.Info, "Registered as player {0} game started {1}", playerId, isGameStarted);
+                Log.Default.WriteLine(LogLevels.Info, "Registered as player {0} game started {1}", playerId, isGameStarted);
 
                 if (playerId >= 0 && playerId < MaxPlayers)
                 {
@@ -233,7 +233,7 @@ namespace TetriNET.Client
                 {
                     State = States.Created;
                     IsServerMaster = false;
-                    Log.WriteLine(Log.LogLevels.Warning, "Wrong id {0}", playerId);
+                    Log.Default.WriteLine(LogLevels.Warning, "Wrong id {0}", playerId);
 
                     RegisteredAsPlayer.Do(x => x(RegistrationResults.RegistrationFailedInvalidId, -1, false));
                 }
@@ -245,13 +245,13 @@ namespace TetriNET.Client
 
                 RegisteredAsPlayer.Do(x => x(result, -1, false));
 
-                Log.WriteLine(Log.LogLevels.Info, "Registration failed {0}", result);
+                Log.Default.WriteLine(LogLevels.Info, "Registration failed {0}", result);
             }
         }
 
         public void OnPlayerJoined(int playerId, string name, string team)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Player {0}{1}[{2}] joined", name, team, playerId);
+            Log.Default.WriteLine(LogLevels.Debug, "Player {0}{1}[{2}] joined", name, team, playerId);
 
             ResetTimeout();
             // Don't update ourself
@@ -281,7 +281,7 @@ namespace TetriNET.Client
 
         public void OnPlayerLeft(int playerId, string name, LeaveReasons reason)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Player {0}[{1}] left ({2})", name, playerId, reason);
+            Log.Default.WriteLine(LogLevels.Debug, "Player {0}[{1}] left ({2})", name, playerId, reason);
 
             ResetTimeout();
             if (playerId != _clientPlayerId && playerId >= 0 && playerId < MaxPlayers)
@@ -301,7 +301,7 @@ namespace TetriNET.Client
 
         public void OnPlayerTeamChanged(int playerId, string team)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Player [{0}] team ({1})", playerId, team);
+            Log.Default.WriteLine(LogLevels.Debug, "Player [{0}] team ({1})", playerId, team);
 
             ResetTimeout();
 
@@ -319,7 +319,7 @@ namespace TetriNET.Client
 
         public void OnPublishPlayerMessage(string playerName, string msg)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "{0}:{1}", playerName, msg);
+            Log.Default.WriteLine(LogLevels.Debug, "{0}:{1}", playerName, msg);
 
             ResetTimeout();
 
@@ -328,7 +328,7 @@ namespace TetriNET.Client
 
         public void OnPublishServerMessage(string msg)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "{0}", msg);
+            Log.Default.WriteLine(LogLevels.Debug, "{0}", msg);
 
             ResetTimeout();
 
@@ -337,7 +337,7 @@ namespace TetriNET.Client
 
         public void OnPlayerLost(int playerId)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Player [{0}] has lost", playerId);
+            Log.Default.WriteLine(LogLevels.Debug, "Player [{0}] has lost", playerId);
 
             ResetTimeout();
             if (playerId != _clientPlayerId)
@@ -357,7 +357,7 @@ namespace TetriNET.Client
 
         public void OnPlayerWon(int playerId)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Player [{0}] has won", playerId);
+            Log.Default.WriteLine(LogLevels.Debug, "Player [{0}] has won", playerId);
 
             ResetTimeout();
 
@@ -491,12 +491,12 @@ namespace TetriNET.Client
 
             _achievementManager.Do(x => x.OnGameStarted(Options));
 
-            //Log.WriteLine("PIECES:{0}", _pieces.Dump(8));
+            //Log.Default.WriteLine("PIECES:{0}", _pieces.Dump(8));
         }
 
         public void OnGameStarted(List<Pieces> pieces)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Game started with {0}", pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
+            Log.Default.WriteLine(LogLevels.Debug, "Game started with {0}", pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
 
             ResetTimeout();
 
@@ -508,7 +508,7 @@ namespace TetriNET.Client
 
         public void OnGameFinished(GameStatistics statistics)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Game finished");
+            Log.Default.WriteLine(LogLevels.Debug, "Game finished");
 
             _gameTimer.Stop();
 
@@ -540,7 +540,7 @@ namespace TetriNET.Client
 
         public void OnGamePaused()
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Game paused");
+            Log.Default.WriteLine(LogLevels.Debug, "Game paused");
 
             ResetTimeout();
 
@@ -555,7 +555,7 @@ namespace TetriNET.Client
 
         public void OnGameResumed()
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Game resumed");
+            Log.Default.WriteLine(LogLevels.Debug, "Game resumed");
 
             ResetTimeout();
 
@@ -577,7 +577,7 @@ namespace TetriNET.Client
 
         public void OnServerAddLines(int lineCount)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Server add {0} lines", lineCount);
+            Log.Default.WriteLine(LogLevels.Debug, "Server add {0} lines", lineCount);
 
             ResetTimeout();
 
@@ -589,7 +589,7 @@ namespace TetriNET.Client
 
         public void OnPlayerAddLines(int specialId, int playerId, int lineCount)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Player {0} add {1} lines (special [{2}])", playerId, lineCount, specialId);
+            Log.Default.WriteLine(LogLevels.Debug, "Player {0} add {1} lines (special [{2}])", playerId, lineCount, specialId);
 
             ResetTimeout();
 
@@ -613,7 +613,7 @@ namespace TetriNET.Client
 
         public void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Special {0}[{1}] from {2} to {3}", special, specialId, playerId, targetId);
+            Log.Default.WriteLine(LogLevels.Debug, "Special {0}[{1}] from {2} to {3}", special, specialId, playerId, targetId);
 
             ResetTimeout();
             if (targetId == _clientPlayerId && State == States.Playing)
@@ -647,7 +647,7 @@ namespace TetriNET.Client
 
         public void OnNextPiece(int index, List<Pieces> pieces)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Next piece: {0} {1}", index, pieces.Any() ? pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i) : String.Empty);
+            Log.Default.WriteLine(LogLevels.Debug, "Next piece: {0} {1}", index, pieces.Any() ? pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i) : String.Empty);
 
             ResetTimeout();
 
@@ -660,7 +660,7 @@ namespace TetriNET.Client
 
         public void OnGridModified(int playerId, byte[] grid)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Player [{0}] modified", playerId);
+            Log.Default.WriteLine(LogLevels.Debug, "Player [{0}] modified", playerId);
 
             ResetTimeout();
 
@@ -682,7 +682,7 @@ namespace TetriNET.Client
 
         public void OnServerMasterChanged(int playerId)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Server master changed: [{0}]", playerId);
+            Log.Default.WriteLine(LogLevels.Debug, "Server master changed: [{0}]", playerId);
 
             ResetTimeout();
 
@@ -693,7 +693,7 @@ namespace TetriNET.Client
 
         public void OnWinListModified(List<WinEntry> winList)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Win list: {0}", winList.Any() ? winList.Select(x => String.Format("{0}[{1}]:{2}", x.PlayerName, x.Team, x.Score)).Aggregate((n, i) => n + "|" + i) : "");
+            Log.Default.WriteLine(LogLevels.Debug, "Win list: {0}", winList.Any() ? winList.Select(x => String.Format("{0}[{1}]:{2}", x.PlayerName, x.Team, x.Score)).Aggregate((n, i) => n + "|" + i) : "");
 
             ResetTimeout();
 
@@ -702,7 +702,7 @@ namespace TetriNET.Client
 
         public void OnContinuousSpecialFinished(int playerId, Specials special)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Continous special {0} finished on {1}", special, playerId);
+            Log.Default.WriteLine(LogLevels.Debug, "Continous special {0} finished on {1}", special, playerId);
 
             ResetTimeout();
             if (playerId != _clientPlayerId)
@@ -719,7 +719,7 @@ namespace TetriNET.Client
 
         public void OnAchievementEarned(int playerId, int achievementId, string achievementTitle)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Achievement {0}|{1} earned by {2}", achievementId, achievementTitle, playerId);
+            Log.Default.WriteLine(LogLevels.Debug, "Achievement {0}|{1} earned by {2}", achievementId, achievementTitle, playerId);
 
             ResetTimeout();
             if (playerId != _clientPlayerId || IsSpectator)
@@ -734,7 +734,7 @@ namespace TetriNET.Client
 
         public void OnOptionsChanged(GameOptions options)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Options changed");
+            Log.Default.WriteLine(LogLevels.Debug, "Options changed");
 
             ResetTimeout();
 
@@ -749,7 +749,7 @@ namespace TetriNET.Client
             ResetTimeout();
             if (result == RegistrationResults.RegistrationSuccessful && State == States.Registering)
             {
-                Log.WriteLine(Log.LogLevels.Info, "Registered as spectator {0} game started {1}", spectatorId, isGameStarted);
+                Log.Default.WriteLine(LogLevels.Info, "Registered as spectator {0} game started {1}", spectatorId, isGameStarted);
 
                 if (spectatorId >= 0 && spectatorId < MaxSpectators)
                 {
@@ -784,7 +784,7 @@ namespace TetriNET.Client
                 {
                     State = States.Created;
                     IsServerMaster = false;
-                    Log.WriteLine(Log.LogLevels.Warning, "Wrong id {0}", spectatorId);
+                    Log.Default.WriteLine(LogLevels.Warning, "Wrong id {0}", spectatorId);
 
                     RegisteredAsSpectator.Do(x => x(RegistrationResults.RegistrationFailedInvalidId, -1));
                 }
@@ -796,13 +796,13 @@ namespace TetriNET.Client
 
                 RegisteredAsSpectator.Do(x => x(result, -1));
 
-                Log.WriteLine(Log.LogLevels.Info, "Registration failed {0}", result);
+                Log.Default.WriteLine(LogLevels.Info, "Registration failed {0}", result);
             }
         }
 
         public void OnSpectatorJoined(int spectatorId, string name)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Spectator {0}[{1}] joined", name, spectatorId);
+            Log.Default.WriteLine(LogLevels.Debug, "Spectator {0}[{1}] joined", name, spectatorId);
 
             ResetTimeout();
             // Don't update ourself
@@ -821,7 +821,7 @@ namespace TetriNET.Client
 
         public void OnSpectatorLeft(int spectatorId, string name, LeaveReasons reason)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "Spectator {0}[{1}] left ({2})", name, spectatorId, reason);
+            Log.Default.WriteLine(LogLevels.Debug, "Spectator {0}[{1}] left ({2})", name, spectatorId, reason);
 
             ResetTimeout();
             if (spectatorId != _clientSpectatorId && spectatorId >= 0 && spectatorId < MaxPlayers)
@@ -863,14 +863,14 @@ namespace TetriNET.Client
 
         private void PlaceCurrentPiece()
         {
-            //Log.WriteLine(Log.LogLevels.Debug, "Place current piece {0} {1}", CurrentPiece.Value, CurrentPiece.Index);
+            //Log.Default.WriteLine(LogLevels.Debug, "Place current piece {0} {1}", CurrentPiece.Value, CurrentPiece.Index);
 
             Board.CommitPiece(CurrentPiece);
         }
 
         private void EndGame()
         {
-            Log.WriteLine(Log.LogLevels.Info, "End game");
+            Log.Default.WriteLine(LogLevels.Info, "End game");
             _gameTimer.Stop();
 
             // Reset board action list
@@ -942,12 +942,12 @@ namespace TetriNET.Client
                 nextPiece = _pieces[_pieceIndex + 1];
             else
             {
-                Log.WriteLine(Log.LogLevels.Warning, "End of PieceProvider reached, server is definitively too slow or we are too fast {0}", _pieceIndex+1);
+                Log.Default.WriteLine(LogLevels.Warning, "End of PieceProvider reached, server is definitively too slow or we are too fast {0}", _pieceIndex+1);
                 _statistics.EndOfPieceProviderReached++;
             }
             if (nextPiece == Pieces.Invalid)
             {
-                Log.WriteLine(Log.LogLevels.Warning, "Next piece not yet received from server, server is definitively too slow or we are too fast {0}", _pieceIndex + 1);
+                Log.Default.WriteLine(LogLevels.Warning, "Next piece not yet received from server, server is definitively too slow or we are too fast {0}", _pieceIndex + 1);
                 _statistics.NextPieceNotYetReceived++;
             }
             NextPiece = _factory.CreatePiece(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, _pieceIndex + 1, _mutationCount > 0);
@@ -957,7 +957,7 @@ namespace TetriNET.Client
             // Inform UI
             Redraw.Do(x => x());
 
-            //Log.WriteLine("New piece {0} {1}  next {2}", CurrentPiece.PieceValue, _pieceIndex, NextPiece.PieceValue);
+            //Log.Default.WriteLine("New piece {0} {1}  next {2}", CurrentPiece.PieceValue, _pieceIndex, NextPiece.PieceValue);
             // Check game over (if current piece has conflict with another piece)
             if (!Board.CheckNoConflict(CurrentPiece))
                 EndGame();
@@ -972,7 +972,7 @@ namespace TetriNET.Client
 
         private void FinishRound()
         {
-            //Log.WriteLine("Round finished with piece {0} {1}  next {2}", CurrentPiece.PieceValue, _pieceIndex, NextPiece.PieceValue);
+            //Log.Default.WriteLine("Round finished with piece {0} {1}  next {2}", CurrentPiece.PieceValue, _pieceIndex, NextPiece.PieceValue);
             // Reset hold
             _holdAlreadyUsed = false;
 
@@ -986,7 +986,7 @@ namespace TetriNET.Client
             if (deletedRows > 0)
             {
                 LinesClearedChanged.Do(x => x(LinesCleared));
-                Log.WriteLine(Log.LogLevels.Debug, "{0} lines deleted -> total {1}", deletedRows, LinesCleared);
+                Log.Default.WriteLine(LogLevels.Debug, "{0} lines deleted -> total {1}", deletedRows, LinesCleared);
             }
 
             // Statistics & Scoring
@@ -1025,7 +1025,7 @@ namespace TetriNET.Client
                 double newInterval = ComputeGameTimerInterval(Level);
                 _gameTimer.Interval = newInterval;
                 LevelChanged.Do(x => x(Level));
-                Log.WriteLine(Log.LogLevels.Debug, "Level increased: {0}", Level);
+                Log.Default.WriteLine(LogLevels.Debug, "Level increased: {0}", Level);
             }
 
             // Add specials to inventory
@@ -1263,14 +1263,14 @@ namespace TetriNET.Client
             for (int i = 0; i < MaxPlayers; i++)
             {
                 PlayerData p = _playersData[i];
-                Log.WriteLine(Log.LogLevels.Info, "{0}{1}: {2}", i, i == _clientPlayerId ? "*" : String.Empty, p == null ? String.Empty : p.Name);
+                Log.Default.WriteLine(LogLevels.Info, "{0}{1}: {2}", i, i == _clientPlayerId ? "*" : String.Empty, p == null ? String.Empty : p.Name);
             }
             // Inventory
             List<Specials> specials = Inventory;
             StringBuilder sb2 = new StringBuilder();
             foreach (Specials special in specials)
                 sb2.Append(ConvertSpecial(special));
-            Log.WriteLine(Log.LogLevels.Info, sb2.ToString());
+            Log.Default.WriteLine(LogLevels.Info, sb2.ToString());
             // Board
             if (_clientPlayerId >= 0 && State == States.Playing)
             {
@@ -1293,9 +1293,9 @@ namespace TetriNET.Client
                         }
                     }
                     sb.Append("|");
-                    Log.WriteLine(Log.LogLevels.Info, sb.ToString());
+                    Log.Default.WriteLine(LogLevels.Info, sb.ToString());
                 }
-                Log.WriteLine(Log.LogLevels.Info, "".PadLeft(Board.Width + 2, '-'));
+                Log.Default.WriteLine(LogLevels.Info, "".PadLeft(Board.Width + 2, '-'));
             }
             // TODO: current & next piece
         }
@@ -1324,7 +1324,7 @@ namespace TetriNET.Client
             }
             catch(Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Problem in ConnectAndRegisterAsPlayer. Exception:{0}", ex.ToString());
+                Log.Default.WriteLine(LogLevels.Error, "Problem in ConnectAndRegisterAsPlayer. Exception:{0}", ex.ToString());
                 return false;
             }
         }
@@ -1352,7 +1352,7 @@ namespace TetriNET.Client
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Problem in ConnectAndRegisterAsSpectator. Exception:{0}", ex.ToString());
+                Log.Default.WriteLine(LogLevels.Error, "Problem in ConnectAndRegisterAsSpectator. Exception:{0}", ex.ToString());
                 return false;
             }
         }
@@ -1455,23 +1455,23 @@ namespace TetriNET.Client
 
         public void Drop()
         {
-            //Log.WriteLine(Log.LogLevels.Debug, "DROP {0}", CurrentPiece.Value);
+            //Log.Default.WriteLine(LogLevels.Debug, "DROP {0}", CurrentPiece.Value);
 
             if (State != States.Playing)
                 return;
 
-            //Log.WriteLine(Log.LogLevels.Debug, "ENQUEUE DROP {0} {1}", CurrentPiece.Value, CurrentPiece.Index);
+            //Log.Default.WriteLine(LogLevels.Debug, "ENQUEUE DROP {0} {1}", CurrentPiece.Value, CurrentPiece.Index);
             EnqueueBoardAction(DropAction);
             _statistics.MoveCount++;
         }
 
         public void MoveDown(bool automatic = false)
         {
-            //Log.WriteLine(Log.LogLevels.Debug, "MoveDown");
+            //Log.Default.WriteLine(LogLevels.Debug, "MoveDown");
 
             if (State != States.Playing)
                 return;
-            //Log.WriteLine(Log.LogLevels.Debug, "ENQUEUE DOWN {0} {1}", CurrentPiece.Value, CurrentPiece.Index);
+            //Log.Default.WriteLine(LogLevels.Debug, "ENQUEUE DOWN {0} {1}", CurrentPiece.Value, CurrentPiece.Index);
             EnqueueBoardAction(MoveDownAction);
             if (!automatic) 
                 _statistics.MoveCount++;
@@ -1584,7 +1584,7 @@ namespace TetriNET.Client
             {
                 if (_cancellationTokenSource.IsCancellationRequested)
                 {
-                    Log.WriteLine(Log.LogLevels.Info, "Stop background task event raised");
+                    Log.Default.WriteLine(LogLevels.Info, "Stop background task event raised");
                     break;
                 }
 
@@ -1594,7 +1594,7 @@ namespace TetriNET.Client
                     TimeSpan timespan = DateTime.Now - _lastActionFromServer;
                     if (timespan.TotalMilliseconds > TimeoutDelay && IsTimeoutDetectionActive)
                     {
-                        Log.WriteLine(Log.LogLevels.Debug, "Timeout++");
+                        Log.Default.WriteLine(LogLevels.Debug, "Timeout++");
                         // Update timeout count
                         SetTimeout();
                         if (_timeoutCount >= MaxTimeoutCountBeforeDisconnection)
@@ -1650,7 +1650,7 @@ namespace TetriNET.Client
                 bool signaled = _cancellationTokenSource.Token.WaitHandle.WaitOne(10);
                 if (signaled)
                 {
-                    Log.WriteLine(Log.LogLevels.Info, "Stop background task event raised");
+                    Log.Default.WriteLine(LogLevels.Info, "Stop background task event raised");
                     break;
                 }
             }
@@ -1667,13 +1667,13 @@ namespace TetriNET.Client
 
         private void BoardActionTask()
         {
-            Log.WriteLine(Log.LogLevels.Info, "BoardActionTask started");
+            Log.Default.WriteLine(LogLevels.Info, "BoardActionTask started");
 
             while (true)
             {
                 if (_cancellationTokenSource.IsCancellationRequested)
                 {
-                    Log.WriteLine(Log.LogLevels.Info, "Stop background task event raised");
+                    Log.Default.WriteLine(LogLevels.Info, "Stop background task event raised");
                     break;
                 }
 
@@ -1685,23 +1685,23 @@ namespace TetriNET.Client
                     {
                         try
                         {
-                            Log.WriteLine(Log.LogLevels.Debug, "Dequeue, item in queue {0}", _boardActionBlockingCollection.Count);
+                            Log.Default.WriteLine(LogLevels.Debug, "Dequeue, item in queue {0}", _boardActionBlockingCollection.Count);
                             action();
                         }
                         catch (Exception ex)
                         {
-                            Log.WriteLine(Log.LogLevels.Error, "Exception raised in BoardActionTask. Exception:{0}", ex);
+                            Log.Default.WriteLine(LogLevels.Error, "Exception raised in BoardActionTask. Exception:{0}", ex);
                         }
                     }
                 }
                 catch (OperationCanceledException)
                 {
-                    Log.WriteLine(Log.LogLevels.Info, "Taking cancelled");
+                    Log.Default.WriteLine(LogLevels.Info, "Taking cancelled");
                     break;
                 }
             }
 
-            Log.WriteLine(Log.LogLevels.Info, "BoardActionTask stopped");
+            Log.Default.WriteLine(LogLevels.Info, "BoardActionTask stopped");
         }
 
         #endregion
@@ -1787,12 +1787,12 @@ namespace TetriNET.Client
                     nextPiece = _pieces[_pieceIndex + 1];
                 else
                 {
-                    Log.WriteLine(Log.LogLevels.Warning, "End of PieceProvider reached, server is definitively too slow or we are too fast {0}", _pieceIndex + 1);
+                    Log.Default.WriteLine(LogLevels.Warning, "End of PieceProvider reached, server is definitively too slow or we are too fast {0}", _pieceIndex + 1);
                     _statistics.EndOfPieceProviderReached++;
                 }
                 if (nextPiece == Pieces.Invalid)
                 {
-                    Log.WriteLine(Log.LogLevels.Warning, "Next piece not yet received from server, server is definitively too slow or we are too fast {0}", _pieceIndex + 1);
+                    Log.Default.WriteLine(LogLevels.Warning, "Next piece not yet received from server, server is definitively too slow or we are too fast {0}", _pieceIndex + 1);
                     _statistics.NextPieceNotYetReceived++;
                 }
                 NextPiece = _factory.CreatePiece(nextPiece, Board.PieceSpawnX, Board.PieceSpawnY, SpawnOrientation, _pieceIndex + 1, _mutationCount > 1);
@@ -1825,7 +1825,7 @@ namespace TetriNET.Client
 
         private void DropAction()
         {
-            //Log.WriteLine(Log.LogLevels.Debug, "DROP {0} {1}", CurrentPiece.Value, CurrentPiece.Index);
+            //Log.Default.WriteLine(LogLevels.Debug, "DROP {0} {1}", CurrentPiece.Value, CurrentPiece.Index);
             _gameTimer.Stop();
 
             // Inform UI
@@ -1843,7 +1843,7 @@ namespace TetriNET.Client
 
         private void MoveDownAction()
         {
-            //Log.WriteLine(Log.LogLevels.Debug, "DOWN {0} {1}", CurrentPiece.Value, CurrentPiece.Index);
+            //Log.Default.WriteLine(LogLevels.Debug, "DOWN {0} {1}", CurrentPiece.Value, CurrentPiece.Index);
 
             // Inform UI
             PieceMoving.Do(x => x());

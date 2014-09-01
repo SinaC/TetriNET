@@ -23,13 +23,13 @@ namespace TetriNET.Server.SpectatorManager
         {
             if (_spectators.Count >= MaxSpectators)
             {
-                Log.WriteLine(Log.LogLevels.Warning, "Too many spectators");
+                Log.Default.WriteLine(LogLevels.Warning, "Too many spectators");
                 return false;
             }
 
             if (_spectators.ContainsKey(spectator.Callback))
             {
-                Log.WriteLine(Log.LogLevels.Warning, "{0} already registered", spectator.Name);
+                Log.Default.WriteLine(LogLevels.Warning, "{0} already registered", spectator.Name);
                 return false;
             }
             //

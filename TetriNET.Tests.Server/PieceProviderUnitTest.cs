@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Logger;
 using TetriNET.Common.Randomizer;
 using TetriNET.Server.Interfaces;
 using TetriNET.Server.PieceProvider;
+using TetriNET.Tests.Server.Mocking;
 
 namespace TetriNET.Tests.Server
 {
@@ -17,6 +19,12 @@ namespace TetriNET.Tests.Server
         protected virtual void Reset(IPieceProvider provider)
         {
             provider.Reset();
+        }
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            Log.SetLogger(new LogMock());
         }
 
         [TestMethod]

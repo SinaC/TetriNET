@@ -1,7 +1,9 @@
 ﻿using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TetriNET.Common.Logger;
 using TetriNET.Server.BanManager;
 using TetriNET.Server.Interfaces;
+using TetriNET.Tests.Server.Mocking;
 
 namespace TetriNET.Tests.Server
 {
@@ -11,6 +13,12 @@ namespace TetriNET.Tests.Server
         private IBanManager CreateBanManager()
         {
             return new BanManager();
+        }
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            Log.SetLogger(new LogMock());
         }
 
         [TestMethod]

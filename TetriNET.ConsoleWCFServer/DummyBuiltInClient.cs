@@ -63,7 +63,7 @@ namespace TetriNET.ConsoleWCFServer
 
         public void ConnectToServer()
         {
-            Log.WriteLine(Log.LogLevels.Info, "Connecting to server");
+            Log.Default.WriteLine(LogLevels.Info, "Connecting to server");
             State = States.ConnectingToServer;
 
             Proxy = _getProxyFunc();
@@ -76,7 +76,7 @@ namespace TetriNET.ConsoleWCFServer
 
         public void DisconnectFromServer()
         {
-            Log.WriteLine(Log.LogLevels.Info, "Disconnecting from server");
+            Log.Default.WriteLine(LogLevels.Info, "Disconnecting from server");
 
             Proxy.UnregisterPlayer(this);
             //
@@ -132,7 +132,7 @@ namespace TetriNET.ConsoleWCFServer
                 TimeSpan timespan = DateTime.Now - _lastServerAction;
                 if (timespan.TotalMilliseconds > TimeoutDelay)
                 {
-                    Log.WriteLine(Log.LogLevels.Info, "Timeout++");
+                    Log.Default.WriteLine(LogLevels.Info, "Timeout++");
                     SetTimeout();
                     if (_timeoutCount >= MaxTimeoutCountBeforeDisconnection)
                         OnServerStopped(); // timeout
@@ -150,7 +150,7 @@ namespace TetriNET.ConsoleWCFServer
 
         public void Lose()
         {
-            Log.WriteLine(Log.LogLevels.Info, "Loseeeeeeeer");
+            Log.Default.WriteLine(LogLevels.Info, "Loseeeeeeeer");
             State = States.WaitingStartGame;
 
             Proxy.GameLost(this);
@@ -177,14 +177,14 @@ namespace TetriNET.ConsoleWCFServer
 
         public void OnServerStopped()
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnServerStopped[{0}]", PlayerName);
+            Log.Default.WriteLine(LogLevels.Info, "OnServerStopped[{0}]", PlayerName);
             State = States.ApplicationStarted;
             ResetTimeout();
         }
 
         public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnPlayerRegistered[{0}]:{1} => {2} {3} {4}", PlayerName, result, playerId, gameStarted, isServerMaster);
+            Log.Default.WriteLine(LogLevels.Info, "OnPlayerRegistered[{0}]:{1} => {2} {3} {4}", PlayerName, result, playerId, gameStarted, isServerMaster);
             ResetTimeout();
             if (result == RegistrationResults.RegistrationSuccessful)
             {
@@ -197,37 +197,37 @@ namespace TetriNET.ConsoleWCFServer
 
         public void OnPlayerJoined(int playerId, string name, string team)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnPlayerJoined[{0}]:{1}{2}[{3}]", PlayerName, name, team, playerId);
+            Log.Default.WriteLine(LogLevels.Info, "OnPlayerJoined[{0}]:{1}{2}[{3}]", PlayerName, name, team, playerId);
             ResetTimeout();
         }
 
         public void OnPlayerLeft(int playerId, string name, LeaveReasons reason)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnPlayedLeft[{0}]:{1}[{2}] {3}", PlayerName, name, playerId, reason);
+            Log.Default.WriteLine(LogLevels.Info, "OnPlayedLeft[{0}]:{1}[{2}] {3}", PlayerName, name, playerId, reason);
             ResetTimeout();
         }
 
         public void OnPlayerTeamChanged(int playerId, string team)
         {
-            Log.WriteLine(Log.LogLevels.Info, "PlayerTeamChanged[{0}]:[1] {2}", PlayerName, playerId, team);
+            Log.Default.WriteLine(LogLevels.Info, "PlayerTeamChanged[{0}]:[1] {2}", PlayerName, playerId, team);
             ResetTimeout();
         }
 
         public void OnPlayerLost(int playerId)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnPlayerLost[{0}]:[{1}]", PlayerName, playerId);
+            Log.Default.WriteLine(LogLevels.Info, "OnPlayerLost[{0}]:[{1}]", PlayerName, playerId);
             ResetTimeout();
         }
 
         public void OnPlayerWon(int playerId)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnPlayerWon[{0}]:[{1}]", PlayerName, playerId);
+            Log.Default.WriteLine(LogLevels.Info, "OnPlayerWon[{0}]:[{1}]", PlayerName, playerId);
             ResetTimeout();
         }
 
         public void OnGameStarted(List<Pieces> pieces)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnGameStarted[{0}]:{1}", PlayerName, pieces.Select(x => x.ToString()).Aggregate((n,i) => n + "," + i));
+            Log.Default.WriteLine(LogLevels.Info, "OnGameStarted[{0}]:{1}", PlayerName, pieces.Select(x => x.ToString()).Aggregate((n,i) => n + "," + i));
             ResetTimeout();
             if (State == States.WaitingStartGame)
             {
@@ -235,125 +235,125 @@ namespace TetriNET.ConsoleWCFServer
                 PieceIndex = 0;
             }
             else
-                Log.WriteLine(Log.LogLevels.Info, "Was not waiting start game");
+                Log.Default.WriteLine(LogLevels.Info, "Was not waiting start game");
         }
 
         public void OnGameFinished(GameStatistics statistics)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnGameFinished[{0}]", PlayerName);
+            Log.Default.WriteLine(LogLevels.Info, "OnGameFinished[{0}]", PlayerName);
             ResetTimeout();
             if (State == States.GameStarted)
             {
-                Log.WriteLine(Log.LogLevels.Info, "Game finished: #piece: {0}", PieceIndex);
+                Log.Default.WriteLine(LogLevels.Info, "Game finished: #piece: {0}", PieceIndex);
                 State = States.GameFinished;
             }
             else
-                Log.WriteLine(Log.LogLevels.Info, "Game was not started");
+                Log.Default.WriteLine(LogLevels.Info, "Game was not started");
         }
 
         public void OnGamePaused()
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnGamePaused[{0}]", PlayerName);
+            Log.Default.WriteLine(LogLevels.Info, "OnGamePaused[{0}]", PlayerName);
             ResetTimeout();
         }
 
         public void OnGameResumed()
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnGameResumed[{0}]", PlayerName);
+            Log.Default.WriteLine(LogLevels.Info, "OnGameResumed[{0}]", PlayerName);
             ResetTimeout();
         }
 
         public void OnServerAddLines(int lineCount)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnServerAddLines[{0}]:{1}", PlayerName, lineCount);
+            Log.Default.WriteLine(LogLevels.Info, "OnServerAddLines[{0}]:{1}", PlayerName, lineCount);
             ResetTimeout();
         }
 
         public void OnPlayerAddLines(int specialId, int playerId, int lineCount)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnPlayerAddLines[{0}]:{1} [{2}] {3}", PlayerName, specialId, playerId, lineCount);
+            Log.Default.WriteLine(LogLevels.Info, "OnPlayerAddLines[{0}]:{1} [{2}] {3}", PlayerName, specialId, playerId, lineCount);
             ResetTimeout();
         }
 
         public void OnPublishPlayerMessage(string playerName, string msg)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnPublishPlayerMessage[{0}]:{1}:{2}", PlayerName, playerName, msg);
+            Log.Default.WriteLine(LogLevels.Info, "OnPublishPlayerMessage[{0}]:{1}:{2}", PlayerName, playerName, msg);
             ResetTimeout();
         }
 
         public void OnPublishServerMessage(string msg)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnPublishServerMessage[{0}]:{1}", PlayerName, msg);
+            Log.Default.WriteLine(LogLevels.Info, "OnPublishServerMessage[{0}]:{1}", PlayerName, msg);
             ResetTimeout();
         }
 
         public void OnSpecialUsed(int specialId, int playerId, int targetId, Specials special)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnSpecialUsed[{0}]:{1} [{2}] [{3}] {4}", PlayerName, specialId, playerId, targetId, special);
+            Log.Default.WriteLine(LogLevels.Info, "OnSpecialUsed[{0}]:{1} [{2}] [{3}] {4}", PlayerName, specialId, playerId, targetId, special);
             ResetTimeout();
         }
 
         public void OnNextPiece(int index, List<Pieces> pieces)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnNextPiece[{0}]:{1} {2}", PlayerName, index, pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
+            Log.Default.WriteLine(LogLevels.Info, "OnNextPiece[{0}]:{1} {2}", PlayerName, index, pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
             ResetTimeout();
         }
 
         public void OnGridModified(int playerId, byte[] grid)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnGridModified[{0}]:[{1}] [2]", PlayerName, playerId, grid.Count(x => x > 0));
+            Log.Default.WriteLine(LogLevels.Info, "OnGridModified[{0}]:[{1}] [2]", PlayerName, playerId, grid.Count(x => x > 0));
             ResetTimeout();
         }
 
         public void OnServerMasterChanged(int playerId)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnServerMasterChanged[{0}]:[{1}]", PlayerName, playerId);
+            Log.Default.WriteLine(LogLevels.Info, "OnServerMasterChanged[{0}]:[{1}]", PlayerName, playerId);
             ResetTimeout();
             IsServerMaster = (playerId == PlayerId);
         }
 
         public void OnWinListModified(List<WinEntry> winList)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnWinListModified[{0}]:{1}", PlayerName, winList.Any() ? winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i) : "");
+            Log.Default.WriteLine(LogLevels.Info, "OnWinListModified[{0}]:{1}", PlayerName, winList.Any() ? winList.Select(x => String.Format("{0}:{1}", x.PlayerName, x.Score)).Aggregate((n, i) => n + "|" + i) : "");
             ResetTimeout();
         }
 
         public void OnContinuousSpecialFinished(int playerId, Specials special)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnContinuousSpecialFinished[{0}]:{1} {2}", PlayerName, playerId, special);
+            Log.Default.WriteLine(LogLevels.Info, "OnContinuousSpecialFinished[{0}]:{1} {2}", PlayerName, playerId, special);
             ResetTimeout();    
         }
 
         public void OnAchievementEarned(int playerId, int achievementId, string achievementTitle)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnAchievementEarned[{0}]:{1} {2} {3}", PlayerName, playerId, achievementId, achievementTitle);
+            Log.Default.WriteLine(LogLevels.Info, "OnAchievementEarned[{0}]:{1} {2} {3}", PlayerName, playerId, achievementId, achievementTitle);
         }
 
         public void OnOptionsChanged(GameOptions options)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnOptionsChanged[{0}]", PlayerName);
+            Log.Default.WriteLine(LogLevels.Info, "OnOptionsChanged[{0}]", PlayerName);
         }
 
         public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted, GameOptions options)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnSpectatorRegistered[{0}]:{1} => {2} {3}", PlayerName, result, spectatorId, gameStarted);
+            Log.Default.WriteLine(LogLevels.Info, "OnSpectatorRegistered[{0}]:{1} => {2} {3}", PlayerName, result, spectatorId, gameStarted);
         }
 
         public void OnSpectatorJoined(int spectatorId, string name)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnSpectatorJoined[{0}]:{1}[{2}]", PlayerName, name, spectatorId);
+            Log.Default.WriteLine(LogLevels.Info, "OnSpectatorJoined[{0}]:{1}[{2}]", PlayerName, name, spectatorId);
         }
 
         public void OnSpectatorLeft(int spectatorId, string name, LeaveReasons reason)
         {
-            Log.WriteLine(Log.LogLevels.Info, "OnSpectatorLeft[{0}]:{1}[{2}] {3}", PlayerName, name, spectatorId, reason);
+            Log.Default.WriteLine(LogLevels.Info, "OnSpectatorLeft[{0}]:{1}[{2}] {3}", PlayerName, name, spectatorId, reason);
         }
 
         #endregion
 
         private void Register(string playerName, string team)
         {
-            Log.WriteLine(Log.LogLevels.Info, "Registering");
+            Log.Default.WriteLine(LogLevels.Info, "Registering");
             State = States.Registering;
 
             PlayerName = playerName;

@@ -32,19 +32,19 @@ namespace TetriNET.Server.PlayerManager
                 return false;
             if (_players.Count >= MaxPlayers)
             {
-                Log.WriteLine(Log.LogLevels.Warning, "Too many players");
+                Log.Default.WriteLine(LogLevels.Warning, "Too many players");
                 return false;
             }
 
             if (_players.ContainsKey(player.Callback))
             {
-                Log.WriteLine(Log.LogLevels.Warning, "{0} already registered", player.Name);
+                Log.Default.WriteLine(LogLevels.Warning, "{0} already registered", player.Name);
                 return false;
             }
 
             if (_players.Any(x => x.Value.Name == player.Name || x.Value.Id == player.Id))
             {
-                Log.WriteLine(Log.LogLevels.Warning, "{0} already registered", player.Name);
+                Log.Default.WriteLine(LogLevels.Warning, "{0} already registered", player.Name);
                 return false;
             }
 

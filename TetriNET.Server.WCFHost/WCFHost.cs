@@ -40,13 +40,13 @@ namespace TetriNET.Server.WCFHost
                 _serviceHost.Description.Behaviors.Add(new IPFilterServiceBehavior(_host.BanManager, _host.PlayerManager));
                 _serviceHost.Open();
 
-                Log.WriteLine(Log.LogLevels.Info, "WCF Host opened on {0}", baseAddress);
+                Log.Default.WriteLine(LogLevels.Info, "WCF Host opened on {0}", baseAddress);
 
                 foreach (var endpt in _serviceHost.Description.Endpoints)
                 {
-                    Log.WriteLine(Log.LogLevels.Debug, "Enpoint address:\t{0}", endpt.Address);
-                    Log.WriteLine(Log.LogLevels.Debug, "Enpoint binding:\t{0}", endpt.Binding);
-                    Log.WriteLine(Log.LogLevels.Debug, "Enpoint contract:\t{0}\n", endpt.Contract.ContractType.Name);
+                    Log.Default.WriteLine(LogLevels.Debug, "Enpoint address:\t{0}", endpt.Address);
+                    Log.Default.WriteLine(LogLevels.Debug, "Enpoint binding:\t{0}", endpt.Binding);
+                    Log.Default.WriteLine(LogLevels.Debug, "Enpoint contract:\t{0}\n", endpt.Contract.ContractType.Name);
                 }
             }
 

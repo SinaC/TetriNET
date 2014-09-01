@@ -52,7 +52,7 @@ namespace TetriNET.Server.BanManager
         public void Dump()
         {
             foreach (BanEntry entry in _banList.Values)
-                Log.WriteLine(Log.LogLevels.Info, "{0} {1} {2}", entry.Address, entry.Name, entry.Reason);
+                Log.Default.WriteLine(LogLevels.Info, "{0} {1} {2}", entry.Address, entry.Name, entry.Reason);
         }
 
         private static IPAddress FixAddress(IPAddress address)
@@ -63,7 +63,7 @@ namespace TetriNET.Server.BanManager
                 if (addressIPV4 != null)
                     address = addressIPV4;
                 else
-                    Log.WriteLine(Log.LogLevels.Error, "IPv4 supported only. {0} Address family: {1}", address, address.AddressFamily);
+                    Log.Default.WriteLine(LogLevels.Error, "IPv4 supported only. {0} Address family: {1}", address, address.AddressFamily);
             }
             return address;
         }

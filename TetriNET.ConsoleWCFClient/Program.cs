@@ -23,7 +23,7 @@ namespace TetriNET.ConsoleWCFClient
             const string team = "CONSOLE";
             string name = "CONSOLE_" + Guid.NewGuid().ToString().Substring(0, 5);
 
-            Log.Initialize(ConfigurationManager.AppSettings["logpath"], name+".log");
+            Log.Default.Initialize(ConfigurationManager.AppSettings["logpath"], name + ".log");
 
             //
             IFactory factory = new Factory();

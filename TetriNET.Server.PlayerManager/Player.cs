@@ -42,7 +42,7 @@ namespace TetriNET.Server.PlayerManager
             }
             catch (Exception ex)
             {
-                Log.WriteLine(Log.LogLevels.Error, "Exception:{0} {1}", actionName, ex);
+                Log.Default.WriteLine(LogLevels.Error, "Exception:{0} {1}", actionName, ex);
                 ConnectionLost.Do(x => x(this));
             }
         }

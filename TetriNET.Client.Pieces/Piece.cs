@@ -123,10 +123,10 @@ namespace TetriNET.Client.Pieces
                 case Common.DataContracts.Pieces.TetriminoZ:
                     return new SRS.TetriminoZ(spawnX, spawnY, spawnOrientation, index);
                 case Common.DataContracts.Pieces.Invalid:
-                    Log.WriteLine(Log.LogLevels.Warning, "Create random cell because server didn't send next cell");
+                    Log.Default.WriteLine(LogLevels.Warning, "Create random cell because server didn't send next cell");
                     return new SRS.TetriminoZ(spawnX, spawnY, spawnOrientation, index); // TODO: sometimes server takes time to send next cell, it should send 2 or 3 next pieces to ensure this never happens
             }
-            Log.WriteLine(Log.LogLevels.Warning, "Unknown piece {0}", piece);
+            Log.Default.WriteLine(LogLevels.Warning, "Unknown piece {0}", piece);
             return new SRS.TetriminoZ(spawnX, spawnY, spawnOrientation, index);
         }
 
@@ -152,13 +152,13 @@ namespace TetriNET.Client.Pieces
                         return new Mutated.MutatedZ(spawnX, spawnY, spawnOrientation, index);
                     //
                     case Common.DataContracts.Pieces.Invalid:
-                        Log.WriteLine(Log.LogLevels.Warning, "Create random cell because server didn't send next cell");
+                        Log.Default.WriteLine(LogLevels.Warning, "Create random cell because server didn't send next cell");
                         return CreatePiece(Common.DataContracts.Pieces.TetriminoZ, spawnX, spawnY, spawnOrientation, index); // TODO: sometimes server takes time to send next cell, it should send 2 or 3 next pieces to ensure this never happens
                 }
             }
             else
                 return CreatePiece(piece, spawnX, spawnY, spawnOrientation, index);
-            Log.WriteLine(Log.LogLevels.Warning, "Unknow piece {0}", piece);
+            Log.Default.WriteLine(LogLevels.Warning, "Unknow piece {0}", piece);
             return CreatePiece(Common.DataContracts.Pieces.TetriminoZ, spawnX, spawnY, spawnOrientation, index);
         }
     }

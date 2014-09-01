@@ -245,7 +245,7 @@ namespace TetriNET.Client.Strategy
             // If Nuke/Gravity/Switch
             if (inventory.Any(x => x == Specials.NukeField || x == Specials.BlockGravity || x == Specials.SwitchFields))
             {
-                Log.WriteLine(Log.LogLevels.Debug, "[SURVIVAL] Found N/G/S in inventory");
+                Log.Default.WriteLine(LogLevels.Debug, "[SURVIVAL] Found N/G/S in inventory");
                 bool saved = false;
                 while (true)
                 {
@@ -260,7 +260,7 @@ namespace TetriNET.Client.Strategy
                     {
                         case Specials.NukeField: // Nuke/Gravity -> use it immediately
                         case Specials.BlockGravity:
-                            Log.WriteLine(Log.LogLevels.Debug, "[SURVIVAL]Use {0}", special.ToString());
+                            Log.Default.WriteLine(LogLevels.Debug, "[SURVIVAL]Use {0}", special.ToString());
                             advices.Add(new SpecialAdvice
                             {
                                 SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseSelf,
@@ -273,7 +273,7 @@ namespace TetriNET.Client.Strategy
                                 int pileHeight = BoardHelper.GetPileMaxHeight(strongestBoard);
                                 if (pileHeight <= 10)
                                 {
-                                    Log.WriteLine(Log.LogLevels.Debug, "[SURVIVAL]Use S, found a valid opponent {0} with a pile {1}", strongest, pileHeight);
+                                    Log.Default.WriteLine(LogLevels.Debug, "[SURVIVAL]Use S, found a valid opponent {0} with a pile {1}", strongest, pileHeight);
                                     advices.Add(new SpecialAdvice
                                     {
                                         SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -283,7 +283,7 @@ namespace TetriNET.Client.Strategy
                                 }
                                 else
                                 {
-                                    Log.WriteLine(Log.LogLevels.Debug, "[SURVIVAL]Discard S, no valid opponent");
+                                    Log.Default.WriteLine(LogLevels.Debug, "[SURVIVAL]Discard S, no valid opponent");
                                     advices.Add(new SpecialAdvice
                                     {
                                         SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.Discard,
@@ -292,14 +292,14 @@ namespace TetriNET.Client.Strategy
                                 break;
                             }
                         case Specials.ClearLines: // ClearLine -> use it immediately  TODO ==> this could lead to unwanted behaviour if we are emptying for a switch
-                            Log.WriteLine(Log.LogLevels.Debug, "[SURVIVAL]Use C on ourself");
+                            Log.Default.WriteLine(LogLevels.Debug, "[SURVIVAL]Use C on ourself");
                             advices.Add(new SpecialAdvice
                             {
                                 SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseSelf,
                             });
                             break;
                         default: // Other -> use it on strongest
-                            Log.WriteLine(Log.LogLevels.Debug, "[SURVIVAL]Use {0} on strongest opponent {1}", special, strongest);
+                            Log.Default.WriteLine(LogLevels.Debug, "[SURVIVAL]Use {0} on strongest opponent {1}", special, strongest);
                             advices.Add(new SpecialAdvice
                             {
                                 SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -314,12 +314,12 @@ namespace TetriNET.Client.Strategy
 
                     System.Threading.Thread.Sleep(10); // delay next special use
                 }
-                Log.WriteLine(Log.LogLevels.Debug, "[SURVIVAL] Survival mode N/G/S finished. saved:{0}", saved);
+                Log.Default.WriteLine(LogLevels.Debug, "[SURVIVAL] Survival mode N/G/S finished. saved:{0}", saved);
             }
             // Nothing could save use, send everything to weakest and pray 
             else
             {
-                Log.WriteLine(Log.LogLevels.Debug, "[SURVIVAL] No N/G/S found -> use everything on weakest and try to kill him");
+                Log.Default.WriteLine(LogLevels.Debug, "[SURVIVAL] No N/G/S found -> use everything on weakest and try to kill him");
                 while (true)
                 {
                     if (!inventory.Any())
@@ -332,7 +332,7 @@ namespace TetriNET.Client.Strategy
                     // ClearLine -> use it immediately
                     if (special == Specials.ClearLines)
                     {
-                        Log.WriteLine(Log.LogLevels.Debug, "[SURVIVAL]Use C on ourself");
+                        Log.Default.WriteLine(LogLevels.Debug, "[SURVIVAL]Use C on ourself");
                         advices.Add(new SpecialAdvice
                         {
                             SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseSelf,
@@ -342,7 +342,7 @@ namespace TetriNET.Client.Strategy
                     // Other -> use it on weakest
                     else
                     {
-                        Log.WriteLine(Log.LogLevels.Debug, "[SURVIVAL]Use {0} on weakest opponent {1}", special.ToString(), weakest);
+                        Log.Default.WriteLine(LogLevels.Debug, "[SURVIVAL]Use {0} on weakest opponent {1}", special.ToString(), weakest);
                         advices.Add(new SpecialAdvice
                         {
                             SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -357,7 +357,7 @@ namespace TetriNET.Client.Strategy
 
         public bool OneOpponentMode(int lastOpponentId, List<Specials> inventory, List<SpecialAdvice> advices)
         {
-            Log.WriteLine(Log.LogLevels.Debug, "[KILLING LAST]Trying to kill last opponent with A");
+            Log.Default.WriteLine(LogLevels.Debug, "[KILLING LAST]Trying to kill last opponent with A");
             while (true)
             {
                 if (!inventory.Any())
@@ -369,7 +369,7 @@ namespace TetriNET.Client.Strategy
                 // AddLines -> use it immediately on last opponent
                 if (currentSpecial == Specials.AddLines)
                 {
-                    Log.WriteLine(Log.LogLevels.Debug, "[KILLING LAST]Use A on last opponent {0}", lastOpponentId);
+                    Log.Default.WriteLine(LogLevels.Debug, "[KILLING LAST]Use A on last opponent {0}", lastOpponentId);
                     advices.Add(new SpecialAdvice
                     {
                         SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -378,7 +378,7 @@ namespace TetriNET.Client.Strategy
                 }
                 else if (currentSpecial == Specials.BlockQuake || currentSpecial == Specials.Confusion || currentSpecial == Specials.Darkness)
                 {
-                    Log.WriteLine(Log.LogLevels.Debug, "[KILLING LAST]Use {0} on last opponent {1}", currentSpecial, lastOpponentId);
+                    Log.Default.WriteLine(LogLevels.Debug, "[KILLING LAST]Use {0} on last opponent {1}", currentSpecial, lastOpponentId);
                     advices.Add(new SpecialAdvice
                     {
                         SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -388,7 +388,7 @@ namespace TetriNET.Client.Strategy
                 // Else, discard
                 else
                 {
-                    Log.WriteLine(Log.LogLevels.Debug, "[KILLING LAST]Discard {0}", currentSpecial.ToString());
+                    Log.Default.WriteLine(LogLevels.Debug, "[KILLING LAST]Discard {0}", currentSpecial.ToString());
                     advices.Add(new SpecialAdvice
                     {
                         SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.Discard,
@@ -414,18 +414,18 @@ namespace TetriNET.Client.Strategy
             {
                 // Destroy own board and switch with strongest opponent
                 case Specials.SwitchFields: // TODO:
-                    Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Keep S for survival");
+                    Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Keep S for survival");
                     // NOP
                     break;
                 // Wait
                 case Specials.BlockGravity:
                 case Specials.NukeField:
-                    Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Keep {0} for survival", special.ToString());
+                    Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Keep {0} for survival", special.ToString());
                     // NOP
                     break;
                 // Send to strongest opponent
                 case Specials.AddLines:
-                    Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use A on strongest {0}", strongest);
+                    Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use A on strongest {0}", strongest);
                     advices.Add(new SpecialAdvice
                     {
                         SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -442,7 +442,7 @@ namespace TetriNET.Client.Strategy
                         int bombTarget = GetStrongestOpponentWithBomb(opponents);
                         if (bombTarget != -1)
                         {
-                            Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]use O to {0}", bombTarget);
+                            Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]use O to {0}", bombTarget);
                             advices.Add(new SpecialAdvice
                             {
                                 SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -454,7 +454,7 @@ namespace TetriNET.Client.Strategy
                         {
                             if (inventory.Count + 2 >= inventoryMaxSize)
                             {
-                                Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Discard O, inventory almost full");
+                                Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Discard O, inventory almost full");
                                 advices.Add(new SpecialAdvice
                                 {
                                     SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.Discard,
@@ -462,7 +462,7 @@ namespace TetriNET.Client.Strategy
                             }
                             else
                             {
-                                Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Keep O for later");
+                                Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Keep O for later");
                             }
                         }
                         break;
@@ -478,7 +478,7 @@ namespace TetriNET.Client.Strategy
                         int targetId = GetStrongestOpponentWithNukeSwitchGravityOnBottomLine(opponents);
                         if (targetId != -1)
                         {
-                            Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use C on opponent with N/G/S on bottom line {0}", targetId);
+                            Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use C on opponent with N/G/S on bottom line {0}", targetId);
                             advices.Add(new SpecialAdvice
                             {
                                 SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -491,7 +491,7 @@ namespace TetriNET.Client.Strategy
                             targetId = GetStrongestOpponentWithBombOnBottomLine(opponents);
                             if (targetId != -1)
                             {
-                                Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use C on opponent with O on bottom line {0}", targetId);
+                                Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use C on opponent with O on bottom line {0}", targetId);
                                 advices.Add(new SpecialAdvice
                                 {
                                     SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -503,7 +503,7 @@ namespace TetriNET.Client.Strategy
                                 targetId = GetOpponentWithMostSpecialsOnBottomLine(opponents);
                                 if (targetId != -1)
                                 {
-                                    Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use C on opponent with most specials on bottom line {0}", targetId);
+                                    Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use C on opponent with most specials on bottom line {0}", targetId);
                                     advices.Add(new SpecialAdvice
                                     {
                                         SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -515,7 +515,7 @@ namespace TetriNET.Client.Strategy
                                     bool hasValuableSpecialOnBottomLine = HasNukeGravitySwitchOnBottomLine(board);
                                     if (hasValuableSpecialOnBottomLine)
                                     {
-                                        Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Discard C, we have N/G/S on bottom line");
+                                        Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Discard C, we have N/G/S on bottom line");
                                         advices.Add(new SpecialAdvice
                                         {
                                             SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.Discard,
@@ -523,7 +523,7 @@ namespace TetriNET.Client.Strategy
                                     }
                                     else
                                     {
-                                        Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use C on ourself");
+                                        Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use C on ourself");
                                         advices.Add(new SpecialAdvice
                                         {
                                             SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseSelf,
@@ -557,7 +557,7 @@ namespace TetriNET.Client.Strategy
                         bool hasBomb = HasSpecial(board, Specials.BlockBomb);
                         if (hasBomb && !inventory.Any(x => x == Specials.NukeField || x == Specials.BlockGravity))
                         {
-                            Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use B on ourself, we have O in board and no N/G in inventory");
+                            Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use B on ourself, we have O in board and no N/G in inventory");
                             advices.Add(new SpecialAdvice
                             {
                                 SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseSelf,
@@ -568,7 +568,7 @@ namespace TetriNET.Client.Strategy
                             int targetId = GetStrongestOpponentWithNukeSwitchGravity(opponents);
                             if (targetId != -1)
                             {
-                                Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use B on strongest opponent with N/S/G {0}", targetId);
+                                Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use B on strongest opponent with N/S/G {0}", targetId);
                                 advices.Add(new SpecialAdvice
                                 {
                                     SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -585,7 +585,7 @@ namespace TetriNET.Client.Strategy
                                         targetId = GetOpponentWithMostSpecialsAndNoBomb(opponents);
                                         if (targetId != -1)
                                         {
-                                            Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use B on opponent with most specials and no O {0}, we have O in inventory", targetId);
+                                            Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use B on opponent with most specials and no O {0}, we have O in inventory", targetId);
                                             advices.Add(new SpecialAdvice
                                             {
                                                 SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -594,7 +594,7 @@ namespace TetriNET.Client.Strategy
                                         }
                                         else
                                         {
-                                            Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Discard B, no opponents without O and we have O in inventory", targetId);
+                                            Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Discard B, no opponents without O and we have O in inventory", targetId);
                                             advices.Add(new SpecialAdvice
                                             {
                                                 SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.Discard,
@@ -606,7 +606,7 @@ namespace TetriNET.Client.Strategy
                                         targetId = GetOpponentWithMostSpecials(opponents);
                                         if (targetId != -1)
                                         {
-                                            Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use B on opponent with most specials {0}", targetId);
+                                            Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use B on opponent with most specials {0}", targetId);
                                             advices.Add(new SpecialAdvice
                                             {
                                                 SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -617,7 +617,7 @@ namespace TetriNET.Client.Strategy
                                         {
                                             if (inventory.Count + 2 >= inventoryMaxSize)
                                             {
-                                                Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Discard B, inventory is almost full");
+                                                Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Discard B, inventory is almost full");
                                                 advices.Add(new SpecialAdvice
                                                 {
                                                     SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.Discard,
@@ -625,7 +625,7 @@ namespace TetriNET.Client.Strategy
                                             }
                                             else
                                             {
-                                                Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Keep B for later");
+                                                Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Keep B for later");
                                             }
                                         }
                                     }
@@ -635,7 +635,7 @@ namespace TetriNET.Client.Strategy
                                     targetId = GetStrongestOpponentWithBomb(opponents);
                                     if (targetId != -1)
                                     {
-                                        Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use B on opponent with O {0}, we don't have any O", targetId);
+                                        Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use B on opponent with O {0}, we don't have any O", targetId);
                                         advices.Add(new SpecialAdvice
                                         {
                                             SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -647,7 +647,7 @@ namespace TetriNET.Client.Strategy
                                         targetId = GetOpponentWithMostSpecials(opponents);
                                         if (targetId != -1)
                                         {
-                                            Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use B on opponent with most specials {0}", targetId);
+                                            Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use B on opponent with most specials {0}", targetId);
                                             advices.Add(new SpecialAdvice
                                             {
                                                 SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -658,7 +658,7 @@ namespace TetriNET.Client.Strategy
                                         {
                                             if (inventory.Count + 2 >= inventoryMaxSize)
                                             {
-                                                Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Discard B, inventory is almost full");
+                                                Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Discard B, inventory is almost full");
                                                 advices.Add(new SpecialAdvice
                                                 {
                                                     SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.Discard,
@@ -666,7 +666,7 @@ namespace TetriNET.Client.Strategy
                                             }
                                             else
                                             {
-                                                Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Keep B for later");
+                                                Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Keep B for later");
                                             }
                                         }
                                     }
@@ -682,7 +682,7 @@ namespace TetriNET.Client.Strategy
                         int targetId = GetStrongestOpponentWithNukeSwitchGravity(opponents);
                         if (targetId != -1)
                         {
-                            Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use R on strongest opponent with N/S/G {0}", targetId);
+                            Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use R on strongest opponent with N/S/G {0}", targetId);
                             advices.Add(new SpecialAdvice
                             {
                                 SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -694,7 +694,7 @@ namespace TetriNET.Client.Strategy
                             targetId = GetStrongestOpponent(opponents);
                             if (targetId != -1)
                             {
-                                Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use R on strongest opponent {0}", targetId);
+                                Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use R on strongest opponent {0}", targetId);
                                 advices.Add(new SpecialAdvice
                                 {
                                     SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -703,7 +703,7 @@ namespace TetriNET.Client.Strategy
                             }
                             else
                             {
-                                Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Keep R for later **** SHOULD NEVER HAPPEN");
+                                Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Keep R for later **** SHOULD NEVER HAPPEN");
                             }
                         }
                         break;
@@ -720,7 +720,7 @@ namespace TetriNET.Client.Strategy
                                 int pileHeight = BoardHelper.GetPileMaxHeight(lastOpponentBoard);
                                 if (pileHeight >= 10)
                                 {
-                                    Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use I on weakest opponent (board {0}) {1}", pileHeight, targetId);
+                                    Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use I on weakest opponent (board {0}) {1}", pileHeight, targetId);
                                     advices.Add(new SpecialAdvice
                                         {
                                             SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -729,7 +729,7 @@ namespace TetriNET.Client.Strategy
                                 }
                                 else if (inventory.Count + 2 >= inventoryMaxSize)
                                 {
-                                    Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Discard I, inventory is almost full");
+                                    Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Discard I, inventory is almost full");
                                     advices.Add(new SpecialAdvice
                                     {
                                         SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.Discard,
@@ -737,7 +737,7 @@ namespace TetriNET.Client.Strategy
                                 }
                                 else
                                 {
-                                    Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Keep I for later");
+                                    Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Keep I for later");
                                 }
                             }
                         }
@@ -757,7 +757,7 @@ namespace TetriNET.Client.Strategy
                         int targetId = GetStrongestOpponent(opponents);
                         if (targetId != -1)
                         {
-                            Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Use {0} on strongest opponent {1}", special.ToString(), targetId);
+                            Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Use {0} on strongest opponent {1}", special.ToString(), targetId);
                             advices.Add(new SpecialAdvice
                             {
                                 SpecialAdviceAction = SpecialAdvice.SpecialAdviceActions.UseOpponent,
@@ -766,7 +766,7 @@ namespace TetriNET.Client.Strategy
                         }
                         else
                         {
-                            Log.WriteLine(Log.LogLevels.Debug, "[NORMAL]Keep {0} for later **** SHOULD NEVER HAPPEN", special.ToString());
+                            Log.Default.WriteLine(LogLevels.Debug, "[NORMAL]Keep {0} for later **** SHOULD NEVER HAPPEN", special.ToString());
                         }
                         break;
                     }
