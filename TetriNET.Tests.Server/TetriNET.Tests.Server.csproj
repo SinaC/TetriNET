@@ -51,6 +51,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="GenericHostUnitTest.cs" />
+    <Compile Include="Mocking\FactoryMock.cs" />
+    <Compile Include="Mocking\HostMock.cs" />
     <Compile Include="Mocking\LogMock.cs" />
     <Compile Include="Mocking\RaiseExceptionTetriNETCallback.cs" />
     <Compile Include="Mocking\CountCallTetriNETCallback.cs" />

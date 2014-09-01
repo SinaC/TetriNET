@@ -2,13 +2,8 @@
 using System.Globalization;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TetriNET.Common.Contracts;
 using TetriNET.Common.Logger;
-using TetriNET.Server.BanManager;
-using TetriNET.Server.GenericHost;
 using TetriNET.Server.Interfaces;
-using TetriNET.Server.PlayerManager;
-using TetriNET.Server.SpectatorManager;
 using TetriNET.Tests.Server.Mocking;
 
 namespace TetriNET.Tests.Server
@@ -18,8 +13,8 @@ namespace TetriNET.Tests.Server
     {
         private IHost CreateHost()
         {
-            IFactory factory = new MockFactory();
-            return new MockHost(factory.CreatePlayerManager(6), factory.CreateSpectatorManager(10), factory.CreateBanManager(), factory);
+            IFactory factory = new FactoryMock();
+            return new HostMock(factory.CreatePlayerManager(6), factory.CreateSpectatorManager(10), factory.CreateBanManager(), factory);
         }
 
         [TestInitialize]
@@ -238,66 +233,6 @@ namespace TetriNET.Tests.Server
             host.PauseGame(player.Callback);
 
             Assert.AreNotEqual(player.LastActionFromClient, lastActionFromClient);
-        }
-    }
-
-    public class MockFactory : IFactory
-    {
-        public IBanManager CreateBanManager()
-        {
-            return new BanManager(); // TODO: unit test
-        }
-
-        public IPlayerManager CreatePlayerManager(int maxPlayers)
-        {
-            return new PlayerManagerDictionaryBased(maxPlayers);
-        }
-
-        public ISpectatorManager CreateSpectatorManager(int maxSpectators)
-        {
-            return new SpectatorManagerDictionaryBased(maxSpectators); // TODO: unit test
-        }
-
-        public IPieceProvider CreatePieceProvider()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IPlayer CreatePlayer(int id, string name, ITetriNETCallback callback)
-        {
-            return new Player(id, name, callback);
-        }
-
-        public ISpectator CreateSpectator(int id, string name, ITetriNETCallback callback)
-        {
-            return new Spectator(id, name, callback);// TODO: unit test
-        }
-    }
-
-    public class MockHost : GenericHost
-    {
-        public MockHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory) : base(playerManager, spectatorManager, banManager, factory)
-        {
-        }
-        
-        public override void Start()
-        {
-            // NOP
-        }
-        
-        public override void Stop()
-        {
-            // NOP
-        }
-        
-        public override void RemovePlayer(IPlayer player)
-        {
-            // NOP
-        }
-
-        public override void RemoveSpectator(ISpectator spectator)
-        {
-            // NOP
         }
     }
 }

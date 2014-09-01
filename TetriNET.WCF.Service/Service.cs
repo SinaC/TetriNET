@@ -59,9 +59,16 @@ namespace TetriNET.WCF.Service
         {
             Log.Default.WriteLine(LogLevels.Info, "Stopping");
 
-            _cancellationTokenSource.Cancel();
+            try
+            {
+                _cancellationTokenSource.Cancel();
 
-            _mainLoopTask.Wait(1000); // Wait max 1 second
+                _mainLoopTask.Wait(1000); // Wait max 1 second
+            }
+            catch (AggregateException ex)
+            {
+                Log.Default.WriteLine(LogLevels.Warning, "Aggregate exception while stopping. Exception: {0}", ex.Flatten());
+            }
         }
 
         private void ServiceMainLoop()

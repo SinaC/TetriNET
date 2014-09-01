@@ -118,21 +118,27 @@ namespace TetriNET.Server
 
             if (State == ServerStates.WaitingStartServer)
             {
-                State = ServerStates.StartingServer;
+                if (_hosts.Count != 0)
+                {
 
-                SpecialId = 0;
+                    State = ServerStates.StartingServer;
 
-                _cancellationTokenSource = new CancellationTokenSource();
-                _timeoutTask = Task.Factory.StartNew(TimeoutTask, _cancellationTokenSource.Token);
-                _gameActionsTask = Task.Factory.StartNew(GameActionsTask, _cancellationTokenSource.Token);
+                    SpecialId = 0;
 
-                // Start hosts
-                foreach (IHost host in _hosts)
-                    host.Start();
+                    _cancellationTokenSource = new CancellationTokenSource();
+                    _timeoutTask = Task.Factory.StartNew(TimeoutTask, _cancellationTokenSource.Token);
+                    _gameActionsTask = Task.Factory.StartNew(GameActionsTask, _cancellationTokenSource.Token);
 
-                State = ServerStates.WaitingStartGame;
+                    // Start hosts
+                    foreach (IHost host in _hosts)
+                        host.Start();
 
-                Log.Default.WriteLine(LogLevels.Info, "Server started");
+                    State = ServerStates.WaitingStartGame;
+
+                    Log.Default.WriteLine(LogLevels.Info, "Server started");
+                }
+                else
+                    Log.Default.WriteLine(LogLevels.Warning, "Cannot start server without any host");
             }
             else
                 Log.Default.WriteLine(LogLevels.Info, "Server already started");
@@ -146,10 +152,17 @@ namespace TetriNET.Server
             {
                 State = ServerStates.StoppingServer;
 
-                // Stop worker threads
-                _cancellationTokenSource.Cancel();
+                try
+                {
+                    // Stop worker threads
+                    _cancellationTokenSource.Cancel();
 
-                Task.WaitAll(new[] {_timeoutTask, _gameActionsTask}, 2000);
+                    Task.WaitAll(new[] {_timeoutTask, _gameActionsTask}, 2000);
+                }
+                catch (AggregateException ex)
+                {
+                    Log.Default.WriteLine(LogLevels.Warning, "Aggregate exception while stopping. Exception: {0}", ex.Flatten());
+                }
 
                 // Inform players and spectators
                 foreach (IEntity entity in Entities)
@@ -158,7 +171,6 @@ namespace TetriNET.Server
                 // Stop hosts
                 foreach (IHost host in _hosts)
                     host.Stop();
-
                 // Clear player manager
                 _playerManager.Clear();
 
@@ -242,9 +254,16 @@ namespace TetriNET.Server
                 State = ServerStates.GameFinished;
 
                 GameStatistics statistics = PrepareGameStatistics();
-                // Send game finished to players and spectators
-                foreach (IEntity entity in Entities)
-                    entity.OnGameFinished(statistics);
+
+                // Send game started to players
+                foreach (IPlayer p in _playerManager.Players)
+                {
+                    p.State = PlayerStates.Registered;
+                    p.OnGameFinished(statistics);
+                }
+                // Send game finished to spectators
+                foreach (ISpectator spectator in _spectatorManager.Spectators)
+                    spectator.OnGameFinished(statistics);
 
                 State = ServerStates.WaitingStartGame;
 
@@ -775,35 +794,42 @@ namespace TetriNET.Server
         {
             Log.Default.WriteLine(LogLevels.Info, "GameActionsTask started");
 
-            while (true)
+            try
             {
-                if (_cancellationTokenSource.IsCancellationRequested)
+                while (true)
                 {
-                    Log.Default.WriteLine(LogLevels.Info, "Stop background task event raised");
-                    break;
-                }
-                try
-                {
-                    Action action;
-                    bool taken = _gameActionBlockingCollection.TryTake(out action, 10, _cancellationTokenSource.Token);
-                    if (taken)
+                    if (_cancellationTokenSource.IsCancellationRequested)
                     {
-                        try
+                        Log.Default.WriteLine(LogLevels.Info, "Stop background task event raised");
+                        break;
+                    }
+                    try
+                    {
+                        Action action;
+                        bool taken = _gameActionBlockingCollection.TryTake(out action, 10, _cancellationTokenSource.Token);
+                        if (taken)
                         {
-                            Log.Default.WriteLine(LogLevels.Debug, "Dequeue, item in queue {0}", _gameActionBlockingCollection.Count);
-                            action();
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Default.WriteLine(LogLevels.Error, "Exception raised in GameActionsTask. Exception:{0}", ex);
+                            try
+                            {
+                                Log.Default.WriteLine(LogLevels.Debug, "Dequeue, item in queue {0}", _gameActionBlockingCollection.Count);
+                                action();
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Default.WriteLine(LogLevels.Error, "Exception raised in GameActionsTask. Exception:{0}", ex);
+                            }
                         }
                     }
+                    catch (OperationCanceledException)
+                    {
+                        Log.Default.WriteLine(LogLevels.Info, "Taking cancelled");
+                        break;
+                    }
                 }
-                catch (OperationCanceledException)
-                {
-                    Log.Default.WriteLine(LogLevels.Info, "Taking cancelled");
-                    break;
-                }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Log.Default.WriteLine(LogLevels.Error, "GameActionsTask cancelled exception. Exception: {0}", ex);
             }
 
             Log.Default.WriteLine(LogLevels.Info, "GameActionsTask stopped");
@@ -986,89 +1012,96 @@ namespace TetriNET.Server
         {
             Log.Default.WriteLine(LogLevels.Info, "TimeoutTask started");
 
-            while (true)
+            try
             {
-                if (_cancellationTokenSource.IsCancellationRequested)
+                while (true)
                 {
-                    Log.Default.WriteLine(LogLevels.Info, "Stop background task event raised");
-                    break;
-                }
-
-                // Check sudden death
-                if (State == ServerStates.GameStarted && _isSuddenDeathActive)
-                {
-                    if (DateTime.Now > _suddenDeathStartTime)
+                    if (_cancellationTokenSource.IsCancellationRequested)
                     {
-                        TimeSpan timespan = DateTime.Now - _lastSuddenDeathAddLines;
-                        if (timespan.TotalSeconds >= Options.SuddenDeathTick)
+                        Log.Default.WriteLine(LogLevels.Info, "Stop background task event raised");
+                        break;
+                    }
+
+                    // Check sudden death
+                    if (State == ServerStates.GameStarted && _isSuddenDeathActive)
+                    {
+                        if (DateTime.Now > _suddenDeathStartTime)
                         {
-                            Log.Default.WriteLine(LogLevels.Info, "Sudden death tick");
-                            // Delay elapsed, send lines
-                            foreach (IPlayer p in _playerManager.Players.Where(p => p.State == PlayerStates.Playing))
-                                p.OnServerAddLines(1);
-                            _lastSuddenDeathAddLines = DateTime.Now;
+                            TimeSpan timespan = DateTime.Now - _lastSuddenDeathAddLines;
+                            if (timespan.TotalSeconds >= Options.SuddenDeathTick)
+                            {
+                                Log.Default.WriteLine(LogLevels.Info, "Sudden death tick");
+                                // Delay elapsed, send lines
+                                foreach (IPlayer p in _playerManager.Players.Where(p => p.State == PlayerStates.Playing))
+                                    p.OnServerAddLines(1);
+                                _lastSuddenDeathAddLines = DateTime.Now;
+                            }
                         }
                     }
-                }
 
-                // Check running game without any player
-                if (State == ServerStates.GameStarted || State == ServerStates.GamePaused)
-                {
-                    if (_playerManager.Players.Count(x => x.State == PlayerStates.Playing) == 0)
+                    // Check running game without any player
+                    if (State == ServerStates.GameStarted || State == ServerStates.GamePaused)
                     {
-                        Log.Default.WriteLine(LogLevels.Info, "Game finished because no more playing players");
-                        // Stop game
-                        StopGame();
-                    }
-                }
-
-                // Check player timeout + send heartbeat if needed
-                foreach (IPlayer p in _playerManager.Players)
-                {
-                    // Check player timeout
-                    TimeSpan timespan = DateTime.Now - p.LastActionFromClient;
-                    if (timespan.TotalMilliseconds > TimeoutDelay && IsTimeoutDetectionActive)
-                    {
-                        Log.Default.WriteLine(LogLevels.Info, "Timeout++ for player {0}", p.Name);
-                        // Update timeout count
-                        p.SetTimeout();
-                        if (p.TimeoutCount >= MaxTimeoutCountBeforeDisconnection)
-                            OnPayerLeft(p, LeaveReasons.Timeout);
+                        if (_playerManager.Players.Count(x => x.State == PlayerStates.Playing) == 0)
+                        {
+                            Log.Default.WriteLine(LogLevels.Info, "Game finished because no more playing players");
+                            // Stop game
+                            StopGame();
+                        }
                     }
 
-                    // Send heartbeat if needed
-                    TimeSpan delayFromPreviousHeartbeat = DateTime.Now - p.LastActionToClient;
-                    if (delayFromPreviousHeartbeat.TotalMilliseconds > HeartbeatDelay)
-                        p.OnHeartbeatReceived();
-                }
-                // Check spectator timeout + send heartbeat if needed
-                foreach (ISpectator s in _spectatorManager.Spectators)
-                {
-                    // Check player timeout
-                    TimeSpan timespan = DateTime.Now - s.LastActionFromClient;
-                    if (timespan.TotalMilliseconds > TimeoutDelay && IsTimeoutDetectionActive)
+                    // Check player timeout + send heartbeat if needed
+                    foreach (IPlayer p in _playerManager.Players)
                     {
-                        Log.Default.WriteLine(LogLevels.Info, "Timeout++ for player {0}", s.Name);
-                        // Update timeout count
-                        s.SetTimeout();
-                        if (s.TimeoutCount >= MaxTimeoutCountBeforeDisconnection)
-                            OnSpectatorLeft(s, LeaveReasons.Timeout);
+                        // Check player timeout
+                        TimeSpan timespan = DateTime.Now - p.LastActionFromClient;
+                        if (timespan.TotalMilliseconds > TimeoutDelay && IsTimeoutDetectionActive)
+                        {
+                            Log.Default.WriteLine(LogLevels.Info, "Timeout++ for player {0}", p.Name);
+                            // Update timeout count
+                            p.SetTimeout();
+                            if (p.TimeoutCount >= MaxTimeoutCountBeforeDisconnection)
+                                OnPayerLeft(p, LeaveReasons.Timeout);
+                        }
+
+                        // Send heartbeat if needed
+                        TimeSpan delayFromPreviousHeartbeat = DateTime.Now - p.LastActionToClient;
+                        if (delayFromPreviousHeartbeat.TotalMilliseconds > HeartbeatDelay)
+                            p.OnHeartbeatReceived();
+                    }
+                    // Check spectator timeout + send heartbeat if needed
+                    foreach (ISpectator s in _spectatorManager.Spectators)
+                    {
+                        // Check player timeout
+                        TimeSpan timespan = DateTime.Now - s.LastActionFromClient;
+                        if (timespan.TotalMilliseconds > TimeoutDelay && IsTimeoutDetectionActive)
+                        {
+                            Log.Default.WriteLine(LogLevels.Info, "Timeout++ for player {0}", s.Name);
+                            // Update timeout count
+                            s.SetTimeout();
+                            if (s.TimeoutCount >= MaxTimeoutCountBeforeDisconnection)
+                                OnSpectatorLeft(s, LeaveReasons.Timeout);
+                        }
+
+                        // Send heartbeat if needed
+                        TimeSpan delayFromPreviousHeartbeat = DateTime.Now - s.LastActionToClient;
+                        if (delayFromPreviousHeartbeat.TotalMilliseconds > HeartbeatDelay)
+                            s.OnHeartbeatReceived();
                     }
 
-                    // Send heartbeat if needed
-                    TimeSpan delayFromPreviousHeartbeat = DateTime.Now - s.LastActionToClient;
-                    if (delayFromPreviousHeartbeat.TotalMilliseconds > HeartbeatDelay)
-                        s.OnHeartbeatReceived();
-                }
 
-
-                // Stop task if stop event is raised
-                bool signaled = _cancellationTokenSource.Token.WaitHandle.WaitOne(10);
-                if (signaled)
-                {
-                    Log.Default.WriteLine(LogLevels.Info, "Stop background task event raised");
-                    break;
+                    // Stop task if stop event is raised
+                    bool signaled = _cancellationTokenSource.Token.WaitHandle.WaitOne(10);
+                    if (signaled)
+                    {
+                        Log.Default.WriteLine(LogLevels.Info, "Stop background task event raised");
+                        break;
+                    }
                 }
+            }
+            catch (TaskCanceledException ex)
+            {
+                Log.Default.WriteLine(LogLevels.Error, "TimeoutTask exception. Exception: {0}", ex);
             }
 
             Log.Default.WriteLine(LogLevels.Info, "TimeoutTask stopped");
