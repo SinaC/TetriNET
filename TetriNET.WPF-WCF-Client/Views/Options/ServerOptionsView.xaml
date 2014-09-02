@@ -13,6 +13,9 @@
              d:DataContext="{d:DesignInstance optionsViewModels:ServerOptionsViewModelDesignData, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
             <converters:SpecialToStringConverter x:Key="SpecialToStringConverter"/>
             <converters:SpecialToBrushConverter x:Key="SpecialToBrushConverter"/>
         </ResourceDictionary>

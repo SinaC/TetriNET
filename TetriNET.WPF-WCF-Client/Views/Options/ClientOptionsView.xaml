@@ -10,6 +10,9 @@
              d:DataContext="{d:DesignInstance optionsViewModel:ClientOptionsViewModelDesignData, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>

@@ -11,6 +11,9 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
             <converters:ChatColorBrushConverter x:Key="ChatColorBrushConverter"/>
             <DataTemplate DataType="{x:Type partyLineViewModels:PlayerMessageEntry}">
                 <WrapPanel Orientation="Horizontal">

@@ -99,12 +99,19 @@ namespace TetriNET.WCF.Service
             server.AddHost(wcfHost);
 
             //
-            server.StartServer();
+            try
+            {
+                server.StartServer();
 
-            while(!_cancellationTokenSource.IsCancellationRequested)
-                Thread.Sleep(250);
+                while (!_cancellationTokenSource.IsCancellationRequested)
+                    Thread.Sleep(250);
 
-            server.StopServer();
+                server.StopServer();
+            }
+            catch(Exception ex)
+            {
+                Log.Default.WriteLine(LogLevels.Error, "Error while running server. Exception {0}", ex);
+            }
         }
     }
 }

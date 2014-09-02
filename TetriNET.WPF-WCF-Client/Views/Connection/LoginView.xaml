@@ -11,13 +11,10 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary>
-                    <converters:ChatColorBrushConverter x:Key="ChatColorBrushConverter"/>
-                </ResourceDictionary>
-                <ResourceDictionary>
-                    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-                </ResourceDictionary>
+                <ResourceDictionary Source="..\Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <converters:ChatColorBrushConverter x:Key="ChatColorBrushConverter"/>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>

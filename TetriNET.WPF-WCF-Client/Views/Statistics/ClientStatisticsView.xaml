@@ -12,6 +12,9 @@
              d:DesignHeight="450" d:DesignWidth="700">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
             <converters:SpecialToBrushConverter x:Key="SpecialToBrushConverter"/>
             <converters:SpecialToStringConverter x:Key="SpecialToStringConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -355,7 +358,7 @@
                 </ListView.View>
             </ListView>
         </GroupBox>
-        <Button Grid.Row="2" Grid.Column="0"
+        <Button Grid.Row="2" Grid.Column="0" Margin="5,2"
                 Command="{Binding RefreshStatisticsCommand}">
             <TextBlock Text="Refresh"/>
         </Button>

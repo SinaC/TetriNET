@@ -95,7 +95,15 @@ namespace TetriNET.ConsoleWCFServer
             server.AddHost(socketHost);
 
             //
-            server.StartServer();
+            try
+            {
+                server.StartServer();
+            }
+            catch(Exception ex)
+            {
+                Log.Default.WriteLine(LogLevels.Error, "Cannot start server. Exception: {0}", ex);
+                return;
+            }
 
             DisplayHelp();
 

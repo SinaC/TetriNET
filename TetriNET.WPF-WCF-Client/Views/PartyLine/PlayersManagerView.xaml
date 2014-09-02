@@ -8,6 +8,9 @@
              mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <DataTemplate DataType="{x:Type partyLine:PlayerData}" x:Key="PlayerNoTeamDataTemplate">
                 <StackPanel Orientation="Horizontal" 

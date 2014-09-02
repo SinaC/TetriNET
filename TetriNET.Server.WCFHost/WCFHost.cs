@@ -3,6 +3,7 @@ using System.ServiceModel;
 using ServiceModelEx;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Helpers;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 
@@ -53,7 +54,7 @@ namespace TetriNET.Server.WCFHost
             public void Stop()
             {
                 // Close service host
-                _serviceHost.Close();
+                _serviceHost.Do(x => x.Close());
             }
 
             #region IWCFTetriNET

@@ -11,6 +11,9 @@
              d:DesignHeight="450" d:DesignWidth="700">
     <UserControl.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
             <converters:SpecialToBrushConverter x:Key="SpecialToBrushConverter"/>
             <converters:SpecialToStringConverter x:Key="SpecialToStringConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
