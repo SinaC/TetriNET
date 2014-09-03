@@ -24,6 +24,10 @@ namespace TetriNET.Common.DataContracts
 
         [EnumMember]
         [Description("Invalid id")]
-        RegistrationFailedInvalidId
+        RegistrationFailedInvalidId,
+
+        [EnumMember]
+        [Description("Incompatible version")]
+        IncompatibleVersion,
     }
 }

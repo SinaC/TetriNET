@@ -11,8 +11,9 @@ namespace TetriNET.Server.GenericHost
     public abstract class GenericHost : IHost
     {
         protected readonly IFactory Factory;
+        protected readonly Versioning ServerVersion;
 
-        protected GenericHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
+        protected GenericHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory, int major, int minor)
         {
             if (playerManager == null)
                 throw new ArgumentNullException("playerManager");
@@ -25,6 +26,11 @@ namespace TetriNET.Server.GenericHost
             SpectatorManager = spectatorManager;
             BanManager = banManager;
             Factory = factory;
+            ServerVersion = new Versioning
+            {
+                Major = major,
+                Minor = minor,
+            };
         }
 
         protected virtual void OnEntityConnectionLost(IEntity entity)
@@ -77,7 +83,7 @@ namespace TetriNET.Server.GenericHost
 
         #region ITetriNET
 
-        public virtual void RegisterPlayer(ITetriNETCallback callback, string playerName, string team)
+        public virtual void RegisterPlayer(ITetriNETCallback callback, Versioning clientVersion, string playerName, string team)
         {
             Log.Default.WriteLine(LogLevels.Debug, "RegisterPlayer {0} {1}", playerName, team);
 
@@ -87,34 +93,42 @@ namespace TetriNET.Server.GenericHost
             IPlayer player = null;
             int id = -1;
             bool added = false;
-            lock (PlayerManager.LockObject)
+
+            // TODO: smarter compatibility check
+            if (clientVersion == null
+                || ServerVersion.Major != clientVersion.Major || ServerVersion.Minor != clientVersion.Minor)
+                result = RegistrationResults.IncompatibleVersion;
+            else
             {
-                if (String.IsNullOrEmpty(playerName) || playerName.Length > 20)
+                lock (PlayerManager.LockObject)
                 {
-                    result = RegistrationResults.RegistrationFailedInvalidName;
-                    Log.Default.WriteLine(LogLevels.Warning, "Cannot register {0} because name is invalid", playerName);
-                }
-                else if (PlayerManager[playerName] != null || SpectatorManager[playerName] != null)
-                {
-                    result = RegistrationResults.RegistrationFailedPlayerAlreadyExists;
-                    Log.Default.WriteLine(LogLevels.Warning, "Cannot register {0} because it already exists", playerName);
-                }
-                else if (PlayerManager.PlayerCount >= PlayerManager.MaxPlayers)
-                {
-                    result = RegistrationResults.RegistrationFailedTooManyPlayers;
-                    Log.Default.WriteLine(LogLevels.Warning, "Cannot register {0} because too many players are already connected", playerName);
-                }
-                else
-                {
-                    id = PlayerManager.FirstAvailableId;
-                    if (id != -1)
+                    if (String.IsNullOrEmpty(playerName) || playerName.Length > 20)
                     {
-                        player = Factory.CreatePlayer(id, playerName, callback);
-                        //
-                        player.ConnectionLost += OnEntityConnectionLost;
-                        player.Team = team;
-                        //
-                        added = PlayerManager.Add(player);
+                        result = RegistrationResults.RegistrationFailedInvalidName;
+                        Log.Default.WriteLine(LogLevels.Warning, "Cannot register {0} because name is invalid", playerName);
+                    }
+                    else if (PlayerManager[playerName] != null || SpectatorManager[playerName] != null)
+                    {
+                        result = RegistrationResults.RegistrationFailedPlayerAlreadyExists;
+                        Log.Default.WriteLine(LogLevels.Warning, "Cannot register {0} because it already exists", playerName);
+                    }
+                    else if (PlayerManager.PlayerCount >= PlayerManager.MaxPlayers)
+                    {
+                        result = RegistrationResults.RegistrationFailedTooManyPlayers;
+                        Log.Default.WriteLine(LogLevels.Warning, "Cannot register {0} because too many players are already connected", playerName);
+                    }
+                    else
+                    {
+                        id = PlayerManager.FirstAvailableId;
+                        if (id != -1)
+                        {
+                            player = Factory.CreatePlayer(id, playerName, callback);
+                            //
+                            player.ConnectionLost += OnEntityConnectionLost;
+                            player.Team = team;
+                            //
+                            added = PlayerManager.Add(player);
+                        }
                     }
                 }
             }
@@ -129,7 +143,7 @@ namespace TetriNET.Server.GenericHost
             {
                 Log.Default.WriteLine(LogLevels.Info, "Register failed for player {0}", playerName);
                 //
-                callback.OnPlayerRegistered(result, -1, false, false, null);
+                callback.OnPlayerRegistered(result, ServerVersion, -1, false, false, null);
             }
         }
 
@@ -483,7 +497,7 @@ namespace TetriNET.Server.GenericHost
 
         #region ITetriNETSpectator
 
-        public virtual void RegisterSpectator(ITetriNETCallback callback, string spectatorName)
+        public virtual void RegisterSpectator(ITetriNETCallback callback, Versioning clientVersion, string spectatorName)
         {
             Log.Default.WriteLine(LogLevels.Debug, "RegisterSpectator {0}", spectatorName);
 
@@ -493,33 +507,41 @@ namespace TetriNET.Server.GenericHost
             ISpectator spectator = null;
             int id = -1;
             bool added = false;
-            lock (SpectatorManager.LockObject)
+
+            // TODO: smarter compatibility check
+            if (clientVersion == null
+                || (ServerVersion.Major != clientVersion.Major && ServerVersion.Minor != clientVersion.Minor))
+                result = RegistrationResults.IncompatibleVersion;
+            else
             {
-                if (String.IsNullOrEmpty(spectatorName) || spectatorName.Length > 20)
+                lock (SpectatorManager.LockObject)
                 {
-                    result = RegistrationResults.RegistrationFailedInvalidName;
-                    Log.Default.WriteLine(LogLevels.Warning, "Cannot register {0} because name is invalid", spectatorName);
-                }
-                else if (SpectatorManager[spectatorName] != null || PlayerManager[spectatorName] != null)
-                {
-                    result = RegistrationResults.RegistrationFailedPlayerAlreadyExists;
-                    Log.Default.WriteLine(LogLevels.Warning, "Cannot register {0} because it already exists", spectatorName);
-                }
-                else if (SpectatorManager.SpectatorCount >= SpectatorManager.MaxSpectators)
-                {
-                    result = RegistrationResults.RegistrationFailedTooManyPlayers;
-                    Log.Default.WriteLine(LogLevels.Warning, "Cannot register {0} because too many spectators are already connected", spectatorName);
-                }
-                else
-                {
-                    id = SpectatorManager.FirstAvailableId;
-                    if (id != -1)
+                    if (String.IsNullOrEmpty(spectatorName) || spectatorName.Length > 20)
                     {
-                        spectator = Factory.CreateSpectator(id, spectatorName, callback);
-                        //
-                        spectator.ConnectionLost += OnEntityConnectionLost;
-                        //
-                        added = SpectatorManager.Add(spectator);
+                        result = RegistrationResults.RegistrationFailedInvalidName;
+                        Log.Default.WriteLine(LogLevels.Warning, "Cannot register {0} because name is invalid", spectatorName);
+                    }
+                    else if (SpectatorManager[spectatorName] != null || PlayerManager[spectatorName] != null)
+                    {
+                        result = RegistrationResults.RegistrationFailedPlayerAlreadyExists;
+                        Log.Default.WriteLine(LogLevels.Warning, "Cannot register {0} because it already exists", spectatorName);
+                    }
+                    else if (SpectatorManager.SpectatorCount >= SpectatorManager.MaxSpectators)
+                    {
+                        result = RegistrationResults.RegistrationFailedTooManyPlayers;
+                        Log.Default.WriteLine(LogLevels.Warning, "Cannot register {0} because too many spectators are already connected", spectatorName);
+                    }
+                    else
+                    {
+                        id = SpectatorManager.FirstAvailableId;
+                        if (id != -1)
+                        {
+                            spectator = Factory.CreateSpectator(id, spectatorName, callback);
+                            //
+                            spectator.ConnectionLost += OnEntityConnectionLost;
+                            //
+                            added = SpectatorManager.Add(spectator);
+                        }
                     }
                 }
             }
@@ -534,7 +556,7 @@ namespace TetriNET.Server.GenericHost
             {
                 Log.Default.WriteLine(LogLevels.Info, "Register failed for spectator {0}", spectatorName);
                 //
-                callback.OnSpectatorRegistered(result, -1, false, null);
+                callback.OnSpectatorRegistered(result, ServerVersion, -1, false, null);
             }
         }
 

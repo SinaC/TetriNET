@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 using TetriNET.Tests.Server.Mocking;
@@ -11,6 +12,12 @@ namespace TetriNET.Tests.Server
     [TestClass]
     public class GenericHostUnitTest
     {
+        private Versioning _clientVersion = new Versioning
+        {
+            Major = 1,
+            Minor = 1
+        };
+
         private IHost CreateHost()
         {
             IFactory factory = new FactoryMock();
@@ -34,8 +41,8 @@ namespace TetriNET.Tests.Server
             host.HostPlayerRegistered += (player, id) => count++;
             CountCallTetriNETCallback callback1 = new CountCallTetriNETCallback();
             CountCallTetriNETCallback callback2 = new CountCallTetriNETCallback();
-            host.RegisterPlayer(callback1, "player1", "team1");
-            host.RegisterPlayer(callback2, "player2", "team1");
+            host.RegisterPlayer(callback1, _clientVersion, "player1", "team1");
+            host.RegisterPlayer(callback2, _clientVersion, "player2", "team1");
             
             Assert.AreEqual(count, 2);
             Assert.AreEqual(callback1.GetCallCount("OnPlayerRegistered"), 0); // OnPlayerRegistered callback is called from GenericHost if register has failed
@@ -51,8 +58,8 @@ namespace TetriNET.Tests.Server
             host.HostPlayerRegistered += (player, id) => count++;
             CountCallTetriNETCallback callback1 = new CountCallTetriNETCallback();
             CountCallTetriNETCallback callback2 = new CountCallTetriNETCallback();
-            host.RegisterPlayer(callback1, "player1", "team1");
-            host.RegisterPlayer(callback2, "player1", "team1"); // same name -> register failed
+            host.RegisterPlayer(callback1, _clientVersion, "player1", "team1");
+            host.RegisterPlayer(callback2, _clientVersion, "player1", "team1"); // same name -> register failed
 
             Assert.AreEqual(count, 1);
             Assert.AreEqual(callback1.GetCallCount("OnPlayerRegistered"), 0); // OnPlayerRegistered callback is called from GenericHost if register has failed
@@ -66,7 +73,7 @@ namespace TetriNET.Tests.Server
 
             int count = 0;
             host.HostPlayerRegistered += (player, id) => count++;
-            host.RegisterPlayer(new CountCallTetriNETCallback(), "012345678901234567890123", "team1");
+            host.RegisterPlayer(new CountCallTetriNETCallback(), _clientVersion, "012345678901234567890123", "team1");
 
             Assert.AreEqual(host.PlayerManager.PlayerCount, 0);
         }
@@ -79,7 +86,7 @@ namespace TetriNET.Tests.Server
             int count = 0;
             host.HostPlayerRegistered += (player, id) => count++;
             for (int i = 0; i < host.PlayerManager.MaxPlayers + 10; i++ )
-                host.RegisterPlayer(new CountCallTetriNETCallback(), i.ToString(CultureInfo.InvariantCulture), "team1");
+                host.RegisterPlayer(new CountCallTetriNETCallback(), _clientVersion, i.ToString(CultureInfo.InvariantCulture), "team1");
 
             Assert.AreEqual(count, host.PlayerManager.MaxPlayers);
             Assert.AreEqual(host.PlayerManager.PlayerCount, host.PlayerManager.MaxPlayers);
@@ -90,7 +97,7 @@ namespace TetriNET.Tests.Server
         {
             IHost host = CreateHost();
 
-            host.RegisterPlayer(new CountCallTetriNETCallback(), "player1", "team1");
+            host.RegisterPlayer(new CountCallTetriNETCallback(), _clientVersion, "player1", "team1");
 
             Assert.AreEqual(host.PlayerManager.PlayerCount, 1);
             Assert.IsNotNull(host.PlayerManager["player1"]);
@@ -105,8 +112,8 @@ namespace TetriNET.Tests.Server
             host.HostSpectatorRegistered += (player, id) => count++;
             CountCallTetriNETCallback callback1 = new CountCallTetriNETCallback();
             CountCallTetriNETCallback callback2 = new CountCallTetriNETCallback();
-            host.RegisterSpectator(callback1, "spectator1");
-            host.RegisterSpectator(callback2, "spectator2");
+            host.RegisterSpectator(callback1, _clientVersion, "spectator1");
+            host.RegisterSpectator(callback2, _clientVersion, "spectator2");
 
             Assert.AreEqual(count, 2);
             Assert.AreEqual(callback1.GetCallCount("OnSpectatorRegistered"), 0); // OnSpectatorRegistered callback is called from GenericHost if register has failed
@@ -122,8 +129,8 @@ namespace TetriNET.Tests.Server
             host.HostSpectatorRegistered += (player, id) => count++;
             CountCallTetriNETCallback callback1 = new CountCallTetriNETCallback();
             CountCallTetriNETCallback callback2 = new CountCallTetriNETCallback();
-            host.RegisterSpectator(callback1, "spectator1");
-            host.RegisterSpectator(callback2, "spectator1"); // same name -> register failed
+            host.RegisterSpectator(callback1, _clientVersion, "spectator1");
+            host.RegisterSpectator(callback2, _clientVersion, "spectator1"); // same name -> register failed
 
             Assert.AreEqual(count, 1);
             Assert.AreEqual(callback1.GetCallCount("OnSpectatorRegistered"), 0); // OnSpectatorRegistered callback is called from GenericHost if register has failed
@@ -137,7 +144,7 @@ namespace TetriNET.Tests.Server
 
             int count = 0;
             host.HostSpectatorRegistered += (player, id) => count++;
-            host.RegisterSpectator(new CountCallTetriNETCallback(), "012345678901234567890123");
+            host.RegisterSpectator(new CountCallTetriNETCallback(), _clientVersion, "012345678901234567890123");
 
             Assert.AreEqual(count, 0);
             Assert.AreEqual(host.PlayerManager.PlayerCount, 0);
@@ -151,7 +158,7 @@ namespace TetriNET.Tests.Server
             int count = 0;
             host.HostSpectatorRegistered += (player, id) => count++;
             for (int i = 0; i < host.SpectatorManager.MaxSpectators + 10; i++)
-                host.RegisterSpectator(new CountCallTetriNETCallback(), i.ToString(CultureInfo.InvariantCulture));
+                host.RegisterSpectator(new CountCallTetriNETCallback(), _clientVersion, i.ToString(CultureInfo.InvariantCulture));
 
             Assert.AreEqual(count, host.SpectatorManager.MaxSpectators);
             Assert.AreEqual(host.SpectatorManager.SpectatorCount, host.SpectatorManager.MaxSpectators);
@@ -162,7 +169,7 @@ namespace TetriNET.Tests.Server
         {
             IHost host = CreateHost();
 
-            host.RegisterSpectator(new CountCallTetriNETCallback(), "player1");
+            host.RegisterSpectator(new CountCallTetriNETCallback(), _clientVersion, "player1");
 
             Assert.AreEqual(host.SpectatorManager.SpectatorCount, 1);
         }
@@ -173,7 +180,7 @@ namespace TetriNET.Tests.Server
             IHost host = CreateHost();
             int count = 0;
             host.HostPlayerLeft += (player1, reason) => count++;
-            host.RegisterPlayer(new RaiseExceptionTetriNETCallback(), "player1", "team1");
+            host.RegisterPlayer(new RaiseExceptionTetriNETCallback(), _clientVersion, "player1", "team1");
 
             IPlayer player = host.PlayerManager["player1"];
             player.OnGamePaused(); // -> raise an exception -> disconnecting player
@@ -187,7 +194,7 @@ namespace TetriNET.Tests.Server
             IHost host = CreateHost();
             int count = 0;
             host.HostSpectatorLeft += (spectator1, reason) => count++;
-            host.RegisterSpectator(new RaiseExceptionTetriNETCallback(), "spectator1");
+            host.RegisterSpectator(new RaiseExceptionTetriNETCallback(), _clientVersion, "spectator1");
 
             ISpectator spectator = host.SpectatorManager["spectator1"];
             spectator.OnGamePaused(); // -> raise an exception -> disconnecting spectator
@@ -211,7 +218,7 @@ namespace TetriNET.Tests.Server
         public void TestHostUnregisteredCalledOnKnownPlayer() // Unregistered could be any TetriNET callback
         {
             IHost host = CreateHost();
-            host.RegisterPlayer(new RaiseExceptionTetriNETCallback(), "player1", "team1");
+            host.RegisterPlayer(new RaiseExceptionTetriNETCallback(), _clientVersion, "player1", "team1");
             IPlayer player = host.PlayerManager["player1"];
             int count = 0;
             host.HostPlayerUnregistered += player1 => count++;
@@ -225,7 +232,7 @@ namespace TetriNET.Tests.Server
         public void TestActionFromClientRefreshedOnClientMethod()
         {
             IHost host = CreateHost();
-            host.RegisterPlayer(new RaiseExceptionTetriNETCallback(), "player1", "team1");
+            host.RegisterPlayer(new RaiseExceptionTetriNETCallback(), _clientVersion, "player1", "team1");
             IPlayer player = host.PlayerManager["player1"];
             DateTime lastActionFromClient = player.LastActionFromClient;
 

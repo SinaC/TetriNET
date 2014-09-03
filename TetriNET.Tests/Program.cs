@@ -99,7 +99,7 @@ namespace TetriNET.Tests
             {
                 throw new NotImplementedException();
             }
-            public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
+            public void OnPlayerRegistered(RegistrationResults result, Versioning clientVersion, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
             {
                 throw new NotImplementedException();
             }
@@ -187,7 +187,7 @@ namespace TetriNET.Tests
             {
                 throw new NotImplementedException();
             }
-            public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted, GameOptions options)
+            public void OnSpectatorRegistered(RegistrationResults result, Versioning clientVersion, int spectatorId, bool gameStarted, GameOptions options)
             {
                 throw new NotImplementedException();
             }
@@ -216,7 +216,13 @@ namespace TetriNET.Tests
             DuplexChannelFactory<IWCFTetriNETSpectator> factory = new DuplexChannelFactory<IWCFTetriNETSpectator>(instanceContext, binding, endpointAddress);
             IWCFTetriNETSpectator proxy = factory.CreateChannel(instanceContext);
 
-            proxy.RegisterSpectator("joel");
+            proxy.RegisterSpectator(
+                new Versioning
+                {
+                    Major = 1,
+                    Minor = 5,
+                },
+                "joel");
 
             while(true)
             {

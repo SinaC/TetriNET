@@ -14,7 +14,7 @@ namespace TetriNET.Common.Contracts
         void OnServerStopped();
 
         [OperationContract(IsOneWay = true)]
-        void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, bool isServerMaster, GameOptions options); // Player Number + In-Game
+        void OnPlayerRegistered(RegistrationResults result, Versioning serverVersion, int playerId, bool gameStarted, bool isServerMaster, GameOptions options); // Player Number + In-Game
 
         [OperationContract(IsOneWay = true)] // Player Joined
         void OnPlayerJoined(int playerId, string name, string team);
@@ -83,7 +83,7 @@ namespace TetriNET.Common.Contracts
 
         //
         [OperationContract(IsOneWay = true)]
-        void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted, GameOptions options); // Options added in 1.5
+        void OnSpectatorRegistered(RegistrationResults result, Versioning serverVersion, int spectatorId, bool gameStarted, GameOptions options); // Options added in 1.5
 
         [OperationContract(IsOneWay = true)]
         void OnSpectatorJoined(int spectatorId, string name);

@@ -265,8 +265,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             OnPropertyChanged("IsNotRegistered");
         }
 
-        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, Versioning serverVersion, int playerId, bool isServerMaster)
         {
+            // TODO: display server version
             if (result == RegistrationResults.RegistrationSuccessful)
                 SetConnectionResultMessage(String.Format("Registered as player {0}", playerId + 1), ChatColor.Green);
             else
@@ -280,8 +281,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             OnPropertyChanged("IsNotRegistered");
         }
 
-        private void OnRegisteredAsSpectator(RegistrationResults result, int spectatorId)
+        private void OnRegisteredAsSpectator(RegistrationResults result, Versioning serverVersion, int spectatorId)
         {
+            // TODO: display server version
             if (result == RegistrationResults.RegistrationSuccessful)
                 SetConnectionResultMessage(String.Format("Registered as spectator {0}", spectatorId + 1), ChatColor.Green);
             else

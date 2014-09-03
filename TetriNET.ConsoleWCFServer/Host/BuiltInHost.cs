@@ -6,7 +6,7 @@ namespace TetriNET.ConsoleWCFServer.Host
     public sealed class BuiltInHost : GenericHost
     {
         public BuiltInHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
-            : base(playerManager, spectatorManager, banManager, factory)
+            : base(playerManager, spectatorManager, banManager, factory, 1, 1)
         {
         }
 

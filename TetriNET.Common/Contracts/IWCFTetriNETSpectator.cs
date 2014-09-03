@@ -1,4 +1,5 @@
 ﻿using System.ServiceModel;
+using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Common.Contracts
 {
@@ -7,7 +8,7 @@ namespace TetriNET.Common.Contracts
     {
         // Spectator connexion/deconnexion management
         [OperationContract(IsOneWay = true)]
-        void RegisterSpectator(string spectatorName);
+        void RegisterSpectator(Versioning clientVersion, string spectatorName);
 
         [OperationContract(IsOneWay = true)]
         void UnregisterSpectator();

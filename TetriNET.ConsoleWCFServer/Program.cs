@@ -57,7 +57,8 @@ namespace TetriNET.ConsoleWCFServer
                 playerManager, 
                 spectatorManager, 
                 banManager, 
-                factory)
+                factory,
+                version.Major, version.Minor)
             {
                 Port = ConfigurationManager.AppSettings["port"]
             };
@@ -73,7 +74,8 @@ namespace TetriNET.ConsoleWCFServer
             IHost socketHost = new TCPHost(playerManager,
                 spectatorManager,
                 banManager,
-                factory)
+                factory,
+                version.Major, version.Minor)
             {
                 Port = 5656
             };
@@ -89,7 +91,7 @@ namespace TetriNET.ConsoleWCFServer
             IPieceProvider pieceProvider = factory.CreatePieceProvider();
 
             //
-            IServer server = new Server.Server(playerManager, spectatorManager, pieceProvider);
+            IServer server = new Server.Server(playerManager, spectatorManager, pieceProvider, version.Major, version.Minor);
             server.AddHost(wcfHost);
             server.AddHost(builtInHost);
             server.AddHost(socketHost);

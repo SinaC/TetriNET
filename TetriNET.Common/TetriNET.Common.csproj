@@ -57,6 +57,7 @@
     <Compile Include="DataContracts\Specials.cs" />
     <Compile Include="DataContracts\PieceOccurancy.cs" />
     <Compile Include="DataContracts\Pieces.cs" />
+    <Compile Include="DataContracts\Versioning.cs" />
     <Compile Include="DataContracts\WinEntry.cs" />
     <Compile Include="Attributes\PieceAttribute.cs" />
     <Compile Include="Helpers\CellHelper.cs" />

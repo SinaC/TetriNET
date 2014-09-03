@@ -68,12 +68,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             RefreshMode();
         }
 
-        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, Versioning serverVersion, int playerId, bool isServerMaster)
         {
             RefreshMode();
         }
 
-        private void RegisteredAsSpectator(RegistrationResults result, int spectatorId)
+        private void RegisteredAsSpectator(RegistrationResults result, Versioning serverVersion, int spectatorId)
         {
             RefreshMode();
         }

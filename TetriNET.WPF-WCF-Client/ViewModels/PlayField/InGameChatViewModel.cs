@@ -195,12 +195,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 
         #region IClient events handler
 
-        private void OnClientRegistered(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnClientRegistered(RegistrationResults result, Versioning serverVersion, int playerId, bool isServerMaster)
         {
             ClearEntries();
         }
 
-        private void OnClientRegistered(RegistrationResults result, int spectatorId)
+        private void OnClientRegistered(RegistrationResults result, Versioning serverVersion, int spectatorId)
         {
             ClearEntries();
         }

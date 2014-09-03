@@ -204,7 +204,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             UpdateEnabilityAndLabel();
         }
 
-        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, Versioning serverVersion, int playerId, bool isServerMaster)
         {
             _isRegistered = Client.IsRegistered;
             _isGameStarted = Client.IsGameStarted;

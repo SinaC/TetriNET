@@ -17,7 +17,7 @@ namespace TetriNET.Tests.Server.Mocking
             throw new NotImplementedException();
         }
 
-        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
+        public void OnPlayerRegistered(RegistrationResults result, Versioning clientVersion, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
         {
             throw new NotImplementedException();
         }
@@ -127,7 +127,7 @@ namespace TetriNET.Tests.Server.Mocking
             throw new NotImplementedException();
         }
 
-        public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted, GameOptions options)
+        public void OnSpectatorRegistered(RegistrationResults result, Versioning clientVersion, int spectatorId, bool gameStarted, GameOptions options)
         {
             throw new NotImplementedException();
         }

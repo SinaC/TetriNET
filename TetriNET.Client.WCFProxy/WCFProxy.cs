@@ -51,7 +51,7 @@ namespace TetriNET.Client.WCFProxy
                 throw new Exception(String.Format("Server {0} not found", address));
         }
 
-        public static List<string> DiscoverHosts()
+        public static List<string> DiscoverHosts() // TODO: endpoint + version
         {
             IEnumerable<EndpointAddress> addresses = DiscoverEndpoints();
             return addresses.Select(x => x.Uri.ToString()).ToList();
@@ -118,9 +118,9 @@ namespace TetriNET.Client.WCFProxy
 
         #region ITetriNET
 
-        public void RegisterPlayer(ITetriNETCallback callback, string playerName, string team)
+        public void RegisterPlayer(ITetriNETCallback callback, Versioning clientVersion, string playerName, string team)
         {
-            ExceptionFreeAction(() => _proxy.RegisterPlayer(playerName, team));
+            ExceptionFreeAction(() => _proxy.RegisterPlayer(clientVersion, playerName, team));
         }
 
         public void UnregisterPlayer(ITetriNETCallback callback)

@@ -271,14 +271,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             IsServerMaster = Client.IsServerMaster;
         }
 
-        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, Versioning serverVersion, int playerId, bool isServerMaster)
         {
             ClearEntries();
             AddPlayerEntry(playerId, Client.Name, Client.Team);
             IsServerMaster = Client.IsServerMaster;
         }
 
-        private void OnRegisteredAsSpectator(RegistrationResults result, int spectatorId)
+        private void OnRegisteredAsSpectator(RegistrationResults result, Versioning serverVersion, int spectatorId)
         {
             ClearEntries();
             AddSpectatorEntry(spectatorId, Client.Name);

@@ -34,7 +34,7 @@ namespace TetriNET.Server.TCPHost
                 throw new NotImplementedException();
             }
 
-            public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
+            public void OnPlayerRegistered(RegistrationResults result, Versioning serverVersion, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
             {
                 throw new NotImplementedException();
             }
@@ -144,7 +144,7 @@ namespace TetriNET.Server.TCPHost
                 throw new NotImplementedException();
             }
 
-            public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted, GameOptions options)
+            public void OnSpectatorRegistered(RegistrationResults result, Versioning serverVersion, int spectatorId, bool gameStarted, GameOptions options)
             {
                 throw new NotImplementedException();
             }
@@ -288,9 +288,9 @@ namespace TetriNET.Server.TCPHost
 
             #region ITetriNET
 
-            public void RegisterPlayer(ITetriNETCallback callback, string playerName, string team)
+            public void RegisterPlayer(ITetriNETCallback callback, Versioning clientVersion, string playerName, string team)
             {
-                _host.RegisterPlayer(callback, playerName, team);
+                _host.RegisterPlayer(callback, clientVersion, playerName, team);
             }
 
             public void UnregisterPlayer(ITetriNETCallback callback)
@@ -377,6 +377,7 @@ namespace TetriNET.Server.TCPHost
             {
                 _host.KickPlayer(callback, playerId);
             }
+            
             public void BanPlayer(ITetriNETCallback callback, int playerId)
             {
                 _host.BanPlayer(callback, playerId);
@@ -391,9 +392,9 @@ namespace TetriNET.Server.TCPHost
 
             #region ITetriNETSpectator
 
-            public void RegisterSpectator(ITetriNETCallback callback, string spectatorName)
+            public void RegisterSpectator(ITetriNETCallback callback, Versioning clientVersion, string spectatorName)
             {
-                _host.RegisterSpectator(callback, spectatorName);
+                _host.RegisterSpectator(callback, clientVersion, spectatorName);
             }
 
             public void UnregisterSpectator(ITetriNETCallback callback)
@@ -424,8 +425,8 @@ namespace TetriNET.Server.TCPHost
             set { _serviceHost.Port = value; }
         }
 
-        public TCPHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
-            : base(playerManager, spectatorManager, banManager, factory)
+        public TCPHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory, int major, int minor)
+            : base(playerManager, spectatorManager, banManager, factory, major, minor)
         {
             _serviceHost = new SocketServiceHost(this);
         }

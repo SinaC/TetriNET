@@ -6,7 +6,7 @@ namespace TetriNET.Tests.Server.Mocking
     public class HostMock : GenericHost
     {
         public HostMock(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
-            : base(playerManager, spectatorManager, banManager, factory)
+            : base(playerManager, spectatorManager, banManager, factory, 1, 1)
         {
         }
 

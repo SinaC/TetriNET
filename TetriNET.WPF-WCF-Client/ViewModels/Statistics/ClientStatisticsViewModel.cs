@@ -238,12 +238,12 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
         #region IClient events handler
 
-        private void OnRegisteredAsSpectator(RegistrationResults result, int spectatorId)
+        private void OnRegisteredAsSpectator(RegistrationResults result, Versioning serverVersion, int spectatorId)
         {
             Refresh();
         }
 
-        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, Versioning serverVersion, int playerId, bool isServerMaster)
         {
             Refresh();
         }

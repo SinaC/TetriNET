@@ -185,7 +185,7 @@ namespace TetriNET.Client
             OnConnectionLost();
         }
 
-        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool isGameStarted, bool isServerMaster, GameOptions options)
+        public void OnPlayerRegistered(RegistrationResults result, Versioning serverVersion, int playerId, bool isGameStarted, bool isServerMaster, GameOptions options)
         {
             ResetTimeout();
             if (result == RegistrationResults.RegistrationSuccessful && State == States.Registering)
@@ -220,7 +220,7 @@ namespace TetriNET.Client
                     _holdAlreadyUsed = false;
                     HoldPiece = null;
 
-                    RegisteredAsPlayer.Do(x => x(RegistrationResults.RegistrationSuccessful, playerId, isServerMaster));
+                    RegisteredAsPlayer.Do(x => x(RegistrationResults.RegistrationSuccessful, serverVersion, playerId, isServerMaster));
 
                     if (isGameStarted)
                     {
@@ -235,7 +235,7 @@ namespace TetriNET.Client
                     IsServerMaster = false;
                     Log.Default.WriteLine(LogLevels.Warning, "Wrong id {0}", playerId);
 
-                    RegisteredAsPlayer.Do(x => x(RegistrationResults.RegistrationFailedInvalidId, -1, false));
+                    RegisteredAsPlayer.Do(x => x(RegistrationResults.RegistrationFailedInvalidId, serverVersion, -1, false));
                 }
             }
             else
@@ -243,9 +243,9 @@ namespace TetriNET.Client
                 State = States.Created;
                 IsServerMaster = false;
 
-                RegisteredAsPlayer.Do(x => x(result, -1, false));
+                RegisteredAsPlayer.Do(x => x(result, serverVersion, -1, false));
 
-                Log.Default.WriteLine(LogLevels.Info, "Registration failed {0}", result);
+                Log.Default.WriteLine(LogLevels.Warning, "Registration failed {0}. Version: {1}.{2}", result, serverVersion.Major, serverVersion.Minor);
             }
         }
 
@@ -744,7 +744,7 @@ namespace TetriNET.Client
             OptionsChanged.Do(x => x());
         }
 
-        public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool isGameStarted, GameOptions options)
+        public void OnSpectatorRegistered(RegistrationResults result, Versioning serverVersion, int spectatorId, bool isGameStarted, GameOptions options)
         {
             ResetTimeout();
             if (result == RegistrationResults.RegistrationSuccessful && State == States.Registering)
@@ -778,7 +778,7 @@ namespace TetriNET.Client
                     HoldPiece = null;
 
 
-                    RegisteredAsSpectator.Do(x => x(RegistrationResults.RegistrationSuccessful, spectatorId));
+                    RegisteredAsSpectator.Do(x => x(RegistrationResults.RegistrationSuccessful, serverVersion, spectatorId));
                 }
                 else
                 {
@@ -786,7 +786,7 @@ namespace TetriNET.Client
                     IsServerMaster = false;
                     Log.Default.WriteLine(LogLevels.Warning, "Wrong id {0}", spectatorId);
 
-                    RegisteredAsSpectator.Do(x => x(RegistrationResults.RegistrationFailedInvalidId, -1));
+                    RegisteredAsSpectator.Do(x => x(RegistrationResults.RegistrationFailedInvalidId, serverVersion, -1));
                 }
             }
             else
@@ -794,9 +794,9 @@ namespace TetriNET.Client
                 State = States.Created;
                 IsServerMaster = false;
 
-                RegisteredAsSpectator.Do(x => x(result, -1));
+                RegisteredAsSpectator.Do(x => x(result, serverVersion, -1));
 
-                Log.Default.WriteLine(LogLevels.Info, "Registration failed {0}", result);
+                Log.Default.WriteLine(LogLevels.Warning, "Registration failed {0}. Version: {1}.{2}", result, serverVersion.Major, serverVersion.Minor);
             }
         }
 
@@ -1300,7 +1300,7 @@ namespace TetriNET.Client
             // TODO: current & next piece
         }
 
-        public bool ConnectAndRegisterAsPlayer(string address, string name, string team)
+        public bool ConnectAndRegisterAsPlayer(int major, int minor, string address, string name, string team)
         {
             if (address == null)
                 throw new ArgumentNullException("address");
@@ -1318,7 +1318,12 @@ namespace TetriNET.Client
                 State = States.Registering;
                 Name = name;
                 Team = team;
-                _proxy.RegisterPlayer(this, name, team);
+                Versioning clientVersion = new Versioning
+                {
+                    Major = major,
+                    Minor = minor,
+                };
+                _proxy.RegisterPlayer(this, clientVersion, name, team);
 
                 return true;
             }
@@ -1329,7 +1334,7 @@ namespace TetriNET.Client
             }
         }
 
-        public bool ConnectAndRegisterAsSpectator(string address, string name)
+        public bool ConnectAndRegisterAsSpectator(int major, int minor, string address, string name)
         {
             if (address == null)
                 throw new ArgumentNullException("address");
@@ -1346,7 +1351,12 @@ namespace TetriNET.Client
 
                 State = States.Registering;
                 Name = name;
-                _proxySpectator.RegisterSpectator(this, name);
+                Versioning clientVersion = new Versioning
+                {
+                    Major = major,
+                    Minor = minor,
+                };
+                _proxySpectator.RegisterSpectator(this, clientVersion, name);
                
                 return true;
             }

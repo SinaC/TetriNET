@@ -128,7 +128,7 @@ namespace TetriNET.Client.TCPProxy
 
         #region IProxy
 
-        public void RegisterPlayer(ITetriNETCallback callback, string playerName, string team)
+        public void RegisterPlayer(ITetriNETCallback callback, Versioning clientVersion, string playerName, string team)
         {
             throw new NotImplementedException();
         }

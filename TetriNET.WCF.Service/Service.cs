@@ -74,6 +74,8 @@ namespace TetriNET.WCF.Service
         private void ServiceMainLoop()
         {
             //
+            Version version = Assembly.GetEntryAssembly().GetName().Version;
+            //
             IFactory factory = new Factory();
             //
             IBanManager banManager = factory.CreateBanManager();
@@ -86,7 +88,8 @@ namespace TetriNET.WCF.Service
                 playerManager,
                 spectatorManager,
                 banManager,
-                factory)
+                factory,
+                version.Major, version.Minor)
             {
                 Port = ConfigurationManager.AppSettings["port"]
             };
@@ -95,7 +98,7 @@ namespace TetriNET.WCF.Service
             IPieceProvider pieceProvider = factory.CreatePieceProvider();
 
             //
-            IServer server = new Server.Server(playerManager, spectatorManager, pieceProvider);
+            IServer server = new Server.Server(playerManager, spectatorManager, pieceProvider, version.Major, version.Minor);
             server.AddHost(wcfHost);
 
             //

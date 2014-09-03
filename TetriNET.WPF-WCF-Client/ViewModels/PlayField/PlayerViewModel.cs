@@ -113,7 +113,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             Team = "";
         }
 
-        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, Versioning serverVersion, int playerId, bool isServerMaster)
         {
             if (result == RegistrationResults.RegistrationSuccessful)
                 PlayerId = playerId;

@@ -4,6 +4,7 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.Contracts;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
 using TetriNET.Common.Logger;
 
@@ -75,9 +76,9 @@ namespace TetriNET.Client.WCFProxy
 
         #region ITetriNETSpectator
 
-        public void RegisterSpectator(ITetriNETCallback callback, string spectatorName)
+        public void RegisterSpectator(ITetriNETCallback callback, Versioning clientVersion, string spectatorName)
         {
-            ExceptionFreeAction(() => _proxy.RegisterSpectator(spectatorName));
+            ExceptionFreeAction(() => _proxy.RegisterSpectator(clientVersion, spectatorName));
         }
 
         public void UnregisterSpectator(ITetriNETCallback callback)

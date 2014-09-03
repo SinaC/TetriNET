@@ -166,7 +166,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #region IClient events handler
 
-        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, Versioning serverVersion, int playerId, bool isServerMaster)
         {
             if (result == RegistrationResults.RegistrationSuccessful)
             {
@@ -178,7 +178,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             }
         }
 
-        private void OnRegisteredAsSpectator(RegistrationResults result, int spectatorId)
+        private void OnRegisteredAsSpectator(RegistrationResults result, Versioning serverVersion, int spectatorId)
         {
             if (result == RegistrationResults.RegistrationSuccessful)
             {

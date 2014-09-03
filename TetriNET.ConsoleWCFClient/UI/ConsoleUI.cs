@@ -210,7 +210,7 @@ namespace TetriNET.ConsoleWCFClient.UI
             }
         }
 
-        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, Versioning serverVersion, int playerId, bool isServerMaster)
         {
             if (result == RegistrationResults.RegistrationSuccessful)
             {
@@ -227,7 +227,7 @@ namespace TetriNET.ConsoleWCFClient.UI
                 {
                     Console.ResetColor();
                     Console.SetCursorPosition(60, 1);
-                    Console.Write("Registration failed!!! {0}", result);
+                    Console.Write("Registration failed!!! {0}. ServerVersion: {1}.{2}", result, serverVersion.Major, serverVersion.Minor);
                 }
             }
         }

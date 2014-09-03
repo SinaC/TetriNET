@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Reflection;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.ConsoleWCFClient.AI;
@@ -25,6 +26,8 @@ namespace TetriNET.ConsoleWCFClient
 
             Log.Default.Initialize(ConfigurationManager.AppSettings["logpath"], name + ".log");
 
+            Version version = Assembly.GetEntryAssembly().GetName().Version;
+
             //
             IFactory factory = new Factory();
 
@@ -35,7 +38,7 @@ namespace TetriNET.ConsoleWCFClient
             IClient client = new Client.Client(factory, manager);
 
             string baseAddress = ConfigurationManager.AppSettings["address"];
-            client.ConnectAndRegisterAsPlayer(baseAddress, name, team);
+            client.ConnectAndRegisterAsPlayer(version.Major, version.Minor, baseAddress, name, team);
 
             //
             GameController.GameController controller = new GameController.GameController(client);

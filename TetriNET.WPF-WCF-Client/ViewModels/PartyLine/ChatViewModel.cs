@@ -245,8 +245,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             AddServerMessage(String.Format("*** {0} has joined as spectator", spectatorName), ChatColor.Green);
         }
 
-        private void OnRegisteredAsPlayer(RegistrationResults result, int playerId, bool isServerMaster)
+        private void OnRegisteredAsPlayer(RegistrationResults result, Versioning serverVersion, int playerId, bool isServerMaster)
         {
+            // TODO: display result and server version
             if (result == RegistrationResults.RegistrationSuccessful)
             {
                 AddServerMessage(String.Format("*** You've registered successfully as {0} (player)", Client.Name), ChatColor.Green);
@@ -256,8 +257,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                 AddServerMessage("*** You've FAILED registering !!!", ChatColor.Red);
         }
 
-        private void OnRegisteredAsSpectator(RegistrationResults result, int spectatorId)
+        private void OnRegisteredAsSpectator(RegistrationResults result, Versioning serverVersion, int spectatorId)
         {
+            // TODO: display result and server version
             if (result == RegistrationResults.RegistrationSuccessful)
             {
                 AddServerMessage(String.Format("*** You've registered successfully as {0} (spectator)", Client.Name), ChatColor.Green);

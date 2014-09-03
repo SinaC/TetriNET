@@ -19,7 +19,7 @@ namespace TetriNET.Tests.Server
         {
             IFactory factory = new FactoryMock();
             _factory = factory;
-            return new TetriNET.Server.Server(factory.CreatePlayerManager(6), factory.CreateSpectatorManager(10), factory.CreatePieceProvider());
+            return new TetriNET.Server.Server(factory.CreatePlayerManager(6), factory.CreateSpectatorManager(10), factory.CreatePieceProvider(), 1, 1);
         }
 
         private IServer CreateServerWithHost()
@@ -30,7 +30,7 @@ namespace TetriNET.Tests.Server
             IBanManager banManager = factory.CreateBanManager();
             IPieceProvider pieceProvider = factory.CreatePieceProvider();
             IHost host = new HostMock(playerManager, spectatorManager, banManager, factory);
-            IServer server = new TetriNET.Server.Server(playerManager, spectatorManager, pieceProvider);
+            IServer server = new TetriNET.Server.Server(playerManager, spectatorManager, pieceProvider, 1, 1);
             server.AddHost(host);
             _host = host;
             _factory = factory;

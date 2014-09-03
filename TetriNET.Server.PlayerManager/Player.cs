@@ -101,9 +101,9 @@ namespace TetriNET.Server.PlayerManager
             ExceptionFreeAction(() => Callback.OnServerStopped());
         }
 
-        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
+        public void OnPlayerRegistered(RegistrationResults result, Versioning serverVersion, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
         {
-            ExceptionFreeAction(() => Callback.OnPlayerRegistered(result, playerId, gameStarted, isServerMaster, options));
+            ExceptionFreeAction(() => Callback.OnPlayerRegistered(result, serverVersion, playerId, gameStarted, isServerMaster, options));
         }
 
         public void OnPlayerJoined(int playerId, string name, string team)
@@ -211,9 +211,9 @@ namespace TetriNET.Server.PlayerManager
             ExceptionFreeAction(() => Callback.OnOptionsChanged(options));
         }
 
-        public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted, GameOptions options)
+        public void OnSpectatorRegistered(RegistrationResults result, Versioning serverVersion, int spectatorId, bool gameStarted, GameOptions options)
         {
-            ExceptionFreeAction(() => Callback.OnSpectatorRegistered(result, spectatorId, gameStarted, options));
+            ExceptionFreeAction(() => Callback.OnSpectatorRegistered(result, serverVersion, spectatorId, gameStarted, options));
         }
 
         public void OnSpectatorJoined(int spectatorId, string name)

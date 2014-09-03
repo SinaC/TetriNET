@@ -33,7 +33,7 @@ namespace TetriNET.Tests.Server.Mocking
             UpdateCallCount(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
+        public void OnPlayerRegistered(RegistrationResults result, Versioning clientVersion, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
         {
             UpdateCallCount(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
@@ -143,7 +143,7 @@ namespace TetriNET.Tests.Server.Mocking
             UpdateCallCount(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }
 
-        public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted, GameOptions options)
+        public void OnSpectatorRegistered(RegistrationResults result, Versioning clientVersion, int spectatorId, bool gameStarted, GameOptions options)
         {
             UpdateCallCount(System.Reflection.MethodBase.GetCurrentMethod().Name);
         }

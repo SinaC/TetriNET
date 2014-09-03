@@ -59,9 +59,9 @@ namespace TetriNET.Server.WCFHost
 
             #region IWCFTetriNET
 
-            public void RegisterPlayer(string playerName, string team)
+            public void RegisterPlayer(Versioning clientVersion, string playerName, string team)
             {
-                _host.RegisterPlayer(Callback, playerName, team);
+                _host.RegisterPlayer(Callback, clientVersion, playerName, team);
             }
 
             public void UnregisterPlayer()
@@ -163,9 +163,9 @@ namespace TetriNET.Server.WCFHost
 
             #region IWCFTetriNETSpectator
             // Spectator connexion/deconnexion management
-            public void RegisterSpectator(string spectatorName)
+            public void RegisterSpectator(Versioning clientVersion, string spectatorName)
             {
-                _host.RegisterSpectator(Callback, spectatorName);
+                _host.RegisterSpectator(Callback, clientVersion, spectatorName);
             }
 
             public void UnregisterSpectator()
@@ -210,8 +210,8 @@ namespace TetriNET.Server.WCFHost
             set { _serviceHost.Port = value; }
         }
 
-        public WCFHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
-            : base(playerManager, spectatorManager, banManager, factory)
+        public WCFHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory, int major, int minor)
+            : base(playerManager, spectatorManager, banManager, factory, major, minor)
         {
             _serviceHost = new WCFServiceHost(this);
 

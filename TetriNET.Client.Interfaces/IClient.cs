@@ -25,7 +25,7 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientPieceMovedEventHandler();
     public delegate void ClientNextPieceModifiedEventHandler();
     public delegate void ClientHoldPieceModifiedEventHandler();
-    public delegate void ClientRegisteredAsPlayerEventHandler(RegistrationResults result, int playerId, bool isServerMaster);
+    public delegate void ClientRegisteredAsPlayerEventHandler(RegistrationResults result, Versioning serverVersion, int playerId, bool isServerMaster);
     public delegate void ClientPlayerUnregisteredEventHandler();
     public delegate void ClientWinListModifiedEventHandler(List<WinEntry> winList);
     public delegate void ClientServerMasterModifiedEventHandler(int serverMasterId);
@@ -48,7 +48,7 @@ namespace TetriNET.Client.Interfaces
     public delegate void ClientAchievementEarnedEventHandler(IAchievement achievement, bool firstTime);
     public delegate void ClientPlayerAchievementEarnedEventHandler(int playerId, string playerName, int achievementId, string achievementTitle);
     public delegate void ClientOptionsChangedEventHandler();
-    public delegate void ClientRegisteredAsSpectatorEventHandler(RegistrationResults result, int spectatorId);
+    public delegate void ClientRegisteredAsSpectatorEventHandler(RegistrationResults result, Versioning serverVersion, int spectatorId);
     public delegate void ClientSpectatorJoinedEventHandler(int spectatorId, string spectatorName);
     public delegate void ClientSpectatorLeftEventHandler(int spectatorId, string spectatorName, LeaveReasons reason);
 
@@ -125,8 +125,8 @@ namespace TetriNET.Client.Interfaces
         //bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc);
         //bool Disconnect();
 
-        bool ConnectAndRegisterAsPlayer(string address, string name, string team);
-        bool ConnectAndRegisterAsSpectator(string address, string name);
+        bool ConnectAndRegisterAsPlayer(int major, int minor, string address, string name, string team);
+        bool ConnectAndRegisterAsSpectator(int major, int minor, string address, string name);
         bool UnregisterAndDisconnect();
 
         // Client->Server command

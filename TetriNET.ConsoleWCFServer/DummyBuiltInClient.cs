@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
@@ -182,9 +183,9 @@ namespace TetriNET.ConsoleWCFServer
             ResetTimeout();
         }
 
-        public void OnPlayerRegistered(RegistrationResults result, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
+        public void OnPlayerRegistered(RegistrationResults result, Versioning serverVersion, int playerId, bool gameStarted, bool isServerMaster, GameOptions options)
         {
-            Log.Default.WriteLine(LogLevels.Info, "OnPlayerRegistered[{0}]:{1} => {2} {3} {4}", PlayerName, result, playerId, gameStarted, isServerMaster);
+            Log.Default.WriteLine(LogLevels.Info, "OnPlayerRegistered[{0}]:{1} => {2} {3} {4} | Version: {5}.{6}", PlayerName, result, playerId, gameStarted, isServerMaster, serverVersion == null ? -1 : serverVersion.Major, serverVersion == null ? -1 : serverVersion.Minor);
             ResetTimeout();
             if (result == RegistrationResults.RegistrationSuccessful)
             {
@@ -334,9 +335,9 @@ namespace TetriNET.ConsoleWCFServer
             Log.Default.WriteLine(LogLevels.Info, "OnOptionsChanged[{0}]", PlayerName);
         }
 
-        public void OnSpectatorRegistered(RegistrationResults result, int spectatorId, bool gameStarted, GameOptions options)
+        public void OnSpectatorRegistered(RegistrationResults result, Versioning serverVersion, int spectatorId, bool gameStarted, GameOptions options)
         {
-            Log.Default.WriteLine(LogLevels.Info, "OnSpectatorRegistered[{0}]:{1} => {2} {3}", PlayerName, result, spectatorId, gameStarted);
+            Log.Default.WriteLine(LogLevels.Info, "OnSpectatorRegistered[{0}]:{1} => {2} {3} | {4}.{5}", PlayerName, result, spectatorId, gameStarted, serverVersion == null ? -1 : serverVersion.Major, serverVersion == null ? -1 : serverVersion.Minor);
         }
 
         public void OnSpectatorJoined(int spectatorId, string name)
@@ -358,8 +359,14 @@ namespace TetriNET.ConsoleWCFServer
 
             PlayerName = playerName;
             Team = team;
+            Version version = Assembly.GetEntryAssembly().GetName().Version;
+            Versioning clientVersion = new Versioning
+            {
+                Major = version.Major,
+                Minor = version.Minor,
+            };
 
-            Proxy.RegisterPlayer(this, playerName, team);
+            Proxy.RegisterPlayer(this, clientVersion, playerName, team);
         }
     }
 }
