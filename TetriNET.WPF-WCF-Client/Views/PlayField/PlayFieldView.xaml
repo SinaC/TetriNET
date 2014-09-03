@@ -8,9 +8,7 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance playFieldViewModels:PlayFieldViewModelDesignData, IsDesignTimeCreatable=True}"
              IsTabStop="False"
-             DataContextChanged="PlayFieldView_OnDataContextChanged"
-             KeyDown="GameView_KeyDown"
-             KeyUp="GameView_KeyUp">
+             DataContextChanged="PlayFieldView_OnDataContextChanged">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>

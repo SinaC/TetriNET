@@ -6,8 +6,8 @@
              xmlns:statistics="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Statistics"
              xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
              xmlns:userControls="clr-namespace:TetriNET.WPF_WCF_Client.UserControls"
-             IsTabStop="False"
              mc:Ignorable="d"
+             IsTabStop="False"
              d:DataContext="{d:DesignInstance statistics:ClientStatisticsViewModelDesignData, IsDesignTimeCreatable=True}"
              d:DesignHeight="450" d:DesignWidth="700">
     <UserControl.Resources>

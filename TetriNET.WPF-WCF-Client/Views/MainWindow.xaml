@@ -24,7 +24,10 @@
         ResizeMode="NoResize"
         MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
         KeyboardNavigation.DirectionalNavigation="None"
+        KeyDown="GameView_KeyDown"
+        KeyUp="GameView_KeyUp"
         d:DataContext="{d:DesignInstance mainViewModels:MainWindowViewModelDesignData, IsDesignTimeCreatable=True}"
+        IsTabStop="False"
         Icon="../TetriNET.ico"
         Title="TetriNET"
         Height="550" Width="800" WindowStyle="None">

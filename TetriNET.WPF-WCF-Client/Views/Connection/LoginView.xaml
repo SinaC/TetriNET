@@ -6,6 +6,7 @@
              xmlns:converters="clr-namespace:TetriNET.WPF_WCF_Client.Converters"
              xmlns:userControls="clr-namespace:TetriNET.WPF_WCF_Client.UserControls"
              xmlns:connectionViewModels="clr-namespace:TetriNET.WPF_WCF_Client.ViewModels.Connection"
+             IsTabStop="False"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance connectionViewModels:LoginViewModelDesignData, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
