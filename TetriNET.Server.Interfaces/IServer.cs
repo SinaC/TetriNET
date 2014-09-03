@@ -23,6 +23,7 @@ namespace TetriNET.Server.Interfaces
         List<WinEntry> WinList { get; }
         Dictionary<string, GameStatisticsByPlayer> GameStatistics { get; } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
         GameOptions Options { get; }
+        int GameActionCount { get; }
 
         bool AddHost(IHost host);
 

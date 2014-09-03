@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TetriNET.Common.DataContracts;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 using TetriNET.Tests.Server.Mocking;
@@ -10,6 +11,7 @@ namespace TetriNET.Tests.Server
     [TestClass]
     public class ServerTest
     {
+        private LogMock _log;
         private IHost _host;
         private IFactory _factory;
 
@@ -40,7 +42,8 @@ namespace TetriNET.Tests.Server
         {
             _host = null;
             _factory = null;
-            Log.SetLogger(new LogMock());
+            _log = new LogMock();
+            Log.SetLogger(_log);
         }
 
         [TestMethod]
@@ -180,6 +183,131 @@ namespace TetriNET.Tests.Server
             Assert.AreEqual((spectator2.Callback as CountCallTetriNETCallback).GetCallCount("OnGameFinished"), 1);
         }
 
-        // TODO: pause, resume, resetwinlist + every IHost event handlers  (how game actions and timeout could be mocked???)
+        [TestMethod]
+        public void TestPauseGameIsOnGamePausedNotCalledIfGameNotStarted()
+        {
+            IServer server = CreateServerWithHost();
+            server.StartServer();
+            IPlayer player1 = _factory.CreatePlayer(0, "player1", new CountCallTetriNETCallback());
+            IPlayer player2 = _factory.CreatePlayer(1, "player2", new CountCallTetriNETCallback());
+            ISpectator spectator1 = _factory.CreateSpectator(0, "spectator1", new CountCallTetriNETCallback());
+            ISpectator spectator2 = _factory.CreateSpectator(1, "spectator2", new CountCallTetriNETCallback());
+            _host.PlayerManager.Add(player1);
+            _host.PlayerManager.Add(player2);
+            _host.SpectatorManager.Add(spectator1);
+            _host.SpectatorManager.Add(spectator2);
+
+            server.PauseGame();
+
+            Assert.AreEqual(server.State, ServerStates.WaitingStartGame);
+            Assert.AreEqual((player1.Callback as CountCallTetriNETCallback).GetCallCount("OnGamePaused"), 0);
+            Assert.AreEqual((player2.Callback as CountCallTetriNETCallback).GetCallCount("OnGamePaused"), 0);
+            Assert.AreEqual((spectator1.Callback as CountCallTetriNETCallback).GetCallCount("OnGamePaused"), 0);
+            Assert.AreEqual((spectator2.Callback as CountCallTetriNETCallback).GetCallCount("OnGamePaused"), 0);
+        }
+
+        [TestMethod]
+        public void TestPauseGameIsOnGamePausedCalled()
+        {
+            IServer server = CreateServerWithHost();
+            server.StartServer();
+            IPlayer player1 = _factory.CreatePlayer(0, "player1", new CountCallTetriNETCallback());
+            IPlayer player2 = _factory.CreatePlayer(1, "player2", new CountCallTetriNETCallback());
+            ISpectator spectator1 = _factory.CreateSpectator(0, "spectator1", new CountCallTetriNETCallback());
+            ISpectator spectator2 = _factory.CreateSpectator(1, "spectator2", new CountCallTetriNETCallback());
+            _host.PlayerManager.Add(player1);
+            _host.PlayerManager.Add(player2);
+            _host.SpectatorManager.Add(spectator1);
+            _host.SpectatorManager.Add(spectator2);
+            server.StartGame();
+
+            server.PauseGame();
+
+            Assert.AreEqual(server.State, ServerStates.GamePaused);
+            Assert.AreEqual((player1.Callback as CountCallTetriNETCallback).GetCallCount("OnGamePaused"), 1);
+            Assert.AreEqual((player2.Callback as CountCallTetriNETCallback).GetCallCount("OnGamePaused"), 1);
+            Assert.AreEqual((spectator1.Callback as CountCallTetriNETCallback).GetCallCount("OnGamePaused"), 1);
+            Assert.AreEqual((spectator2.Callback as CountCallTetriNETCallback).GetCallCount("OnGamePaused"), 1);
+        }
+
+        [TestMethod]
+        public void TestResumeGameFailIfNotInPause()
+        {
+            IServer server = CreateServerWithHost();
+            server.StartServer();
+            IPlayer player1 = _factory.CreatePlayer(0, "player1", new CountCallTetriNETCallback());
+            IPlayer player2 = _factory.CreatePlayer(1, "player2", new CountCallTetriNETCallback());
+            ISpectator spectator1 = _factory.CreateSpectator(0, "spectator1", new CountCallTetriNETCallback());
+            ISpectator spectator2 = _factory.CreateSpectator(1, "spectator2", new CountCallTetriNETCallback());
+            _host.PlayerManager.Add(player1);
+            _host.PlayerManager.Add(player2);
+            _host.SpectatorManager.Add(spectator1);
+            _host.SpectatorManager.Add(spectator2);
+
+            server.ResumeGame();
+
+            Assert.AreEqual(server.State, ServerStates.WaitingStartGame);
+            Assert.AreEqual((player1.Callback as CountCallTetriNETCallback).GetCallCount("OnGameResumed"), 0);
+            Assert.AreEqual((player2.Callback as CountCallTetriNETCallback).GetCallCount("OnGameResumed"), 0);
+            Assert.AreEqual((spectator1.Callback as CountCallTetriNETCallback).GetCallCount("OnGameResumed"), 0);
+            Assert.AreEqual((spectator2.Callback as CountCallTetriNETCallback).GetCallCount("OnGameResumed"), 0);
+        }
+
+        [TestMethod]
+        public void TestResumeGameIsOnGameResumedCalled()
+        {
+            IServer server = CreateServerWithHost();
+            server.StartServer();
+            IPlayer player1 = _factory.CreatePlayer(0, "player1", new CountCallTetriNETCallback());
+            IPlayer player2 = _factory.CreatePlayer(1, "player2", new CountCallTetriNETCallback());
+            ISpectator spectator1 = _factory.CreateSpectator(0, "spectator1", new CountCallTetriNETCallback());
+            ISpectator spectator2 = _factory.CreateSpectator(1, "spectator2", new CountCallTetriNETCallback());
+            _host.PlayerManager.Add(player1);
+            _host.PlayerManager.Add(player2);
+            _host.SpectatorManager.Add(spectator1);
+            _host.SpectatorManager.Add(spectator2);
+            server.StartGame();
+            server.PauseGame();
+
+            server.ResumeGame();
+
+            Assert.AreEqual(server.State, ServerStates.GameStarted);
+            Assert.AreEqual((player1.Callback as CountCallTetriNETCallback).GetCallCount("OnGameResumed"), 1);
+            Assert.AreEqual((player2.Callback as CountCallTetriNETCallback).GetCallCount("OnGameResumed"), 1);
+            Assert.AreEqual((spectator1.Callback as CountCallTetriNETCallback).GetCallCount("OnGameResumed"), 1);
+            Assert.AreEqual((spectator2.Callback as CountCallTetriNETCallback).GetCallCount("OnGameResumed"), 1);
+        }
+
+        [TestMethod]
+        public void TestResetWinListFailIfNotWaitingStartGame()
+        {
+            IServer server = CreateServerWithHost();
+            server.StartServer();
+            IPlayer player1 = _factory.CreatePlayer(0, "player1", new CountCallTetriNETCallback());
+            IPlayer player2 = _factory.CreatePlayer(1, "player2", new CountCallTetriNETCallback());
+            ISpectator spectator1 = _factory.CreateSpectator(0, "spectator1", new CountCallTetriNETCallback());
+            ISpectator spectator2 = _factory.CreateSpectator(1, "spectator2", new CountCallTetriNETCallback());
+
+            // TODO
+        }
+
+        [TestMethod]
+        public void TestGameActionNotQueuedWhenPauseIsActive()
+        {
+            IServer server = CreateServerWithHost();
+            server.StartServer();
+            IPlayer player1 = _factory.CreatePlayer(0, "player1", new CountCallTetriNETCallback());
+            _host.PlayerManager.Add(player1);
+            server.StartGame();
+            server.PauseGame();
+
+            _host.UseSpecial(player1.Callback, 0, Specials.NukeField);
+
+            Assert.AreEqual(server.GameActionCount, 0); // TODO: disable game action queue before checking this
+            Assert.AreEqual(_log.LastLogLevel, LogLevels.Warning);
+            Assert.IsTrue(_log.LastLogLine.Contains("while game is not started"));
+        }
+
+        // TODO: every IHost event handlers  (how game actions and timeout could be mocked???)
     }
 }

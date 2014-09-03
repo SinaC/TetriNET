@@ -65,6 +65,11 @@ namespace TetriNET.Server
         public Dictionary<string, GameStatisticsByPlayer> GameStatistics { get; private set; } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
         public GameOptions Options { get; private set; }
 
+        public int GameActionCount
+        {
+            get { return _gameActionBlockingCollection.Count; }
+        }
+
         public bool AddHost(IHost host)
         {
             if (_hosts.Any(x => x == host))
@@ -488,30 +493,44 @@ namespace TetriNET.Server
 
         private void OnPlacePiece(IPlayer player, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid)
         {
-            EnqueueAction(() => PlacePiece(player, pieceIndex, highestIndex, piece, orientation, posX, posY, grid));
+            if (State == ServerStates.GameStarted)
+                EnqueueAction(() => PlacePiece(player, pieceIndex, highestIndex, piece, orientation, posX, posY, grid));
+            else
+                Log.Default.WriteLine(LogLevels.Warning, "OnPlacePiece received from {0} while game is not started", player.Name);
         }
 
         private void OnUseSpecial(IPlayer player, IPlayer target, Specials special)
         {
-            EnqueueAction(() => Special(player, target, special));
+            if (State == ServerStates.GameStarted)
+                EnqueueAction(() => Special(player, target, special));
+            else
+                Log.Default.WriteLine(LogLevels.Warning, "OnUseSpecial received from {0} while game is not started", player.Name);
         }
 
         private void OnClearLines(IPlayer player, int count)
         {
-            UpdateStatistics(player.Name, count);
-            if (Options.ClassicStyleMultiplayerRules && count > 1)
+            if (State == ServerStates.GameStarted)
             {
-                int addLines = count - 1;
-                if (addLines >= 4)
-                    // special case for Tetris and above
-                    addLines = 4;
-                EnqueueAction(() => SendLines(player, addLines));
+                UpdateStatistics(player.Name, count);
+                if (Options.ClassicStyleMultiplayerRules && count > 1)
+                {
+                    int addLines = count - 1;
+                    if (addLines >= 4)
+                        // special case for Tetris and above
+                        addLines = 4;
+                    EnqueueAction(() => SendLines(player, addLines));
+                }
             }
+            else
+                Log.Default.WriteLine(LogLevels.Warning, "OnClearLines received from {0} while game is not started", player.Name);
         }
 
         private void OnModifyGrid(IPlayer player, byte[] grid)
         {
-            EnqueueAction(() => ModifyGrid(player, grid));
+            if (State == ServerStates.GameStarted)
+                EnqueueAction(() => ModifyGrid(player, grid));
+            else
+                Log.Default.WriteLine(LogLevels.Warning, "OnClearLines received from {0} while game is not started", player.Name);
         }
 
         private void OnStartGame(IPlayer player)
@@ -560,7 +579,7 @@ namespace TetriNET.Server
 
         private void OnGameLost(IPlayer player)
         {
-            EnqueueAction(() => GameLost(player));
+            EnqueueAction(() => GameLost(player)); // Must be handled even if game is not started
         }
 
         private void OnChangeOptions(IPlayer player, GameOptions options)
@@ -648,7 +667,7 @@ namespace TetriNET.Server
 
         private void OnFinishContinuousSpecial(IPlayer player, Specials special)
         {
-            EnqueueAction(() => FinishContinuousSpecial(player, special));
+            EnqueueAction(() => FinishContinuousSpecial(player, special)); // Must be handled even if game is not started
         }
 
         private void OnEarnAchievement(IPlayer player, int achievementId, string achievementTitle)
@@ -831,6 +850,7 @@ namespace TetriNET.Server
             {
                 Log.Default.WriteLine(LogLevels.Error, "GameActionsTask cancelled exception. Exception: {0}", ex);
             }
+
 
             Log.Default.WriteLine(LogLevels.Info, "GameActionsTask stopped");
         }
