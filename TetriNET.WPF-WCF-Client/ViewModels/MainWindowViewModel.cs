@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using TetriNET.Common.DataContracts;
+﻿using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.WPF_WCF_Client.CustomSettings;
 using TetriNET.WPF_WCF_Client.Properties;
@@ -27,9 +25,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         protected PlayFieldViewModel PlayFieldPlayerViewModel { get; set; }
         protected PlayFieldSpectatorViewModel PlayFieldSpectatorViewModel { get; set; }
 
-        protected int Major { get; private set; }
-        protected int Minor { get; private set; }
-
         private int _activeTabItemIndex;
         public int ActiveTabItemIndex
         {
@@ -46,11 +41,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
 
         public MainWindowViewModel()
         {
-            //
-            Version version = Assembly.GetEntryAssembly().GetName().Version;
-            Major = version.Major;
-            Minor = version.Minor;
-
             //
             IFactory factory = new Factory();
 
@@ -92,9 +82,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
         private void OnConnect(ConnectEventArgs e)
         {
             if (e.IsSpectator)
-                e.Success = Client.ConnectAndRegisterAsSpectator(Major, Minor, ConnectionViewModel.LoginViewModel.ServerCompleteSpectatorAddress, ConnectionViewModel.LoginViewModel.Username);
+                e.Success = Client.ConnectAndRegisterAsSpectator(ConnectionViewModel.LoginViewModel.ServerCompleteSpectatorAddress, ConnectionViewModel.LoginViewModel.Username);
             else
-                e.Success = Client.ConnectAndRegisterAsPlayer(Major, Minor, ConnectionViewModel.LoginViewModel.ServerCompletePlayerAddress, ConnectionViewModel.LoginViewModel.Username, PartyLineViewModel.Team);
+                e.Success = Client.ConnectAndRegisterAsPlayer(ConnectionViewModel.LoginViewModel.ServerCompletePlayerAddress, ConnectionViewModel.LoginViewModel.Username, PartyLineViewModel.Team);
         }
 
         #region ViewModelBase

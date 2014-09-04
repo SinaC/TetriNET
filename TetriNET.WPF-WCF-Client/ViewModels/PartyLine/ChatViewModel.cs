@@ -245,28 +245,53 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             AddServerMessage(String.Format("*** {0} has joined as spectator", spectatorName), ChatColor.Green);
         }
 
+        private void DisplayRegistrationFailMessage(RegistrationResults result, Versioning serverVersion)
+        {
+            string message = "*** You've FAILED registering !!!"; // defaulting
+            switch (result)
+            {
+                case RegistrationResults.IncompatibleVersion:
+                    if (serverVersion != null)
+                        message = String.Format("*** You've FAILED registering !!! Application incompatible with server version {0}.{1}", serverVersion.Major, serverVersion.Minor);
+                    else
+                        message = String.Format("*** You've FAILED registering !!! Application incompatible with unknown server version");
+                    break;
+                case RegistrationResults.RegistrationFailedInvalidName:
+                    message = "*** You've FAILED registering !!! Your name is not valid";
+                    break;
+                case RegistrationResults.RegistrationFailedPlayerAlreadyExists:
+                    message = "*** You've FAILED registering !!! A player with the same name is already registered";
+                    break;
+                case RegistrationResults.RegistrationFailedTooManyPlayers:
+                    message = "*** You've FAILED registering !!! Too many players already connected";
+                    break;
+                case RegistrationResults.RegistrationFailedInvalidId:
+                    message = "*** You've FAILED registering !!! Internal server problem";
+                    break;
+            }
+            AddServerMessage(message, ChatColor.Red);
+        }
+
         private void OnRegisteredAsPlayer(RegistrationResults result, Versioning serverVersion, int playerId, bool isServerMaster)
         {
-            // TODO: display result and server version
             if (result == RegistrationResults.RegistrationSuccessful)
             {
                 AddServerMessage(String.Format("*** You've registered successfully as {0} (player)", Client.Name), ChatColor.Green);
                 IsRegistered = true;
             }
             else
-                AddServerMessage("*** You've FAILED registering !!!", ChatColor.Red);
+                DisplayRegistrationFailMessage(result, serverVersion);
         }
 
         private void OnRegisteredAsSpectator(RegistrationResults result, Versioning serverVersion, int spectatorId)
         {
-            // TODO: display result and server version
             if (result == RegistrationResults.RegistrationSuccessful)
             {
                 AddServerMessage(String.Format("*** You've registered successfully as {0} (spectator)", Client.Name), ChatColor.Green);
                 IsRegistered = true;
             }
             else
-                AddServerMessage("*** You've FAILED registering !!!", ChatColor.Red);
+                DisplayRegistrationFailMessage(result, serverVersion);
         }
 
         private void OnPlayerWon(int playerId, string playerName)

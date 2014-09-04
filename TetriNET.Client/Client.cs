@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -122,6 +123,17 @@ namespace TetriNET.Client
             _isImmunityActive = false;
             _pauseStartTime = DateTime.Now;
             _mutationCount = 0;
+
+            Assembly entryAssembly = Assembly.GetEntryAssembly();
+            if (entryAssembly != null)
+            {
+                Version version = entryAssembly.GetName().Version;
+                Version = new Versioning
+                    {
+                        Major = version.Major,
+                        Minor = version.Minor,
+                    };
+            }// else, we suppose SetVersion will be called later, before connecting
 
             _cancellationTokenSource = new CancellationTokenSource();
             _timeoutTask = Task.Factory.StartNew(TimeoutTask, _cancellationTokenSource.Token);
@@ -1195,6 +1207,8 @@ namespace TetriNET.Client
 
         public int PlayingOpponentsInCurrentGame { get; private set; }
 
+        public Versioning Version { get; private set; }
+
         public IEnumerable<IOpponent> Opponents
         {
             get
@@ -1300,12 +1314,24 @@ namespace TetriNET.Client
             // TODO: current & next piece
         }
 
-        public bool ConnectAndRegisterAsPlayer(int major, int minor, string address, string name, string team)
+        public void SetVersion(int major, int minor)
+        {
+            Version = new Versioning
+                {
+                    Major = major,
+                    Minor = minor
+                };
+        }
+
+        public bool ConnectAndRegisterAsPlayer(string address, string name, string team)
         {
             if (address == null)
                 throw new ArgumentNullException("address");
             if (name == null)
                 throw new ArgumentNullException("name");
+
+            if (Version == null)
+                throw new InvalidOperationException("Cannot ConnectAndRegisterAsPlayer, no application version found");
 
             if (_proxy != null || _proxySpectator != null)
                 return false; // should disconnect first
@@ -1318,12 +1344,8 @@ namespace TetriNET.Client
                 State = States.Registering;
                 Name = name;
                 Team = team;
-                Versioning clientVersion = new Versioning
-                {
-                    Major = major,
-                    Minor = minor,
-                };
-                _proxy.RegisterPlayer(this, clientVersion, name, team);
+
+                _proxy.RegisterPlayer(this, Version, name, team);
 
                 return true;
             }
@@ -1334,12 +1356,15 @@ namespace TetriNET.Client
             }
         }
 
-        public bool ConnectAndRegisterAsSpectator(int major, int minor, string address, string name)
+        public bool ConnectAndRegisterAsSpectator(string address, string name)
         {
             if (address == null)
                 throw new ArgumentNullException("address");
             if (name == null)
                 throw new ArgumentNullException("name");
+
+            if (Version == null)
+                throw new InvalidOperationException("Cannot ConnectAndRegisterAsSpectator, no application version found");
 
             if (_proxy != null || _proxySpectator != null)
                 return false; // should disconnect first
@@ -1351,12 +1376,7 @@ namespace TetriNET.Client
 
                 State = States.Registering;
                 Name = name;
-                Versioning clientVersion = new Versioning
-                {
-                    Major = major,
-                    Minor = minor,
-                };
-                _proxySpectator.RegisterSpectator(this, clientVersion, name);
+                _proxySpectator.RegisterSpectator(this, Version, name);
                
                 return true;
             }

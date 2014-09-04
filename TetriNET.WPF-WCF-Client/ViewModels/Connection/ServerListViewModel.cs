@@ -82,8 +82,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         private void AddServerToLatestInner(string address)
         {
-            if (_latestServers.Any(x => x == address)) // TODO: reorder to put address on top
-                return;
+            if (_latestServers.Any(x => x == address)) // reorder list if already in list
+                _latestServers.Remove(address); // remove from list, will be inserted on head in next statement
             _latestServers.Insert(0, address);
             if (_latestServers.Count > MaxLatestServerCount) // No more than 5 servers in list
                 _latestServers.RemoveAt(MaxLatestServerCount);
@@ -154,7 +154,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
     {
         public ServerListViewModelDesignData()
         {
-            // TODO: fill list
+            Servers.Add("net.tcp://localhost:9876/TetriNET");
+            Servers.Add("net.tcp://somehost:9876/TetriNET");
+
+            LatestServers.Add("net.tcp://localhost:9876/TetriNET");
         }
     }
 }

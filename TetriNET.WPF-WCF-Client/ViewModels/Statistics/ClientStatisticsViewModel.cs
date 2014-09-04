@@ -258,7 +258,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         {
             if (!_gameFinished)
             {
-                // TODO: display game statistics
                 _gameFinishedDateTime = DateTime.Now;
                 _gameFinished = true;
                 Refresh();

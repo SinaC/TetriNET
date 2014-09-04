@@ -76,6 +76,8 @@ namespace TetriNET.Client.Interfaces
         bool IsServerMaster { get; }
         int PlayingOpponentsInCurrentGame { get; }
 
+        Versioning Version { get; }
+
         IEnumerable<IOpponent> Opponents { get; }
         IClientStatistics Statistics { get; }
         IEnumerable<IAchievement> Achievements { get; }
@@ -125,8 +127,10 @@ namespace TetriNET.Client.Interfaces
         //bool Connect(Func<ITetriNETCallback, IProxy> createProxyFunc);
         //bool Disconnect();
 
-        bool ConnectAndRegisterAsPlayer(int major, int minor, string address, string name, string team);
-        bool ConnectAndRegisterAsSpectator(int major, int minor, string address, string name);
+        void SetVersion(int major, int minor);
+
+        bool ConnectAndRegisterAsPlayer(string address, string name, string team);
+        bool ConnectAndRegisterAsSpectator(string address, string name);
         bool UnregisterAndDisconnect();
 
         // Client->Server command

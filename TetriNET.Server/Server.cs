@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common.DataContracts;
@@ -27,8 +28,6 @@ namespace TetriNET.Server
         private readonly ISpectatorManager _spectatorManager;
         private readonly List<IHost> _hosts;
 
-        private readonly Versioning _serverVersion;
-
         private CancellationTokenSource _cancellationTokenSource;
         private Task _timeoutTask;
         private Task _gameActionsTask;
@@ -52,11 +51,16 @@ namespace TetriNET.Server
             _spectatorManager = spectatorManager;
             _hosts = new List<IHost>();
 
-            _serverVersion = new Versioning
+            Assembly entryAssembly = Assembly.GetEntryAssembly();
+            if (entryAssembly != null)
             {
-                Major = major,
-                Minor = minor,
-            };
+                Version version = entryAssembly.GetName().Version;
+                Version = new Versioning
+                {
+                    Major = version.Major,
+                    Minor = version.Minor,
+                };
+            }// else, we suppose SetVersion will be called later, before connecting
 
             GameStatistics = new Dictionary<string, GameStatisticsByPlayer>();
 
@@ -76,6 +80,17 @@ namespace TetriNET.Server
         public int GameActionCount
         {
             get { return _gameActionBlockingCollection.Count; }
+        }
+
+        public Versioning Version { get; private set; }
+
+        public void SetVersion(int major, int minor)
+        {
+            Version = new Versioning
+            {
+                Major = major,
+                Minor = minor
+            };
         }
 
         public bool AddHost(IHost host)
@@ -432,7 +447,7 @@ namespace TetriNET.Server
             Log.Default.WriteLine(LogLevels.Info, "New player:[{0}]{1}|{2}", playerId, player.Name, player.Team);
 
             // Send player id back to player
-            player.OnPlayerRegistered(RegistrationResults.RegistrationSuccessful, _serverVersion, playerId, State == ServerStates.GameStarted || State == ServerStates.GamePaused, _playerManager.ServerMaster == player, Options);
+            player.OnPlayerRegistered(RegistrationResults.RegistrationSuccessful, Version, playerId, State == ServerStates.GameStarted || State == ServerStates.GamePaused, _playerManager.ServerMaster == player, Options);
 
             // Inform new player about other players
             foreach (IPlayer p in _playerManager.Players.Where(x => x != player))
@@ -691,7 +706,7 @@ namespace TetriNET.Server
             Log.Default.WriteLine(LogLevels.Info, "New spectator:[{0}]{1}", spectatorId, spectator.Name);
 
             // Send spectator id back to spectator
-            spectator.OnSpectatorRegistered(RegistrationResults.RegistrationSuccessful, _serverVersion, spectatorId, State == ServerStates.GameStarted || State == ServerStates.GamePaused, Options);
+            spectator.OnSpectatorRegistered(RegistrationResults.RegistrationSuccessful, Version, spectatorId, State == ServerStates.GameStarted || State == ServerStates.GamePaused, Options);
 
             // Inform new spectator about players
             foreach (IPlayer p in _playerManager.Players)
