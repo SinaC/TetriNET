@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common.DataContracts;
-using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.Common.Randomizer;
@@ -133,7 +132,7 @@ namespace TetriNET.Server
             host.HostPlayerLeft += OnPayerLeft;
             host.HostSpectatorLeft += OnSpectatorLeft;
 
-            Debug.Assert(Check.CheckEvents(host), "Every host events must be handled");
+            Debug.Assert(CheckEvents(host), "Every host events must be handled");
 
             return true;
         }
@@ -218,7 +217,7 @@ namespace TetriNET.Server
                 if (_playerManager.PlayerCount > 0)
                 {
                     // Reset action list
-                    _gameActionQueue.ResetActions();
+                    _gameActionQueue.Reset();
 
                     // Reset special id
                     SpecialId = 0;
@@ -442,7 +441,7 @@ namespace TetriNET.Server
 
         private void EnqueueAction(Action action)
         {
-            _gameActionQueue.AddAction(action);
+            _gameActionQueue.Enqueue(action);
         }
 
         #region IHost event handler
@@ -1094,6 +1093,25 @@ namespace TetriNET.Server
             }
 
             Log.Default.WriteLine(LogLevels.Info, "TimeoutTask stopped");
+        }
+
+        // Check if every events of instance are handled
+        private static bool CheckEvents<T>(T instance)
+        {
+            Type t = instance.GetType();
+            EventInfo[] events = t.GetEvents();
+            foreach (EventInfo e in events)
+            {
+                if (e.DeclaringType == null)
+                    return false;
+                FieldInfo fi = e.DeclaringType.GetField(e.Name, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                if (fi == null)
+                    return false;
+                object value = fi.GetValue(instance);
+                if (value == null)
+                    return false;
+            }
+            return true;
         }
     }
 }

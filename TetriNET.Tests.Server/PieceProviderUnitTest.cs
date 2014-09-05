@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.Common.Randomizer;
 using TetriNET.Server.Interfaces;

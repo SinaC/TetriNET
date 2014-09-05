@@ -6,6 +6,7 @@ using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
+using TetriNET.Common.Randomizer;
 
 namespace TetriNET.WPF_WCF_Client.GameController
 {
@@ -21,7 +22,6 @@ namespace TetriNET.WPF_WCF_Client.GameController
                 Commands.RotateCounterclockwise
             };
 
-        private readonly Random _random;
         private readonly Dictionary<Commands, DispatcherTimer> _timers = new Dictionary<Commands, DispatcherTimer>();
         private readonly Dictionary<Commands, Commands> _confusionMapping = new Dictionary<Commands, Commands>();
 
@@ -32,7 +32,6 @@ namespace TetriNET.WPF_WCF_Client.GameController
             if (client == null)
                 throw new ArgumentNullException("client");
 
-            _random = new Random();
             Client = client;
             _isConfusionActive = false;
 
@@ -148,7 +147,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
                             IOpponent[] opponents = Client.Opponents.ToArray();
                             if (opponents.Any())
                             {
-                                int rnd = _random.Next(opponents.Count());
+                                int rnd = Randomizer.Instance.Next(opponents.Count());
                                 IOpponent opponent = opponents[rnd];
                                 if (opponent != null)
                                     Client.UseFirstSpecial(opponent.PlayerId);
@@ -197,7 +196,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
                 {
                     _confusionMapping.Clear();
                     //List<Commands> commands = Enum.GetValues(typeof(Commands)).Cast<Commands>().Where(x => x != Commands.Invalid).ToList();
-                    List<Commands> shuffled = Shuffle(_random, CommandsAvailableForConfusion);
+                    List<Commands> shuffled = Shuffle(Randomizer.Instance, CommandsAvailableForConfusion);
                     for (int i = 0; i < CommandsAvailableForConfusion.Length; i++)
                     {
                         _confusionMapping.Add(CommandsAvailableForConfusion[i], shuffled[i]);
@@ -249,7 +248,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
             }
         }
 
-        private static List<T> Shuffle<T>(Random random, IEnumerable<T> list)
+        private static List<T> Shuffle<T>(IRandomizer random, IEnumerable<T> list)
         {
             List<T> newList = list.Select(x => x).ToList();
             for (int i = newList.Count; i > 1; i--)

@@ -27,12 +27,12 @@ namespace TetriNET.Common.BlockingActionQueue
             _gameActionTask.Wait(milliseconds);
         }
 
-        public void AddAction(Action action)
+        public void Enqueue(Action action)
         {
             _gameActionBlockingCollection.Add(action);
         }
 
-        public void ResetActions()
+        public void Reset()
         {
             while (_gameActionBlockingCollection.Count > 0)
             {

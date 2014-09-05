@@ -5,6 +5,7 @@ using System.Linq;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
+using TetriNET.Common.Randomizer;
 using TetriNET.WPF_WCF_Client.DynamicGrid;
 using TetriNET.WPF_WCF_Client.Helpers;
 
@@ -431,7 +432,6 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
                         },
                 };
             List<SpecialStatisticsRow> rows = new List<SpecialStatisticsRow>();
-            Random random = new Random();
             foreach (Specials special in EnumHelper.GetSpecials(b => b))
             {
                 SpecialStatisticsRow row = new SpecialStatisticsRow
@@ -440,7 +440,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
                     };
                 foreach (DynamicColumn column in columns)
                 {
-                    int value = random.Next(20);
+                    int value = Randomizer.Instance.Next(20);
                     row.TryAddProperty(column.Name, value);
                 }
                 rows.Add(row);

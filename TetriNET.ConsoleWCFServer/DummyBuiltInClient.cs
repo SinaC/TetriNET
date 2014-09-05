@@ -7,6 +7,7 @@ using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
+using TetriNET.Common.Randomizer;
 
 namespace TetriNET.ConsoleWCFServer
 {
@@ -105,7 +106,7 @@ namespace TetriNET.ConsoleWCFServer
                     // NOP: waiting callback OnGameStarted
                     break;
                 case States.GameStarted:
-                    int rnd = new Random().Next(4);
+                    int rnd = Randomizer.Instance.Next(4);
                     switch (rnd)
                     {
                         case 0:

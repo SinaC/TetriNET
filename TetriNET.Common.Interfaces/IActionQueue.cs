@@ -10,7 +10,7 @@ namespace TetriNET.Common.Interfaces
         void Start(CancellationTokenSource cancellationTokenSource); // Cancel token to Stop
         void Wait(int milliseconds); // Wait until stopped or timeout elapsed
 
-        void AddAction(Action action);
-        void ResetActions();
+        void Enqueue(Action action);
+        void Reset();
     }
 }

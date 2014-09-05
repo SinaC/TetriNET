@@ -43,6 +43,10 @@
       <Project>{85b3313b-f31a-45be-8bf6-8ae55ae484b0}</Project>
       <Name>TetriNET.Client.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Common.Interfaces\TetriNET.Common.Interfaces.csproj">
+      <Project>{70fb80f2-7abf-45dd-b2d4-ee945697e9b5}</Project>
+      <Name>TetriNET.Common.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>

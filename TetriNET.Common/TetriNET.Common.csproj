@@ -61,15 +61,21 @@
     <Compile Include="DataContracts\WinEntry.cs" />
     <Compile Include="Attributes\PieceAttribute.cs" />
     <Compile Include="Helpers\CellHelper.cs" />
-    <Compile Include="Helpers\Check.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\MonadExtensions.cs" />
     <Compile Include="Helpers\SingletonPattern.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Randomizer\Randomizer.cs" />
     <Compile Include="Randomizer\RangeRandom.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TetriNET.Common.Interfaces\TetriNET.Common.Interfaces.csproj">
+      <Project>{70fb80f2-7abf-45dd-b2d4-ee945697e9b5}</Project>
+      <Name>TetriNET.Common.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

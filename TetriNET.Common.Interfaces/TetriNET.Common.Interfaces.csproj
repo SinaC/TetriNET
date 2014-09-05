@@ -36,6 +36,8 @@
   <ItemGroup>
     <Compile Include="IActionQueue.cs" />
     <Compile Include="ILog.cs" />
+    <Compile Include="IOccurancy.cs" />
+    <Compile Include="IRandomizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

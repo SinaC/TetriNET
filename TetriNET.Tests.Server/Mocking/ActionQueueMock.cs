@@ -21,12 +21,12 @@ namespace TetriNET.Tests.Server.Mocking
             // NOP
         }
 
-        public void AddAction(Action action)
+        public void Enqueue(Action action)
         {
             _actions.Add(action);
         }
 
-        public void ResetActions()
+        public void Reset()
         {
             _actions.Clear();
         }

@@ -422,7 +422,7 @@ namespace TetriNET.Client
         private void OnGameStartedPlayer(List<Pieces> pieces)
         {
             // Reset board action list
-            _actionQueue.ResetActions();
+            _actionQueue.Reset();
 
             // Set state
             State = States.Playing;
@@ -535,7 +535,7 @@ namespace TetriNET.Client
             }
 
             // Reset board action list
-           _actionQueue.ResetActions();
+           _actionQueue.Reset();
 
             GameFinished.Do(x => x(statistics));
 
@@ -879,7 +879,7 @@ namespace TetriNET.Client
             _gameTimer.Stop();
 
             // Reset board action list
-            _actionQueue.ResetActions();
+            _actionQueue.Reset();
 
             //
             State = States.Registered;
@@ -1112,7 +1112,7 @@ namespace TetriNET.Client
 
         private void EnqueueBoardAction(Action action)
         {
-            _actionQueue.AddAction(action);
+            _actionQueue.Enqueue(action);
         }
 
         #region IClient

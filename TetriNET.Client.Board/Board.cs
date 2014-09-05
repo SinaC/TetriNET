@@ -4,13 +4,12 @@ using System.Linq;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
+using TetriNET.Common.Randomizer;
 
 namespace TetriNET.Client.Board
 {
     public class Board : IBoard
     {
-        private readonly Random _random; // TODO: create own static thread-safe random class
-
         public int Width { get; private set; }
         public int Height { get; private set; }
         public byte[] Cells { get; private set; }
@@ -20,8 +19,6 @@ namespace TetriNET.Client.Board
             Width = width;
             Height = height;
             Cells = new byte[Width*Height];
-
-            _random = new Random();
         }
 
         public IBoard Clone()
@@ -462,7 +459,7 @@ namespace TetriNET.Client.Board
         {
             for (int i = 0; i < count; i++)
             {
-                int index = 1 + _random.Next(Width*Height);
+                int index = 1 + Randomizer.Instance.Next(Width*Height);
                 Cells[index] = CellHelper.EmptyCell;
             }
         }
@@ -533,7 +530,7 @@ namespace TetriNET.Client.Board
         {
             for (int y = 1; y <= Height; y++) // top-down
             {
-                int shift = _random.Next(3) - 1; // 0 -> 2 ==> -1 -> 1
+                int shift = Randomizer.Instance.Next(3) - 1; // 0 -> 2 ==> -1 -> 1
                 if (shift < 0)
                 {
                     for (int x = 1; x <= Width - 1; x++) // x <- x+1
@@ -592,8 +589,8 @@ namespace TetriNET.Client.Board
                                     // get scattered coordinates
                                     int oldIndex = GetCellIndex(oldX, oldY);
                                     // get scattered new coordinates
-                                    int newX = x + xi*2 + (_random.Next(3) - 1); // some x deviation -3 -> +3
-                                    int newY = y + 5 + _random.Next(5); // some y deviation  +5 -> +10
+                                    int newX = x + xi*2 + (Randomizer.Instance.Next(3) - 1); // some x deviation -3 -> +3
+                                    int newY = y + 5 + Randomizer.Instance.Next(5); // some y deviation  +5 -> +10
                                     if (newX <= 1) newX = 1;
                                     if (newX >= Width) newX = Width;
                                     if (newY <= 1) newY = 1;
@@ -617,7 +614,7 @@ namespace TetriNET.Client.Board
         /// </summary>
         public void ClearColumn()
         {
-            int column = 1 + _random.Next(Width);
+            int column = 1 + Randomizer.Instance.Next(Width);
             for (int y = 1; y <= Height; y++)
                 this[column, y] = CellHelper.EmptyCell;
         }
@@ -689,7 +686,7 @@ namespace TetriNET.Client.Board
                 if (n > 0) // if there is at least one non-special piece
                 {
                     // get random piece without specials
-                    int randomCell = _random.Next(n);
+                    int randomCell = Randomizer.Instance.Next(n);
                     int cellIndex = cellsOccupiedWithoutSpecials[randomCell];
                     // get random special
                     Specials special = randomFunc();
@@ -725,7 +722,7 @@ namespace TetriNET.Client.Board
                     this[x, y] = cellValue;
                 }
             // Put random junk in bottom row (row 1).
-            int hole = 1 + _random.Next(Width);
+            int hole = 1 + Randomizer.Instance.Next(Width);
             for (int x = 1; x <= Width; x++)
             {
                 // Fill row except hole

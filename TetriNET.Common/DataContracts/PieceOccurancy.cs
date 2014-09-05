@@ -1,5 +1,5 @@
 ﻿using System.Runtime.Serialization;
-using TetriNET.Common.Randomizer;
+using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Common.DataContracts
 {

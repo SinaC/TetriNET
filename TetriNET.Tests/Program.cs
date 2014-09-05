@@ -10,6 +10,7 @@ using TetriNET.Common.Attributes;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Randomizer;
 
 namespace TetriNET.Tests
