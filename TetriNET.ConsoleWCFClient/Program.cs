@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Configuration;
 using TetriNET.Client.Interfaces;
+using TetriNET.Common.BlockingActionQueue;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.ConsoleWCFClient.AI;
 using TetriNET.ConsoleWCFClient.UI;
@@ -29,10 +31,13 @@ namespace TetriNET.ConsoleWCFClient
             IFactory factory = new Factory();
 
             //
+            IActionQueue actionQueue = new BlockingActionQueue();
+
+            //
             //string baseAddress = @"net.tcp://localhost:8765/TetriNET";
             IAchievementManager manager = factory.CreateAchievementManager();
             manager.FindAllAchievements();
-            IClient client = new Client.Client(factory, manager);
+            IClient client = new Client.Client(factory, actionQueue, manager);
 
             string baseAddress = ConfigurationManager.AppSettings["address"];
             client.ConnectAndRegisterAsPlayer(baseAddress, name, team);

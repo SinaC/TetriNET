@@ -3,6 +3,7 @@ using System.Linq;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 
 namespace TetriNET.Client.Strategy

@@ -37,20 +37,24 @@
   <ItemGroup>
     <Compile Include="IPFilterServiceBehavior.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WCFHost.cs" />
+    <Compile Include="WCFHostBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ServiceModelEx\ServiceModelEx.csproj">
       <Project>{0858c710-af53-4049-b98e-cfe3638d1228}</Project>
       <Name>ServiceModelEx</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Common.Interfaces\TetriNET.Common.Interfaces.csproj">
+      <Project>{70fb80f2-7abf-45dd-b2d4-ee945697e9b5}</Project>
+      <Name>TetriNET.Common.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Server.GenericHost\TetriNET.Server.GenericHost.csproj">
+    <ProjectReference Include="..\TetriNET.Server.HostBase\TetriNET.Server.HostBase.csproj">
       <Project>{010b434d-86f0-4bff-b17b-702bcccf69f5}</Project>
-      <Name>TetriNET.Server.GenericHost</Name>
+      <Name>TetriNET.Server.HostBase</Name>
     </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common.Logger\TetriNET.Common.Logger.csproj">
       <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>

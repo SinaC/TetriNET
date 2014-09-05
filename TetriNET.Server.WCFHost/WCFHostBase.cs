@@ -4,12 +4,13 @@ using ServiceModelEx;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 
 namespace TetriNET.Server.WCFHost
 {
-    public sealed class WCFHost : GenericHost.GenericHost
+    public sealed class WCFHostBase : HostBase.HostBase
     {
         [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
         public sealed class WCFServiceHost : IWCFTetriNET, IWCFTetriNETSpectator
@@ -210,8 +211,8 @@ namespace TetriNET.Server.WCFHost
             set { _serviceHost.Port = value; }
         }
 
-        public WCFHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory, int major, int minor)
-            : base(playerManager, spectatorManager, banManager, factory, major, minor)
+        public WCFHostBase(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
+            : base(playerManager, spectatorManager, banManager, factory)
         {
             _serviceHost = new WCFServiceHost(this);
 

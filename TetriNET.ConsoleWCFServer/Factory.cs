@@ -1,4 +1,6 @@
-﻿using TetriNET.Common.Contracts;
+﻿using TetriNET.Common.BlockingActionQueue;
+using TetriNET.Common.Contracts;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Randomizer;
 using TetriNET.Server.BanManager;
 using TetriNET.Server.Interfaces;
@@ -10,6 +12,11 @@ namespace TetriNET.ConsoleWCFServer
 {
     public class Factory : IFactory
     {
+        public IActionQueue CreateActionQueue()
+        {
+            return new BlockingActionQueue();
+        }
+
         public IBanManager CreateBanManager()
         {
             return new BanManager();

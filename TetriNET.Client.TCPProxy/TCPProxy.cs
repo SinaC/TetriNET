@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 
 namespace TetriNET.Client.TCPProxy

@@ -5,12 +5,13 @@ using System.Net.Sockets;
 using System.Text;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 
 namespace TetriNET.Server.TCPHost
 {
-    public sealed class TCPHost : GenericHost.GenericHost
+    public sealed class TCPHostBase : HostBase.HostBase
     {
         public sealed class TetriNETTCPCallback : ITetriNETCallback
         {
@@ -425,8 +426,8 @@ namespace TetriNET.Server.TCPHost
             set { _serviceHost.Port = value; }
         }
 
-        public TCPHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory, int major, int minor)
-            : base(playerManager, spectatorManager, banManager, factory, major, minor)
+        public TCPHostBase(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
+            : base(playerManager, spectatorManager, banManager, factory)
         {
             _serviceHost = new SocketServiceHost(this);
         }

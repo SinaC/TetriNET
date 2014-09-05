@@ -10,7 +10,6 @@ using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.ViewModels;
 using TetriNET.WPF_WCF_Client.ViewModels.Options;
-using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
 
 namespace TetriNET.WPF_WCF_Client.Views
 {
@@ -59,12 +58,12 @@ namespace TetriNET.WPF_WCF_Client.Views
 
         private void Minimize_Click(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            WindowState = WindowState.Minimized;
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void GameView_KeyDown(object sender, KeyEventArgs e)
@@ -183,7 +182,7 @@ namespace TetriNET.WPF_WCF_Client.Views
         
         private void CloseCommandHandler(object sender, ExecutedRoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         #endregion

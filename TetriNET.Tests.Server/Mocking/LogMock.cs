@@ -1,5 +1,5 @@
 ﻿using System;
-using TetriNET.Common.Logger;
+using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Tests.Server.Mocking
 {

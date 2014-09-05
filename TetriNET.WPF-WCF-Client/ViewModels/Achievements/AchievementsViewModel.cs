@@ -7,6 +7,7 @@ using System.Windows.Input;
 using TetriNET.Client.Achievements;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.MVVM;

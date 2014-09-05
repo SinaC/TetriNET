@@ -24,6 +24,7 @@ using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.WPF_WCF_Client.Helpers;
 

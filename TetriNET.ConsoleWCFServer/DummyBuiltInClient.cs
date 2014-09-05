@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 
 namespace TetriNET.ConsoleWCFServer

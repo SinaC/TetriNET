@@ -4,7 +4,9 @@ using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using TetriNET.Common.BlockingActionQueue;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.ConsoleWCFServer.Host;
 using TetriNET.Server.Interfaces;
@@ -53,29 +55,27 @@ namespace TetriNET.ConsoleWCFServer
             ISpectatorManager spectatorManager = factory.CreateSpectatorManager(10);
 
             //
-            IHost wcfHost = new Server.WCFHost.WCFHost(
+            IHost wcfHost = new Server.WCFHost.WCFHostBase(
                 playerManager, 
                 spectatorManager, 
                 banManager, 
-                factory,
-                version.Major, version.Minor)
+                factory)
             {
                 Port = ConfigurationManager.AppSettings["port"]
             };
 
             //
-            IHost builtInHost = new BuiltInHost(
+            IHost builtInHost = new BuiltInHostBase(
                 playerManager,
                 spectatorManager,
                 banManager,
                 factory);
 
 
-            IHost socketHost = new TCPHost(playerManager,
+            IHost socketHost = new TCPHostBase(playerManager,
                 spectatorManager,
                 banManager,
-                factory,
-                version.Major, version.Minor)
+                factory)
             {
                 Port = 5656
             };
@@ -88,10 +88,13 @@ namespace TetriNET.ConsoleWCFServer
             };
 
             //
+            IActionQueue actionQueue = factory.CreateActionQueue();
+
+            //
             IPieceProvider pieceProvider = factory.CreatePieceProvider();
 
             //
-            IServer server = new Server.Server(playerManager, spectatorManager, pieceProvider, version.Major, version.Minor);
+            IServer server = new Server.Server(playerManager, spectatorManager, pieceProvider, actionQueue);
             server.AddHost(wcfHost);
             server.AddHost(builtInHost);
             server.AddHost(socketHost);

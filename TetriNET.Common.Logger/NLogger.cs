@@ -1,4 +1,5 @@
 ﻿using System;
+using TetriNET.Common.Interfaces;
 
 namespace TetriNET.Common.Logger
 {

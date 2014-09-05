@@ -5,6 +5,7 @@ using System.Timers;
 using TetriNET.Client.Interfaces;
 using TetriNET.Client.Strategy;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 
 namespace TetriNET.ConsoleWCFClient.AI

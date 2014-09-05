@@ -3,17 +3,19 @@ using System.Linq;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 
-namespace TetriNET.Server.GenericHost
+namespace TetriNET.Server.HostBase
 {
-    public abstract class GenericHost : IHost
+    public abstract class HostBase : IHost
     {
-        protected readonly IFactory Factory;
-        protected readonly Versioning ServerVersion;
+        private Versioning _serverVersion;
 
-        protected GenericHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory, int major, int minor)
+        protected readonly IFactory Factory;
+
+        protected HostBase(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
         {
             if (playerManager == null)
                 throw new ArgumentNullException("playerManager");
@@ -26,11 +28,6 @@ namespace TetriNET.Server.GenericHost
             SpectatorManager = spectatorManager;
             BanManager = banManager;
             Factory = factory;
-            ServerVersion = new Versioning
-            {
-                Major = major,
-                Minor = minor,
-            };
         }
 
         protected virtual void OnEntityConnectionLost(IEntity entity)
@@ -74,6 +71,11 @@ namespace TetriNET.Server.GenericHost
         public IPlayerManager PlayerManager { get; private set; }
         public ISpectatorManager SpectatorManager { get; private set; }
 
+        public void SetVersion(Versioning versioning)
+        {
+            _serverVersion = versioning;
+        }
+
         public abstract void Start();
         public abstract void Stop();
         public abstract void RemovePlayer(IPlayer player);
@@ -96,7 +98,7 @@ namespace TetriNET.Server.GenericHost
 
             // TODO: smarter compatibility check
             if (clientVersion == null
-                || ServerVersion.Major != clientVersion.Major || ServerVersion.Minor != clientVersion.Minor)
+                || _serverVersion.Major != clientVersion.Major || _serverVersion.Minor != clientVersion.Minor)
                 result = RegistrationResults.IncompatibleVersion;
             else
             {
@@ -143,7 +145,7 @@ namespace TetriNET.Server.GenericHost
             {
                 Log.Default.WriteLine(LogLevels.Info, "Register failed for player {0}", playerName);
                 //
-                callback.OnPlayerRegistered(result, ServerVersion, -1, false, false, null);
+                callback.OnPlayerRegistered(result, _serverVersion, -1, false, false, null);
             }
         }
 
@@ -510,7 +512,7 @@ namespace TetriNET.Server.GenericHost
 
             // TODO: smarter compatibility check
             if (clientVersion == null
-                || (ServerVersion.Major != clientVersion.Major && ServerVersion.Minor != clientVersion.Minor))
+                || (_serverVersion.Major != clientVersion.Major && _serverVersion.Minor != clientVersion.Minor))
                 result = RegistrationResults.IncompatibleVersion;
             else
             {
@@ -556,7 +558,7 @@ namespace TetriNET.Server.GenericHost
             {
                 Log.Default.WriteLine(LogLevels.Info, "Register failed for spectator {0}", spectatorName);
                 //
-                callback.OnSpectatorRegistered(result, ServerVersion, -1, false, null);
+                callback.OnSpectatorRegistered(result, _serverVersion, -1, false, null);
             }
         }
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,6 +11,7 @@ using TetriNET.Common.Attributes;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.Common.Randomizer;
 
@@ -55,10 +55,10 @@ namespace TetriNET.Client
         private readonly Inventory _inventory;
         private readonly Statistics _statistics;
         private readonly IAchievementManager _achievementManager;
+        private readonly IActionQueue _actionQueue;
         private readonly System.Timers.Timer _gameTimer;
 
         private readonly Task _timeoutTask;
-        private readonly Task _boardActionTask;
         private readonly CancellationTokenSource _cancellationTokenSource; // TODO: use token to cancel task + wait for task
 
 
@@ -88,12 +88,13 @@ namespace TetriNET.Client
             get { return _clientPlayerId >= 0 && _clientPlayerId <= MaxPlayers ? _playersData[_clientPlayerId] : null; }
         }
 
-        public Client(IFactory factory)
+        public Client(IFactory factory, IActionQueue actionQueue)
         {
             if (factory == null)
                 throw new ArgumentNullException("factory");
 
             _factory = factory;
+            _actionQueue = actionQueue;
 
             // default options
             Options = new GameOptions();
@@ -137,11 +138,11 @@ namespace TetriNET.Client
 
             _cancellationTokenSource = new CancellationTokenSource();
             _timeoutTask = Task.Factory.StartNew(TimeoutTask, _cancellationTokenSource.Token);
-            _boardActionTask = Task.Factory.StartNew(BoardActionTask, _cancellationTokenSource.Token);
+            _actionQueue.Start(_cancellationTokenSource);
         }
 
-        public Client(IFactory factory, IAchievementManager achievementManager)
-            : this(factory)
+        public Client(IFactory factory, IActionQueue actionQueue, IAchievementManager achievementManager)
+            : this(factory, actionQueue)
         {
             if (factory == null)
                 throw new ArgumentNullException("factory");
@@ -421,11 +422,7 @@ namespace TetriNET.Client
         private void OnGameStartedPlayer(List<Pieces> pieces)
         {
             // Reset board action list
-            while (_boardActionBlockingCollection.Count > 0)
-            {
-                Action item;
-                _boardActionBlockingCollection.TryTake(out item);
-            }
+            _actionQueue.ResetActions();
 
             // Set state
             State = States.Playing;
@@ -538,11 +535,7 @@ namespace TetriNET.Client
             }
 
             // Reset board action list
-            while (_boardActionBlockingCollection.Count > 0)
-            {
-                Action item;
-                _boardActionBlockingCollection.TryTake(out item);
-            }
+           _actionQueue.ResetActions();
 
             GameFinished.Do(x => x(statistics));
 
@@ -886,11 +879,7 @@ namespace TetriNET.Client
             _gameTimer.Stop();
 
             // Reset board action list
-            while (_boardActionBlockingCollection.Count > 0)
-            {
-                Action item;
-                _boardActionBlockingCollection.TryTake(out item);
-            }
+            _actionQueue.ResetActions();
 
             //
             State = States.Registered;
@@ -1119,6 +1108,11 @@ namespace TetriNET.Client
             CurrentPiece.GetAbsoluteBoundingRectangle(out minX, out minY, out maxX, out maxY);
             if (maxY < Board.Height)
                 CurrentPiece.Translate(0, Board.Height - maxY);
+        }
+
+        private void EnqueueBoardAction(Action action)
+        {
+            _actionQueue.AddAction(action);
         }
 
         #region IClient
@@ -1685,56 +1679,6 @@ namespace TetriNET.Client
                 }
             }
         }
-
-        #region Board Action Queue
-
-        private readonly BlockingCollection<Action> _boardActionBlockingCollection = new BlockingCollection<Action>(new ConcurrentQueue<Action>());
-
-        private void EnqueueBoardAction(Action action)
-        {
-            _boardActionBlockingCollection.Add(action);
-        }
-
-        private void BoardActionTask()
-        {
-            Log.Default.WriteLine(LogLevels.Info, "BoardActionTask started");
-
-            while (true)
-            {
-                if (_cancellationTokenSource.IsCancellationRequested)
-                {
-                    Log.Default.WriteLine(LogLevels.Info, "Stop background task event raised");
-                    break;
-                }
-
-                try
-                {
-                    Action action;
-                    bool taken = _boardActionBlockingCollection.TryTake(out action, 10, _cancellationTokenSource.Token);
-                    if (taken)
-                    {
-                        try
-                        {
-                            Log.Default.WriteLine(LogLevels.Debug, "Dequeue, item in queue {0}", _boardActionBlockingCollection.Count);
-                            action();
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Default.WriteLine(LogLevels.Error, "Exception raised in BoardActionTask. Exception:{0}", ex);
-                        }
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    Log.Default.WriteLine(LogLevels.Info, "Taking cancelled");
-                    break;
-                }
-            }
-
-            Log.Default.WriteLine(LogLevels.Info, "BoardActionTask stopped");
-        }
-
-        #endregion
 
         #region Board Actions
 

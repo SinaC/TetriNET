@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.IO;
 using System.Windows;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.WPF_WCF_Client.CustomSettings;
 using TetriNET.WPF_WCF_Client.Helpers;

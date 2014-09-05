@@ -1,4 +1,6 @@
-﻿namespace TetriNET.Common.Logger
+﻿using TetriNET.Common.Interfaces;
+
+namespace TetriNET.Common.Logger
 {
     public static class Log
     {

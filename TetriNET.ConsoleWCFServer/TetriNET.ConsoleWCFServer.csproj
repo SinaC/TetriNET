@@ -44,13 +44,11 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ban\HostTransportAddress.cs" />
     <Compile Include="Factory.cs" />
-    <Compile Include="Host\BuiltInHost.cs" />
+    <Compile Include="Host\BuiltInHostBase.cs" />
     <Compile Include="DummyBuiltInClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -64,6 +62,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TetriNET.Common.BlockingActionQueue\TetriNET.Common.BlockingActionQueue.csproj">
+      <Project>{7bcd8ae0-9704-426c-b79a-aa04a87cc238}</Project>
+      <Name>TetriNET.Common.BlockingActionQueue</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TetriNET.Common.Interfaces\TetriNET.Common.Interfaces.csproj">
+      <Project>{70fb80f2-7abf-45dd-b2d4-ee945697e9b5}</Project>
+      <Name>TetriNET.Common.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
@@ -72,9 +78,9 @@
       <Project>{da133f38-8ec8-4383-9cda-7cdd5f967803}</Project>
       <Name>TetriNET.Server.BanManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Server.GenericHost\TetriNET.Server.GenericHost.csproj">
+    <ProjectReference Include="..\TetriNET.Server.HostBase\TetriNET.Server.HostBase.csproj">
       <Project>{010b434d-86f0-4bff-b17b-702bcccf69f5}</Project>
-      <Name>TetriNET.Server.GenericHost</Name>
+      <Name>TetriNET.Server.HostBase</Name>
     </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common.Logger\TetriNET.Common.Logger.csproj">
       <Project>{1c6b89eb-a58a-4673-a70a-c00bbc325848}</Project>

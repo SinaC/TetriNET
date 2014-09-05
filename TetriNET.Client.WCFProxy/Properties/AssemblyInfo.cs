@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TetriNET.WPFProxy")]
+[assembly: AssemblyTitle("TetriNET.Client.WPFProxy")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SinaC")]
-[assembly: AssemblyProduct("TetriNET.WPFProxy")]
+[assembly: AssemblyProduct("TetriNET.Client.WPFProxy")]
 [assembly: AssemblyCopyright("Copyright © SinaC 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Helpers;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.Common.Randomizer;
 using TetriNET.Server.Interfaces;
@@ -26,18 +26,18 @@ namespace TetriNET.Server
         private readonly IPieceProvider _pieceProvider;
         private readonly IPlayerManager _playerManager;
         private readonly ISpectatorManager _spectatorManager;
+        private readonly IActionQueue _gameActionQueue;
         private readonly List<IHost> _hosts;
 
         private CancellationTokenSource _cancellationTokenSource;
         private Task _timeoutTask;
-        private Task _gameActionsTask;
 
         private DateTime _gameStartTime;
         private bool _isSuddenDeathActive;
         private DateTime _suddenDeathStartTime;
         private DateTime _lastSuddenDeathAddLines;
 
-        public Server(IPlayerManager playerManager, ISpectatorManager spectatorManager, IPieceProvider pieceProvider, int major, int minor)
+        public Server(IPlayerManager playerManager, ISpectatorManager spectatorManager, IPieceProvider pieceProvider, IActionQueue gameActionQueue)
         {
             if (playerManager == null)
                 throw new ArgumentNullException("playerManager");
@@ -49,6 +49,7 @@ namespace TetriNET.Server
             _pieceProvider.Occurancies = () => Options.PieceOccurancies;
             _playerManager = playerManager;
             _spectatorManager = spectatorManager;
+            _gameActionQueue = gameActionQueue;
             _hosts = new List<IHost>();
 
             Assembly entryAssembly = Assembly.GetEntryAssembly();
@@ -77,11 +78,6 @@ namespace TetriNET.Server
         public Dictionary<string, GameStatisticsByPlayer> GameStatistics { get; private set; } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
         public GameOptions Options { get; private set; }
 
-        public int GameActionCount
-        {
-            get { return _gameActionBlockingCollection.Count; }
-        }
-
         public Versioning Version { get; private set; }
 
         public void SetVersion(int major, int minor)
@@ -108,6 +104,8 @@ namespace TetriNET.Server
             }
 
             _hosts.Add(host);
+
+            host.SetVersion(Version);
 
             host.HostPlayerRegistered += OnRegisterPlayer;
             host.HostPlayerUnregistered += OnUnregisterPlayer;
@@ -155,7 +153,7 @@ namespace TetriNET.Server
 
                     _cancellationTokenSource = new CancellationTokenSource();
                     _timeoutTask = Task.Factory.StartNew(TimeoutTask, _cancellationTokenSource.Token);
-                    _gameActionsTask = Task.Factory.StartNew(GameActionsTask, _cancellationTokenSource.Token);
+                    _gameActionQueue.Start(_cancellationTokenSource);
 
                     // Start hosts
                     foreach (IHost host in _hosts)
@@ -185,7 +183,8 @@ namespace TetriNET.Server
                     // Stop worker threads
                     _cancellationTokenSource.Cancel();
 
-                    Task.WaitAll(new[] {_timeoutTask, _gameActionsTask}, 2000);
+                    _timeoutTask.Wait(2000);
+                    _gameActionQueue.Wait(2000);
                 }
                 catch (AggregateException ex)
                 {
@@ -219,11 +218,7 @@ namespace TetriNET.Server
                 if (_playerManager.PlayerCount > 0)
                 {
                     // Reset action list
-                    while (_gameActionBlockingCollection.Count > 0)
-                    {
-                        Action item;
-                        _gameActionBlockingCollection.TryTake(out item);
-                    }
+                    _gameActionQueue.ResetActions();
 
                     // Reset special id
                     SpecialId = 0;
@@ -443,6 +438,11 @@ namespace TetriNET.Server
         private IEnumerable<IEntity> Entities
         {
             get { return _playerManager.Players.Cast<IEntity>().Union(_spectatorManager.Spectators); }
+        }
+
+        private void EnqueueAction(Action action)
+        {
+            _gameActionQueue.AddAction(action);
         }
 
         #region IHost event handler
@@ -762,7 +762,6 @@ namespace TetriNET.Server
 
             bool wasServerMaster = false;
             // Remove from player manager
-            int id;
             lock (_playerManager.LockObject)
             {
                 if (player == _playerManager.ServerMaster)
@@ -810,7 +809,6 @@ namespace TetriNET.Server
             Log.Default.WriteLine(LogLevels.Info, "Spectator left:{0} {1}", spectator.Name, reason);
 
             // Remove from spectator
-            int id;
             lock (_spectatorManager.LockObject)
             {
                 // Remove spectator from spectator list
@@ -824,63 +822,6 @@ namespace TetriNET.Server
             // Inform players and spectators except disconnected spectator
             foreach (IEntity entity in Entities.Where(x => x != spectator))
                 entity.OnSpectatorLeft(spectator.Id, spectator.Name, reason);
-        }
-
-        #endregion
-
-        #region Game action queue
-
-        private readonly BlockingCollection<Action> _gameActionBlockingCollection = new BlockingCollection<Action>(new ConcurrentQueue<Action>());
-
-        private void EnqueueAction(Action action)
-        {
-            _gameActionBlockingCollection.Add(action);
-        }
-
-        private void GameActionsTask()
-        {
-            Log.Default.WriteLine(LogLevels.Info, "GameActionsTask started");
-
-            try
-            {
-                while (true)
-                {
-                    if (_cancellationTokenSource.IsCancellationRequested)
-                    {
-                        Log.Default.WriteLine(LogLevels.Info, "Stop background task event raised");
-                        break;
-                    }
-                    try
-                    {
-                        Action action;
-                        bool taken = _gameActionBlockingCollection.TryTake(out action, 10, _cancellationTokenSource.Token);
-                        if (taken)
-                        {
-                            try
-                            {
-                                Log.Default.WriteLine(LogLevels.Debug, "Dequeue, item in queue {0}", _gameActionBlockingCollection.Count);
-                                action();
-                            }
-                            catch (Exception ex)
-                            {
-                                Log.Default.WriteLine(LogLevels.Error, "Exception raised in GameActionsTask. Exception:{0}", ex);
-                            }
-                        }
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        Log.Default.WriteLine(LogLevels.Info, "Taking cancelled");
-                        break;
-                    }
-                }
-            }
-            catch (TaskCanceledException ex)
-            {
-                Log.Default.WriteLine(LogLevels.Error, "GameActionsTask cancelled exception. Exception: {0}", ex);
-            }
-
-
-            Log.Default.WriteLine(LogLevels.Info, "GameActionsTask stopped");
         }
 
         #endregion

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Threading;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 
 namespace TetriNET.WPF_WCF_Client.GameController

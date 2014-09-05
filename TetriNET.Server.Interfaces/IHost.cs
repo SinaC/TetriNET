@@ -63,6 +63,7 @@ namespace TetriNET.Server.Interfaces
         IPlayerManager PlayerManager { get; }
         ISpectatorManager SpectatorManager { get; }
 
+        void SetVersion(Versioning versioning);
         void Start();
         void Stop();
         void RemovePlayer(IPlayer player); // Should be overridden to handle local table storing reference to player

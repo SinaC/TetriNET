@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TetriNET.Server.WCFHost")]
+[assembly: AssemblyTitle("TetriNET.Server.HostBase")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SinaC")]
-[assembly: AssemblyProduct("TetriNET.Server.WCFHost")]
+[assembly: AssemblyProduct("TetriNET.Server.HostBase")]
 [assembly: AssemblyCopyright("Copyright © SinaC 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6787f904-1008-40ba-88fd-87d40a5020e7")]
+[assembly: Guid("9c31c292-c629-4959-9f86-6250e06544c0")]
 
 // Version information for an assembly consists of the following four values:
 //

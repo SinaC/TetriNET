@@ -218,7 +218,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 
         #endregion
 
-        private void SetKeySetting(int key, Client.Interfaces.Commands cmd)
+        private void SetKeySetting(int key, Commands cmd)
         {
             KeySettingViewModel keySetting = KeySettings.FirstOrDefault(x => x.Command == cmd);
             if (keySetting != null)

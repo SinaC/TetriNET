@@ -11,7 +11,7 @@ namespace TetriNET.WPF_WCF_Client.Helpers
     {
         public static void SetWidthFromItems(this ComboBox comboBox)
         {
-            double comboBoxWidth = 19;// comboBox.DesiredSize.Width;
+            const double comboBoxWidth = 19; // comboBox.DesiredSize.Width;
 
             // Create the peer and provider to expand the comboBox in code behind. 
             ComboBoxAutomationPeer peer = new ComboBoxAutomationPeer(comboBox);

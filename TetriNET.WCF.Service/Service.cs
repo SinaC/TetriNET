@@ -5,6 +5,8 @@ using System.Reflection;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
+using TetriNET.Common.BlockingActionQueue;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 
@@ -74,8 +76,6 @@ namespace TetriNET.WCF.Service
         private void ServiceMainLoop()
         {
             //
-            Version version = Assembly.GetEntryAssembly().GetName().Version;
-            //
             IFactory factory = new Factory();
             //
             IBanManager banManager = factory.CreateBanManager();
@@ -84,21 +84,23 @@ namespace TetriNET.WCF.Service
             ISpectatorManager spectatorManager = factory.CreateSpectatorManager(10);
 
             //
-            IHost wcfHost = new Server.WCFHost.WCFHost(
+            IHost wcfHost = new Server.WCFHost.WCFHostBase(
                 playerManager,
                 spectatorManager,
                 banManager,
-                factory,
-                version.Major, version.Minor)
+                factory)
             {
                 Port = ConfigurationManager.AppSettings["port"]
             };
 
             //
+            IActionQueue actionQueue = new BlockingActionQueue();
+
+            //
             IPieceProvider pieceProvider = factory.CreatePieceProvider();
 
             //
-            IServer server = new Server.Server(playerManager, spectatorManager, pieceProvider, version.Major, version.Minor);
+            IServer server = new Server.Server(playerManager, spectatorManager, pieceProvider, actionQueue);
             server.AddHost(wcfHost);
 
             //

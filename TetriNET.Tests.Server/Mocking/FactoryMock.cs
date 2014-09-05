@@ -2,6 +2,7 @@
 using System.Linq;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Randomizer;
 using TetriNET.Server.BanManager;
 using TetriNET.Server.Interfaces;
@@ -13,6 +14,11 @@ namespace TetriNET.Tests.Server.Mocking
 {
     public class FactoryMock : IFactory
     {
+        public IActionQueue CreateActionQueue()
+        {
+            return new ActionQueueMock();
+        }
+
         public IBanManager CreateBanManager()
         {
             return new BanManager();

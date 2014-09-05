@@ -1,12 +1,6 @@
-﻿using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using TetriNET.Client.Interfaces;
-using TetriNET.Client.Strategy;
-using TetriNET.Common.Helpers;
-using TetriNET.WPF_WCF_Client.AI;
-using TetriNET.WPF_WCF_Client.ViewModels.Options;
 using TetriNET.WPF_WCF_Client.ViewModels.PlayField;
 
 namespace TetriNET.WPF_WCF_Client.Views.PlayField
@@ -16,10 +10,6 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
     /// </summary>
     public partial class PlayFieldView : UserControl
     {
-        private GameController.GameController _controller;
-
-        public GenericBot Bot { get; private set; }
-
         public PlayFieldView()
         {
             InitializeComponent();

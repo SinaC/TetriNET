@@ -1,4 +1,4 @@
-﻿namespace TetriNET.Common.Logger
+﻿namespace TetriNET.Common.Interfaces
 {
     public enum LogLevels
     {

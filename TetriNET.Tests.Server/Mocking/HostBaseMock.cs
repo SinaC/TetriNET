@@ -1,12 +1,12 @@
-﻿using TetriNET.Server.GenericHost;
+﻿using TetriNET.Server.HostBase;
 using TetriNET.Server.Interfaces;
 
 namespace TetriNET.Tests.Server.Mocking
 {
-    public class HostMock : GenericHost
+    public class HostBaseMock : HostBase
     {
-        public HostMock(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
-            : base(playerManager, spectatorManager, banManager, factory, 1, 1)
+        public HostBaseMock(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
+            : base(playerManager, spectatorManager, banManager, factory)
         {
         }
 

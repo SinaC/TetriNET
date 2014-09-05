@@ -1,4 +1,5 @@
 ﻿using TetriNET.Client.Interfaces;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 
 namespace TetriNET.Client.Pieces

@@ -1,5 +1,7 @@
-﻿using TetriNET.Common.DataContracts;
+﻿using TetriNET.Common.BlockingActionQueue;
+using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
+using TetriNET.Common.Interfaces;
 using TetriNET.WPF_WCF_Client.CustomSettings;
 using TetriNET.WPF_WCF_Client.Properties;
 using TetriNET.WPF_WCF_Client.ViewModels.Achievements;
@@ -45,6 +47,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             IFactory factory = new Factory();
 
             //
+            IActionQueue actionQueue = new BlockingActionQueue();
+
+            //
             IAchievementManager manager = null;
             if (!IsInDesignMode)
             {
@@ -75,7 +80,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             if (!IsInDesignMode)
             {
                 // Create client
-                Client = new Client.Client(factory, manager);
+                Client = new Client.Client(factory, actionQueue, manager);
             }
         }
 

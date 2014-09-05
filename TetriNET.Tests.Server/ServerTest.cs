@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TetriNET.Common.DataContracts;
+using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
 using TetriNET.Tests.Server.Mocking;
@@ -14,26 +14,26 @@ namespace TetriNET.Tests.Server
         private LogMock _log;
         private IHost _host;
         private IFactory _factory;
+        private IActionQueue _actionQueue;
 
         private IServer CreateServer()
         {
-            IFactory factory = new FactoryMock();
-            _factory = factory;
-            return new TetriNET.Server.Server(factory.CreatePlayerManager(6), factory.CreateSpectatorManager(10), factory.CreatePieceProvider(), 1, 1);
+            _factory = new FactoryMock();
+            _actionQueue = _factory.CreateActionQueue();
+            return new TetriNET.Server.Server(_factory.CreatePlayerManager(6), _factory.CreateSpectatorManager(10), _factory.CreatePieceProvider(), _actionQueue);
         }
 
         private IServer CreateServerWithHost()
         {
-            IFactory factory = new FactoryMock();
-            IPlayerManager playerManager = factory.CreatePlayerManager(6);
-            ISpectatorManager spectatorManager = factory.CreateSpectatorManager(10);
-            IBanManager banManager = factory.CreateBanManager();
-            IPieceProvider pieceProvider = factory.CreatePieceProvider();
-            IHost host = new HostMock(playerManager, spectatorManager, banManager, factory);
-            IServer server = new TetriNET.Server.Server(playerManager, spectatorManager, pieceProvider, 1, 1);
-            server.AddHost(host);
-            _host = host;
-            _factory = factory;
+            _factory = new FactoryMock();
+            IPlayerManager playerManager = _factory.CreatePlayerManager(6);
+            ISpectatorManager spectatorManager = _factory.CreateSpectatorManager(10);
+            IBanManager banManager = _factory.CreateBanManager();
+            IPieceProvider pieceProvider = _factory.CreatePieceProvider();
+            _host = new HostBaseMock(playerManager, spectatorManager, banManager, _factory);
+            _actionQueue = _factory.CreateActionQueue();
+            IServer server = new TetriNET.Server.Server(playerManager, spectatorManager, pieceProvider, _actionQueue);
+            server.AddHost(_host);
             return server;
         }
 
@@ -363,8 +363,6 @@ namespace TetriNET.Tests.Server
         [TestMethod]
         public void TestGameActionNotQueuedWhenPauseIsActive()
         {
-            Assert.Inconclusive("Irrelevant until game action queue can be stopped");
-
             IServer server = CreateServerWithHost();
             server.StartServer();
             IPlayer player1 = _factory.CreatePlayer(0, "player1", new CountCallTetriNETCallback());
@@ -374,11 +372,25 @@ namespace TetriNET.Tests.Server
 
             _host.UseSpecial(player1.Callback, 0, Specials.NukeField);
 
-            Assert.AreEqual(server.GameActionCount, 0); // TODO: disable game action queue before checking this
+            Assert.AreEqual(_actionQueue.ActionCount, 0);
             Assert.AreEqual(_log.LastLogLevel, LogLevels.Warning);
             Assert.IsTrue(_log.LastLogLine.Contains("while game is not started"));
         }
+        
+        [TestMethod]
+        public void TestGameActionQueuedWhenGameIsStarted()
+        {
+            IServer server = CreateServerWithHost();
+            server.StartServer();
+            IPlayer player1 = _factory.CreatePlayer(0, "player1", new CountCallTetriNETCallback());
+            _host.PlayerManager.Add(player1);
+            server.StartGame();
 
-        // TODO: every IHost event handlers  (how game actions and timeout could be mocked???)
+            _host.UseSpecial(player1.Callback, 0, Specials.NukeField);
+
+            Assert.AreEqual(_actionQueue.ActionCount, 1);
+        }
+
+        // TODO: test every host event handlers
     }
 }
