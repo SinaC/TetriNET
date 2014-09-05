@@ -119,11 +119,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             });
         }
 
-        protected void AddServerMessage(string msg, ChatColor color)
+        protected void AddServerMessage(ChatColor color, string format, params object[] args)
         {
             AddEntry(new ServerMessageEntry
             {
-                Message = msg,
+                Message = String.Format(format, args),
                 Color = color,
             });
         }
@@ -182,7 +182,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         private void OnPlayerUnregistered()
         {
-            AddServerMessage("*** You've unregistered successfully", ChatColor.Green);
+            AddServerMessage(ChatColor.Green, "*** You've unregistered successfully");
             IsRegistered = true;
         }
 
@@ -193,7 +193,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                 msg = "*** Server not found";
             else
                 msg = "*** Connection lost";
-            AddServerMessage(msg, ChatColor.Red);
+            AddServerMessage(ChatColor.Red, msg);
             IsRegistered = false;
         }
 
@@ -224,15 +224,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                     msg = String.Format("*** {0} has left {1}", playerName, reason);
                     break;
             }
-            AddServerMessage(msg, ChatColor.Green);
+            AddServerMessage(ChatColor.Green, msg);
         }
 
         private void OnPlayerJoined(int playerid, string playerName, string team)
         {
             if (!String.IsNullOrWhiteSpace(team))
-                AddServerMessage(String.Format("*** {0} [{1}] has joined", playerName, team), ChatColor.Green);
+                AddServerMessage(ChatColor.Green, "*** {0} [{1}] has joined", playerName, team);
             else
-                AddServerMessage(String.Format("*** {0} has joined", playerName), ChatColor.Green);
+                AddServerMessage(ChatColor.Green, "*** {0} has joined", playerName);
         }
 
         private void OnSpectatorLeft(int spectatorId, string spectatorName, LeaveReasons reason)
@@ -242,7 +242,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         private void OnSpectatorJoined(int spectatorId, string spectatorName)
         {
-            AddServerMessage(String.Format("*** {0} has joined as spectator", spectatorName), ChatColor.Green);
+            AddServerMessage(ChatColor.Green, "*** {0} has joined as spectator", spectatorName);
         }
 
         private void DisplayRegistrationFailMessage(RegistrationResults result, Versioning serverVersion)
@@ -269,14 +269,23 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
                     message = "*** You've FAILED registering !!! Internal server problem";
                     break;
             }
-            AddServerMessage(message, ChatColor.Red);
+            AddServerMessage(ChatColor.Red, message);
+        }
+
+        private void DisplayRegistrationSuccessfullMessage(Versioning serverVersion)
+        {
+            AddServerMessage(ChatColor.Green, "*** You've registered successfully as {0} ({1})", Client.Name, Client.IsSpectator ? "Spectator" : "Player");
+            if (serverVersion == null)
+                AddServerMessage(ChatColor.Red, "Unknown server version. Use at your own risk!!!");
+            else
+                AddServerMessage(ChatColor.Red, "Server version: {0}.{1}", serverVersion.Major, serverVersion.Minor);
         }
 
         private void OnRegisteredAsPlayer(RegistrationResults result, Versioning serverVersion, int playerId, bool isServerMaster)
         {
             if (result == RegistrationResults.RegistrationSuccessful)
             {
-                AddServerMessage(String.Format("*** You've registered successfully as {0} (player)", Client.Name), ChatColor.Green);
+                DisplayRegistrationSuccessfullMessage(serverVersion);
                 IsRegistered = true;
             }
             else
@@ -287,7 +296,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         {
             if (result == RegistrationResults.RegistrationSuccessful)
             {
-                AddServerMessage(String.Format("*** You've registered successfully as {0} (spectator)", Client.Name), ChatColor.Green);
+                DisplayRegistrationSuccessfullMessage(serverVersion);
                 IsRegistered = true;
             }
             else
@@ -296,37 +305,37 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         private void OnPlayerWon(int playerId, string playerName)
         {
-            AddServerMessage(String.Format("*** {0} has WON", playerName), ChatColor.Orange);
+            AddServerMessage(ChatColor.Orange, "*** {0} has WON", playerName);
         }
 
         private void OnPlayerLost(int playerId, string playerName)
         {
-            AddServerMessage(String.Format("*** {0} has LOST", playerName), ChatColor.Orange);
+            AddServerMessage(ChatColor.Orange, "*** {0} has LOST", playerName);
         }
 
         private void OnGameResumed()
         {
-            AddServerMessage("*** The game has been Resumed", ChatColor.Yellow);
+            AddServerMessage(ChatColor.Yellow, "*** The game has been Resumed");
         }
 
         private void OnGamePaused()
         {
-            AddServerMessage("*** The game has been Paused", ChatColor.Yellow);
+            AddServerMessage(ChatColor.Yellow, "*** The game has been Paused");
         }
 
         private void OnGameOver()
         {
-            AddServerMessage("*** You have LOST", ChatColor.Orange);
+            AddServerMessage(ChatColor.Orange, "*** You have LOST");
         }
 
         private void OnGameFinished(GameStatistics statistics)
         {
-            AddServerMessage("*** The Game has Ended", ChatColor.Red);
+            AddServerMessage(ChatColor.Red, "*** The Game has Ended");
         }
 
         private void OnGameStarted()
         {
-            AddServerMessage("*** The Game has Started", ChatColor.Red);
+            AddServerMessage(ChatColor.Red, "*** The Game has Started");
         }
 
         private void OnPlayerPublishMessage(string playerName, string msg)
@@ -341,7 +350,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         private void OnServerPublishMessage(string msg)
         {
-            AddServerMessage(msg, ChatColor.Blue);
+            AddServerMessage(ChatColor.Blue, msg);
         }
 
         private void OnAchievementEarned(IAchievement achievement, bool firstTime)

@@ -141,11 +141,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             ConnectDisconnectCommand = new AsyncRelayCommand(ConnectDisconnect);
         }
 
-        private void SetConnectionResultMessage(string msg, ChatColor color)
+        private void SetConnectionResultMessage(ChatColor color, string format, params object[] args)
         {
             ExecuteOnUIThread.Invoke(() =>
                 {
-                    ConnectionResult = msg;
+                    ConnectionResult = String.Format(format, args);
                     ConnectionResultColor = color;
                 });
         }
@@ -155,7 +155,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             string error = this[field];
             if (!String.IsNullOrWhiteSpace(error))
             {
-                SetConnectionResultMessage(error, ChatColor.Red);
+                SetConnectionResultMessage(ChatColor.Red, error);
                 return false;
             }
             return true;
@@ -210,7 +210,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                         //if (!connected)
                         if (!args.Success)
                         {
-                            SetConnectionResultMessage("Connection failed", ChatColor.Red);
+                            SetConnectionResultMessage(ChatColor.Red, "Connection failed");
                         }
                     }
                 }
@@ -218,9 +218,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                 {
                     bool disconnected = Client.UnregisterAndDisconnect();
                     if (disconnected)
-                        SetConnectionResultMessage("Disconnected", ChatColor.Red);
+                        SetConnectionResultMessage(ChatColor.Red, "Disconnected");
                     else
-                        SetConnectionResultMessage("Disconnection failed", ChatColor.Red);
+                        SetConnectionResultMessage(ChatColor.Red, "Disconnection failed");
                 }
             }
             finally
@@ -259,7 +259,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             else
                 msg = "Connection lost";
 
-            SetConnectionResultMessage(msg, ChatColor.Red);
+            SetConnectionResultMessage(ChatColor.Red, msg);
             _isRegistered = false;
             OnPropertyChanged("ConnectDisconnectLabel");
             OnPropertyChanged("IsNotRegistered");
@@ -267,14 +267,17 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         private void OnRegisteredAsPlayer(RegistrationResults result, Versioning serverVersion, int playerId, bool isServerMaster)
         {
-            string version = serverVersion == null ? "Unknown server version" : String.Format("Server version {0}.{1}", serverVersion.Major, serverVersion.Minor);
             if (result == RegistrationResults.RegistrationSuccessful)
-                SetConnectionResultMessage(String.Format("Registered as player {0}. {1}", playerId + 1, version), ChatColor.Green);
+            {
+                string version = serverVersion == null ? "Unknown server version. Use at your own risk." : String.Format("Server version {0}.{1}", serverVersion.Major, serverVersion.Minor);
+                SetConnectionResultMessage(ChatColor.Green, "Registered as player {0}. {1}", playerId + 1, version);
+            }
             else
             {
+                string version = serverVersion == null ? "Unknown server version" : String.Format("Server version {0}.{1}", serverVersion.Major, serverVersion.Minor);
                 DescriptionAttribute attribute = EnumHelper.GetAttribute<DescriptionAttribute>(result);
                 Client.UnregisterAndDisconnect();
-                SetConnectionResultMessage(String.Format("Registration failed: {0}. {1}", attribute == null ? result.ToString() : attribute.Description, version), ChatColor.Red);
+                SetConnectionResultMessage(ChatColor.Red, "Registration failed: {0}. {1}", attribute == null ? result.ToString() : attribute.Description, version);
             }
             _isRegistered = Client.IsRegistered;
             OnPropertyChanged("ConnectDisconnectLabel");
@@ -283,14 +286,17 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         private void OnRegisteredAsSpectator(RegistrationResults result, Versioning serverVersion, int spectatorId)
         {
-            string version = serverVersion == null ? "Unknown server version" : String.Format("Server version {0}.{1}", serverVersion.Major, serverVersion.Minor);
             if (result == RegistrationResults.RegistrationSuccessful)
-                SetConnectionResultMessage(String.Format("Registered as spectator {0}. {1}", spectatorId + 1, version), ChatColor.Green);
+            {
+                string version = serverVersion == null ? "Unknown server version. Use at your own risk." : String.Format("Server version {0}.{1}", serverVersion.Major, serverVersion.Minor);
+                SetConnectionResultMessage(ChatColor.Green, "Registered as spectator {0}. {1}", spectatorId + 1, version);
+            }
             else
             {
+                string version = serverVersion == null ? "Unknown server version" : String.Format("Server version {0}.{1}", serverVersion.Major, serverVersion.Minor);
                 DescriptionAttribute attribute = EnumHelper.GetAttribute<DescriptionAttribute>(result);
                 Client.UnregisterAndDisconnect();
-                SetConnectionResultMessage(String.Format("Registration failed: {0}. {1}", attribute == null ? result.ToString() : attribute.Description, version), ChatColor.Red);
+                SetConnectionResultMessage(ChatColor.Red, "Registration failed: {0}. {1}", attribute == null ? result.ToString() : attribute.Description, version);
             }
             _isRegistered = Client.IsRegistered;
             OnPropertyChanged("ConnectDisconnectLabel");
