@@ -133,6 +133,17 @@ namespace TetriNET.Tests.Server
         }
 
         [TestMethod]
+        public void TestStartGameFailsIfNoPlayers()
+        {
+            IServer server = CreateServerWithHost();
+            server.StartServer();
+
+            server.StartGame();
+
+            Assert.AreEqual(server.State, ServerStates.WaitingStartGame);
+        }
+
+        [TestMethod]
         public void TestStartGameModificationOnServerAndPlayersAndSpectators()
         {
             IServer server = CreateServerWithHost();
@@ -243,10 +254,11 @@ namespace TetriNET.Tests.Server
             _host.PlayerManager.Add(player2);
             _host.SpectatorManager.Add(spectator1);
             _host.SpectatorManager.Add(spectator2);
+            server.StartGame();
 
             server.ResumeGame();
 
-            Assert.AreEqual(server.State, ServerStates.WaitingStartGame);
+            Assert.AreEqual(server.State, ServerStates.GameStarted);
             Assert.AreEqual((player1.Callback as CountCallTetriNETCallback).GetCallCount("OnGameResumed"), 0);
             Assert.AreEqual((player2.Callback as CountCallTetriNETCallback).GetCallCount("OnGameResumed"), 0);
             Assert.AreEqual((spectator1.Callback as CountCallTetriNETCallback).GetCallCount("OnGameResumed"), 0);
@@ -284,16 +296,75 @@ namespace TetriNET.Tests.Server
             IServer server = CreateServerWithHost();
             server.StartServer();
             IPlayer player1 = _factory.CreatePlayer(0, "player1", new CountCallTetriNETCallback());
-            IPlayer player2 = _factory.CreatePlayer(1, "player2", new CountCallTetriNETCallback());
-            ISpectator spectator1 = _factory.CreateSpectator(0, "spectator1", new CountCallTetriNETCallback());
-            ISpectator spectator2 = _factory.CreateSpectator(1, "spectator2", new CountCallTetriNETCallback());
+            _host.PlayerManager.Add(player1);
+            server.WinList.Add(new WinEntry
+                {
+                    PlayerName = "player1",
+                    Team = "team1",
+                    Score = 10
+                });
+            server.StartGame();
+            
+            server.ResetWinList();
 
-            // TODO
+            Assert.AreEqual(server.WinList.Count, 1);
+        }
+
+        [TestMethod]
+        public void TestResetWinListOkIfGameNotStarted()
+        {
+            IServer server = CreateServerWithHost();
+            server.StartServer();
+            server.WinList.Add(new WinEntry
+            {
+                PlayerName = "player1",
+                Team = "team1",
+                Score = 10
+            });
+
+            server.ResetWinList();
+
+            Assert.AreEqual(server.WinList.Count, 0);
+        }
+
+        [TestMethod]
+        public void TestResetWinListAreOnPublishServerMessageAndOnWinListModifiedCalled()
+        {
+            IServer server = CreateServerWithHost();
+            server.StartServer();
+            CountCallTetriNETCallback playerCallback1 = new CountCallTetriNETCallback();
+            CountCallTetriNETCallback playerCallback2 = new CountCallTetriNETCallback();
+            IPlayer player1 = _factory.CreatePlayer(0, "player1", playerCallback1);
+            IPlayer player2 = _factory.CreatePlayer(1, "player2", playerCallback2);
+            CountCallTetriNETCallback spectatorCallback1 = new CountCallTetriNETCallback();
+            CountCallTetriNETCallback spectatorCallback2 = new CountCallTetriNETCallback();
+            ISpectator spectator1 = _factory.CreateSpectator(0, "spectator1", spectatorCallback1);
+            ISpectator spectator2 = _factory.CreateSpectator(1, "spectator2", spectatorCallback2);
+            _host.PlayerManager.Add(player1);
+            _host.PlayerManager.Add(player2);
+            _host.SpectatorManager.Add(spectator1);
+            _host.SpectatorManager.Add(spectator2);
+            server.WinList.Add(new WinEntry
+            {
+                PlayerName = "player1",
+                Team = "team1",
+                Score = 10
+            });
+
+            server.ResetWinList();
+
+            Assert.AreEqual(server.WinList.Count, 0);
+            Assert.AreEqual(playerCallback1.GetCallCount("OnPublishServerMessage"), 1);
+            Assert.AreEqual(playerCallback2.GetCallCount("OnPublishServerMessage"), 1);
+            Assert.AreEqual(playerCallback1.GetCallCount("OnWinListModified"), 1);
+            Assert.AreEqual(playerCallback2.GetCallCount("OnWinListModified"), 1);
         }
 
         [TestMethod]
         public void TestGameActionNotQueuedWhenPauseIsActive()
         {
+            Assert.Inconclusive("Irrelevant until game action queue can be stopped");
+
             IServer server = CreateServerWithHost();
             server.StartServer();
             IPlayer player1 = _factory.CreatePlayer(0, "player1", new CountCallTetriNETCallback());

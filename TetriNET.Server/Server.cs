@@ -216,58 +216,63 @@ namespace TetriNET.Server
 
             if (State == ServerStates.WaitingStartGame)
             {
-                // Reset action list
-                while (_gameActionBlockingCollection.Count > 0)
+                if (_playerManager.PlayerCount > 0)
                 {
-                    Action item;
-                    _gameActionBlockingCollection.TryTake(out item);
+                    // Reset action list
+                    while (_gameActionBlockingCollection.Count > 0)
+                    {
+                        Action item;
+                        _gameActionBlockingCollection.TryTake(out item);
+                    }
+
+                    // Reset special id
+                    SpecialId = 0;
+
+                    // Reset Piece Queue
+                    _pieceProvider.Reset(); // TODO: random seed
+                    //Pieces firstPiece = _pieceProvider[0];
+                    //Pieces secondPiece = _pieceProvider[1];
+                    //Pieces thirdPiece = _pieceProvider[2];
+                    //Log.Default.WriteLine(LogLevels.Info, "Starting game with {0} {1} {2}", firstPiece, secondPiece, thirdPiece);
+
+                    List<Pieces> pieces = new List<Pieces>();
+                    for (int i = 0; i < PiecesSendOnGameStarted; i++)
+                        pieces.Add(_pieceProvider[i]);
+                    Log.Default.WriteLine(LogLevels.Info, "Starting game with {0}", pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
+
+                    _gameStartTime = DateTime.Now;
+
+                    // Reset sudden death
+                    _isSuddenDeathActive = false;
+                    if (Options.DelayBeforeSuddenDeath > 0)
+                    {
+                        _suddenDeathStartTime = DateTime.Now.AddMinutes(Options.DelayBeforeSuddenDeath);
+                        _isSuddenDeathActive = true;
+                        Log.Default.WriteLine(LogLevels.Info, "Sudden death will be activated after {0} minutes and send lines every {1} seconds", Options.DelayBeforeSuddenDeath, Options.SuddenDeathTick);
+                    }
+
+                    // Reset statistics
+                    ResetStatistics();
+
+                    // Send game started to players
+                    foreach (IPlayer p in _playerManager.Players)
+                    {
+                        p.PieceIndex = 0;
+                        p.State = PlayerStates.Playing;
+                        p.LossTime = DateTime.MaxValue;
+                        //p.OnGameStarted(firstPiece, secondPiece, thirdPiece, _options);
+                        p.OnGameStarted(pieces);
+                    }
+                    // Send game started to spectators
+                    foreach (ISpectator s in _spectatorManager.Spectators)
+                        s.OnGameStarted(pieces);
+
+                    State = ServerStates.GameStarted;
+
+                    Log.Default.WriteLine(LogLevels.Info, "Game started");
                 }
-
-                // Reset special id
-                SpecialId = 0;
-
-                // Reset Piece Queue
-                _pieceProvider.Reset(); // TODO: random seed
-                //Pieces firstPiece = _pieceProvider[0];
-                //Pieces secondPiece = _pieceProvider[1];
-                //Pieces thirdPiece = _pieceProvider[2];
-                //Log.Default.WriteLine(LogLevels.Info, "Starting game with {0} {1} {2}", firstPiece, secondPiece, thirdPiece);
-
-                List<Pieces> pieces = new List<Pieces>();
-                for (int i = 0; i < PiecesSendOnGameStarted; i++)
-                    pieces.Add(_pieceProvider[i]);
-                Log.Default.WriteLine(LogLevels.Info, "Starting game with {0}", pieces.Select(x => x.ToString()).Aggregate((n, i) => n + "," + i));
-
-                _gameStartTime = DateTime.Now;
-
-                // Reset sudden death
-                _isSuddenDeathActive = false;
-                if (Options.DelayBeforeSuddenDeath > 0)
-                {
-                    _suddenDeathStartTime = DateTime.Now.AddMinutes(Options.DelayBeforeSuddenDeath);
-                    _isSuddenDeathActive = true;
-                    Log.Default.WriteLine(LogLevels.Info, "Sudden death will be activated after {0} minutes and send lines every {1} seconds", Options.DelayBeforeSuddenDeath, Options.SuddenDeathTick);
-                }
-
-                // Reset statistics
-                ResetStatistics();
-
-                // Send game started to players
-                foreach (IPlayer p in _playerManager.Players)
-                {
-                    p.PieceIndex = 0;
-                    p.State = PlayerStates.Playing;
-                    p.LossTime = DateTime.MaxValue;
-                    //p.OnGameStarted(firstPiece, secondPiece, thirdPiece, _options);
-                    p.OnGameStarted(pieces);
-                }
-                // Send game started to spectators
-                foreach (ISpectator s in _spectatorManager.Spectators)
-                    s.OnGameStarted(pieces);
-
-                State = ServerStates.GameStarted;
-
-                Log.Default.WriteLine(LogLevels.Info, "Game started");
+                else
+                    Log.Default.WriteLine(LogLevels.Warning, "Cannot start game, no players found");
             }
             else
                 Log.Default.WriteLine(LogLevels.Info, "Cannot start game");
@@ -348,7 +353,7 @@ namespace TetriNET.Server
                 // Reset
                 WinList.Clear();
 
-                // Inform player
+                // Inform players and spectators
                 IPlayer serverMaster = _playerManager.ServerMaster;
                 foreach (IEntity entity in Entities)
                 {
