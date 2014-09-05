@@ -24,13 +24,17 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
         private Brush SmallBackground { get; set; }
         private Brush WindowBackground { get; set; }
 
-        #region SingleInstance
+        #region Singleton
 
-        public static ThreadSafeSingleInstance<TextureManager> TexturesSingleInstance = new ThreadSafeSingleInstance<TextureManager>(() => new TextureManager());
+        //public static ThreadSafeSingleInstance<TextureManager> TexturesSingleInstance = new ThreadSafeSingleInstance<TextureManager>(() => new TextureManager());
+        private static readonly Lazy<TextureManager> Lazy = new Lazy<TextureManager>(() => new TextureManager());
+        public static TextureManager Instance
+        {
+            get { return Lazy.Value; }
+        }
 
         private TextureManager()
         {
-            // SingleInstance
         }
         
         #endregion

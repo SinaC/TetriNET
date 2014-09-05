@@ -32,7 +32,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             InitializeComponent();
 
             if (!DesignMode.IsInDesignModeStatic)
-                Canvas.Background = TextureManager.TextureManager.TexturesSingleInstance.Instance.GetSmallBackground();
+                Canvas.Background = TextureManager.TextureManager.Instance.GetSmallBackground();
             else
                 Canvas.Background = new SolidColorBrush(Colors.Black);
 
@@ -76,9 +76,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                         Pieces color = CellHelper.GetColor(cellValue);
 
                         if (special == Specials.Invalid)
-                            uiPart.Fill = TextureManager.TextureManager.TexturesSingleInstance.Instance.GetSmallPiece(color);
+                            uiPart.Fill = TextureManager.TextureManager.Instance.GetSmallPiece(color);
                         else
-                            uiPart.Fill = TextureManager.TextureManager.TexturesSingleInstance.Instance.GetSmallSpecial(special);
+                            uiPart.Fill = TextureManager.TextureManager.Instance.GetSmallSpecial(special);
                     }
                 }
         }

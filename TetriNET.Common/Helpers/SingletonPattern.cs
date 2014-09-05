@@ -2,66 +2,6 @@
 
 namespace TetriNET.Common.Helpers
 {
-    public sealed class SingleInstance<T>
-            where T : class
-    {
-        private T _instance;
-        private readonly Func<T> _createHandler;
-
-        public SingleInstance(Func<T> create)
-        {
-            if (create == null)
-            {
-                throw new ArgumentNullException("create");
-            }
-            _createHandler = create;
-        }
-
-        public T Instance
-        {
-            get
-            {
-                _instance = _instance ?? _createHandler();
-                return _instance;
-            }
-        }
-    }
-
-    public sealed class ThreadSafeSingleInstance<T>
-        where T : class
-    {
-        private readonly object _syncObject = new object();
-        private volatile T _instance;
-        private readonly Func<T> _createHandler;
-
-        public ThreadSafeSingleInstance(Func<T> create)
-        {
-            if (create == null)
-            {
-                throw new ArgumentNullException("create");
-            }
-            _createHandler = create;
-        }
-
-        public T Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (_syncObject)
-                    {
-                        if (_instance == null)
-                        {
-                            _instance = _createHandler();
-                        }
-                    }
-                }
-                return _instance;
-            }
-        }
-    }
-
     public sealed class ThreadSafeSingleton2<T>
         where T : class
     {

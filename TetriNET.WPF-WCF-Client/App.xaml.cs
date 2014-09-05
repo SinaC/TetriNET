@@ -77,9 +77,9 @@ namespace TetriNET.WPF_WCF_Client
             {
             }
             if (isDirectory)
-                TextureManager.TextureManager.TexturesSingleInstance.Instance.ReadFromPath(textureFilepath);
+                TextureManager.TextureManager.Instance.ReadFromPath(textureFilepath);
             else
-                TextureManager.TextureManager.TexturesSingleInstance.Instance.ReadFromFile(textureFilepath);
+                TextureManager.TextureManager.Instance.ReadFromFile(textureFilepath);
 
             //
             base.OnStartup(e);
@@ -87,8 +87,8 @@ namespace TetriNET.WPF_WCF_Client
 
         private static void ExtractTetrinetTextures()
         {
-            TextureManager.TextureManager.TexturesSingleInstance.Instance.ReadFromFile(@"d:\github\TetriNET\Images\tetrinet2.bmp");
-            TextureManager.TextureManager.TexturesSingleInstance.Instance.SaveToPath(@"d:\temp\tetrinet2tex\");
+            TextureManager.TextureManager.Instance.ReadFromFile(@"d:\github\TetriNET\Images\tetrinet2.bmp");
+            TextureManager.TextureManager.Instance.SaveToPath(@"d:\temp\tetrinet2tex\");
         }
     }
 }

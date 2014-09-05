@@ -94,7 +94,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             if (specials != null && specials.Any())
             {
                 for (int i = 0; i < specials.Count; i++)
-                    _inventory[i].Fill = TextureManager.TextureManager.TexturesSingleInstance.Instance.GetBigSpecial(specials[i]);
+                    _inventory[i].Fill = TextureManager.TextureManager.Instance.GetBigSpecial(specials[i]);
                 FirstSpecial = Mapper.MapSpecialToString(specials[0]);
                 // Get hint
                 if (_isHintActivated)

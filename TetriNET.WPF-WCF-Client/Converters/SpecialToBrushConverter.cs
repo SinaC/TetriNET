@@ -15,7 +15,7 @@ namespace TetriNET.WPF_WCF_Client.Converters
             if (!(value is Specials))
                 throw new ArgumentException("value not of type Specials");
             Specials special = (Specials)value;
-            return TextureManager.TextureManager.TexturesSingleInstance.Instance.GetBigSpecial(special) ?? new SolidColorBrush(Colors.Pink);
+            return TextureManager.TextureManager.Instance.GetBigSpecial(special) ?? new SolidColorBrush(Colors.Pink);
         }
 
         // brush -> Specials

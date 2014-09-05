@@ -52,7 +52,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             //_displayDropLocation = false;
 
             if (!DesignMode.IsInDesignModeStatic)
-                Canvas.Background = TextureManager.TextureManager.TexturesSingleInstance.Instance.GetBigBackground();
+                Canvas.Background = TextureManager.TextureManager.Instance.GetBigBackground();
             else
                 Canvas.Background = new SolidColorBrush(Colors.Black);
 
@@ -182,7 +182,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             if (ViewModel == null || ViewModel.Client.Board == null || ViewModel.Client.CurrentPiece == null)
                 return;
             Pieces cellPiece = ViewModel.Client.CurrentPiece.Value;
-            Brush brush = TextureManager.TextureManager.TexturesSingleInstance.Instance.GetBigPiece(cellPiece);
+            Brush brush = TextureManager.TextureManager.Instance.GetBigPiece(cellPiece);
             DrawPiece(ViewModel.Client.Board, ViewModel.Client.CurrentPiece, brush);
         }
 
@@ -208,9 +208,9 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
                             Pieces color = CellHelper.GetColor(cellValue);
 
                             if (special == Specials.Invalid)
-                                uiPart.Fill = TextureManager.TextureManager.TexturesSingleInstance.Instance.GetBigPiece(color);
+                                uiPart.Fill = TextureManager.TextureManager.Instance.GetBigPiece(color);
                             else
-                                uiPart.Fill = TextureManager.TextureManager.TexturesSingleInstance.Instance.GetBigSpecial(special);
+                                uiPart.Fill = TextureManager.TextureManager.Instance.GetBigSpecial(special);
                         }
                     }
                 }
@@ -248,7 +248,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private void ActivateDarkness(bool active)
         {
             _isDarknessActive = active;
-            Canvas.Background = active ? DarknessColor : TextureManager.TextureManager.TexturesSingleInstance.Instance.GetBigBackground();
+            Canvas.Background = active ? DarknessColor : TextureManager.TextureManager.Instance.GetBigBackground();
             DrawEverything();
         }
 

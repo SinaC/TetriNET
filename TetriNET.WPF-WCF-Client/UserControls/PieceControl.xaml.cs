@@ -68,7 +68,7 @@ namespace TetriNET.WPF_WCF_Client.UserControls
                 int cellX = x;
 
                 Rectangle uiPart = GetControl(cellX, cellY);
-                uiPart.Fill = TextureManager.TextureManager.TexturesSingleInstance.Instance.GetBigPiece(cellPiece);
+                uiPart.Fill = TextureManager.TextureManager.Instance.GetBigPiece(cellPiece);
             }
         }
 

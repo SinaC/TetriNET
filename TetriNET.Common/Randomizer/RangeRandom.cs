@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using TetriNET.Common.Helpers;
 
 namespace TetriNET.Common.Randomizer
 {
@@ -14,7 +13,15 @@ namespace TetriNET.Common.Randomizer
 
     public class RangeRandom
     {
-        private static readonly ThreadSafeSingleInstance<Random> Randomizer = new ThreadSafeSingleInstance<Random>(() => new Random());
+        #region Random Singleton
+
+        private static readonly Lazy<Random> Lazy = new Lazy<Random>(() => new Random());
+        private static Random Randomizer
+        {
+            get { return Lazy.Value; }
+        }
+
+        #endregion
 
         /// <summary>
         /// Return a random index in <paramref name="ranges"/> depending on probabilities
@@ -24,7 +31,7 @@ namespace TetriNET.Common.Randomizer
         public static int Random(List<int> ranges)
         {
             int sum = ranges.Aggregate((n, i) => n + i);
-            int random = Randomizer.Instance.Next(sum);
+            int random = Randomizer.Next(sum);
 
             int range = 0;
             for (int i = 0; i < ranges.Count; i++)
@@ -48,7 +55,7 @@ namespace TetriNET.Common.Randomizer
             var list = occurancies as IList<IOccurancy<T>> ?? occurancies.ToList();
 
             int sum = list.Aggregate(0, (n, i) => n + i.Occurancy);
-            int random = Randomizer.Instance.Next(sum);
+            int random = Randomizer.Next(sum);
 
             int range = 0;
             foreach (IOccurancy<T> occurancy in list)
