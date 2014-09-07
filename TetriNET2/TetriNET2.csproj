@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{546C0189-9339-4DE6-902A-F38550C5A517}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{A905C246-6C5D-490B-90A6-C91CA5C04940}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TetriNET.Server.Interfaces</RootNamespace>
-    <AssemblyName>TetriNET.Server.Interfaces</AssemblyName>
+    <RootNamespace>TetriNET2</RootNamespace>
+    <AssemblyName>TetriNET2</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,29 +34,37 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IBanManager.cs" />
-    <Compile Include="IEntity.cs" />
-    <Compile Include="IFactory.cs" />
-    <Compile Include="IHost.cs" />
-    <Compile Include="IPieceProvider.cs" />
-    <Compile Include="IPlayer.cs" />
-    <Compile Include="IPlayerManager.cs" />
-    <Compile Include="IServer.cs" />
-    <Compile Include="ISpectator.cs" />
-    <Compile Include="ISpectatorManager.cs" />
+    <Compile Include="ConnectResults.cs" />
+    <Compile Include="EntityTypes.cs" />
+    <Compile Include="GameFinishedReasons.cs" />
+    <Compile Include="GameJoinFailReasons.cs" />
+    <Compile Include="GameOptions.cs" />
+    <Compile Include="GameStatistics.cs" />
+    <Compile Include="ITetriNET2.cs" />
+    <Compile Include="ITetriNET2Callback.cs" />
+    <Compile Include="LeaveReasons.cs" />
+    <Compile Include="Pieces.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GameDescription.cs" />
+    <Compile Include="Specials.cs" />
+    <Compile Include="Versioning.cs" />
+    <Compile Include="WinEntry.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TetriNET.Common.Interfaces\TetriNET.Common.Interfaces.csproj">
-      <Project>{70fb80f2-7abf-45dd-b2d4-ee945697e9b5}</Project>
-      <Name>TetriNET.Common.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
-      <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
-      <Name>TetriNET.Common</Name>
-    </ProjectReference>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="README.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

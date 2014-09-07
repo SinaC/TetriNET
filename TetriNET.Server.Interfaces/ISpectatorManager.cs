@@ -21,8 +21,4 @@ namespace TetriNET.Server.Interfaces
         ISpectator this[int id] { get; }
         ISpectator this[ITetriNETCallback callback] { get; } // Callback property from ISpectator should only be used here
     }
-
-    //public interface ISpectatorManager : IEntityManager<ISpectator>
-    //{
-    //}
 }

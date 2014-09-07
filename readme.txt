@@ -17,6 +17,7 @@ spectator should be able to start/stop game + kick/ban (aka server master)
 merge spectator and player endpoint
 no more difference between spectator and player: add role (bit fields) to entity Player = 1, Spectator = 2, ServerMaster = 4  !!! playerId/spectatorId is important for client
 server room: may be specified in RegisterPlayer or by default start in first room with an empty place. Create automatically room when player connects if the room doesn't exist
+remove random singleton, using dependency injection instead
 
 Known issues:
 why user.config is automatically created with default values in $APPDATA$/Local/SinaC/TetriNET WPF WCF Client/  when recompiling a new version

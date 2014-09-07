@@ -23,9 +23,4 @@ namespace TetriNET.Server.Interfaces
         IPlayer this[int id] { get; }
         IPlayer this[ITetriNETCallback callback] { get; } // Callback property from IPlayer should only be used here
     }
-    
-    //public interface IPlayerManager : IEntityManager<IPlayer>
-    //{
-    //    IPlayer ServerMaster { get; }
-    //}
 }
