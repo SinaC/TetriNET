@@ -129,7 +129,7 @@ namespace TetriNET.Server
             host.HostSpectatorUnregistered += OnUnregisterSpectator;
             host.HostSpectatorMessagePublished += OnPublishSpectatorMessage;
 
-            host.HostPlayerLeft += OnPayerLeft;
+            host.HostPlayerLeft += OnPlayerLeft;
             host.HostSpectatorLeft += OnSpectatorLeft;
 
             Debug.Assert(CheckEvents(host), "Every host events must be handled");
@@ -496,7 +496,7 @@ namespace TetriNET.Server
         {
             Log.Default.WriteLine(LogLevels.Info, "Unregister player:{0}", player.Name);
 
-            OnPayerLeft(player, LeaveReasons.Disconnected);
+            OnPlayerLeft(player, LeaveReasons.Disconnected);
         }
 
         private void OnPlayerTeam(IPlayer player, string team)
@@ -633,6 +633,7 @@ namespace TetriNET.Server
                 if (accepted)
                 {
                     Options = options; // Options will be sent to players when starting a new game
+                    _pieceProvider.Occurancies = () => Options.PieceOccurancies;
                     // Inform other players/spectators about options modification
                     foreach (IEntity entity in Entities.Where(e => e != player))
                         entity.OnOptionsChanged(Options);
@@ -655,7 +656,7 @@ namespace TetriNET.Server
                 // Send server stopped
                 kickedPlayer.OnServerStopped();
                 // Remove player from player manager and hosts + warn other players
-                OnPayerLeft(kickedPlayer, LeaveReasons.Kick);
+                OnPlayerLeft(kickedPlayer, LeaveReasons.Kick);
             }
             else
                 Log.Default.WriteLine(LogLevels.Info, "Cannot kick player");
@@ -672,7 +673,7 @@ namespace TetriNET.Server
                 // Send server stopped
                 bannedPlayer.OnServerStopped();
                 // Remove player from player manager and hosts + warn other players
-                OnPayerLeft(bannedPlayer, LeaveReasons.Ban);
+                OnPlayerLeft(bannedPlayer, LeaveReasons.Ban);
                 // TODO: add to ban list
             }
             else
@@ -755,7 +756,7 @@ namespace TetriNET.Server
                 entity.OnPublishPlayerMessage(spectator.Name, msg);
         }
 
-        private void OnPayerLeft(IPlayer player, LeaveReasons reason)
+        private void OnPlayerLeft(IPlayer player, LeaveReasons reason)
         {
             Log.Default.WriteLine(LogLevels.Info, "Player left:{0} {1}", player.Name, reason);
 
@@ -1049,7 +1050,7 @@ namespace TetriNET.Server
                             // Update timeout count
                             p.SetTimeout();
                             if (p.TimeoutCount >= MaxTimeoutCountBeforeDisconnection)
-                                OnPayerLeft(p, LeaveReasons.Timeout);
+                                OnPlayerLeft(p, LeaveReasons.Timeout);
                         }
 
                         // Send heartbeat if needed

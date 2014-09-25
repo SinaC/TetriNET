@@ -10,7 +10,7 @@ using TetriNET.Server.Interfaces;
 
 namespace TetriNET.Server.WCFHost
 {
-    public sealed class WCFHostBase : HostBase.HostBase
+    public sealed class WCFHost : HostBase.HostBase
     {
         [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.Single)]
         public sealed class WCFServiceHost : IWCFTetriNET, IWCFTetriNETSpectator
@@ -211,7 +211,7 @@ namespace TetriNET.Server.WCFHost
             set { _serviceHost.Port = value; }
         }
 
-        public WCFHostBase(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
+        public WCFHost(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
             : base(playerManager, spectatorManager, banManager, factory)
         {
             _serviceHost = new WCFServiceHost(this);

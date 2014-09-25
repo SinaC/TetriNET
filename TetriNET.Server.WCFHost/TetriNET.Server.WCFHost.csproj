@@ -37,7 +37,7 @@
   <ItemGroup>
     <Compile Include="IPFilterServiceBehavior.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WCFHostBase.cs" />
+    <Compile Include="WCFHost.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ServiceModelEx\ServiceModelEx.csproj">

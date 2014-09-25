@@ -84,7 +84,7 @@ namespace TetriNET.WCF.Service
             ISpectatorManager spectatorManager = factory.CreateSpectatorManager(10);
 
             //
-            IHost wcfHost = new Server.WCFHost.WCFHostBase(
+            IHost wcfHost = new Server.WCFHost.WCFHost(
                 playerManager,
                 spectatorManager,
                 banManager,
