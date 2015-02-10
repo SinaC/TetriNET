@@ -1,6 +1,8 @@
 ﻿//using POC.Client_POC;
 
 using System;
+using System.Linq;
+using POC.JQuery_WCF;
 using POC.SignalR;
 
 namespace POC
@@ -12,7 +14,6 @@ namespace POC
         private static void Main(string[] args)
         {
             //Service1 service = new Service1();
-
             //Console.ReadLine();
 
             //System.Threading.Tasks.Task.Run(() =>
@@ -28,7 +29,6 @@ namespace POC
 
             SignalRServer server = new SignalRServer();
             server.Start();
-
 
             Console.ReadLine();
 

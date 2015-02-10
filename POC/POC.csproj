@@ -108,6 +108,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TetriNET.Common.Interfaces\TetriNET.Common.Interfaces.csproj">
+      <Project>{70fb80f2-7abf-45dd-b2d4-ee945697e9b5}</Project>
+      <Name>TetriNET.Common.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TetriNET.Common\TetriNET.Common.csproj">
       <Project>{195be21e-603a-4858-a805-09c59107c5a7}</Project>
       <Name>TetriNET.Common</Name>
@@ -142,6 +146,9 @@
     <Content Include="Scripts\jquery-1.6.4.min.js" />
     <Content Include="Scripts\jquery.signalR-1.1.3.js" />
     <Content Include="Scripts\jquery.signalR-1.1.3.min.js" />
+    <Content Include="SignalR\jquery-2.0.3.min.js" />
+    <Content Include="SignalR\jquery.signalR-1.1.3.js" />
+    <Content Include="SignalR\test.html" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
