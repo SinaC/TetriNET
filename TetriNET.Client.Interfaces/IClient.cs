@@ -63,7 +63,7 @@ namespace TetriNET.Client.Interfaces
         IPiece NextPiece { get; }
         IPiece HoldPiece { get; }
         IBoard Board { get; }
-        List<Specials> Inventory { get; }
+        IReadOnlyCollection<Specials> Inventory { get; }
         int LinesCleared { get; }
         int Level { get; }
         int Score { get; }
@@ -78,9 +78,9 @@ namespace TetriNET.Client.Interfaces
 
         Versioning Version { get; }
 
-        IEnumerable<IOpponent> Opponents { get; }
+        IReadOnlyCollection<IOpponent> Opponents { get; }
         IClientStatistics Statistics { get; }
-        IEnumerable<IAchievement> Achievements { get; }
+        IReadOnlyCollection<IAchievement> Achievements { get; }
 
         event ClientConnectionLostEventHandler ConnectionLost;
 

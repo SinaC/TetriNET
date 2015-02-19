@@ -90,12 +90,19 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
             for (int i = 0; i < MaxInventorySize; i++)
                 _inventory[i].Fill = TransparentColor;
             // Draw
-            List<Specials> specials = Client.Inventory;
+            IReadOnlyCollection<Specials> specials = Client.Inventory;
             if (specials != null && specials.Any())
             {
-                for (int i = 0; i < specials.Count; i++)
-                    _inventory[i].Fill = TextureManager.TextureManager.Instance.GetBigSpecial(specials[i]);
-                FirstSpecial = Mapper.MapSpecialToString(specials[0]);
+                //for (int i = 0; i < specials.Count; i++)
+                //    _inventory[i].Fill = TextureManager.TextureManager.Instance.GetBigSpecial(specials[i]);
+                //FirstSpecial = Mapper.MapSpecialToString(specials[0]);
+                int i = 0;
+                foreach(Specials special in specials)
+                {
+                    _inventory[i].Fill = TextureManager.TextureManager.Instance.GetBigSpecial(special);
+                    i++;
+                }
+                FirstSpecial = Mapper.MapSpecialToString(specials.First());
                 // Get hint
                 if (_isHintActivated)
                 {

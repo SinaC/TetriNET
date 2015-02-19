@@ -62,6 +62,7 @@ namespace TetriNET.Client.Interfaces
         //
         void SpawnSpecialBlocks(int count, Func<Specials> randomFunc);
         void RemoveCellsHigherThan(int height);
+
         #endregion
     }
 }

@@ -27,6 +27,8 @@ namespace TetriNET.Server
         private readonly ISpectatorManager _spectatorManager;
         private readonly IActionQueue _gameActionQueue;
         private readonly List<IHost> _hosts;
+        private readonly List<WinEntry> _winList;
+        private readonly Dictionary<string, GameStatisticsByPlayer> _gameStatistics;
 
         private CancellationTokenSource _cancellationTokenSource;
         private Task _timeoutTask;
@@ -62,9 +64,9 @@ namespace TetriNET.Server
                 };
             }// else, we suppose SetVersion will be called later, before connecting
 
-            GameStatistics = new Dictionary<string, GameStatisticsByPlayer>();
+            _gameStatistics = new Dictionary<string, GameStatisticsByPlayer>();
 
-            WinList = new List<WinEntry>();
+            _winList = new List<WinEntry>();
 
             State = ServerStates.WaitingStartServer;
         }
@@ -73,8 +75,8 @@ namespace TetriNET.Server
 
         public ServerStates State { get; private set; }
         public int SpecialId { get; private set; }
-        public List<WinEntry> WinList { get; private set; }
-        public Dictionary<string, GameStatisticsByPlayer> GameStatistics { get; private set; } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
+        public IReadOnlyCollection<WinEntry> WinList { get { return _winList; } }
+        public IReadOnlyDictionary<string, GameStatisticsByPlayer> GameStatistics { get { return _gameStatistics; } } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
         public GameOptions Options { get; private set; }
 
         public Versioning Version { get; private set; }
@@ -345,14 +347,14 @@ namespace TetriNET.Server
             if (State == ServerStates.WaitingStartGame)
             {
                 // Reset
-                WinList.Clear();
+                _winList.Clear();
 
                 // Inform players and spectators
                 IPlayer serverMaster = _playerManager.ServerMaster;
                 foreach (IEntity entity in Entities)
                 {
                     entity.OnPublishServerMessage(String.Format("Win list resetted by {0}", serverMaster == null ? "SERVER" : serverMaster.Name));
-                    entity.OnWinListModified(WinList);
+                    entity.OnWinListModified(_winList);
                 }
                 Log.Default.WriteLine(LogLevels.Info, "Win list resetted");
             }
@@ -365,7 +367,7 @@ namespace TetriNET.Server
         private void ResetStatistics()
         {
             // Delete previous stats
-            GameStatistics.Clear();
+            _gameStatistics.Clear();
             // Create GameStatisticsByPlayer for each player
             foreach (IPlayer player in _playerManager.Players)
             {
@@ -381,7 +383,7 @@ namespace TetriNET.Server
                     stats.SpecialsUsed.Add(occurancy.Value, specialsByPlayer);
                 }
                 // Add stats
-                GameStatistics.Add(player.Name, stats);
+                _gameStatistics.Add(player.Name, stats);
             }
         }
 
@@ -429,7 +431,7 @@ namespace TetriNET.Server
                     Team = team,
                     Score = 0
                 };
-                WinList.Add(entry);
+                _winList.Add(entry);
             }
             entry.Score += score;
         }
@@ -489,7 +491,7 @@ namespace TetriNET.Server
             }
 
             // Send win list
-            player.OnWinListModified(WinList);
+            player.OnWinListModified(_winList);
         }
 
         private void OnUnregisterPlayer(IPlayer player)
@@ -737,7 +739,7 @@ namespace TetriNET.Server
             }
 
             // Send win list
-            spectator.OnWinListModified(WinList);
+            spectator.OnWinListModified(_winList);
         }
 
         private void OnUnregisterSpectator(ISpectator spectator)
@@ -977,7 +979,7 @@ namespace TetriNET.Server
                     {
                         entity.OnPlayerWon(winner.Id);
                         entity.OnGameFinished(statistics);
-                        entity.OnWinListModified(WinList);
+                        entity.OnWinListModified(_winList);
                     }
                     State = ServerStates.WaitingStartGame;
                 }
@@ -1044,7 +1046,7 @@ namespace TetriNET.Server
                     {
                         // Check player timeout
                         TimeSpan timespan = DateTime.Now - p.LastActionFromClient;
-                        if (timespan.TotalMilliseconds > TimeoutDelay && IsTimeoutDetectionActive)
+                        if (IsTimeoutDetectionActive && timespan.TotalMilliseconds > TimeoutDelay)
                         {
                             Log.Default.WriteLine(LogLevels.Info, "Timeout++ for player {0}", p.Name);
                             // Update timeout count
@@ -1063,7 +1065,7 @@ namespace TetriNET.Server
                     {
                         // Check player timeout
                         TimeSpan timespan = DateTime.Now - s.LastActionFromClient;
-                        if (timespan.TotalMilliseconds > TimeoutDelay && IsTimeoutDetectionActive)
+                        if (IsTimeoutDetectionActive && timespan.TotalMilliseconds > TimeoutDelay)
                         {
                             Log.Default.WriteLine(LogLevels.Info, "Timeout++ for player {0}", s.Name);
                             // Update timeout count

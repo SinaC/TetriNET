@@ -79,7 +79,7 @@ namespace TetriNET.Server.SpectatorManager
             }
         }
 
-        public List<ISpectator> Spectators
+        public IReadOnlyCollection<ISpectator> Spectators
         {
             get { return _spectators.Where(x => x != null).ToList(); }
         }

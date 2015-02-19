@@ -14,7 +14,7 @@ namespace TetriNET.Client.Strategy
         // TODO: when confusion is activated, bot doesn't do anything
         // TODO: immunity
 
-        public bool GetSpecialAdvices(IBoard board, IPiece current, IPiece next, List<Specials> inventory, int inventoryMaxSize, List<IOpponent> opponents, out List<SpecialAdvice> advices)
+        public bool GetSpecialAdvices(IBoard board, IPiece current, IPiece next, IEnumerable<Specials> inventory, int inventoryMaxSize, IEnumerable<IOpponent> opponents, out List<SpecialAdvice> advices)
         {
             // if solo, 
             //  drop everything except Nuke/Gravity/ClearLines
@@ -72,6 +72,10 @@ namespace TetriNET.Client.Strategy
             //
             advices = new List<SpecialAdvice>();
 
+            // clone inventory
+
+            List<Specials> internalInventory = new List<Specials>();
+
             // No inventory
             if (!inventory.Any())
                 return false;
@@ -79,13 +83,13 @@ namespace TetriNET.Client.Strategy
             if (!opponents.Any())
             {
                 // Solo
-                return SoloMode(board, inventory, inventoryMaxSize, advices);
+                return SoloMode(board, internalInventory, inventoryMaxSize, advices);
             }
                 int maxPile = BoardHelper.GetPileMaxHeight(board);
                 if (maxPile >= 14)
                 {
                     // Survival
-                    return PanicMode(inventory, opponents, advices);
+                    return PanicMode(internalInventory, opponents, advices);
                 }
                 else
                 {
@@ -103,12 +107,12 @@ namespace TetriNET.Client.Strategy
                             if (addLinesCount > 0 && pileHeight + addLinesCount >= lastOpponentBoard.Height)
                             {
                                 // Finish him
-                                return OneOpponentMode(lastOpponent, inventory, advices);
+                                return OneOpponentMode(lastOpponent, internalInventory, advices);
                             }
                         }
                     }
 
-                    return MultiplayerMode(board, inventory, inventoryMaxSize, opponents, advices);
+                    return MultiplayerMode(board, internalInventory, inventoryMaxSize, opponents, advices);
                 }
            
 
@@ -196,7 +200,7 @@ namespace TetriNET.Client.Strategy
             //  use nuke when reaching top of board
             //  use gravity when reaching mid-board
 
-            Specials special = inventory[0];
+            Specials special = inventory.First();
 
             int maxPile = BoardHelper.GetPileMaxHeight(board);
             switch (special)
@@ -240,7 +244,7 @@ namespace TetriNET.Client.Strategy
             return true;
         }
 
-        public bool PanicMode(List<Specials> inventory, List<IOpponent> opponents, List<SpecialAdvice> advices)
+        public bool PanicMode(List<Specials> inventory, IEnumerable<IOpponent> opponents, List<SpecialAdvice> advices)
         {
             // Survival
             // If Nuke/Gravity/Switch
@@ -401,7 +405,7 @@ namespace TetriNET.Client.Strategy
             return true; // stops here
         }
 
-        public bool MultiplayerMode(IBoard board, List<Specials> inventory, int inventoryMaxSize, List<IOpponent> opponents, List<SpecialAdvice> advices)
+        public bool MultiplayerMode(IBoard board, List<Specials> inventory, int inventoryMaxSize, IEnumerable<IOpponent> opponents, List<SpecialAdvice> advices)
         {
             // Get strongest opponent
             int strongest = GetStrongestOpponent(opponents);
@@ -807,7 +811,7 @@ namespace TetriNET.Client.Strategy
             return weakest;
         }
 
-        private static int GetLastOpponent(List<IOpponent> opponents) // Return opponent id if there is only one opponent left
+        private static int GetLastOpponent(IEnumerable<IOpponent> opponents) // Return opponent id if there is only one opponent left
         {
             if (opponents.Count() == 1)
                 return opponents.First().PlayerId;

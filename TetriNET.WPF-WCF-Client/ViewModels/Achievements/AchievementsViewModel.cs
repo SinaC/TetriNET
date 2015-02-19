@@ -72,7 +72,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
             ExecuteOnUIThread.Invoke(() => Achievements = BuildAchievementList(Client.Achievements.ToList()));
         }
 
-        protected ObservableCollection<IAchievement> BuildAchievementList(List<IAchievement> achievements)
+        protected ObservableCollection<IAchievement> BuildAchievementList(IReadOnlyCollection<IAchievement> achievements)
         {
             if (achievements == null)
                 return null;

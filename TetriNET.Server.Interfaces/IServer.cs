@@ -20,8 +20,8 @@ namespace TetriNET.Server.Interfaces
     {
         ServerStates State { get; }
         int SpecialId { get; }
-        List<WinEntry> WinList { get; }
-        Dictionary<string, GameStatisticsByPlayer> GameStatistics { get; } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
+        IReadOnlyCollection<WinEntry> WinList { get; }
+        IReadOnlyDictionary<string, GameStatisticsByPlayer> GameStatistics { get; } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
         GameOptions Options { get; }
         Versioning Version { get; }
 

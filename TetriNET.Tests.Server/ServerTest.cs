@@ -14,12 +14,12 @@ namespace TetriNET.Tests.Server
         private LogMock _log;
         private IHost _host;
         private IFactory _factory;
-        private IActionQueue _actionQueue;
+        private ActionQueueMock _actionQueue;
 
         private IServer CreateServer()
         {
             _factory = new FactoryMock();
-            _actionQueue = _factory.CreateActionQueue();
+            _actionQueue = _factory.CreateActionQueue() as ActionQueueMock;
             return new TetriNET.Server.Server(_factory.CreatePlayerManager(6), _factory.CreateSpectatorManager(10), _factory.CreatePieceProvider(), _actionQueue);
         }
 
@@ -31,7 +31,7 @@ namespace TetriNET.Tests.Server
             IBanManager banManager = _factory.CreateBanManager();
             IPieceProvider pieceProvider = _factory.CreatePieceProvider();
             _host = new HostBaseMock(playerManager, spectatorManager, banManager, _factory);
-            _actionQueue = _factory.CreateActionQueue();
+            _actionQueue = _factory.CreateActionQueue() as ActionQueueMock;
             IServer server = new TetriNET.Server.Server(playerManager, spectatorManager, pieceProvider, _actionQueue);
             server.AddHost(_host);
             return server;
@@ -296,18 +296,17 @@ namespace TetriNET.Tests.Server
             IServer server = CreateServerWithHost();
             server.StartServer();
             IPlayer player1 = _factory.CreatePlayer(0, "player1", new CountCallTetriNETCallback());
+            IPlayer player2 = _factory.CreatePlayer(1, "player2", new CountCallTetriNETCallback());
             _host.PlayerManager.Add(player1);
-            server.WinList.Add(new WinEntry
-                {
-                    PlayerName = "player1",
-                    Team = "team1",
-                    Score = 10
-                });
-            server.StartGame();
-            
+            _host.PlayerManager.Add(player2);
+            server.StartGame(); // start a game to generate entries in WinList
+            _host.GameLost(player1.Callback); // player has lost
+            _actionQueue.Process(); // --> stop game because only one alive player left --> generate 2 entries in WinList 3 points for player2 and 2 points for player1
+            server.StartGame(); // restart a game
+
             server.ResetWinList();
 
-            Assert.AreEqual(server.WinList.Count, 1);
+            Assert.AreEqual(server.WinList.Count, 2);
         }
 
         [TestMethod]
@@ -315,12 +314,13 @@ namespace TetriNET.Tests.Server
         {
             IServer server = CreateServerWithHost();
             server.StartServer();
-            server.WinList.Add(new WinEntry
-            {
-                PlayerName = "player1",
-                Team = "team1",
-                Score = 10
-            });
+            IPlayer player1 = _factory.CreatePlayer(0, "player1", new CountCallTetriNETCallback());
+            IPlayer player2 = _factory.CreatePlayer(1, "player2", new CountCallTetriNETCallback());
+            _host.PlayerManager.Add(player1);
+            _host.PlayerManager.Add(player2);
+            server.StartGame();
+            _host.GameLost(player1.Callback); // player has lost
+            _actionQueue.Process(); // --> stop game because only one alive player left --> gene
 
             server.ResetWinList();
 
@@ -344,20 +344,17 @@ namespace TetriNET.Tests.Server
             _host.PlayerManager.Add(player2);
             _host.SpectatorManager.Add(spectator1);
             _host.SpectatorManager.Add(spectator2);
-            server.WinList.Add(new WinEntry
-            {
-                PlayerName = "player1",
-                Team = "team1",
-                Score = 10
-            });
+            server.StartGame();
+            _host.GameLost(player1.Callback); // player has lost
+            _actionQueue.Process(); // --> stop game because only one alive player left --> gene
 
             server.ResetWinList();
 
             Assert.AreEqual(server.WinList.Count, 0);
             Assert.AreEqual(playerCallback1.GetCallCount("OnPublishServerMessage"), 1);
             Assert.AreEqual(playerCallback2.GetCallCount("OnPublishServerMessage"), 1);
-            Assert.AreEqual(playerCallback1.GetCallCount("OnWinListModified"), 1);
-            Assert.AreEqual(playerCallback2.GetCallCount("OnWinListModified"), 1);
+            Assert.AreEqual(playerCallback1.GetCallCount("OnWinListModified"), 2);
+            Assert.AreEqual(playerCallback2.GetCallCount("OnWinListModified"), 2);
         }
 
         [TestMethod]

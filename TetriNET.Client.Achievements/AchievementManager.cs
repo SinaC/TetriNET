@@ -12,10 +12,19 @@ namespace TetriNET.Client.Achievements
 {
     public class AchievementManager : IAchievementManager
     {
+        private readonly List<IAchievement> _achievements;
+
         public AchievementManager()
         {
             //
-            Achievements = new List<IAchievement>();
+            _achievements = new List<IAchievement>();
+            //List<IAchievement> oldAchievements = _achievements;
+            //if (oldAchievements != null && oldAchievements.Any())
+            //    foreach (IAchievement achievement in oldAchievements)
+            //        achievement.Achieved -= AchievementAchieved;
+            if (_achievements != null && _achievements.Any())
+                foreach (IAchievement achievement in _achievements)
+                    achievement.Achieved += AchievementAchieved;
         }
 
         public void FindAllAchievements()
@@ -40,7 +49,7 @@ namespace TetriNET.Client.Achievements
                             Log.Default.WriteLine(LogLevels.Error, "Achievement {0} and {1} share the same id {2}", achievement.Title, alreadyExists.Title, achievement.Id);
                         else
                         {
-                            Achievements.Add(achievement);
+                            _achievements.Add(achievement);
                             achievement.Achieved += AchievementAchieved;
                         }
                     }
@@ -57,23 +66,11 @@ namespace TetriNET.Client.Achievements
         #region IAchievementManager
         public event AchievedEventHandler Achieved;
 
-        private List<IAchievement> _achievements;
-        public List<IAchievement> Achievements
+        public IReadOnlyCollection<IAchievement> Achievements
         {
             get
             {
                 return _achievements;
-            }
-            set
-            {
-                List<IAchievement> oldAchievements = _achievements;
-                if (oldAchievements != null && oldAchievements.Any())
-                    foreach (IAchievement achievement in oldAchievements)
-                        achievement.Achieved -= AchievementAchieved;
-                _achievements = value;
-                if (_achievements != null && _achievements.Any())
-                    foreach (IAchievement achievement in _achievements)
-                        achievement.Achieved += AchievementAchieved;
             }
         }
 

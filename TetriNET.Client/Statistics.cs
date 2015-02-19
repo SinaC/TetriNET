@@ -7,10 +7,10 @@ namespace TetriNET.Client
 {
     internal sealed class Statistics : IClientStatistics
     {
-        public Dictionary<Pieces, int> PieceCount { get; set; }
-        public Dictionary<Specials, int> SpecialCount { get; set; }
-        public Dictionary<Specials, int> SpecialUsed { get; set; }
-        public Dictionary<Specials, int> SpecialDiscarded { get; set; }
+        public Dictionary<Pieces, int> PieceCount { get; private set; }
+        public Dictionary<Specials, int> SpecialCount { get; private set; }
+        public Dictionary<Specials, int> SpecialUsed { get; private set; }
+        public Dictionary<Specials, int> SpecialDiscarded { get; private set; }
 
         public int MoveCount { get; set; }
         public int SingleCount { get; set; }

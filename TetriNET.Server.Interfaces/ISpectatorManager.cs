@@ -15,7 +15,7 @@ namespace TetriNET.Server.Interfaces
 
         int FirstAvailableId { get; }
 
-        List<ISpectator> Spectators { get; }
+        IReadOnlyCollection<ISpectator> Spectators { get; }
 
         ISpectator this[string name] { get; }
         ISpectator this[int id] { get; }

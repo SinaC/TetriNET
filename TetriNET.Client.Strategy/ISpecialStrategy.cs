@@ -20,6 +20,6 @@ namespace TetriNET.Client.Strategy
 
     public interface ISpecialStrategy
     {
-        bool GetSpecialAdvices(IBoard board, IPiece current, IPiece next, List<Specials> inventory, int inventoryMaxSize, List<IOpponent> opponents, out List<SpecialAdvice> advices);
+        bool GetSpecialAdvices(IBoard board, IPiece current, IPiece next, IEnumerable<Specials> inventory, int inventoryMaxSize, IEnumerable<IOpponent> opponents, out List<SpecialAdvice> advices);
     }
 }

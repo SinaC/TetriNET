@@ -530,15 +530,16 @@ namespace TetriNET.ConsoleWCFClient.UI
             lock (_lock)
             {
                 Console.ResetColor();
-                List<Specials> specials = _client.Inventory;
+                IReadOnlyCollection<Specials> specials = _client.Inventory;
                 StringBuilder sb2 = new StringBuilder();
-                for (int i = 0; i < specials.Count; i++)
+                int i = 0;
+                foreach(Specials special in specials)
                 {
-                    Specials special = specials[i];
                     if (i == 0)
                         sb2.Append(String.Format("[{0}]", ConvertSpecial(special)));
                     else
                         sb2.Append(ConvertSpecial(special));
+                    i++;
                 }
                 Console.SetCursorPosition(0, _client.Board.Height + 1 + BoardStartY);
                 Console.Write(sb2.ToString().PadRight(20, ' '));

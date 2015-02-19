@@ -30,5 +30,11 @@ namespace TetriNET.Tests.Server.Mocking
         {
             _actions.Clear();
         }
+
+        public void Process() // Mock additional method
+        {
+            foreach (Action action in _actions)
+                action();
+        }
     }
 }

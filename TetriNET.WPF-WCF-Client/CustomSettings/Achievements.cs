@@ -38,7 +38,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
         }
 
         // Overwrite achievements data with settings
-        public void Load(List<IAchievement> achievements)
+        public void Load(IReadOnlyCollection<IAchievement> achievements)
         {
             if (achievements == null || Achievements == null || !achievements.Any() || !Achievements.Any())
                 return;

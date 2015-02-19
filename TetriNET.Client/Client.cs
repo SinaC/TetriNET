@@ -1176,7 +1176,7 @@ namespace TetriNET.Client
             get { return State != States.Created && State != States.Registering; }
         }
 
-        public List<Specials> Inventory
+        public IReadOnlyCollection<Specials> Inventory
         {
             get
             {
@@ -1203,11 +1203,11 @@ namespace TetriNET.Client
 
         public Versioning Version { get; private set; }
 
-        public IEnumerable<IOpponent> Opponents
+        public IReadOnlyCollection<IOpponent> Opponents
         {
             get
             {
-                return _playersData.Where(x => x != null && x.PlayerId != _clientPlayerId && x.Board != null && x.State == PlayerData.States.Playing);
+                return _playersData.Where(x => x != null && x.PlayerId != _clientPlayerId && x.Board != null && x.State == PlayerData.States.Playing).ToList();
             }
         }
 
@@ -1216,7 +1216,7 @@ namespace TetriNET.Client
             get { return _statistics; }
         }
 
-        public IEnumerable<IAchievement> Achievements
+        public IReadOnlyCollection<IAchievement> Achievements
         {
             get
             {
@@ -1274,7 +1274,7 @@ namespace TetriNET.Client
                 Log.Default.WriteLine(LogLevels.Info, "{0}{1}: {2}", i, i == _clientPlayerId ? "*" : String.Empty, p == null ? String.Empty : p.Name);
             }
             // Inventory
-            List<Specials> specials = Inventory;
+            IReadOnlyCollection<Specials> specials = Inventory;
             StringBuilder sb2 = new StringBuilder();
             foreach (Specials special in specials)
                 sb2.Append(ConvertSpecial(special));

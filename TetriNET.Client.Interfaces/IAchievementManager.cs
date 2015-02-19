@@ -5,7 +5,7 @@ namespace TetriNET.Client.Interfaces
 {
     public interface IAchievementManager
     {
-        List<IAchievement> Achievements { get; }
+        IReadOnlyCollection<IAchievement> Achievements { get; }
 
         event AchievedEventHandler Achieved;
 

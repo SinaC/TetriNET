@@ -115,7 +115,7 @@ namespace TetriNET.Server.PlayerManager
             }
         }
 
-        public List<IPlayer> Players
+        public IReadOnlyCollection<IPlayer> Players
         {
             get { return _players.Select(x => x.Value).ToList(); }
         }
