@@ -37,7 +37,7 @@ namespace TetriNET.Client.Achievements.Achievements
             _specialsUsed = options.SpecialOccurancies.Where(x => x.Occurancy > 0).ToDictionary(x => x.Value, x => new Used());
         }
 
-        public override void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
+        public override void OnUseSpecial(int playerId, string playerTeam, IReadOnlyBoard playerBoard, int targetId, string targetTeam, IReadOnlyBoard targetBoard, Specials special)
         {
             if (playerId != targetId && _specialsUsed.ContainsKey(special))
             {
@@ -46,7 +46,7 @@ namespace TetriNET.Client.Achievements.Achievements
             }
         }
 
-        public override void OnSpecialUsed(int playerId, int sourceId, string sourceTeam, IBoard sourceBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
+        public override void OnSpecialUsed(int playerId, int sourceId, string sourceTeam, IReadOnlyBoard sourceBoard, int targetId, string targetTeam, IReadOnlyBoard targetBoard, Specials special)
         {
             if (targetId == playerId && sourceId != playerId && _specialsUsed.ContainsKey(special))
             {

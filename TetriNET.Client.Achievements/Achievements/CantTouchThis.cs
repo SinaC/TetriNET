@@ -30,13 +30,12 @@ namespace TetriNET.Client.Achievements.Achievements
             base.Reset();
         }
 
-        public override void OnAchievementEarned(IAchievement achievement, IEnumerable<IAchievement> achievements)
+        public override void OnAchievementEarned(IAchievement achievement, IReadOnlyCollection<IAchievement> achievements)
         {
             if (achievement == this)
                 return;
-            List<IAchievement> lst = achievements.ToList();
-            int count = lst.Count(x => x.Id != Id && x.IsAchieved);
-            if (1 + count == lst.Count()) // every achievement except ourself
+            int count = achievements.Count(x => x.Id != Id && x.IsAchieved);
+            if (1 + count == achievements.Count()) // every achievement except ourself
             {
                 ExtraData = _achievementsCount;
                 Achieve(); // Achieve calls Reset, so we have to store ExtraData before calling Achieve (or IsAchieved will be reset to false)

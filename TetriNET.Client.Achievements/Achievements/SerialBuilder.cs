@@ -21,16 +21,19 @@ namespace TetriNET.Client.Achievements.Achievements
             Check(playTime, lineCount);
         }
 
-        public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount, int playerLeft, List<Specials> inventory)
+        public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount, int playerLeft, IReadOnlyCollection<Specials> inventory)
         {
             Check(playTime, lineCount);
         }
 
         private void Check(double playTime, int lineCount)
         {
-            double speed = lineCount/(playTime/60);
-            if (speed > 15 && lineCount > 15)
-                Achieve();
+            if (lineCount > 15)
+            {
+                double speed = lineCount/(playTime/60);
+                if (speed > 15)
+                    Achieve();
+            }
         }
     }
 }

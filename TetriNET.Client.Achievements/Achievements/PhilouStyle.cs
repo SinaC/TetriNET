@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TetriNET.Client.Interfaces;
 using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
@@ -24,7 +25,7 @@ namespace TetriNET.Client.Achievements.Achievements
             base.Reset();
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, Interfaces.IBoard board, List<Pieces> collapsedPieces)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IReadOnlyBoard board, IReadOnlyCollection<Pieces> collapsedPieces)
         {
             _roundCount++;
             if (_roundCount <= 5 && moveCount > 0)

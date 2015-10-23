@@ -1,12 +1,10 @@
-﻿using TetriNET.Client.Interfaces;
+﻿using TetriNET.Client.Achievements.Achievements.Base;
 using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class MartyIsInDaPlace : Achievement
+    internal class MartyIsInDaPlace : SpecialCountBase
     {
-        private int _count;
-
         public MartyIsInDaPlace()
         {
             Id = 17;
@@ -18,18 +16,14 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 10;
         }
 
-        public override void Reset()
+        public override Specials Special
         {
-            _count = 0;
-            base.Reset();
+            get { return Specials.ZebraField; }
         }
 
-        public override void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
+        public override int CountToAchieve
         {
-            if (special == Specials.ZebraField)
-                _count++;
-            if (_count == 5)
-                Achieve();
+            get { return 5; }
         }
     }
 }

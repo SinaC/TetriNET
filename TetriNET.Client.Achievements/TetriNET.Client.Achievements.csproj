@@ -39,6 +39,12 @@
     <Compile Include="Achievements\Architect.cs" />
     <Compile Include="Achievements\BackToBack.cs" />
     <Compile Include="Achievements\BackToBackAndBackAgain.cs" />
+    <Compile Include="Achievements\Base\GameWinCountBase.cs" />
+    <Compile Include="Achievements\Base\LineClearedBase.cs" />
+    <Compile Include="Achievements\Base\LineClearedByGameBase.cs" />
+    <Compile Include="Achievements\Base\NoLineBetweenLineClearedBase.cs" />
+    <Compile Include="Achievements\Base\SpecialCountBase.cs" />
+    <Compile Include="Achievements\Base\TetriminoCountBase.cs" />
     <Compile Include="Achievements\CallMeSavior.cs" />
     <Compile Include="Achievements\CantTouchThis.cs" />
     <Compile Include="Achievements\Century.cs" />
@@ -53,6 +59,7 @@
     <Compile Include="Achievements\HHStyle.cs" />
     <Compile Include="Achievements\LikeEmperor.cs" />
     <Compile Include="Achievements\LikeKing.cs" />
+    <Compile Include="Achievements\Base\ConsecutiveLineClearedBase.cs" />
     <Compile Include="Achievements\Looooser.cs" />
     <Compile Include="Achievements\HitchhikersGuide.cs" />
     <Compile Include="Achievements\JustInTime.cs" />

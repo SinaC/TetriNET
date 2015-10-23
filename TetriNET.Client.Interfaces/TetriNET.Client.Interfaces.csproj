@@ -44,6 +44,7 @@
     <Compile Include="IOpponent.cs" />
     <Compile Include="IPiece.cs" />
     <Compile Include="IProxy.cs" />
+    <Compile Include="IReadOnlyBoard.cs" />
     <Compile Include="ISpectatorProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

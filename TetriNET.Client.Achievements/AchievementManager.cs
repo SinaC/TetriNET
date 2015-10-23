@@ -36,7 +36,7 @@ namespace TetriNET.Client.Achievements
         public void FindAllAchievements(Assembly assembly)
         {
             //
-            List<Type> types = assembly.GetTypes().Where( t=> t.IsSubclassOf(typeof(Achievement)) && !t.IsAbstract).ToList();
+            List<Type> types = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof (Achievement)) && !t.IsAbstract).ToList();
             foreach (Type type in types)
             {
                 try
@@ -64,14 +64,12 @@ namespace TetriNET.Client.Achievements
         }
 
         #region IAchievementManager
+
         public event AchievedEventHandler Achieved;
 
         public IReadOnlyCollection<IAchievement> Achievements
         {
-            get
-            {
-                return _achievements;
-            }
+            get { return _achievements; }
         }
 
         private DateTime _gameStartTime;
@@ -107,6 +105,7 @@ namespace TetriNET.Client.Achievements
 
         public void OnGameFinished()
         {
+            // TODO: use
         }
 
         public void OnRoundFinished(int deletedRows, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using TetriNET.Client.Achievements.Achievements.Base;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class LikeEmperor : Achievement
+    internal class LikeEmperor : GameWinCountBase
     {
         public LikeEmperor()
         {
@@ -16,16 +16,9 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 3;
         }
 
-        public override string Progress
+        public override int CountToAchieve
         {
-            get { return String.Format("{0:#,0} / {1:#,0} ({2:0.0}%)", ExtraData, 1000, 100.0 * (ExtraData / 1000.0)); }
-        }
-
-        public override void OnGameWon(double playTime, int moveCount, int lineCount, int playerCount)
-        {
-            ExtraData++;
-            if (ExtraData >= 1000)
-                Achieve();
+            get { return 1000; }
         }
     }
 }

@@ -18,11 +18,11 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 10;
         }
 
-        public override void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
+        public override void OnUseSpecial(int playerId, string playerTeam, IReadOnlyBoard playerBoard, int targetId, string targetTeam, IReadOnlyBoard targetBoard, Specials special)
         {
             if (special == Specials.BlockBomb)
             {
-                int targetBomb = targetBoard.Cells.Count(x => CellHelper.GetSpecial(x) == Specials.BlockBomb);
+                int targetBomb = targetBoard.ReadOnlyCells.Count(x => CellHelper.GetSpecial(x) == Specials.BlockBomb);
                 if (targetBomb >= 3)
                     Achieve();
             }

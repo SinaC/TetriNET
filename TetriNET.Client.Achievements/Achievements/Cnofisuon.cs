@@ -1,12 +1,10 @@
-﻿using TetriNET.Client.Interfaces;
+﻿using TetriNET.Client.Achievements.Achievements.Base;
 using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class Cnofisuon : Achievement
+    internal class Cnofisuon : SpecialCountBase
     {
-        private int _count;
-
         public Cnofisuon()
         {
             Points = 20;
@@ -17,18 +15,13 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 10;
         }
 
-        public override void Reset()
+        public override Specials Special
         {
-            _count = 0;
-            base.Reset();
+            get { return Specials.Confusion; }
         }
-
-        public override void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
+        public override int CountToAchieve
         {
-            if (special == Specials.Confusion)
-                _count++;
-            if (_count == 5)
-                Achieve();
+            get { return 5; }
         }
     }
 }

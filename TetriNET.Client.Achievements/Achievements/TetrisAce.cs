@@ -24,12 +24,14 @@ namespace TetriNET.Client.Achievements.Achievements
             get { return String.Format("{0} / {1} ({2:0.0}%)", ExtraData, 150, 100.0 * (ExtraData / 150.0)); }
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IReadOnlyBoard board, IReadOnlyCollection<Pieces> collapsedPieces)
         {
             if (lineCompleted == 4)
+            {
                 ExtraData++;
-            if (ExtraData >= 150)
-                Achieve();
+                if (ExtraData >= 150)
+                    Achieve();
+            }
         }
     }
 }

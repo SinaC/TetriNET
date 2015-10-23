@@ -19,12 +19,14 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 5;
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IReadOnlyBoard board, IReadOnlyCollection<Pieces> collapsedPieces)
         {
             if (level >= 100)
+            {
                 _count += lineCompleted;
-            if (_count >= 50)
-                Achieve();
+                if (_count >= 50)
+                    Achieve();
+            }
         }
     }
 }

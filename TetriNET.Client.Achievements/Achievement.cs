@@ -6,7 +6,7 @@ using TetriNET.Common.Helpers;
 
 namespace TetriNET.Client.Achievements
 {
-    internal abstract class Achievement : IAchievement
+    public abstract class Achievement : IAchievement
     {
         private bool AlreadyAchievedThisGame { get; set; }
 
@@ -37,21 +37,27 @@ namespace TetriNET.Client.Achievements
         //        : "Transparent"; }
         //}
 
-        public bool IsGoldLevelReached { get { return AchieveCount >= GoldLevel; }}
-        public bool IsSilverLevelReached { get { return AchieveCount >= SilverLevel; } }
-        public bool IsBronzeLevelReached { get { return AchieveCount >= BronzeLevel; } }
+        public bool IsGoldLevelReached
+        {
+            get { return AchieveCount >= GoldLevel; }
+        }
+        public bool IsSilverLevelReached
+        {
+            get { return AchieveCount >= SilverLevel; }
+        }
+        public bool IsBronzeLevelReached
+        {
+            get { return AchieveCount >= BronzeLevel; }
+        }
 
         public bool AchievedMoreThanOnce
         {
             get { return AchieveCount > 1; }
         }
 
-        public bool IsAchievable 
+        public bool IsAchievable
         {
-            get
-            {
-                return (OnlyOnce && !IsAchieved) || (!OnlyOnce && !IsFailed && !AlreadyAchievedThisGame);
-            }
+            get { return (OnlyOnce && !IsAchieved) || (!OnlyOnce && !IsFailed && !AlreadyAchievedThisGame); }
         }
 
         public virtual string Progress
@@ -105,27 +111,27 @@ namespace TetriNET.Client.Achievements
         {
         }
 
-        public virtual void OnAchievementEarned(IAchievement achievement, IEnumerable<IAchievement> achievements)
+        public virtual void OnAchievementEarned(IAchievement achievement, IReadOnlyCollection<IAchievement> achievements)
         {
         }
 
-        public virtual void OnGameWon(double playTime/*in seconds*/, int moveCount, int lineCount, int playerCount)
+        public virtual void OnGameWon(double playTime /*in seconds*/, int moveCount, int lineCount, int playerCount)
         {
         }
 
-        public virtual void OnGameLost(double playTime/*in seconds*/, int moveCount, int lineCount, int playerCount, int playerLeft, List<Specials> inventory)
+        public virtual void OnGameLost(double playTime /*in seconds*/, int moveCount, int lineCount, int playerCount, int playerLeft, IReadOnlyCollection<Specials> inventory)
         {
         }
 
-        public virtual void OnSpecialUsed(int playerId, int sourceId, string sourceTeam, IBoard sourceBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
+        public virtual void OnSpecialUsed(int playerId, int sourceId, string sourceTeam, IReadOnlyBoard sourceBoard, int targetId, string targetTeam, IReadOnlyBoard targetBoard, Specials special)
         {
         }
 
-        public virtual void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
+        public virtual void OnUseSpecial(int playerId, string playerTeam, IReadOnlyBoard playerBoard, int targetId, string targetTeam, IReadOnlyBoard targetBoard, Specials special)
         {
         }
 
-        public virtual void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)
+        public virtual void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IReadOnlyBoard board, IReadOnlyCollection<Pieces> collapsedPieces)
         {
         }
     }

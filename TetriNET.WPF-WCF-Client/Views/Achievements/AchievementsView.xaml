@@ -64,15 +64,18 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="#Achieved:"/>
+                                <TextBlock Grid.Row="0" Grid.Column="0" 
+                                           Text="#Achieved:"/>
                                 <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,0,0"
                                            Text="{Binding AchieveCount}"/>
 
-                                <TextBlock Grid.Row="1" Grid.Column="0" Text="First time achieved:"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" 
+                                           Text="First time achieved:"/>
                                 <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,0,0"
                                            Text="{Binding FirstTimeAchieved, StringFormat={}{0:dd MMMM yyyy HH:mm:ss}}"/>
                                 
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Last time achieved:"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" 
+                                           Text="Last time achieved:"/>
                                 <TextBlock Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" Margin="5,0,0,0"
                                            Text="{Binding LastTimeAchieved, StringFormat={}{0:dd MMMM yyyy HH:mm:ss}}"/>
                             </Grid>
@@ -132,21 +135,21 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="0">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Grid.Column="0"
+                      PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
             <ScrollViewer.Resources>
                 <Style TargetType="ScrollBar">
                     <Setter Property="MinWidth" Value="10"/>
                     <Setter Property="Width" Value="10"/>
                 </Style>
             </ScrollViewer.Resources>
-            <ListBox
-                HorizontalAlignment="Stretch"
-                Background="Transparent" BorderThickness="0"
-                HorizontalContentAlignment="Stretch"
-                helpers:ListBoxExtenders.AutoScrollToSelectedItem="True"
-                SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
-                SelectionMode="Single"
-                ItemsSource="{Binding Achievements}">
+            <ListBox HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                     Background="Transparent" BorderThickness="0"
+                     ScrollViewer.CanContentScroll="False"
+                     helpers:ListBoxExtenders.AutoScrollToSelectedItem="True"
+                     SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                     SelectionMode="Single"
+                     ItemsSource="{Binding Achievements}">
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
                         <Style.Triggers>

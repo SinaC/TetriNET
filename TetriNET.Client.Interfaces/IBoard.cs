@@ -6,10 +6,8 @@ namespace TetriNET.Client.Interfaces
 {
     //  x-axis: 1(Left) -> Width(Right)
     //  y-axis: 1(Bottom) -> Height(Top)
-    public interface IBoard
+    public interface IBoard : IReadOnlyBoard
     {
-        int Width { get; }
-        int Height { get; }
         byte[] Cells { get; }
 
         IBoard Clone();
@@ -19,12 +17,8 @@ namespace TetriNET.Client.Interfaces
 
         bool SetCells(byte[] cells);
         int TotalCells { get; }
-        byte this[int x, int y] { get; }
         int GetCellIndex(int x, int y);
         int NonEmptyCellsCount { get; }
-
-        int PieceSpawnX { get; }
-        int PieceSpawnY { get; }
 
         bool CheckNoConflict(IPiece piece, bool checkTop = false);
         int CollapseCompletedRows();

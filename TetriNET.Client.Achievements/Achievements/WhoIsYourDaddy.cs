@@ -27,12 +27,12 @@ namespace TetriNET.Client.Achievements.Achievements
 
         public override void OnGameWon(double playTime, int moveCount, int lineCount, int playerCount)
         {
-              _count++;
+            _count++;
             if (_count == 5)
                 Achieve();
         }
 
-        public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount, int playerLeft, List<Specials> inventory)
+        public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount, int playerLeft, IReadOnlyCollection<Specials> inventory)
         {
             _count = 0;
         }

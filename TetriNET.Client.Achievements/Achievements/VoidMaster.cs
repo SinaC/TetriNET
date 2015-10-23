@@ -19,9 +19,9 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 10;
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IReadOnlyBoard board, IReadOnlyCollection<Pieces> collapsedPieces)
         {
-            if (board.Cells.All(x => x == CellHelper.EmptyCell))
+            if (board.ReadOnlyCells.All(x => x == CellHelper.EmptyCell))
                 Achieve();
         }
     }

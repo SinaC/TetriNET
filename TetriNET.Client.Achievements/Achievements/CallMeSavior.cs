@@ -15,9 +15,9 @@ namespace TetriNET.Client.Achievements.Achievements
             BronzeLevel = 1;
             SilverLevel = 5;
             GoldLevel = 10;
-        } 
+        }
 
-        public override void OnUseSpecial(int playerId, string playerTeam, IBoard playerBoard, int targetId, string targetTeam, IBoard targetBoard, Specials special)
+        public override void OnUseSpecial(int playerId, string playerTeam, IReadOnlyBoard playerBoard, int targetId, string targetTeam, IReadOnlyBoard targetBoard, Specials special)
         {
             if (playerId != targetId && !String.IsNullOrWhiteSpace(playerTeam) && !String.IsNullOrWhiteSpace(targetTeam) && playerTeam == targetTeam && special == Specials.NukeField)
                 Achieve();

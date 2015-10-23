@@ -14,6 +14,8 @@ namespace TetriNET.Client.Board
         public int Height { get; private set; }
         public byte[] Cells { get; private set; }
 
+        public IReadOnlyCollection<byte> ReadOnlyCells { get { return Array.AsReadOnly(Cells); } }
+
         public Board(int width, int height)
         {
             Width = width;

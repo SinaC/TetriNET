@@ -17,7 +17,7 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 5;
         }
 
-        public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount, int playerLeft, List<Specials> inventory)
+        public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount, int playerLeft, IReadOnlyCollection<Specials> inventory)
         {
             if (inventory != null && inventory.Any(x => x == Specials.NukeField) && inventory.Any(x => x == Specials.SwitchFields) && inventory.Any(x => x == Specials.BlockGravity))
                 Achieve();

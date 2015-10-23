@@ -25,14 +25,16 @@ namespace TetriNET.Client.Achievements.Achievements
             base.Reset();
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)
+        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IReadOnlyBoard board, IReadOnlyCollection<Pieces> collapsedPieces)
         {
             if (lineCompleted == 0)
                 _count = 0;
             else
+            {
                 _count += lineCompleted;
-            if (_count >= 10)
-                Achieve();
+                if (_count >= 10)
+                    Achieve();
+            }
         }
     }
 }

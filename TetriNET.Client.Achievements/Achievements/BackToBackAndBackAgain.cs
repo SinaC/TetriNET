@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using TetriNET.Client.Interfaces;
-using TetriNET.Common.DataContracts;
+﻿using TetriNET.Client.Achievements.Achievements.Base;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class BackToBackAndBackAgain : Achievement
+    internal class BackToBackAndBackAgain : NoLineBetweenLineClearedBase
     {
-        private int _count;
-
         public BackToBackAndBackAgain()
         {
             Id = 3;
@@ -17,24 +13,16 @@ namespace TetriNET.Client.Achievements.Achievements
             BronzeLevel = 1;
             SilverLevel = 3;
             GoldLevel = 5;
-        } 
-
-        public override void Reset()
-        {
-            _count = 0;
-            base.Reset();
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)
+        protected override int LineCount
         {
-            if (lineCompleted == 4)
-            {
-                _count++;
-                if (_count == 3)
-                    Achieve();
-            }
-            else if (lineCompleted > 0)
-                _count = 0;
+            get { return 4; }
+        }
+
+        protected override int CountToAchieve
+        {
+            get { return 3; }
         }
     }
 }

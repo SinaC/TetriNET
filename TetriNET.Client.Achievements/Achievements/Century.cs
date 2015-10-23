@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using TetriNET.Client.Interfaces;
-using TetriNET.Common.DataContracts;
+﻿using TetriNET.Client.Achievements.Achievements.Base;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class Century : Achievement
+    internal class Century : LineClearedByGameBase
     {
-        private int _lineCount;
-
         public Century()
         {
             Id = 6;
@@ -19,17 +15,9 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 10;
         }
 
-        public override void Reset()
+        public override int CountToAchieve
         {
-            _lineCount = 0;
-            base.Reset();
-        }
-
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)
-        {
-            _lineCount += lineCompleted;
-            if (_lineCount >= 100)
-                Achieve();
+            get { return 100; }
         }
     }
 }

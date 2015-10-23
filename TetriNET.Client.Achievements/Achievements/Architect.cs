@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using TetriNET.Client.Interfaces;
-using TetriNET.Common.DataContracts;
+﻿using TetriNET.Client.Achievements.Achievements.Base;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class Architect : Achievement
+    internal class Architect : ConsecutiveLineClearedBase
     {
-        private bool _active;
-
         public Architect()
         {
             Id = 1;
@@ -17,22 +13,16 @@ namespace TetriNET.Client.Achievements.Achievements
             BronzeLevel = 1;
             SilverLevel = 5;
             GoldLevel = 10;
-        } 
-
-        public override void Reset()
-        {
-            _active = false;
-            base.Reset();
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)
+        protected override int LineCount
         {
-            if (lineCompleted == 4 && _active)
-                Achieve();
-            else if (lineCompleted == 4)
-                _active = true;
-            else
-                _active = false;
-       }
+            get { return 4; }
+        }
+
+        protected override int CountToAchieve
+        {
+            get { return 2; }
+        }
     }
 }

@@ -35,7 +35,7 @@ namespace TetriNET.Client.Achievements.Achievements
             _count = 0;
         }
 
-        public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount, int playerLeft, List<Specials> inventory)
+        public override void OnGameLost(double playTime, int moveCount, int lineCount, int playerCount, int playerLeft, IReadOnlyCollection<Specials> inventory)
         {
             if (playerLeft + 1 == playerCount && playerCount >= 4)
             {

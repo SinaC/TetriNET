@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using TetriNET.Client.Interfaces;
-using TetriNET.Common.DataContracts;
+﻿using TetriNET.Client.Achievements.Achievements.Base;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class DirtySouthStyle : Achievement
+    internal class DirtySouthStyle : ConsecutiveLineClearedBase
     {
-        private int _count;
-
         public DirtySouthStyle()
         {
             Id = 7;
@@ -19,22 +15,14 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 5;
         }
 
-        public override void Reset()
+        protected override int LineCount
         {
-            _count = 0;
-            base.Reset();
+            get { return 4; }
         }
 
-        public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IBoard board, List<Pieces> collapsedPieces)
+        protected override int CountToAchieve
         {
-            if (lineCompleted == 4)
-            {
-                _count++;
-                if (_count == 3)
-                    Achieve();
-            }
-            else
-                _count = 0;
-       }
+            get { return 3; }
+        }
     }
 }
