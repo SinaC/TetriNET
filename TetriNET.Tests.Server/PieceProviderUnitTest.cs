@@ -5,7 +5,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
-using TetriNET.Common.Randomizer;
 using TetriNET.Server.Interfaces;
 using TetriNET.Server.PieceProvider;
 using TetriNET.Tests.Server.Mocking;

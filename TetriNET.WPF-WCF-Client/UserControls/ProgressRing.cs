@@ -109,10 +109,8 @@ namespace TetriNET.WPF_WCF_Client.UserControls
         private static void IsLargeChangedCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             var ring = dependencyObject as ProgressRing;
-            if (ring == null)
-                return;
 
-            ring.UpdateLargeState();
+            ring?.UpdateLargeState();
         }
 
         private void UpdateLargeState()
@@ -139,10 +137,8 @@ namespace TetriNET.WPF_WCF_Client.UserControls
         private static void IsActiveChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
         {
             var ring = dependencyObject as ProgressRing;
-            if (ring == null)
-                return;
 
-            ring.UpdateActiveState();
+            ring?.UpdateActiveState();
         }
 
         private void UpdateActiveState()

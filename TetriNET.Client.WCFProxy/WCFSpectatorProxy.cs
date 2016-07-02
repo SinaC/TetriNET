@@ -5,7 +5,6 @@ using System.ServiceModel.Channels;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
-using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 
@@ -45,8 +44,8 @@ namespace TetriNET.Client.WCFProxy
             catch (Exception ex)
             {
                 Log.Default.WriteLine(LogLevels.Error, "Exception:{0} {1}", actionName, ex);
-                ConnectionLost.Do(x => x());
-                _factory.Do(x => x.Abort());
+                ConnectionLost?.Invoke();
+                _factory?.Abort();
             }
         }
 

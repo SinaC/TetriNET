@@ -4,7 +4,6 @@ using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
-using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
@@ -32,12 +31,12 @@ namespace TetriNET.Server.SpectatorManager
             }
             catch (CommunicationObjectAbortedException)
             {
-                ConnectionLost.Do(x => x(this));
+                ConnectionLost?.Invoke(this);
             }
             catch (Exception ex)
             {
                 Log.Default.WriteLine(LogLevels.Error, "Exception:{0} {1}", actionName, ex);
-                ConnectionLost.Do(x => x(this));
+                ConnectionLost?.Invoke(this);
             }
         }
 

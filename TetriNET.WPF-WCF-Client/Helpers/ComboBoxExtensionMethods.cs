@@ -39,15 +39,13 @@ namespace TetriNET.WPF_WCF_Client.Helpers
                     // Remove the event handler. 
                     comboBox.ItemContainerGenerator.StatusChanged -= eventHandler;
                     comboBox.DropDownOpened -= eventHandler;
-                    if (provider != null)
-                        provider.Collapse();
+                    provider?.Collapse();
                 }
             };
             comboBox.ItemContainerGenerator.StatusChanged += eventHandler;
             comboBox.DropDownOpened += eventHandler;
             // Expand the comboBox to generate all its ComboBoxItem's. 
-            if (provider != null)
-                provider.Expand();
+            provider?.Expand();
         }
     }
 }

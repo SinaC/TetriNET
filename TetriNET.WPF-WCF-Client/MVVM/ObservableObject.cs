@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using TetriNET.Common.Helpers;
 
 namespace TetriNET.WPF_WCF_Client.MVVM
 {
@@ -18,7 +17,7 @@ namespace TetriNET.WPF_WCF_Client.MVVM
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
-            handler.Do(x => x(this, new PropertyChangedEventArgs(propertyName)));
+            handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion

@@ -23,7 +23,7 @@ namespace TetriNET.WPF_WCF_Client.Converters
         {
             if (!(value is String))
                 return new ArgumentException("value not of type String");
-            return ColorConverter.ConvertFromString(value as string);
+            return ColorConverter.ConvertFromString((string) value);
         }
 
         #endregion

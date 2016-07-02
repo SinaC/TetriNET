@@ -126,8 +126,7 @@ namespace TetriNET.WPF_WCF_Client.DynamicGrid
         public event NotifyCollectionChangedEventHandler CollectionChanged;
         private void RaiseCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            if (CollectionChanged != null)
-                CollectionChanged(this, e);
+            CollectionChanged?.Invoke(this, e);
         }
 
         #endregion

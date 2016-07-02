@@ -23,8 +23,7 @@ namespace TetriNET.WPF_WCF_Client.MVVM
 
         public void Execute(object parameter)
         {
-            if (_action != null)
-                _action();
+            _action?.Invoke();
         }
 
         #endregion
@@ -50,10 +49,8 @@ namespace TetriNET.WPF_WCF_Client.MVVM
 
         public void Execute(object parameter)
         {
-            if (_action != null)
-                _action((T)parameter);
+            _action?.Invoke((T)parameter);
         }
-
 
         #endregion
     }

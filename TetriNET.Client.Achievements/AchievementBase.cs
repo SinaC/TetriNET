@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using TetriNET.Client.Interfaces;
 using TetriNET.Common.DataContracts;
-using TetriNET.Common.Helpers;
 
 namespace TetriNET.Client.Achievements
 {
@@ -84,7 +83,7 @@ namespace TetriNET.Client.Achievements
 
             AlreadyAchievedThisGame = true;
 
-            Achieved.Do(x => x(this, firstTime));
+            Achieved?.Invoke(this, firstTime);
         }
 
         // Triggers

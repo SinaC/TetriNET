@@ -44,7 +44,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         {
             get
             {
-                if (Client == null || Client.Statistics == null)
+                if (Client?.Statistics == null)
                     return null;
                 return BuildStatistics(Client.Statistics.PieceCount);
             }
@@ -54,7 +54,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         {
             get
             {
-                if (Client == null || Client.Statistics == null)
+                if (Client?.Statistics == null)
                     return null;
                 return BuildStatistics(Client.Statistics.SpecialCount);
             }
@@ -64,7 +64,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         {
             get
             {
-                if (Client == null || Client.Statistics == null)
+                if (Client?.Statistics == null)
                     return null;
                 return BuildStatistics(Client.Statistics.SpecialUsed);
             }
@@ -74,7 +74,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         {
             get
             {
-                if (Client == null || Client.Statistics == null)
+                if (Client?.Statistics == null)
                     return null;
                 return BuildStatistics(Client.Statistics.SpecialDiscarded);
             }
@@ -83,7 +83,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         public ObservableDictionary<Specials, SpecialPercentages> Specials {
             get
             {
-                if (Client == null || Client.Statistics == null)
+                if (Client?.Statistics == null)
                     return null;
                 return BuildStatistics(Client.Statistics);
             }
@@ -91,29 +91,29 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
         public bool IsDeveloperModeActivated => ClientOptionsViewModel.Instance.IsDeveloperModeActivated;
 
-        public int PiecesCountSum => Client == null || Client.Statistics == null ? 0 : Client.Statistics.PieceCount.Values.Sum();
+        public int PiecesCountSum => Client?.Statistics?.PieceCount.Values.Sum() ?? 0;
 
-        public int SpecialCountSum => Client == null || Client.Statistics == null ? 0 : Client.Statistics.SpecialCount.Values.Sum();
+        public int SpecialCountSum => Client?.Statistics?.SpecialCount.Values.Sum() ?? 0;
 
-        public int SpecialUsedSum => Client == null || Client.Statistics == null ? 0 : Client.Statistics.SpecialUsed.Values.Sum();
+        public int SpecialUsedSum => Client?.Statistics?.SpecialUsed.Values.Sum() ?? 0;
 
-        public int SpecialDiscardedSum => Client == null || Client.Statistics == null ? 0 : Client.Statistics.SpecialDiscarded.Values.Sum();
+        public int SpecialDiscardedSum => Client?.Statistics?.SpecialDiscarded.Values.Sum() ?? 0;
 
-        public int EndOfPieceProviderReached => Client == null || Client.Statistics == null ? 0 : Client.Statistics.EndOfPieceProviderReached;
+        public int EndOfPieceProviderReached => Client?.Statistics?.EndOfPieceProviderReached ?? 0;
 
-        public int NextPieceNotYetReceived => Client == null || Client.Statistics == null ? 0 : Client.Statistics.NextPieceNotYetReceived;
+        public int NextPieceNotYetReceived => Client?.Statistics?.NextPieceNotYetReceived ?? 0;
 
-        public int TetrisCount => Client == null || Client.Statistics == null ? 0 : Client.Statistics.TetrisCount;
+        public int TetrisCount => Client?.Statistics?.TetrisCount ?? 0;
 
-        public int TripleCount => Client == null || Client.Statistics == null ? 0 : Client.Statistics.TripleCount;
+        public int TripleCount => Client?.Statistics?.TripleCount ?? 0;
 
-        public int DoubleCount => Client == null || Client.Statistics == null ? 0 : Client.Statistics.DoubleCount;
+        public int DoubleCount => Client?.Statistics?.DoubleCount ?? 0;
 
-        public int SingleCount => Client == null || Client.Statistics == null ? 0 : Client.Statistics.SingleCount;
+        public int SingleCount => Client?.Statistics?.SingleCount ?? 0;
 
-        public int GameWon => Client == null || Client.Statistics == null ? 0 : Client.Statistics.GameWon;
+        public int GameWon => Client?.Statistics?.GameWon ?? 0;
 
-        public int GameLost => Client == null || Client.Statistics == null ? 0 : Client.Statistics.GameLost;
+        public int GameLost => Client?.Statistics?.GameLost ?? 0;
 
         private bool _gameFinished;
         private DateTime _gameStartedDateTime;
@@ -136,7 +136,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         {
             get
             {
-                if (Client == null || Client.Statistics == null)
+                if (Client?.Statistics == null)
                     return 0;
                 TimeSpan timeSpan = (_gameFinished ? _gameFinishedDateTime : DateTime.Now) - _gameStartedDateTime;
                 double totalMinutes = timeSpan.TotalMinutes;

@@ -50,7 +50,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             get
             {
                 DescriptionAttribute attribute = EnumHelper.GetAttribute<DescriptionAttribute>(Command);
-                return attribute == null ? null : attribute.Description;
+                return attribute?.Description;
             }
         }
 

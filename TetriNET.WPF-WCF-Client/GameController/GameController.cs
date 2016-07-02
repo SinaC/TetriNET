@@ -53,17 +53,17 @@ namespace TetriNET.WPF_WCF_Client.GameController
             else
                 switch (cmd)
                 {
-                    case TetriNET.Client.Interfaces.Commands.Drop:
-                        AddTimer(TetriNET.Client.Interfaces.Commands.Drop, interval, DropTickHandler);
+                    case Commands.Drop:
+                        AddTimer(Commands.Drop, interval, DropTickHandler);
                         break;
-                    case TetriNET.Client.Interfaces.Commands.Down:
-                        AddTimer(TetriNET.Client.Interfaces.Commands.Down, interval, DownTickHandler);
+                    case Commands.Down:
+                        AddTimer(Commands.Down, interval, DownTickHandler);
                         break;
-                    case TetriNET.Client.Interfaces.Commands.Left:
-                        AddTimer(TetriNET.Client.Interfaces.Commands.Left, interval, LeftTickHandler);
+                    case Commands.Left:
+                        AddTimer(Commands.Left, interval, LeftTickHandler);
                         break;
-                    case TetriNET.Client.Interfaces.Commands.Right:
-                        AddTimer(TetriNET.Client.Interfaces.Commands.Right, interval, RightTickHandler);
+                    case Commands.Right:
+                        AddTimer(Commands.Right, interval, RightTickHandler);
                         break;
                 }
         }
@@ -147,7 +147,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
                             IOpponent[] opponents = Client.Opponents.ToArray();
                             if (opponents.Any())
                             {
-                                int rnd = Randomizer.Instance.Next(opponents.Count());
+                                int rnd = Randomizer.Instance.Next(opponents.Length);
                                 IOpponent opponent = opponents[rnd];
                                 if (opponent != null)
                                     Client.UseFirstSpecial(opponent.PlayerId);

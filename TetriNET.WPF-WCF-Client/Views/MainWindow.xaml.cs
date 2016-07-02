@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Input;
 using TetriNET.Client.Interfaces;
 using TetriNET.Client.Strategy;
-using TetriNET.Common.Helpers;
 using TetriNET.WPF_WCF_Client.AI;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.ViewModels;
@@ -71,23 +70,19 @@ namespace TetriNET.WPF_WCF_Client.Views
             MainWindowViewModel vm = DataContext as MainWindowViewModel;
             if (e.Key == Key.S)
             {
-                if (vm != null)
-                    vm.Client.StartGame();
+                vm?.Client.StartGame();
             }
             else if (e.Key == Key.T)
             {
-                if (vm != null)
-                    vm.Client.StopGame();
+                vm?.Client.StopGame();
             }
             else if (e.Key == Key.P)
             {
-                if (vm != null)
-                    vm.Client.PauseGame();
+                vm?.Client.PauseGame();
             }
             else if (e.Key == Key.R)
             {
-                if (vm != null)
-                    vm.Client.ResumeGame();
+                vm?.Client.ResumeGame();
             }
             else if (e.Key == Key.A && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
             {
@@ -159,8 +154,8 @@ namespace TetriNET.WPF_WCF_Client.Views
             {
                 oldClient.GameStarted -= OnGameStarted;
 
-                _controller.Do(x => x.UnsubscribeFromClientEvents());
-                Bot.Do(x => x.UnsubscribeFromClientEvents());
+                _controller?.UnsubscribeFromClientEvents();
+                Bot?.UnsubscribeFromClientEvents();
             }
             
             // Add new handlers

@@ -2,7 +2,6 @@
 using System.Linq;
 using TetriNET.Common.Contracts;
 using TetriNET.Common.DataContracts;
-using TetriNET.Common.Helpers;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
 using TetriNET.Server.Interfaces;
@@ -33,9 +32,9 @@ namespace TetriNET.Server.HostBase
         protected virtual void OnEntityConnectionLost(IEntity entity)
         {
             if (entity is IPlayer)
-                HostPlayerLeft.Do(x => x(entity as IPlayer, LeaveReasons.ConnectionLost));
+                HostPlayerLeft?.Invoke((IPlayer) entity, LeaveReasons.ConnectionLost);
             else if (entity is ISpectator)
-                HostSpectatorLeft.Do(x => x(entity as ISpectator, LeaveReasons.ConnectionLost));
+                HostSpectatorLeft?.Invoke((ISpectator) entity, LeaveReasons.ConnectionLost);
         }
 
         #region IHost
@@ -139,7 +138,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostPlayerRegistered.Do(x => x(player, id));
+                HostPlayerRegistered?.Invoke(player, id);
             }
             else
             {
@@ -159,7 +158,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostPlayerUnregistered.Do(x => x(player));
+                HostPlayerUnregistered?.Invoke(player);
             }
             else
             {
@@ -193,7 +192,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostPlayerTeamChanged.Do(x => x(player, team));
+                HostPlayerTeamChanged?.Invoke(player, team);
             }
             else
             {
@@ -211,7 +210,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostMessagePublished.Do(x => x(player, msg));
+                HostMessagePublished?.Invoke(player, msg);
             }
             else
             {
@@ -221,14 +220,14 @@ namespace TetriNET.Server.HostBase
 
         public virtual void PlacePiece(ITetriNETCallback callback, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid)
         {
-            Log.Default.WriteLine(LogLevels.Debug, "PlacePiece {0} {1} {2} {3} {4},{5} {6}", pieceIndex, highestIndex, piece, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
+            Log.Default.WriteLine(LogLevels.Debug, "PlacePiece {0} {1} {2} {3} {4},{5} {6}", pieceIndex, highestIndex, piece, orientation, posX, posY, grid?.Count(x => x > 0) ?? -1);
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
             {
                 player.ResetTimeout(); // player alive
                 //
-                HostPiecePlaced.Do(x => x(player, pieceIndex, highestIndex, piece, orientation, posX, posY, grid));
+                HostPiecePlaced?.Invoke(player, pieceIndex, highestIndex, piece, orientation, posX, posY, grid);
             }
             else
             {
@@ -250,7 +249,7 @@ namespace TetriNET.Server.HostBase
                 if (target != null)
                 {
                     //
-                    HostUseSpecial.Do(x => x(player, target, special));
+                    HostUseSpecial?.Invoke(player, target, special);
                 }
                 else
                     Log.Default.WriteLine(LogLevels.Warning, "UseSpecial to unknown player {0} from {1}", targetId, player.Name);
@@ -271,7 +270,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostClearLines.Do(x => x(player, count));
+                HostClearLines?.Invoke(player, count);
             }
             else
             {
@@ -281,7 +280,7 @@ namespace TetriNET.Server.HostBase
 
         public virtual void ModifyGrid(ITetriNETCallback callback, byte[] grid)
         {
-            Log.Default.WriteLine(LogLevels.Debug, "ModifyGrid {0}", grid == null ? -1 : grid.Count(x => x > 0));
+            Log.Default.WriteLine(LogLevels.Debug, "ModifyGrid {0}", grid?.Count(x => x > 0) ?? -1);
 
             IPlayer player = PlayerManager[callback];
             if (player != null)
@@ -289,7 +288,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostGridModified.Do(x => x(player, grid));
+                HostGridModified?.Invoke(player, grid);
             }
             else
             {
@@ -307,7 +306,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostStartGame.Do(x => x(player));
+                HostStartGame?.Invoke(player);
             }
             else
             {
@@ -325,7 +324,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostStopGame.Do(x => x(player));
+                HostStopGame?.Invoke(player);
             }
             else
             {
@@ -343,7 +342,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostPauseGame.Do(x => x(player));
+                HostPauseGame?.Invoke(player);
             }
             else
             {
@@ -361,7 +360,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostResumeGame.Do(x => x(player));
+                HostResumeGame?.Invoke(player);
             }
             else
             {
@@ -379,7 +378,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostGameLost.Do(x => x(player));
+                HostGameLost?.Invoke(player);
             }
             else
             {
@@ -397,7 +396,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostFinishContinuousSpecial.Do(x => x(player, special));
+                HostFinishContinuousSpecial?.Invoke(player, special);
             }
             else
             {
@@ -415,7 +414,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostChangeOptions.Do(x => x(player, options));
+                HostChangeOptions?.Invoke(player, options);
             }
             else
             {
@@ -433,7 +432,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostKickPlayer.Do(x => x(player, playerId));
+                HostKickPlayer?.Invoke(player, playerId);
             }
             else
             {
@@ -451,7 +450,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostBanPlayer.Do(x => x(player, playerId));
+                HostBanPlayer?.Invoke(player, playerId);
             }
             else
             {
@@ -469,7 +468,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostResetWinList.Do(x => x(player));
+                HostResetWinList?.Invoke(player);
             }
             else
             {
@@ -487,7 +486,7 @@ namespace TetriNET.Server.HostBase
                 //
                 player.ResetTimeout(); // player alive
                 //
-                HostEarnAchievement.Do(x => x(player, achievementId, achievementTitle));
+                HostEarnAchievement?.Invoke(player, achievementId, achievementTitle);
             }
             else
             {
@@ -552,7 +551,7 @@ namespace TetriNET.Server.HostBase
                 //
                 spectator.ResetTimeout(); // spectator alive
                 //
-                HostSpectatorRegistered.Do(x => x(spectator, id));
+                HostSpectatorRegistered?.Invoke(spectator, id);
             }
             else
             {
@@ -572,7 +571,7 @@ namespace TetriNET.Server.HostBase
                 //
                 spectator.ResetTimeout(); // player alive
                 //
-                HostSpectatorUnregistered.Do(x => x(spectator));
+                HostSpectatorUnregistered?.Invoke(spectator);
             }
             else
             {
@@ -606,7 +605,7 @@ namespace TetriNET.Server.HostBase
                 //
                 spectator.ResetTimeout(); // player alive
                 //
-                HostSpectatorMessagePublished.Do(x => x(spectator, msg));
+                HostSpectatorMessagePublished?.Invoke(spectator, msg);
             }
             else
             {

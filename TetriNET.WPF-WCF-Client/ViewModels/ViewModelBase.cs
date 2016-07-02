@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using TetriNET.Client.Interfaces;
-using TetriNET.Common.Helpers;
 using TetriNET.WPF_WCF_Client.MVVM;
 
 namespace TetriNET.WPF_WCF_Client.ViewModels
@@ -31,7 +30,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
                         UnsubscribeFromClientEvents(_client);
                     IClient oldValue = _client;
                     _client = value;
-                    ClientChanged.Do(x => x(oldValue, _client));
+                    ClientChanged?.Invoke(oldValue, _client);
                     if (_client != null)
                         SubscribeToClientEvents(_client);
                 }

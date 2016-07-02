@@ -128,7 +128,7 @@ namespace TetriNET.WPF_WCF_Client.AI
                 int handle = WaitHandle.WaitAny(waitHandles, SleepTime);
                 if (!_handleNextPieceEvent.WaitOne(0) && _client.IsPlaying && !_isConfusionActive)
                 {
-                    Log.Default.WriteLine(LogLevels.Warning, "!!!!!!!!!!! NextPieceEvent not raised  {0}  {1}", handle, _client.CurrentPiece == null ? -1 : _client.CurrentPiece.Index);
+                    Log.Default.WriteLine(LogLevels.Warning, "!!!!!!!!!!! NextPieceEvent not raised  {0}  {1}", handle, _client.CurrentPiece?.Index ?? -1);
                 }
                 _handleNextPieceEvent.Reset();
                 _stopEvent.Reset();

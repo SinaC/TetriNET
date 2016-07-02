@@ -4,7 +4,6 @@ using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using TetriNET.Common.BlockingActionQueue;
 using TetriNET.Common.DataContracts;
 using TetriNET.Common.Interfaces;
 using TetriNET.Common.Logger;
@@ -155,8 +154,7 @@ namespace TetriNET.ConsoleWCFServer
                         case ConsoleKey.L:
                             {
                                 DummyBuiltInClient client = clients.LastOrDefault();
-                                if (client != null)
-                                    client.Lose();
+                                client?.Lose();
                                 break;
                             }
                         case ConsoleKey.D:

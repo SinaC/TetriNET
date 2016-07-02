@@ -14,8 +14,7 @@ namespace TetriNET.WPF_WCF_Client.Helpers
             if (element.GetType() == typeof (T))
                 return element as T;
             T foundElement = null;
-            if (element is FrameworkElement)
-                (element as FrameworkElement).ApplyTemplate();
+            (element as FrameworkElement)?.ApplyTemplate();
             for (var i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
             {
                 var visual = VisualTreeHelper.GetChild(element, i) as Visual;

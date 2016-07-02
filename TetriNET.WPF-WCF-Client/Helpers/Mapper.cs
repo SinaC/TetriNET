@@ -16,7 +16,7 @@ namespace TetriNET.WPF_WCF_Client.Helpers
         public static string MapSpecialToString(Specials special)
         {
             SpecialAttribute attribute = EnumHelper.GetAttribute<SpecialAttribute>(special);
-            return (attribute == null || String.IsNullOrEmpty(attribute.LongName)) ? special.ToString() : attribute.LongName;
+            return String.IsNullOrEmpty(attribute?.LongName) ? special.ToString() : attribute.LongName;
         }
     }
 }

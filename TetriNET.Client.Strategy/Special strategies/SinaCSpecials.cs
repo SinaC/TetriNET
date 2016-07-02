@@ -74,10 +74,10 @@ namespace TetriNET.Client.Strategy
 
             // clone inventory
 
-            List<Specials> internalInventory = new List<Specials>();
+            List<Specials> internalInventory = inventory.ToList();
 
             // No inventory
-            if (!inventory.Any())
+            if (!internalInventory.Any())
                 return false;
 
             if (!opponents.Any())
@@ -103,7 +103,7 @@ namespace TetriNET.Client.Strategy
                         if (lastOpponentBoard != null)
                         {
                             int pileHeight = BoardHelper.GetPileMaxHeight(lastOpponentBoard);
-                            int addLinesCount = inventory.Count(x => x == Specials.AddLines);
+                            int addLinesCount = internalInventory.Count(x => x == Specials.AddLines);
                             if (addLinesCount > 0 && pileHeight + addLinesCount >= lastOpponentBoard.Height)
                             {
                                 // Finish him

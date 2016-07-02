@@ -12,15 +12,7 @@ namespace TetriNET.WPF_WCF_Client.MVVM
         {
             private WeakReference RecipientWeakReference { get; }
 
-            public object Recipient
-            {
-                get
-                {
-                    if (RecipientWeakReference == null)
-                        return null;
-                    return RecipientWeakReference.Target;
-                }
-            }
+            public object Recipient => RecipientWeakReference?.Target;
 
             public object Token { get; }
             public MethodInfo Method { get; }

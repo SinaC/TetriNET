@@ -60,9 +60,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             }
         }
 
-        public List<GameStatisticsByPlayer> First3Players => _selectedGameStatistics == null ? Enumerable.Empty<GameStatisticsByPlayer>().ToList() : _selectedGameStatistics.Players.Take(3).ToList();
+        public List<GameStatisticsByPlayer> First3Players => _selectedGameStatistics?.Players.Take(3).ToList() ?? Enumerable.Empty<GameStatisticsByPlayer>().ToList();
 
-        public List<GameStatisticsByPlayer> Next3Players => _selectedGameStatistics == null ? Enumerable.Empty<GameStatisticsByPlayer>().ToList() : _selectedGameStatistics.Players.Skip(3).Take(3).ToList();
+        public List<GameStatisticsByPlayer> Next3Players => _selectedGameStatistics?.Players.Skip(3).Take(3).ToList() ?? Enumerable.Empty<GameStatisticsByPlayer>().ToList();
 
         public bool IsNextPlayersNeeded => _selectedGameStatistics != null && _selectedGameStatistics.Players.Count > 3;
 
@@ -199,7 +199,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
         private void InitializePlayerList()
         {
-            if (SelectedGameStatistics != null && SelectedGameStatistics.Players != null)
+            if (SelectedGameStatistics?.Players != null)
             {
                 PlayerList = SelectedGameStatistics.Players.Select(x => x.PlayerName).ToList();
                 if (IsInDesignMode)
@@ -216,7 +216,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
         private void InitializeSpecialsGrid()
         {
-            if (SelectedPlayer == null || SelectedGameStatistics == null || SelectedGameStatistics.Players == null)
+            if (SelectedPlayer == null || SelectedGameStatistics?.Players == null)
             {
                 SpecialsFromSelectedPlayerGrid = null;
                 SpecialsToSelectedPlayerGrid = null;
@@ -232,7 +232,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         {
             // From selected player
             GameStatisticsByPlayer byPlayer = SelectedGameStatistics.Players.FirstOrDefault(x => x.PlayerName == SelectedPlayer);
-            if (byPlayer == null || byPlayer.SpecialsUsed == null)
+            if (byPlayer?.SpecialsUsed == null)
                 SpecialsFromSelectedPlayerGrid = null;
             else
             {

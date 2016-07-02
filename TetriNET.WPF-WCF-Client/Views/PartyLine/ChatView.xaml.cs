@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using TetriNET.Client.Interfaces;
-using TetriNET.Common.Helpers;
 using TetriNET.WPF_WCF_Client.ViewModels;
 using TetriNET.WPF_WCF_Client.ViewModels.PartyLine;
 
@@ -27,34 +26,25 @@ namespace TetriNET.WPF_WCF_Client.Views.PartyLine
             if (e.Key == Key.Enter)
             {
                 BindingExpression exp = TxtInputChat.GetBindingExpression(TextBox.TextProperty);
-                exp.Do(x => x.UpdateSource());
+                exp?.UpdateSource();
             }
         }
 
         private void TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             MainWindow mainWindow = Helpers.VisualTree.FindAncestor<MainWindow>(sender as DependencyObject);
-            if (mainWindow != null)
+            MainWindowViewModel vm = mainWindow?.DataContext as MainWindowViewModel;
+            if (vm != null)
             {
-                MainWindowViewModel vm = mainWindow.DataContext as MainWindowViewModel;
-                if (vm != null)
-                {
-                    // Switch to achievements
-                    vm.ActiveTabItemIndex = 5;
+                // Switch to achievements
+                vm.ActiveTabItemIndex = 5;
 
-                    // Select achievement
-                    TextBlock txt = sender as TextBlock;
-                    if (txt != null)
-                    {
-                        AchievementEntry entry = txt.DataContext as AchievementEntry;
-                        if (entry != null)
-                        {
-                            IAchievement achievement = entry.Achievement;
-                            if (achievement != null)
-                                vm.AchievementsViewModel.Select(achievement.Id);
-                        }
-                    }
-                }
+                // Select achievement
+                TextBlock txt = sender as TextBlock;
+                AchievementEntry entry = txt?.DataContext as AchievementEntry;
+                IAchievement achievement = entry?.Achievement;
+                if (achievement != null)
+                    vm.AchievementsViewModel.Select(achievement.Id);
             }
         }
 

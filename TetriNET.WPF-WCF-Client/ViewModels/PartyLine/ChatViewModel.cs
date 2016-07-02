@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using TetriNET.Common.DataContracts;
 using TetriNET.Client.Interfaces;
-using TetriNET.Common.Helpers;
 using TetriNET.WPF_WCF_Client.Helpers;
 using TetriNET.WPF_WCF_Client.Models;
 
@@ -34,7 +33,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         {
             get
             {
-                if (Achievement != null && Client != null && Client.Achievements != null)
+                if (Achievement != null && Client?.Achievements != null)
                     return Client.Achievements.Any(x => x.Id == Achievement.Id && x.IsAchieved);
                 return false;
             }
@@ -44,7 +43,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         {
             get
             {
-                if (Achievement != null && Client != null && Client.Achievements != null)
+                if (Achievement != null && Client?.Achievements != null)
                 {
                     IAchievement achievement = Client.Achievements.FirstOrDefault(x => x.Id == Achievement.Id && x.IsAchieved);
                     if (achievement != null)
@@ -84,7 +83,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             {
                 if (value != null)
                 {
-                    Client.Do(x => x.PublishMessage(value));
+                    Client?.PublishMessage(value);
                     _inputChat = ""; // delete msg
                     OnPropertyChanged();
                 }
