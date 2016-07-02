@@ -21,9 +21,9 @@ namespace TetriNET.Server.WCFHost
         public IPFilterServiceBehavior(IBanManager verifier, IPlayerManager playerManager)
         {
             if (verifier == null)
-                throw new ArgumentNullException("verifier");
+                throw new ArgumentNullException(nameof(verifier));
             if (playerManager == null)
-                throw new ArgumentNullException("playerManager");
+                throw new ArgumentNullException(nameof(playerManager));
 
             _verifier = verifier;
             _playerManager = playerManager;

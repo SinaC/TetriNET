@@ -6,7 +6,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
 {
     public class SensibilityViewModel : ObservableObject
     {
-        private string PropertyName { get; set; }
+        private string PropertyName { get; }
 
         private bool _isActivated;
         public bool IsActivated

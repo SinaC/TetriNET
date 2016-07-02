@@ -16,10 +16,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
     public class PlayerData : ObservableObject
     {
         public int RealPlayerId { get; set; }
-        public int DisplayPlayerId
-        {
-            get { return RealPlayerId + 1; }
-        }
+        public int DisplayPlayerId => RealPlayerId + 1;
 
         public string PlayerName { get; set; }
 
@@ -34,10 +31,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             }
         }
 
-        public bool IsTeamNotNullOrEmpty
-        {
-            get { return !String.IsNullOrWhiteSpace(Team); }
-        }
+        public bool IsTeamNotNullOrEmpty => !String.IsNullOrWhiteSpace(Team);
 
         private bool _isServerMaster;
         public bool IsServerMaster
@@ -55,11 +49,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
     public class PlayersManagerViewModel : ViewModelBase
     {
-        public ObservableCollection<PlayerData> PlayerList { get; private set; }
-        public ICollectionView PlayerListView { get; private set; }
+        public ObservableCollection<PlayerData> PlayerList { get; }
+        public ICollectionView PlayerListView { get; }
 
-        public ObservableCollection<SpectatorData> SpectatorList { get; private set; }
-        public ICollectionView SpectatorListView { get; private set; }
+        public ObservableCollection<SpectatorData> SpectatorList { get; }
+        public ICollectionView SpectatorListView { get; }
 
         private PlayerData _selectedPlayer;
         public PlayerData SelectedPlayer

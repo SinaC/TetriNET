@@ -13,11 +13,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
     {
         public static ServerOptionsViewModel Instance { get; private set; }
 
-        public bool IsEnabled
-        {
-            get { return IsGameNotStarted && IsServerMaster; }
-        }
-        
+        public bool IsEnabled => IsGameNotStarted && IsServerMaster;
+
         private bool _isGameNotStarted;
         public bool IsGameNotStarted
         {
@@ -47,30 +44,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Options
             set { Set(() => Options, ref _options, value); }
         }
 
-        public int PiecesSum
-        {
-            get { return Common.Randomizer.RangeRandom.SumOccurancies(Options.PieceOccurancies); }
-        }
+        public int PiecesSum => Common.Randomizer.RangeRandom.SumOccurancies(Options.PieceOccurancies);
 
-        public int SpecialsSum
-        {
-            get { return Common.Randomizer.RangeRandom.SumOccurancies(Options.SpecialOccurancies); }
-        }
+        public int SpecialsSum => Common.Randomizer.RangeRandom.SumOccurancies(Options.SpecialOccurancies);
 
-        public bool IsPiecesSumValid
-        {
-            get { return PiecesSum == 100; }
-        }
+        public bool IsPiecesSumValid => PiecesSum == 100;
 
-        public bool IsSpecialsSumValid
-        {
-            get { return SpecialsSum == 100; }
-        }
+        public bool IsSpecialsSumValid => SpecialsSum == 100;
 
-        public bool IsSendOptionsToServerEnabled
-        {
-            get { return IsPiecesSumValid && IsSpecialsSumValid; }
-        }
+        public bool IsSendOptionsToServerEnabled => IsPiecesSumValid && IsSpecialsSumValid;
 
         public ServerOptionsViewModel()
         {

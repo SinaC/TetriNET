@@ -5,7 +5,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class GrandSlam : Achievement
+    internal class GrandSlam : AchievementBase
     {
         private class Used
         {

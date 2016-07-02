@@ -13,15 +13,9 @@ namespace TetriNET.Client.Pieces.Normal
             Value = Common.DataContracts.Pieces.TetriminoO;
         }
 
-        public override int MaxOrientations
-        {
-            get { return 1; }
-        }
+        public override int MaxOrientations => 1;
 
-        public override int TotalCells
-        {
-            get { return 4; }
-        }
+        public override int TotalCells => 4;
 
         public override void GetCellAbsolutePosition(int cellIndex, out int x, out int y)
         {

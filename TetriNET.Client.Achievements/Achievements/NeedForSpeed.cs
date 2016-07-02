@@ -4,7 +4,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class NeedForSpeed : Achievement
+    internal class NeedForSpeed : AchievementBase
     {
         private int _count;
 

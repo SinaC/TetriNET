@@ -16,14 +16,8 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 10;
         }
 
-        public override Specials Special
-        {
-            get { return Specials.BlockGravity; }
-        }
+        public override Specials Special => Specials.BlockGravity;
 
-        public override int CountToAchieve
-        {
-            get { return 5; }
-        }
+        public override int CountToAchieve => 5;
     }
 }

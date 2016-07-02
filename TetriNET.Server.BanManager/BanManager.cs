@@ -12,9 +12,9 @@ namespace TetriNET.Server.BanManager
     {
         private sealed class BanEntry
         {
-            public string Name { get; private set; }
-            public IPAddress Address { get; private set; }
-            public BanReasons Reason { get; private set; }
+            public string Name { get; }
+            public IPAddress Address { get; }
+            public BanReasons Reason { get; }
 
             public BanEntry(string name, IPAddress address, BanReasons reason)
             {

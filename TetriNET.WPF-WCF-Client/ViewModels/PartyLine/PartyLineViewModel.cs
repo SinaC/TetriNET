@@ -21,30 +21,15 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
         private bool _isGameStarted;
         private bool _isGamePaused;
 
-        public bool IsStartStopEnabled
-        {
-            get { return _isRegistered && _isServerMaster; }
-        }
+        public bool IsStartStopEnabled => _isRegistered && _isServerMaster;
 
-        public bool IsPauseResumeEnabled
-        {
-            get { return _isRegistered && _isServerMaster && (_isGameStarted || _isGamePaused); }
-        }
+        public bool IsPauseResumeEnabled => _isRegistered && _isServerMaster && (_isGameStarted || _isGamePaused);
 
-        public string StartStopLabel
-        {
-            get { return _isGameStarted || _isGamePaused ? "Stop game" : "Start game"; }
-        }
+        public string StartStopLabel => _isGameStarted || _isGamePaused ? "Stop game" : "Start game";
 
-        public string PauseResumeLabel
-        {
-            get { return _isGamePaused ? "Resume game" : "Pause game"; }
-        }
+        public string PauseResumeLabel => _isGamePaused ? "Resume game" : "Pause game";
 
-        public bool IsUpdateTeamEnabled
-        {
-            get { return _isRegistered && !_isGameStarted; }
-        }
+        public bool IsUpdateTeamEnabled => _isRegistered && !_isGameStarted;
 
         public bool IsUpdateTeamButtonEnabled
         {
@@ -121,10 +106,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
 
         #region ITabIndex
 
-        public int TabIndex
-        {
-            get { return 3; }
-        }
+        public int TabIndex => 3;
 
         #endregion
 
@@ -261,10 +243,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
             }
         }
 
-        public string Error
-        {
-            get { return String.Empty; }
-        }
+        public string Error => String.Empty;
 
         #endregion
     }

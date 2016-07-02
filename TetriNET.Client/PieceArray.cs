@@ -22,8 +22,9 @@ namespace TetriNET.Client
         public void Reset()
         {
             HighestIndex = 0;
-            for(int i = 0; i < Size; i++)
-                _array[i] = Pieces.Invalid;
+            lock(_lock)
+                for(int i = 0; i < Size; i++)
+                    _array[i] = Pieces.Invalid;
         }
 
         public Pieces this[int index]
@@ -62,7 +63,8 @@ namespace TetriNET.Client
 
         public string Dump(int size)
         {
-            return _array.Take(size).Select((t, i) => "[" + i.ToString(CultureInfo.InvariantCulture) + ":" + t.ToString() + "]").Aggregate((s, t) => s + "," + t);
+            lock(_lock)
+                return _array.Take(size).Select((t, i) => "[" + i.ToString(CultureInfo.InvariantCulture) + ":" + t.ToString() + "]").Aggregate((s, t) => s + "," + t);
         }
     }
 }

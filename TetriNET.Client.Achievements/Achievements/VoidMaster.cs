@@ -6,7 +6,7 @@ using TetriNET.Common.Helpers;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class VoidMaster : Achievement
+    internal class VoidMaster : AchievementBase
     {
         public VoidMaster()
         {

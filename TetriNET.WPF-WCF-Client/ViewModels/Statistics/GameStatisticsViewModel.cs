@@ -39,7 +39,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             set { Set(() => GameStatisticsHistory, ref _gameStatisticsHistory, value); }
         }
 
-        public bool IsHistoryVisible { get { return GameStatisticsHistory.Count > 0; } }
+        public bool IsHistoryVisible => GameStatisticsHistory.Count > 0;
 
         private GameStatistics _selectedGameStatistics;
         public GameStatistics SelectedGameStatistics
@@ -60,25 +60,14 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             }
         }
 
-        public List<GameStatisticsByPlayer> First3Players
-        {
-            get { return _selectedGameStatistics == null ? Enumerable.Empty<GameStatisticsByPlayer>().ToList() : _selectedGameStatistics.Players.Take(3).ToList(); }
-        }
+        public List<GameStatisticsByPlayer> First3Players => _selectedGameStatistics == null ? Enumerable.Empty<GameStatisticsByPlayer>().ToList() : _selectedGameStatistics.Players.Take(3).ToList();
 
-        public List<GameStatisticsByPlayer> Next3Players
-        {
-            get { return _selectedGameStatistics == null ? Enumerable.Empty<GameStatisticsByPlayer>().ToList() : _selectedGameStatistics.Players.Skip(3).Take(3).ToList(); }
-        }
+        public List<GameStatisticsByPlayer> Next3Players => _selectedGameStatistics == null ? Enumerable.Empty<GameStatisticsByPlayer>().ToList() : _selectedGameStatistics.Players.Skip(3).Take(3).ToList();
 
-        public bool IsNextPlayersNeeded
-        {
-            get { return _selectedGameStatistics != null && _selectedGameStatistics.Players.Count > 3; }
-        }
+        public bool IsNextPlayersNeeded => _selectedGameStatistics != null && _selectedGameStatistics.Players.Count > 3;
 
         public double MatchTime // In seconds
-        {
-            get { return _selectedGameStatistics == null ? 0 : (_selectedGameStatistics.GameFinished - _selectedGameStatistics.GameStarted).TotalSeconds; }
-        }
+            => _selectedGameStatistics == null ? 0 : (_selectedGameStatistics.GameFinished - _selectedGameStatistics.GameStarted).TotalSeconds;
 
         private List<string> _playerList;
         public List<string> PlayerList

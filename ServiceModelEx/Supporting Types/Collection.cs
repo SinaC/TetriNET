@@ -18,11 +18,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(match == null)
          {
-            throw new ArgumentNullException("match");
+            throw new ArgumentNullException(nameof(match));
          }
          foreach(T item in collection)
          {
@@ -40,7 +40,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(count < 0)
          {
@@ -70,11 +70,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(match == null)
          {
-            throw new ArgumentNullException("match");
+            throw new ArgumentNullException(nameof(match));
          }
          foreach(T item in collection)
          {
@@ -96,11 +96,11 @@ namespace ServiceModelEx
          }
          if(first ==  null)
          {
-            throw new ArgumentNullException("first");
+            throw new ArgumentNullException(nameof(first));
          }
          if(second ==  null)
          {
-            throw new ArgumentNullException("second");
+            throw new ArgumentNullException(nameof(second));
          }
          if(Count(first) != Count(second))
          {
@@ -128,7 +128,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(count < 0)
          {
@@ -153,7 +153,7 @@ namespace ServiceModelEx
       {
          if(count <= 0)
          {
-            throw new ArgumentOutOfRangeException("count");
+            throw new ArgumentOutOfRangeException(nameof(count));
          }
          for(int i = 0;i< count;i++)
          {
@@ -171,11 +171,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(index < 0 || index > Count(collection) -1)
          {
-            throw new ArgumentOutOfRangeException("index");
+            throw new ArgumentOutOfRangeException(nameof(index));
          }
          return ToArray(collection)[index];
       }
@@ -202,11 +202,11 @@ namespace ServiceModelEx
       {
          if(first == null)
          {
-            throw new ArgumentNullException("first");
+            throw new ArgumentNullException(nameof(first));
          }
          if(second == null)
          {
-            throw new ArgumentNullException("second");
+            throw new ArgumentNullException(nameof(second));
          }
          foreach(T item in first)
          {
@@ -228,7 +228,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          foreach(T t in collection)
          {
@@ -251,11 +251,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(converter == null)
          {
-            throw new ArgumentNullException("converter");
+            throw new ArgumentNullException(nameof(converter));
          }
          foreach(T item in collection)
          {
@@ -274,11 +274,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(match == null)
          {
-            throw new ArgumentNullException("match");
+            throw new ArgumentNullException(nameof(match));
          }
          foreach(T item in collection)
          {
@@ -300,7 +300,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          using(IEnumerator<T> iterator = collection.GetEnumerator())
          {
@@ -318,7 +318,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(Count(collection) != 1)
          {
@@ -339,11 +339,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(match == null)
          {
-            throw new ArgumentNullException("match");
+            throw new ArgumentNullException(nameof(match));
          }
          if(Count(collection) == 0)
          {
@@ -411,7 +411,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(Count(collection) == 0)
          {
@@ -447,11 +447,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(match == null)
          {
-            throw new ArgumentNullException("match");
+            throw new ArgumentNullException(nameof(match));
          }
          foreach(T item in collection)
          {
@@ -473,11 +473,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(match == null)
          {
-            throw new ArgumentNullException("match");
+            throw new ArgumentNullException(nameof(match));
          }
          foreach(T item in collection)
          {
@@ -528,7 +528,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          IList<T> list = new List<T>();
          foreach(T item in collection)
@@ -554,7 +554,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          int index = 0;
 
@@ -609,7 +609,7 @@ namespace ServiceModelEx
          }
          if(match == null)
          {
-            throw new ArgumentNullException("match");
+            throw new ArgumentNullException(nameof(match));
          }
          return Last(collection,match);
       }
@@ -644,7 +644,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          return ToArray(collection)[Count(collection)-1];
       }
@@ -660,11 +660,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(match == null)
          {
-            throw new ArgumentNullException("match");
+            throw new ArgumentNullException(nameof(match));
          }
          T last = default(T);
 
@@ -688,7 +688,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          int last = -1;
 
@@ -742,11 +742,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(action == null)
          {
-            throw new ArgumentNullException("action");
+            throw new ArgumentNullException(nameof(action));
          }
          foreach(T item in collection)
          {
@@ -798,7 +798,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          List<T> list = new List<T>(collection);
          list.Reverse();
@@ -818,7 +818,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          List<T> list = new List<T>(collection);
          list.Sort();
@@ -838,7 +838,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          List<T> list = new List<T>();
 
@@ -859,7 +859,7 @@ namespace ServiceModelEx
       {
          if(iterator == null)
          {
-            throw new ArgumentNullException("iterator");
+            throw new ArgumentNullException(nameof(iterator));
          }
          List<T> list = new List<T>();
 
@@ -895,7 +895,7 @@ namespace ServiceModelEx
       {
          if(iterator == null)
          {
-            throw new ArgumentNullException("iterator");
+            throw new ArgumentNullException(nameof(iterator));
          }
          List<T> list = new List<T>(count);
 
@@ -945,7 +945,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          IList<T> list = new List<T>();
          foreach(T item in collection)
@@ -966,11 +966,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(match == null)
          {
-            throw new ArgumentNullException("match");
+            throw new ArgumentNullException(nameof(match));
          }
          foreach(T item in collection)
          {
@@ -991,11 +991,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(converter == null)
          {
-            throw new ArgumentNullException("converter");
+            throw new ArgumentNullException(nameof(converter));
          }
          IEnumerable<U> newCollection = UnsafeConvertAll(collection,converter);
          return ToArray(newCollection);
@@ -1011,11 +1011,11 @@ namespace ServiceModelEx
       {
          if(iterator == null)
          {
-            throw new ArgumentNullException("iterator");
+            throw new ArgumentNullException(nameof(iterator));
          }
          if(converter == null)
          {
-            throw new ArgumentNullException("converter");
+            throw new ArgumentNullException(nameof(converter));
          }
          IEnumerator<U> newIterator = UnsafeConvertAll(iterator,converter);
          return ToArray(newIterator);
@@ -1050,7 +1050,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          IEnumerator iterator = collection.GetEnumerator();
 
@@ -1069,7 +1069,7 @@ namespace ServiceModelEx
       {
          if(iterator == null)
          {
-            throw new ArgumentNullException("iterator");
+            throw new ArgumentNullException(nameof(iterator));
          }
          Converter<object,T> innerConverter = delegate(object item)
                                               {
@@ -1089,11 +1089,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(converter == null)
          {
-            throw new ArgumentNullException("converter");
+            throw new ArgumentNullException(nameof(converter));
          }
          foreach(object item in collection)
          {
@@ -1116,7 +1116,7 @@ namespace ServiceModelEx
          }
          if(converter == null)
          {
-            throw new ArgumentNullException("converter");
+            throw new ArgumentNullException(nameof(converter));
          }
          while(iterator.MoveNext())
          {

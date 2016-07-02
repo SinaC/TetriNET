@@ -74,11 +74,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PartyLine
     {
         private const int MaxEntries = 500;
 
-        private readonly ObservableCollection<ChatEntry> _chatEntries = new ObservableCollection<ChatEntry>();
-        public ObservableCollection<ChatEntry> ChatEntries
-        {
-            get { return _chatEntries; }
-        }
+        public ObservableCollection<ChatEntry> ChatEntries { get; } = new ObservableCollection<ChatEntry>();
 
         private string _inputChat;
         public string InputChat

@@ -34,10 +34,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
             get { return Achievements.Count(x => x.IsAchieved); }
         }
 
-        public bool IsResetEnabled
-        {
-            get { return Client == null || !Client.IsGameStarted; }
-        }
+        public bool IsResetEnabled => Client == null || !Client.IsGameStarted;
 
         public AchievementsViewModel()
         {
@@ -158,10 +155,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Achievements
 
         #region ITabIndex
 
-        public int TabIndex
-        {
-            get { return 5; }
-        }
+        public int TabIndex => 5;
 
         #endregion
     }

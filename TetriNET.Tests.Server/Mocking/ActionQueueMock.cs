@@ -9,7 +9,7 @@ namespace TetriNET.Tests.Server.Mocking
     {
         private readonly List<Action> _actions = new List<Action>();
 
-        public int ActionCount { get { return _actions.Count; } }
+        public int ActionCount => _actions.Count;
 
         public void Start(CancellationTokenSource cancellationTokenSource)
         {

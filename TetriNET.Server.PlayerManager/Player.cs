@@ -16,9 +16,9 @@ namespace TetriNET.Server.PlayerManager
         public Player(int id, string name, ITetriNETCallback callback)
         {
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             if (callback == null)
-                throw new ArgumentNullException("callback");
+                throw new ArgumentNullException(nameof(callback));
 
             Id = id;
             Name = name;
@@ -52,11 +52,11 @@ namespace TetriNET.Server.PlayerManager
 
         public event ConnectionLostEventHandler ConnectionLost;
 
-        public int Id { get; private set; }
-        public string Name { get; private set; }
+        public int Id { get; }
+        public string Name { get; }
 
         //
-        public ITetriNETCallback Callback { get; private set; }
+        public ITetriNETCallback Callback { get; }
 
         // Heartbeat management
         public DateTime LastActionToClient { get; private set; } // used to check if heartbeat is needed

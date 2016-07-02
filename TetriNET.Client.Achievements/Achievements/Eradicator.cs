@@ -16,9 +16,6 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 5;
         }
 
-        public override int CountToAchieve
-        {
-            get { return 100000; }
-        }
+        public override int CountToAchieve => 100000;
     }
 }

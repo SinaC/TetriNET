@@ -1,6 +1,6 @@
 ﻿namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class HitchhikersGuide : Achievement
+    internal class HitchhikersGuide : AchievementBase
     {
         public HitchhikersGuide()
         {

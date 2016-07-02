@@ -11,13 +11,10 @@ namespace TetriNET.WPF_WCF_Client.DynamicGrid
         where TRow : DynamicObject
         where TColumn : IDynamicColumn
     {
-        public IList<TRow> Rows { get; private set; }
-        public List<TColumn> Columns { get; private set; }
+        public IList<TRow> Rows { get; }
+        public List<TColumn> Columns { get; }
 
-        private IList UnspecializedRows
-        {
-            get { return (IList)Rows; }
-        }
+        private IList UnspecializedRows => (IList)Rows;
 
         public DynamicGrid(IList<TRow> rows, IEnumerable<TColumn> columns)
         {
@@ -64,20 +61,11 @@ namespace TetriNET.WPF_WCF_Client.DynamicGrid
             UnspecializedRows.CopyTo(array, index);
         }
 
-        public int Count
-        {
-            get { return UnspecializedRows.Count; }
-        }
+        public int Count => UnspecializedRows.Count;
 
-        public object SyncRoot
-        {
-            get { return UnspecializedRows.SyncRoot; }
-        }
+        public object SyncRoot => UnspecializedRows.SyncRoot;
 
-        public bool IsSynchronized
-        {
-            get { return UnspecializedRows.IsSynchronized; }
-        }
+        public bool IsSynchronized => UnspecializedRows.IsSynchronized;
 
         public int Add(object value)
         {
@@ -127,15 +115,9 @@ namespace TetriNET.WPF_WCF_Client.DynamicGrid
             set { UnspecializedRows[index] = value; }
         }
 
-        public bool IsReadOnly
-        {
-            get { return UnspecializedRows.IsReadOnly; }
-        }
+        public bool IsReadOnly => UnspecializedRows.IsReadOnly;
 
-        public bool IsFixedSize
-        {
-            get { return UnspecializedRows.IsFixedSize; }
-        }
+        public bool IsFixedSize => UnspecializedRows.IsFixedSize;
 
         #endregion
 

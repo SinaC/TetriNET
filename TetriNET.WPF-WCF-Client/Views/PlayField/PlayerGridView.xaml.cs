@@ -39,10 +39,7 @@ namespace TetriNET.WPF_WCF_Client.Views.PlayField
         private IPiece _pieceHint;
         private readonly List<Rectangle> _grid = new List<Rectangle>();
 
-        public PlayerViewModel ViewModel
-        {
-            get { return DataContext as PlayerViewModel; }
-        }
+        public PlayerViewModel ViewModel => DataContext as PlayerViewModel;
 
         public PlayerGridView()
         {

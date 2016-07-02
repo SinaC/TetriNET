@@ -4,10 +4,7 @@
     {
         #region ITabIndex
 
-        public int TabIndex
-        {
-            get { return 4; }
-        }
+        public int TabIndex => 4;
 
         #endregion
     }

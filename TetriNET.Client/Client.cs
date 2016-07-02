@@ -67,8 +67,6 @@ namespace TetriNET.Client
 
         private IProxy _proxy;
         private ISpectatorProxy _proxySpectator;
-        private bool _isSpectator;
-        private int _clientPlayerId;
         private int _clientSpectatorId;
         private DateTime _lastActionFromServer;
         private int _timeoutCount;
@@ -83,15 +81,12 @@ namespace TetriNET.Client
         private int _mutationCount;
         private bool _holdAlreadyUsed;
 
-        private PlayerData Player
-        {
-            get { return _clientPlayerId >= 0 && _clientPlayerId <= MaxPlayers ? _playersData[_clientPlayerId] : null; }
-        }
+        private PlayerData Player => PlayerId >= 0 && PlayerId <= MaxPlayers ? _playersData[PlayerId] : null;
 
         public Client(IFactory factory, IActionQueue actionQueue)
         {
             if (factory == null)
-                throw new ArgumentNullException("factory");
+                throw new ArgumentNullException(nameof(factory));
 
             _factory = factory;
             _actionQueue = actionQueue;
@@ -113,7 +108,7 @@ namespace TetriNET.Client
             _lastActionFromServer = DateTime.Now;
             _timeoutCount = 0;
 
-            _clientPlayerId = -1;
+            PlayerId = -1;
             _clientSpectatorId = -1;
            
             State = States.Created;
@@ -145,9 +140,9 @@ namespace TetriNET.Client
             : this(factory, actionQueue)
         {
             if (factory == null)
-                throw new ArgumentNullException("factory");
+                throw new ArgumentNullException(nameof(factory));
             if (achievementManager == null)
-                throw new ArgumentNullException("achievementManager");
+                throw new ArgumentNullException(nameof(achievementManager));
 
             _achievementManager = achievementManager;
             _achievementManager.Achieved += OnAchievementEarned;
@@ -172,7 +167,7 @@ namespace TetriNET.Client
             States previousState = State;
             State = States.Created;
             IsServerMaster = false;
-            _clientPlayerId = -1;
+            PlayerId = -1;
             _clientSpectatorId = -1;
 
             Disconnect();
@@ -207,8 +202,8 @@ namespace TetriNET.Client
 
                 if (playerId >= 0 && playerId < MaxPlayers)
                 {
-                    _isSpectator = false;
-                    _clientPlayerId = playerId;
+                    IsSpectator = false;
+                    PlayerId = playerId;
                     PlayerData player = new PlayerData
                     {
                         Name = Name,
@@ -216,7 +211,7 @@ namespace TetriNET.Client
                         Board = _factory.CreateBoard(BoardWidth, BoardHeight),
                         State = PlayerData.States.Joined
                     };
-                    _playersData[_clientPlayerId] = player;
+                    _playersData[PlayerId] = player;
 
                     State = States.Registered;
                     ServerState = isGameStarted ? ServerStates.Playing : ServerStates.Waiting;// TODO: handle server paused
@@ -268,7 +263,7 @@ namespace TetriNET.Client
 
             ResetTimeout();
             // Don't update ourself
-            if (playerId != _clientPlayerId && playerId >= 0 && playerId < MaxPlayers)
+            if (playerId != PlayerId && playerId >= 0 && playerId < MaxPlayers)
             {
                 PlayerData playerData = new PlayerData
                 {
@@ -297,7 +292,7 @@ namespace TetriNET.Client
             Log.Default.WriteLine(LogLevels.Debug, "Player {0}[{1}] left ({2})", name, playerId, reason);
 
             ResetTimeout();
-            if (playerId != _clientPlayerId && playerId >= 0 && playerId < MaxPlayers)
+            if (playerId != PlayerId && playerId >= 0 && playerId < MaxPlayers)
             {
                 PlayerData player = _playersData[playerId];
                 if (player != null)
@@ -353,7 +348,7 @@ namespace TetriNET.Client
             Log.Default.WriteLine(LogLevels.Debug, "Player [{0}] has lost", playerId);
 
             ResetTimeout();
-            if (playerId != _clientPlayerId)
+            if (playerId != PlayerId)
             {
                 PlayerData playerData = GetPlayer(playerId);
                 if (playerData != null && playerData.State == PlayerData.States.Playing)
@@ -380,12 +375,12 @@ namespace TetriNET.Client
                 playerData.State = PlayerData.States.Joined;
                 PlayerWon.Do(x => x(playerId, playerData.Name));
 
-                if (playerId == _clientPlayerId)
+                if (playerId == PlayerId)
                     _statistics.GameWon++;
 
                 if (!IsSpectator)
                 {
-                    if (_achievementManager != null && playerId == _clientPlayerId)
+                    if (_achievementManager != null && playerId == PlayerId)
                         _achievementManager.OnGameWon(_statistics.MoveCount, LinesCleared, PlayingOpponentsInCurrentGame);
                 }
             }
@@ -601,7 +596,7 @@ namespace TetriNET.Client
             //if (State == States.Playing)
             //{
                 // Don't add line to ourself
-                if (playerId != _clientPlayerId && State == States.Playing)
+                if (playerId != PlayerId && State == States.Playing)
                 {
                     EnqueueBoardAction(() => AddLines(lineCount));
                 }
@@ -621,12 +616,12 @@ namespace TetriNET.Client
             Log.Default.WriteLine(LogLevels.Debug, "Special {0}[{1}] from {2} to {3}", special, specialId, playerId, targetId);
 
             ResetTimeout();
-            if (targetId == _clientPlayerId && State == States.Playing)
+            if (targetId == PlayerId && State == States.Playing)
             {
                 EnqueueBoardAction(() => SpecialUsedAction(special));
             }
 
-            if (targetId != _clientPlayerId && special == Specials.Immunity)
+            if (targetId != PlayerId && special == Specials.Immunity)
             {
                 PlayerData target = GetPlayer(targetId);
                 if (target != null && target.State == PlayerData.States.Playing)
@@ -646,7 +641,7 @@ namespace TetriNET.Client
 
                 //
                 if (!IsSpectator)
-                    _achievementManager.Do(x => x.OnSpecialUsed(_clientPlayerId, playerId, playerData == null ? null : playerData.Team, playerData == null ? null : playerData.Board, targetId, targetData == null ? null : targetData.Team, targetData == null ? null : targetData.Board, special));
+                    _achievementManager.Do(x => x.OnSpecialUsed(PlayerId, playerId, playerData == null ? null : playerData.Team, playerData == null ? null : playerData.Board, targetId, targetData == null ? null : targetData.Team, targetData == null ? null : targetData.Board, special));
             }
         }
 
@@ -673,7 +668,7 @@ namespace TetriNET.Client
             if (playerData != null)
             {
                 // if modifying own grid, special Switch occured -> remove lines above 16
-                if (playerId == _clientPlayerId)
+                if (playerId == PlayerId)
                 {
                     EnqueueBoardAction(() => ModifyGridAction(grid));
                 }
@@ -691,7 +686,7 @@ namespace TetriNET.Client
 
             ResetTimeout();
 
-            IsServerMaster = playerId == _clientPlayerId;
+            IsServerMaster = playerId == PlayerId;
 
             ServerMasterModified.Do(x => x(playerId));
         }
@@ -710,7 +705,7 @@ namespace TetriNET.Client
             Log.Default.WriteLine(LogLevels.Debug, "Continous special {0} finished on {1}", special, playerId);
 
             ResetTimeout();
-            if (playerId != _clientPlayerId)
+            if (playerId != PlayerId)
             {
                 if (special == Specials.Immunity)
                 {
@@ -727,7 +722,7 @@ namespace TetriNET.Client
             Log.Default.WriteLine(LogLevels.Debug, "Achievement {0}|{1} earned by {2}", achievementId, achievementTitle, playerId);
 
             ResetTimeout();
-            if (playerId != _clientPlayerId || IsSpectator)
+            if (playerId != PlayerId || IsSpectator)
             {
                 if (PlayerAchievementEarned != null)
                 {
@@ -758,7 +753,7 @@ namespace TetriNET.Client
 
                 if (spectatorId >= 0 && spectatorId < MaxSpectators)
                 {
-                    _isSpectator = true;
+                    IsSpectator = true;
                     _clientSpectatorId = spectatorId;
                     SpectatorData player = new SpectatorData
                     {
@@ -913,7 +908,7 @@ namespace TetriNET.Client
 
             if (!IsSpectator)
             {
-                int opponentsLeft = _playersData.Count(x => x != null && x.PlayerId != _clientPlayerId && x.State == PlayerData.States.Playing);
+                int opponentsLeft = _playersData.Count(x => x != null && x.PlayerId != PlayerId && x.State == PlayerData.States.Playing);
                 _achievementManager.Do(x => x.OnGameOver(_statistics.MoveCount, LinesCleared, PlayingOpponentsInCurrentGame, opponentsLeft, Inventory));
             }
         }
@@ -1076,7 +1071,7 @@ namespace TetriNET.Client
         {
             State = States.Created;
             IsServerMaster = false;
-            _clientPlayerId = -1;
+            PlayerId = -1;
             _clientSpectatorId = -1;
 
             if (_proxy != null)
@@ -1121,20 +1116,11 @@ namespace TetriNET.Client
 
         public string Team { get; private set; }
 
-        public bool IsSpectator
-        {
-            get { return _isSpectator; }
-        }
+        public bool IsSpectator { get; private set; }
 
-        public int PlayerId
-        {
-            get { return _clientPlayerId; }
-        }
+        public int PlayerId { get; private set; }
 
-        public int MaxPlayersCount
-        {
-            get { return MaxPlayers; }
-        }
+        public int MaxPlayersCount => MaxPlayers;
 
         public IPiece CurrentPiece { get; private set; }
 
@@ -1142,47 +1128,17 @@ namespace TetriNET.Client
 
         public IPiece HoldPiece { get; private set; }
 
-        public IBoard Board
-        {
-            get { return Player == null ? null : Player.Board; }
-        }
-        
-        public bool IsGamePaused
-        {
-            get
-            {
-                return ServerState == ServerStates.Paused;
-            }
-        }
+        public IBoard Board => Player == null ? null : Player.Board;
 
-        public bool IsGameStarted
-        {
-            get
-            {
-                return ServerState == ServerStates.Playing;
-            }
-        }
+        public bool IsGamePaused => ServerState == ServerStates.Paused;
 
-        public bool IsPlaying 
-        {
-            get
-            {
-                return State == States.Playing;
-            }
-        }
+        public bool IsGameStarted => ServerState == ServerStates.Playing;
 
-        public bool IsRegistered
-        {
-            get { return State != States.Created && State != States.Registering; }
-        }
+        public bool IsPlaying => State == States.Playing;
 
-        public IReadOnlyCollection<Specials> Inventory
-        {
-            get
-            {
-                return _inventory.Specials();
-            }
-        }
+        public bool IsRegistered => State != States.Created && State != States.Registering;
+
+        public IReadOnlyCollection<Specials> Inventory => _inventory.Specials();
 
         public int LinesCleared { get; private set; }
 
@@ -1190,10 +1146,7 @@ namespace TetriNET.Client
 
         public int Score { get; private set; }
 
-        public int InventorySize
-        {
-            get { return Options.InventorySize; }
-        }
+        public int InventorySize => Options.InventorySize;
 
         public GameOptions Options { get; private set; }
 
@@ -1207,22 +1160,13 @@ namespace TetriNET.Client
         {
             get
             {
-                return _playersData.Where(x => x != null && x.PlayerId != _clientPlayerId && x.Board != null && x.State == PlayerData.States.Playing).ToList();
+                return _playersData.Where(x => x != null && x.PlayerId != PlayerId && x.Board != null && x.State == PlayerData.States.Playing).ToList();
             }
         }
 
-        public IClientStatistics Statistics
-        {
-            get { return _statistics; }
-        }
+        public IClientStatistics Statistics => _statistics;
 
-        public IReadOnlyCollection<IAchievement> Achievements
-        {
-            get
-            {
-                return _achievementManager == null ? null : _achievementManager.Achievements;
-            }
-        }
+        public IReadOnlyCollection<IAchievement> Achievements => _achievementManager == null ? null : _achievementManager.Achievements;
 
         public event ClientConnectionLostEventHandler ConnectionLost;
         public event ClientRoundStartedEventHandler RoundStarted;
@@ -1271,7 +1215,7 @@ namespace TetriNET.Client
             for (int i = 0; i < MaxPlayers; i++)
             {
                 PlayerData p = _playersData[i];
-                Log.Default.WriteLine(LogLevels.Info, "{0}{1}: {2}", i, i == _clientPlayerId ? "*" : String.Empty, p == null ? String.Empty : p.Name);
+                Log.Default.WriteLine(LogLevels.Info, "{0}{1}: {2}", i, i == PlayerId ? "*" : String.Empty, p == null ? String.Empty : p.Name);
             }
             // Inventory
             IReadOnlyCollection<Specials> specials = Inventory;
@@ -1280,7 +1224,7 @@ namespace TetriNET.Client
                 sb2.Append(ConvertSpecial(special));
             Log.Default.WriteLine(LogLevels.Info, sb2.ToString());
             // Board
-            if (_clientPlayerId >= 0 && State == States.Playing)
+            if (PlayerId >= 0 && State == States.Playing)
             {
                 for (int y = Board.Height; y >= 1; y--)
                 {
@@ -1320,9 +1264,9 @@ namespace TetriNET.Client
         public bool ConnectAndRegisterAsPlayer(string address, string name, string team)
         {
             if (address == null)
-                throw new ArgumentNullException("address");
+                throw new ArgumentNullException(nameof(address));
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
 
             if (Version == null)
                 throw new InvalidOperationException("Cannot ConnectAndRegisterAsPlayer, no application version found");
@@ -1353,9 +1297,9 @@ namespace TetriNET.Client
         public bool ConnectAndRegisterAsSpectator(string address, string name)
         {
             if (address == null)
-                throw new ArgumentNullException("address");
+                throw new ArgumentNullException(nameof(address));
             if (name == null)
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
 
             if (Version == null)
                 throw new InvalidOperationException("Cannot ConnectAndRegisterAsSpectator, no application version found");
@@ -1383,12 +1327,12 @@ namespace TetriNET.Client
         
         public bool UnregisterAndDisconnect()
         {
-            bool wasSpectator = _isSpectator;
+            bool wasSpectator = IsSpectator;
             State = States.Created;
             IsServerMaster = false;
-            _clientPlayerId = -1;
+            PlayerId = -1;
             _clientSpectatorId = -1;
-            _isSpectator = false;
+            IsSpectator = false;
 
             _proxy.Do(x => x.UnregisterPlayer(this));
             _proxySpectator.Do(x => x.UnregisterSpectator(this));
@@ -1562,7 +1506,7 @@ namespace TetriNET.Client
             PlayerData target = GetPlayer(targetId);
             if (Player.State == PlayerData.States.Playing && target != null && target.State == PlayerData.States.Playing)
             {
-                if (target.IsImmune || (targetId == _clientPlayerId && _isImmunityActive)) // Cannot target a player with immunity
+                if (target.IsImmune || (targetId == PlayerId && _isImmunityActive)) // Cannot target a player with immunity
                     return false;
 
                 // Get first special and send it
@@ -1583,7 +1527,7 @@ namespace TetriNET.Client
 
                     //
                     if (!IsSpectator)
-                        _achievementManager.Do(x => x.OnUseSpecial(_clientPlayerId, Team, Board, targetId, target.Team, target.Board, special));
+                        _achievementManager.Do(x => x.OnUseSpecial(PlayerId, Team, Board, targetId, target.Team, target.Board, special));
                 }
             }
             return succeeded;

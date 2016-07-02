@@ -5,7 +5,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class RainbowWarrior : Achievement
+    internal class RainbowWarrior : AchievementBase
     {
         public RainbowWarrior()
         {

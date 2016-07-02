@@ -30,7 +30,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
         public GameController(IClient client)
         {
             if (client == null)
-                throw new ArgumentNullException("client");
+                throw new ArgumentNullException(nameof(client));
 
             Client = client;
             _isConfusionActive = false;
@@ -43,7 +43,7 @@ namespace TetriNET.WPF_WCF_Client.GameController
 
         #region IGameController
 
-        public IClient Client { get; private set; }
+        public IClient Client { get; }
 
         public void AddSensibility(Commands cmd, int interval)
         {

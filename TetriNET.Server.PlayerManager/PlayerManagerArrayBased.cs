@@ -11,14 +11,13 @@ namespace TetriNET.Server.PlayerManager
     // Array based
     public sealed class PlayerManagerArrayBased : IPlayerManager
     {
-        private readonly object _lockObject;
         private readonly IPlayer[] _players;
 
         public PlayerManagerArrayBased(int maxPlayers)
         {
             if (maxPlayers <= 0)
-                throw new ArgumentOutOfRangeException("maxPlayers", "maxPlayers must be strictly positive");
-            _lockObject = new object();
+                throw new ArgumentOutOfRangeException(nameof(maxPlayers), "maxPlayers must be strictly positive");
+            LockObject = new object();
             MaxPlayers = maxPlayers;
             _players = new IPlayer[MaxPlayers];
         }
@@ -65,17 +64,14 @@ namespace TetriNET.Server.PlayerManager
                 _players[i] = null;
         }
 
-        public int MaxPlayers { get; private set; }
+        public int MaxPlayers { get; }
 
         public int PlayerCount
         {
             get { return _players.Count(x => x != null); }
         }
 
-        public object LockObject
-        {
-            get { return _lockObject; }
-        }
+        public object LockObject { get; }
 
         public int FirstAvailableId
         {

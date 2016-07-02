@@ -77,7 +77,7 @@ namespace TetriNET.WPF_WCF_Client.MVVM
         public AsyncRelayCommand2(Action<T> execute, Action<T> completed, Func<T, bool> canExecute)
         {
             if (execute == null)
-                throw new ArgumentNullException("execute");
+                throw new ArgumentNullException(nameof(execute));
 
             _execute = execute;
             _completed = completed;

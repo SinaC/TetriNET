@@ -1,6 +1,6 @@
 ﻿namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class RunBabyRun : Achievement
+    internal class RunBabyRun : AchievementBase
     {
         public RunBabyRun()
         {

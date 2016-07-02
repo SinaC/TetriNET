@@ -3,7 +3,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class SerialBuilder : Achievement
+    internal class SerialBuilder : AchievementBase
     {
         public SerialBuilder()
         {

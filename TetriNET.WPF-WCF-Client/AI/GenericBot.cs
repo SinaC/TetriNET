@@ -19,8 +19,8 @@ namespace TetriNET.WPF_WCF_Client.AI
 
         private bool _isConfusionActive;
 
-        public ISpecialStrategy SpecialStrategy { get; private set; }
-        public IMoveStrategy MoveStrategy { get; private set; }
+        public ISpecialStrategy SpecialStrategy { get; }
+        public IMoveStrategy MoveStrategy { get; }
 
         private bool _activated;
         public bool Activated { get { return _activated; }

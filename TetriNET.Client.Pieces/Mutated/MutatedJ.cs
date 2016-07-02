@@ -14,15 +14,9 @@ namespace TetriNET.Client.Pieces.Mutated
             Value = Common.DataContracts.Pieces.TetriminoJ;
         }
 
-        public override int MaxOrientations
-        {
-            get { return 4; }
-        }
+        public override int MaxOrientations => 4;
 
-        public override int TotalCells
-        {
-            get { return 5; }
-        }
+        public override int TotalCells => 5;
 
         public override void GetCellAbsolutePosition(int cellIndex, out int x, out int y)
         {

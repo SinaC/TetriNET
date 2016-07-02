@@ -5,7 +5,7 @@ using TetriNET.Client.Interfaces;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class CantTouchThis : Achievement
+    internal class CantTouchThis : AchievementBase
     {
         private readonly int _achievementsCount;
 
@@ -20,7 +20,7 @@ namespace TetriNET.Client.Achievements.Achievements
             SilverLevel = 2;
             GoldLevel = 3;
 
-            _achievementsCount = Assembly.GetExecutingAssembly().GetTypes().Count(t => t.IsSubclassOf(typeof(Achievement)) && !t.IsAbstract);
+            _achievementsCount = Assembly.GetExecutingAssembly().GetTypes().Count(t => t.IsSubclassOf(typeof(AchievementBase)) && !t.IsAbstract);
         }
 
         public override void Reset()

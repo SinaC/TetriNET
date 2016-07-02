@@ -23,7 +23,7 @@ namespace TetriNET.Server.WCFHost
             public WCFServiceHost(IHost host)
             {
                 if (host == null)
-                    throw new ArgumentNullException("host");
+                    throw new ArgumentNullException(nameof(host));
                 _host = host;
             }
 
@@ -187,19 +187,7 @@ namespace TetriNET.Server.WCFHost
 
             #endregion
 
-            private ITetriNETCallback Callback
-            {
-                get
-                {
-                    //MessageProperties messageProperties = OperationContext.Current.IncomingMessageProperties;
-                    //RemoteEndpointMessageProperty endpointProperty = messageProperties[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
-                    //if (endpointProperty != null)
-                    //{
-                    //    IPAddress address = IPAddress.Parse(endpointProperty.Address);
-                    //}
-                    return OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
-                }
-            }
+            private ITetriNETCallback Callback => OperationContext.Current.GetCallbackChannel<ITetriNETCallback>();
         }
 
         private bool _started;

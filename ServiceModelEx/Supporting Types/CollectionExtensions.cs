@@ -15,11 +15,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(action == null)
          {
-            throw new ArgumentNullException("action");
+            throw new ArgumentNullException(nameof(action));
          }
          foreach(T item in collection)
          {
@@ -30,11 +30,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(converter == null)
          {
-            throw new ArgumentNullException("converter");
+            throw new ArgumentNullException(nameof(converter));
          }
          foreach(T item in collection)
          {
@@ -61,7 +61,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          List<T> list = new List<T>(collection);
          list.Sort();
@@ -75,7 +75,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          using(IEnumerator<T> iterator = collection.GetEnumerator())
          {
@@ -100,11 +100,11 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          if(converter == null)
          {
-            throw new ArgumentNullException("converter");
+            throw new ArgumentNullException(nameof(converter));
          }
 
          return collection.UnsafeToArray<T>().ConvertAll(converter);      }
@@ -113,7 +113,7 @@ namespace ServiceModelEx
       {
          if(collection == null)
          {
-            throw new ArgumentNullException("collection");
+            throw new ArgumentNullException(nameof(collection));
          }
          return Collection.UnsafeToArray<T>(collection);
       }

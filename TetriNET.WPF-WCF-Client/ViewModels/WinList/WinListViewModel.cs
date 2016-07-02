@@ -18,13 +18,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
 
     public class WinListViewModel : ViewModelBase, ITabIndex
     {
-        public bool IsResetEnabled
-        {
-            get { return Client != null && Client.IsServerMaster && !Client.IsGameStarted; }
-        }
+        public bool IsResetEnabled => Client != null && Client.IsServerMaster && !Client.IsGameStarted;
 
-        public ObservableCollection<Entry> PlayerWinList { get; private set; }
-        public ObservableCollection<Entry> TeamWinList { get; private set; }
+        public ObservableCollection<Entry> PlayerWinList { get; }
+        public ObservableCollection<Entry> TeamWinList { get; }
 
         public WinListViewModel()
         {
@@ -52,10 +49,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.WinList
 
         #region ITabIndex
 
-        public int TabIndex
-        {
-            get { return 2; }
-        }
+        public int TabIndex => 2;
 
         #endregion
 

@@ -28,10 +28,7 @@ namespace TetriNET.WPF_WCF_Client.TextureManager
 
         //public static ThreadSafeSingleInstance<TextureManager> TexturesSingleInstance = new ThreadSafeSingleInstance<TextureManager>(() => new TextureManager());
         private static readonly Lazy<TextureManager> Lazy = new Lazy<TextureManager>(() => new TextureManager());
-        public static TextureManager Instance
-        {
-            get { return Lazy.Value; }
-        }
+        public static TextureManager Instance => Lazy.Value;
 
         private TextureManager()
         {

@@ -5,7 +5,7 @@ namespace TetriNET.Client
 {
     internal sealed class Inventory
     {
-        private readonly object _lock = new object();
+        private readonly object _lock;
         private readonly List<Specials> _queue;
         private int _size;
 

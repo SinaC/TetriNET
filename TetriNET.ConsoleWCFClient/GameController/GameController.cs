@@ -14,7 +14,7 @@ namespace TetriNET.ConsoleWCFClient.GameController
         public GameController(IClient client)
         {
             if (client == null)
-                throw new ArgumentNullException("client");
+                throw new ArgumentNullException(nameof(client));
 
             Client = client;
 
@@ -29,7 +29,7 @@ namespace TetriNET.ConsoleWCFClient.GameController
 
         #region IGameController
 
-        public IClient Client { get; private set; }
+        public IClient Client { get; }
 
         public void AddSensibility(Commands cmd, int interval)
         {

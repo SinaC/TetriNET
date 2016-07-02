@@ -52,22 +52,11 @@ namespace ServiceModelEx
             }         
          }
       }
-      public static Uri AvailableTcpBaseAddress
-      {
-         get
-         {
-            return new Uri("net.tcp://localhost:" + FindAvailablePort() + "/");
-         }
-      }
+      public static Uri AvailableTcpBaseAddress => new Uri("net.tcp://localhost:" + FindAvailablePort() + "/");
 
-      public static Uri AvailableIpcBaseAddress
-      {
-         get
-         {
-            return new Uri("net.pipe://localhost/" + Guid.NewGuid() + "/");
-         }
-      }
-      static int FindAvailablePort()
+       public static Uri AvailableIpcBaseAddress => new Uri("net.pipe://localhost/" + Guid.NewGuid() + "/");
+
+       static int FindAvailablePort()
       {
          Mutex mutex = new Mutex(false,"ServiceModelEx.DiscoveryHelper.FindAvailablePort");
          try

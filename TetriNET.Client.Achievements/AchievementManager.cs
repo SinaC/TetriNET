@@ -36,7 +36,7 @@ namespace TetriNET.Client.Achievements
         public void FindAllAchievements(Assembly assembly)
         {
             //
-            List<Type> types = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof (Achievement)) && !t.IsAbstract).ToList();
+            List<Type> types = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof (AchievementBase)) && !t.IsAbstract).ToList();
             foreach (Type type in types)
             {
                 try
@@ -67,10 +67,7 @@ namespace TetriNET.Client.Achievements
 
         public event AchievedEventHandler Achieved;
 
-        public IReadOnlyCollection<IAchievement> Achievements
-        {
-            get { return _achievements; }
-        }
+        public IReadOnlyCollection<IAchievement> Achievements => _achievements;
 
         private DateTime _gameStartTime;
 

@@ -24,7 +24,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
     {
         private bool _isRegistered;
 
-        public bool IsNotRegistered { get { return !_isRegistered; } }
+        public bool IsNotRegistered => !_isRegistered;
 
         public bool IsConnectDisconnectEnabled
         {
@@ -83,15 +83,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             }
         }
 
-        public string ServerCompletePlayerAddress
-        {
-            get { return "net.tcp://" + ServerAddress + ":" + ServerPort + "/TetriNET"; }
-        }
+        public string ServerCompletePlayerAddress => "net.tcp://" + ServerAddress + ":" + ServerPort + "/TetriNET";
 
-        public string ServerCompleteSpectatorAddress
-        {
-            get { return "net.tcp://" + ServerAddress + ":" + ServerPort + "/TetriNETSpectator"; }
-        }
+        public string ServerCompleteSpectatorAddress => "net.tcp://" + ServerAddress + ":" + ServerPort + "/TetriNETSpectator";
 
         public void SetAddress(string address)
         {
@@ -101,10 +95,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             ServerPort = uri.Port;
         }
 
-        public string ConnectDisconnectLabel
-        {
-            get { return _isRegistered ? "Disconnect" : "Connect"; }
-        }
+        public string ConnectDisconnectLabel => _isRegistered ? "Disconnect" : "Connect";
 
         private string _connectionResult;
         public string ConnectionResult
@@ -352,10 +343,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             }
         }
         
-        public string Error
-        {
-            get { return String.Empty; }
-        }
+        public string Error => String.Empty;
 
         #endregion
     }

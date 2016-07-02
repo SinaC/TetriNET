@@ -3,7 +3,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class TooEasyForMe : Achievement
+    internal class TooEasyForMe : AchievementBase
     {
         private bool _nukeUsed;
 

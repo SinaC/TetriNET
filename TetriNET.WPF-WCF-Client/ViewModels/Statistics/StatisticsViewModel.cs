@@ -8,15 +8,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
         public ClientStatisticsViewModel ClientStatisticsViewModel { get; set; }
         public GameStatisticsViewModel GameStatisticsViewModel { get; set; }
 
-        public bool IsPlayer
-        {
-            get { return Client != null && Client.IsRegistered && !Client.IsSpectator; }
-        }
+        public bool IsPlayer => Client != null && Client.IsRegistered && !Client.IsSpectator;
 
-        public bool IsSpectator
-        {
-            get { return Client != null && Client.IsRegistered && Client.IsSpectator; }
-        }
+        public bool IsSpectator => Client != null && Client.IsRegistered && Client.IsSpectator;
 
         public StatisticsViewModel()
         {
@@ -27,10 +21,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
         #region ITabIndex
 
-        public int TabIndex
-        {
-            get { return 6; }
-        }
+        public int TabIndex => 6;
 
         #endregion
 
@@ -94,15 +85,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
 
     public class StatisticsViewModelDesignData : StatisticsViewModel
     {
-        public new bool IsPlayer
-        {
-            get { return true; }
-        }
+        public new bool IsPlayer => true;
 
-        public new bool IsSpectator
-        {
-            get { return false; }
-        }
+        public new bool IsSpectator => false;
 
         public StatisticsViewModelDesignData()
         {

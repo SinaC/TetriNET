@@ -4,7 +4,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class PhilouStyle : Achievement
+    internal class PhilouStyle : AchievementBase
     {
         private int _roundCount;
 

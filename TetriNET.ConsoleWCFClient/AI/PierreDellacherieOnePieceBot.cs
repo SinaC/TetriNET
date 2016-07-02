@@ -38,14 +38,11 @@ namespace TetriNET.ConsoleWCFClient.AI
 
         #region IBot
 
-        public string Name
-        {
-            get { return "Pierre Dellacherie 1 piece"; }
-        }
+        public string Name => "Pierre Dellacherie 1 piece";
 
-        public ISpecialStrategy SpecialStrategy { get; private set; }
-        public IMoveStrategy MoveStrategy { get; private set; }
-        public IClient Client { get; private set; }
+        public ISpecialStrategy SpecialStrategy { get; }
+        public IMoveStrategy MoveStrategy { get; }
+        public IClient Client { get; }
 
         public bool Activated
         {

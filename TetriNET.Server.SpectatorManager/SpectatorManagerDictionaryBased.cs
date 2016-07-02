@@ -10,12 +10,11 @@ namespace TetriNET.Server.SpectatorManager
     // Dictionary based
     public sealed class SpectatorManagerDictionaryBased : ISpectatorManager
     {
-        private readonly object _lockObject;
         private readonly Dictionary<ITetriNETCallback, ISpectator> _spectators;
 
         public SpectatorManagerDictionaryBased(int maxSpectators)
         {
-            _lockObject = new object();
+            LockObject = new object();
             MaxSpectators = maxSpectators;
             _spectators = new Dictionary<ITetriNETCallback, ISpectator>();
         }
@@ -49,17 +48,11 @@ namespace TetriNET.Server.SpectatorManager
             _spectators.Clear();
         }
 
-        public int MaxSpectators { get; private set; }
+        public int MaxSpectators { get; }
 
-        public int SpectatorCount
-        {
-            get { return _spectators.Count; }
-        }
+        public int SpectatorCount => _spectators.Count;
 
-        public object LockObject
-        {
-            get { return _lockObject; }
-        }
+        public object LockObject { get; }
 
         public int FirstAvailableId
         {

@@ -3,7 +3,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class Looooser : Achievement
+    internal class Looooser : AchievementBase
     {
         private int _count;
 

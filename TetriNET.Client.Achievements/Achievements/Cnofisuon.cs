@@ -15,13 +15,7 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 10;
         }
 
-        public override Specials Special
-        {
-            get { return Specials.Confusion; }
-        }
-        public override int CountToAchieve
-        {
-            get { return 5; }
-        }
+        public override Specials Special => Specials.Confusion;
+        public override int CountToAchieve => 5;
     }
 }

@@ -18,11 +18,11 @@ namespace TetriNET.Server.HostBase
         protected HostBase(IPlayerManager playerManager, ISpectatorManager spectatorManager, IBanManager banManager, IFactory factory)
         {
             if (playerManager == null)
-                throw new ArgumentNullException("playerManager");
+                throw new ArgumentNullException(nameof(playerManager));
             if (banManager == null)
-                throw new ArgumentNullException("banManager");
+                throw new ArgumentNullException(nameof(banManager));
             if (factory == null)
-                throw new ArgumentNullException("factory");
+                throw new ArgumentNullException(nameof(factory));
 
             PlayerManager = playerManager;
             SpectatorManager = spectatorManager;
@@ -67,9 +67,9 @@ namespace TetriNET.Server.HostBase
         public event PlayerLeftEventHandler HostPlayerLeft;
         public event SpectatorLeftEventHandler HostSpectatorLeft;
 
-        public IBanManager BanManager { get; private set; }
-        public IPlayerManager PlayerManager { get; private set; }
-        public ISpectatorManager SpectatorManager { get; private set; }
+        public IBanManager BanManager { get; }
+        public IPlayerManager PlayerManager { get; }
+        public ISpectatorManager SpectatorManager { get; }
 
         public void SetVersion(Versioning versioning)
         {

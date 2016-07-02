@@ -62,15 +62,12 @@ namespace TetriNET.WPF_WCF_Client.Helpers
             return Dictionary.ContainsKey(key);
         }
 
-        public ICollection<TKey> Keys
-        {
-            get { return Dictionary.Keys; }
-        }
+        public ICollection<TKey> Keys => Dictionary.Keys;
 
         public bool Remove(TKey key)
         {
             if (key == null)
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
 
             TValue value;
             Dictionary.TryGetValue(key, out value);
@@ -86,10 +83,7 @@ namespace TetriNET.WPF_WCF_Client.Helpers
             return Dictionary.TryGetValue(key, out value);
         }
 
-        public ICollection<TValue> Values
-        {
-            get { return Dictionary.Values; }
-        }
+        public ICollection<TValue> Values => Dictionary.Values;
 
         public TValue this[TKey key]
         {
@@ -131,15 +125,9 @@ namespace TetriNET.WPF_WCF_Client.Helpers
             Dictionary.CopyTo(array, arrayIndex);
         }
 
-        public int Count
-        {
-            get { return Dictionary.Count; }
-        }
+        public int Count => Dictionary.Count;
 
-        public bool IsReadOnly
-        {
-            get { return Dictionary.IsReadOnly; }
-        }
+        public bool IsReadOnly => Dictionary.IsReadOnly;
 
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
@@ -182,7 +170,7 @@ namespace TetriNET.WPF_WCF_Client.Helpers
         public void AddRange(IDictionary<TKey, TValue> items)
         {
             if (items == null) 
-                throw new ArgumentNullException("items");
+                throw new ArgumentNullException(nameof(items));
 
             if (items.Count > 0)
             {
@@ -204,7 +192,7 @@ namespace TetriNET.WPF_WCF_Client.Helpers
         private void Insert(TKey key, TValue value, bool add)
         {
             if (key == null)
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException(nameof(key));
 
             TValue item;
             if (Dictionary.TryGetValue(key, out item))

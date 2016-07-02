@@ -12,13 +12,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels
             "Microsoft.Performance",
             "CA1822:MarkMembersAsStatic",
             Justification = "Non static member needed for data binding")]
-        public bool IsInDesignMode
-        {
-            get
-            {
-                return Helpers.DesignMode.IsInDesignModeStatic;
-            }
-        }
+        public bool IsInDesignMode => Helpers.DesignMode.IsInDesignModeStatic;
 
         public delegate void ClientChangedEventHandler(IClient oldClient, IClient newClient);
 

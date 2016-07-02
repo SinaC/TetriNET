@@ -4,7 +4,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class HHStyle : Achievement
+    internal class HHStyle : AchievementBase
     {
         public HHStyle()
         {

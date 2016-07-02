@@ -51,10 +51,7 @@ namespace TetriNET.WPF_WCF_Client.CustomSettings
         private XmlDocument _xmlDoc;
 
 
-        public static string SettingsFilename
-        {
-            get { return "tetrinet.config"; }
-        }
+        public static string SettingsFilename => "tetrinet.config";
 
         public static string SettingsPath
         {

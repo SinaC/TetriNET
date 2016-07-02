@@ -7,16 +7,12 @@ namespace TetriNET.WPF_WCF_Client.DynamicGrid
 {
     public class DynamicPropertyDescriptor : PropertyDescriptor
     {
-        private readonly string _displayName;
-        private readonly Type _dynamicType;
-        private readonly bool _isReadOnly;
-
         public DynamicPropertyDescriptor(string name, string displayName, Type type, bool isReadOnly = false)
             : base(name, null)
         {
-            _displayName = displayName;
-            _dynamicType = type;
-            _isReadOnly = isReadOnly;
+            DisplayName = displayName;
+            PropertyType = type;
+            IsReadOnly = isReadOnly;
         }
 
         public override bool CanResetValue(object component)
@@ -43,25 +39,13 @@ namespace TetriNET.WPF_WCF_Client.DynamicGrid
             return false;
         }
 
-        public override Type ComponentType
-        {
-            get { return typeof(object); }
-        }
+        public override Type ComponentType => typeof(object);
 
-        public override bool IsReadOnly
-        {
-            get { return _isReadOnly; }
-        }
+        public override bool IsReadOnly { get; }
 
-        public override Type PropertyType
-        {
-            get { return _dynamicType; }
-        }
+        public override Type PropertyType { get; }
 
-        public override string DisplayName
-        {
-            get { return _displayName; }
-        }
+        public override string DisplayName { get; }
 
         private static void SetDynamicMember(object obj, string memberName, object value)
         {

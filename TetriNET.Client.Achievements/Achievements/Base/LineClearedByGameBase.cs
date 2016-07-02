@@ -4,7 +4,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements.Base
 {
-    internal abstract class LineClearedByGameBase : Achievement
+    internal abstract class LineClearedByGameBase : AchievementBase
     {
         private int _lineCount;
 

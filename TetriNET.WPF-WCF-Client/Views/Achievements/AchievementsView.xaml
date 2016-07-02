@@ -44,8 +44,7 @@
                             </StackPanel>
                         </DockPanel>
                         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap"
-                                   Text="{Binding Description}">
-                        </TextBlock>
+                                   Text="{Binding Description}" />
                     </StackPanel>
                 </Border>
             </DataTemplate>

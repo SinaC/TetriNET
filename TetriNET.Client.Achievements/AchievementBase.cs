@@ -6,7 +6,7 @@ using TetriNET.Common.Helpers;
 
 namespace TetriNET.Client.Achievements
 {
-    public abstract class Achievement : IAchievement
+    public abstract class AchievementBase : IAchievement
     {
         private bool AlreadyAchievedThisGame { get; set; }
 
@@ -37,42 +37,23 @@ namespace TetriNET.Client.Achievements
         //        : "Transparent"; }
         //}
 
-        public bool IsGoldLevelReached
-        {
-            get { return AchieveCount >= GoldLevel; }
-        }
-        public bool IsSilverLevelReached
-        {
-            get { return AchieveCount >= SilverLevel; }
-        }
-        public bool IsBronzeLevelReached
-        {
-            get { return AchieveCount >= BronzeLevel; }
-        }
+        public bool IsGoldLevelReached => AchieveCount >= GoldLevel;
 
-        public bool AchievedMoreThanOnce
-        {
-            get { return AchieveCount > 1; }
-        }
+        public bool IsSilverLevelReached => AchieveCount >= SilverLevel;
 
-        public bool IsAchievable
-        {
-            get { return (OnlyOnce && !IsAchieved) || (!OnlyOnce && !IsFailed && !AlreadyAchievedThisGame); }
-        }
+        public bool IsBronzeLevelReached => AchieveCount >= BronzeLevel;
 
-        public virtual string Progress
-        {
-            get { return String.Empty; }
-        }
+        public bool AchievedMoreThanOnce => AchieveCount > 1;
 
-        public virtual bool IsProgressAvailable
-        {
-            get { return !String.IsNullOrWhiteSpace(Progress); }
-        }
+        public bool IsAchievable => (OnlyOnce && !IsAchieved) || (!OnlyOnce && !IsFailed && !AlreadyAchievedThisGame);
+
+        public virtual string Progress => String.Empty;
+
+        public virtual bool IsProgressAvailable => !String.IsNullOrWhiteSpace(Progress);
 
         public event AchievedEventHandler Achieved;
 
-        protected Achievement()
+        protected AchievementBase()
         {
             IsFailed = false;
             AlreadyAchievedThisGame = false;

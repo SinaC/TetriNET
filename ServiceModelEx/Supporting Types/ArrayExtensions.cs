@@ -14,7 +14,7 @@ namespace ServiceModelEx
       {
          if(array == null)
          {
-            throw new ArgumentNullException("array");
+            throw new ArgumentNullException(nameof(array));
          }
          IEnumerable<T> enumerable = array;
          return enumerable.ConvertAll(converter).ToArray(); 
@@ -24,11 +24,11 @@ namespace ServiceModelEx
       {
          if(array == null)
          {
-            throw new ArgumentNullException("array");
+            throw new ArgumentNullException(nameof(array));
          }
          if(match == null)
          {
-            throw new ArgumentNullException("match");
+            throw new ArgumentNullException(nameof(match));
          }
          Func<T,bool> func = (t)=>
                              {
@@ -40,7 +40,7 @@ namespace ServiceModelEx
       {
          if(array == null)
          {
-            throw new ArgumentNullException("array");
+            throw new ArgumentNullException(nameof(array));
          }
          if(count < 0)
          {
@@ -53,11 +53,11 @@ namespace ServiceModelEx
       {
          if(array == null)
          {
-            throw new ArgumentNullException("array");
+            throw new ArgumentNullException(nameof(array));
          }
          if(match == null)
          {
-            throw new ArgumentNullException("match");
+            throw new ArgumentNullException(nameof(match));
          }
          Func<T,bool> func = (t)=>
                              {
@@ -69,7 +69,7 @@ namespace ServiceModelEx
       {
          if(array == null)
          {
-            throw new ArgumentNullException("array");
+            throw new ArgumentNullException(nameof(array));
          }
          if(count < 0)
          {
@@ -82,7 +82,7 @@ namespace ServiceModelEx
       {
          if(count <= 0)
          {
-            throw new ArgumentOutOfRangeException("count");
+            throw new ArgumentOutOfRangeException(nameof(count));
          }
          return Enumerable.Repeat<T>(element,count).ToArray();
       }
@@ -90,11 +90,11 @@ namespace ServiceModelEx
       {
          if(first == null)
          {
-            throw new ArgumentNullException("first");
+            throw new ArgumentNullException(nameof(first));
          }
          if(second == null)
          {
-            throw new ArgumentNullException("second");
+            throw new ArgumentNullException(nameof(second));
          }
          IEnumerable<T> enumerable = first;
          return enumerable.Concat(second).ToArray();
@@ -104,7 +104,7 @@ namespace ServiceModelEx
       {
          if(array == null)
          {
-            throw new ArgumentNullException("array");
+            throw new ArgumentNullException(nameof(array));
          }
          IEnumerable<T> enumerable = array;
          return enumerable.Reverse().ToArray();
@@ -113,11 +113,11 @@ namespace ServiceModelEx
       {
          if(array1 == null)
          {
-            throw new ArgumentNullException("array1");
+            throw new ArgumentNullException(nameof(array1));
          }
          if(array2 == null)
          {
-            throw new ArgumentNullException("array2");
+            throw new ArgumentNullException(nameof(array2));
          }
 
          IEnumerable<T> enumerable1 = array1;
@@ -127,11 +127,11 @@ namespace ServiceModelEx
       {
          if(array1 == null)
          {
-            throw new ArgumentNullException("array1");
+            throw new ArgumentNullException(nameof(array1));
          }
          if(array2 == null)
          {
-            throw new ArgumentNullException("array2");
+            throw new ArgumentNullException(nameof(array2));
          }
          IEnumerable<T> enumerable1 = array1;
          return enumerable1.Complement(array2).ToArray();
@@ -140,11 +140,11 @@ namespace ServiceModelEx
       {
          if(array1 == null)
          {
-            throw new ArgumentNullException("array1");
+            throw new ArgumentNullException(nameof(array1));
          }
          if(array2 == null)
          {
-            throw new ArgumentNullException("array2");
+            throw new ArgumentNullException(nameof(array2));
          }
          IEnumerable<T> enumerable1 = array1;
          return enumerable1.Except(array2).ToArray();
@@ -153,11 +153,11 @@ namespace ServiceModelEx
       {
          if(array1 == null)
          {
-            throw new ArgumentNullException("array1");
+            throw new ArgumentNullException(nameof(array1));
          }
          if(array2 == null)
          {
-            throw new ArgumentNullException("array2");
+            throw new ArgumentNullException(nameof(array2));
          }
          IEnumerable<T> enumerable1 = array1;
          return enumerable1.Intersect(array2).ToArray();
@@ -167,7 +167,7 @@ namespace ServiceModelEx
       {
          if(array == null)
          {
-            throw new ArgumentNullException("array");
+            throw new ArgumentNullException(nameof(array));
          }
          IEnumerable<T> enumerable = array;
          return enumerable.Distinct().ToArray();
@@ -178,7 +178,7 @@ namespace ServiceModelEx
       {
          if(array == null)
          {
-            throw new ArgumentNullException("array");
+            throw new ArgumentNullException(nameof(array));
          }
          IEnumerable<T> enumerable = array;
          return enumerable.Sort().ToArray();
@@ -187,11 +187,11 @@ namespace ServiceModelEx
       {
          if(array == null)
          {
-            throw new ArgumentNullException("array");
+            throw new ArgumentNullException(nameof(array));
          }
          if(match == null)
          {
-            throw new ArgumentNullException("match");
+            throw new ArgumentNullException(nameof(match));
          }
          Func<T,bool> func = (t)=>
                              {

@@ -3,7 +3,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class DoBarrelRoll : Achievement
+    internal class DoBarrelRoll : AchievementBase
     {
         private bool _gravity;
         private bool _leftGravity;

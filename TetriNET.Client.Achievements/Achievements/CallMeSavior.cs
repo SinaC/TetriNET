@@ -4,7 +4,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class CallMeSavior : Achievement
+    internal class CallMeSavior : AchievementBase
     {
         public CallMeSavior()
         {

@@ -10,7 +10,7 @@ namespace TetriNET.WPF_WCF_Client.MVVM
     {
         private class Subscription
         {
-            private WeakReference RecipientWeakReference { get; set; }
+            private WeakReference RecipientWeakReference { get; }
 
             public object Recipient
             {
@@ -22,9 +22,9 @@ namespace TetriNET.WPF_WCF_Client.MVVM
                 }
             }
 
-            public object Token { get; private set; }
-            public MethodInfo Method { get; private set; }
-            public SynchronizationContext Context { get; private set; }
+            public object Token { get; }
+            public MethodInfo Method { get; }
+            public SynchronizationContext Context { get; }
 
             public bool IsAlive
             {
@@ -51,18 +51,18 @@ namespace TetriNET.WPF_WCF_Client.MVVM
         public static void Register<T>(object recipient, Action<T> action)
         {
             if (recipient == null)
-                throw new ArgumentNullException("recipient");
+                throw new ArgumentNullException(nameof(recipient));
             if (action == null)
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
             Register(recipient, null, action);
         }
 
         public static void Register<T>(object recipient, object token, Action<T> action)
         {
             if (recipient == null)
-                throw new ArgumentNullException("recipient");
+                throw new ArgumentNullException(nameof(recipient));
             if (action == null)
-                throw new ArgumentNullException("action");
+                throw new ArgumentNullException(nameof(action));
             lock (Recipients)
             {
                 Type messageType = typeof(T);

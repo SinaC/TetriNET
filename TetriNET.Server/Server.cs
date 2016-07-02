@@ -41,7 +41,7 @@ namespace TetriNET.Server
         public Server(IPlayerManager playerManager, ISpectatorManager spectatorManager, IPieceProvider pieceProvider, IActionQueue gameActionQueue)
         {
             if (playerManager == null)
-                throw new ArgumentNullException("playerManager");
+                throw new ArgumentNullException(nameof(playerManager));
 
             Options = new GameOptions();
             Options.ResetToDefault();
@@ -75,8 +75,9 @@ namespace TetriNET.Server
 
         public ServerStates State { get; private set; }
         public int SpecialId { get; private set; }
-        public IReadOnlyCollection<WinEntry> WinList { get { return _winList; } }
-        public IReadOnlyDictionary<string, GameStatisticsByPlayer> GameStatistics { get { return _gameStatistics; } } // By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
+        public IReadOnlyCollection<WinEntry> WinList => _winList;
+        public IReadOnlyDictionary<string, GameStatisticsByPlayer> GameStatistics => _gameStatistics;
+// By player (cannot be stored in IPlayer because IPlayer is lost when a player is disconnected during a game)
         public GameOptions Options { get; private set; }
 
         public Versioning Version { get; private set; }
@@ -436,10 +437,7 @@ namespace TetriNET.Server
             entry.Score += score;
         }
 
-        private IEnumerable<IEntity> Entities
-        {
-            get { return _playerManager.Players.Cast<IEntity>().Union(_spectatorManager.Spectators); }
-        }
+        private IEnumerable<IEntity> Entities => _playerManager.Players.Cast<IEntity>().Union(_spectatorManager.Spectators);
 
         private void EnqueueAction(Action action)
         {
@@ -832,7 +830,7 @@ namespace TetriNET.Server
 
         private void PlacePiece(IPlayer player, int pieceIndex, int highestIndex, Pieces piece, int orientation, int posX, int posY, byte[] grid)
         {
-            Log.Default.WriteLine(LogLevels.Info, "PlacePiece[{0}]{1}:{2} {3} {4} at {5},{6} {7}", player.Name, pieceIndex, highestIndex, piece, orientation, posX, posY, grid == null ? -1 : grid.Count(x => x > 0));
+            Log.Default.WriteLine(LogLevels.Info, "PlacePiece[{0}]{1}:{2} {3} {4} at {5},{6} {7}", player.Name, pieceIndex, highestIndex, piece, orientation, posX, posY, grid?.Count(x => x > 0) ?? -1);
 
             //if (index != player.PieceIndex)
             //    Log.Default.WriteLine(LogLevels.Error, "!!!! piece index different for player {0} local {1} remote {2}", player.Name, player.PieceIndex, index);
@@ -1105,12 +1103,8 @@ namespace TetriNET.Server
             EventInfo[] events = t.GetEvents();
             foreach (EventInfo e in events)
             {
-                if (e.DeclaringType == null)
-                    return false;
-                FieldInfo fi = e.DeclaringType.GetField(e.Name, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                if (fi == null)
-                    return false;
-                object value = fi.GetValue(instance);
+                FieldInfo fi = e.DeclaringType?.GetField(e.Name, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                object value = fi?.GetValue(instance);
                 if (value == null)
                     return false;
             }

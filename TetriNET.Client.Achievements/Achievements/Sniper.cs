@@ -1,6 +1,6 @@
 ﻿namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class Sniper : Achievement
+    internal class Sniper : AchievementBase
     {
         public Sniper()
         {

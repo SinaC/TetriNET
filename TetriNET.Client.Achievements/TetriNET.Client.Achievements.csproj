@@ -35,7 +35,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AchievementManager.cs" />
-    <Compile Include="Achievement.cs" />
+    <Compile Include="AchievementBase.cs" />
     <Compile Include="Achievements\Architect.cs" />
     <Compile Include="Achievements\BackToBack.cs" />
     <Compile Include="Achievements\BackToBackAndBackAgain.cs" />

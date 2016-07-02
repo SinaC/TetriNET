@@ -5,7 +5,7 @@ using TetriNET.Common.Helpers;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class NuclearLaunchDetected : Achievement
+    internal class NuclearLaunchDetected : AchievementBase
     {
         public NuclearLaunchDetected()
         {

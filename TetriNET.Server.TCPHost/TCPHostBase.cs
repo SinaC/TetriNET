@@ -174,7 +174,7 @@ namespace TetriNET.Server.TCPHost
             public SocketServiceHost(IHost host)
             {
                 if (host == null)
-                    throw new ArgumentNullException("host");
+                    throw new ArgumentNullException(nameof(host));
 
                 _host = host;
             }

@@ -32,7 +32,7 @@ namespace TetriNET.ConsoleWCFServer
 
         private readonly Func<ITetriNET> _getProxyFunc;
         private ITetriNET Proxy { get; set; }
-        private byte[] PlayerGrid { get; set; }
+        private byte[] PlayerGrid { get; }
         private int PieceIndex { get; set; }
         private DateTime _lastServerAction;
         private int _timeoutCount;

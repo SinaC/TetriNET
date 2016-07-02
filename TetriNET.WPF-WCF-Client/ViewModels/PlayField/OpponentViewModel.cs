@@ -4,20 +4,11 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
 {
     public class OpponentViewModel : ViewModelBase
     {
-        public bool IsPlayerIdVisible
-        {
-            get { return PlayerId != -1; }
-        }
+        public bool IsPlayerIdVisible => PlayerId != -1;
 
-        public int DisplayPlayerId
-        {
-            get { return PlayerId + 1; }
-        }
+        public int DisplayPlayerId => PlayerId + 1;
 
-        public bool IsPlayerInTeam
-        {
-            get { return !string.IsNullOrWhiteSpace(Team); }
-        }
+        public bool IsPlayerInTeam => !string.IsNullOrWhiteSpace(Team);
 
         private string _playerName;
         public string PlayerName

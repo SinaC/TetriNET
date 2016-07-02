@@ -4,7 +4,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class WallOfShame : Achievement
+    internal class WallOfShame : AchievementBase
     {
         public WallOfShame()
         {

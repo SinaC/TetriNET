@@ -16,17 +16,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
     {
         private const int MaxLatestServerCount = 5;
 
-        private readonly ObservableCollection<string> _servers = new ObservableCollection<string>();
-        public ObservableCollection<string> Servers
-        {
-            get { return _servers; }
-        }
+        public ObservableCollection<string> Servers { get; } = new ObservableCollection<string>();
 
-        private readonly ObservableCollection<string> _latestServers = new ObservableCollection<string>();
-        public ObservableCollection<string> LatestServers
-        {
-            get { return _latestServers; }
-        }
+        public ObservableCollection<string> LatestServers { get; } = new ObservableCollection<string>();
 
         private bool _isScanForServerEnabled;
         public bool IsScanForServerEnabled
@@ -69,9 +61,9 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             StringCollection latestServers = Settings.Default.LatestServers;
             if (latestServers != null)
             {
-                _latestServers.Clear();
+                LatestServers.Clear();
                 foreach (string s in latestServers)
-                    _latestServers.Add(s);
+                    LatestServers.Add(s);
             }
         }
 
@@ -82,13 +74,13 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         private void AddServerToLatestInner(string address)
         {
-            if (_latestServers.Any(x => x == address)) // reorder list if already in list
-                _latestServers.Remove(address); // remove from list, will be inserted on head in next statement
-            _latestServers.Insert(0, address);
-            if (_latestServers.Count > MaxLatestServerCount) // No more than 5 servers in list
-                _latestServers.RemoveAt(MaxLatestServerCount);
+            if (LatestServers.Any(x => x == address)) // reorder list if already in list
+                LatestServers.Remove(address); // remove from list, will be inserted on head in next statement
+            LatestServers.Insert(0, address);
+            if (LatestServers.Count > MaxLatestServerCount) // No more than 5 servers in list
+                LatestServers.RemoveAt(MaxLatestServerCount);
             StringCollection latestServers = new StringCollection();
-            latestServers.AddRange(_latestServers.ToArray());
+            latestServers.AddRange(LatestServers.ToArray());
             Settings.Default.LatestServers = latestServers;
             Settings.Default.Save();
         }

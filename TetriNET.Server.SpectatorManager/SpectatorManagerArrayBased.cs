@@ -9,12 +9,11 @@ namespace TetriNET.Server.SpectatorManager
 {
     public class SpectatorManagerArrayBased : ISpectatorManager
     {
-        private readonly object _lockObject;
         private readonly ISpectator[] _spectators;
 
         public SpectatorManagerArrayBased(int maxSpectators)
         {
-            _lockObject = new object();
+            LockObject = new object();
             MaxSpectators = maxSpectators;
             _spectators = new ISpectator[MaxSpectators];
         }
@@ -56,17 +55,14 @@ namespace TetriNET.Server.SpectatorManager
                 _spectators[i] = null;
         }
 
-        public int MaxSpectators { get; private set; }
+        public int MaxSpectators { get; }
 
         public int SpectatorCount
         {
             get { return _spectators.Count(x => x != null); }
         }
 
-        public object LockObject
-        {
-            get { return _lockObject; }
-        }
+        public object LockObject { get; }
 
         public int FirstAvailableId
         {

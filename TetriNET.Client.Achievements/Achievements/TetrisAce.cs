@@ -5,7 +5,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class TetrisAce : Achievement
+    internal class TetrisAce : AchievementBase
     {
         public TetrisAce()
         {
@@ -19,10 +19,7 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 5;
         }
 
-        public override string Progress
-        {
-            get { return String.Format("{0} / {1} ({2:0.0}%)", ExtraData, 150, 100.0 * (ExtraData / 150.0)); }
-        }
+        public override string Progress => String.Format("{0} / {1} ({2:0.0}%)", ExtraData, 150, 100.0 * (ExtraData / 150.0));
 
         public override void OnRoundFinished(int lineCompleted, int level, int moveCount, int score, IReadOnlyBoard board, IReadOnlyCollection<Pieces> collapsedPieces)
         {

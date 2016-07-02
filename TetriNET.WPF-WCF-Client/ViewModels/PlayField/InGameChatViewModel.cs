@@ -69,11 +69,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
     {
         private const int MaxEntries = 100;
 
-        private readonly ObservableCollection<InGameChatEntry> _entries = new ObservableCollection<InGameChatEntry>();
-        public ObservableCollection<InGameChatEntry> Entries
-        {
-            get { return _entries; }
-        }
+        public ObservableCollection<InGameChatEntry> Entries { get; } = new ObservableCollection<InGameChatEntry>();
 
         public void AddEntry(InGameChatEntry entry)
         {

@@ -11,18 +11,16 @@ namespace TetriNET.Server.PlayerManager
     // Dictionary based
     public sealed class PlayerManagerDictionaryBased : IPlayerManager
     {
-        private readonly object _lockObject;
         private readonly Dictionary<ITetriNETCallback, IPlayer> _players;
-        private IPlayer _serverMaster;
 
         public PlayerManagerDictionaryBased(int maxPlayers)
         {
             if (maxPlayers <= 0)
-                throw new ArgumentOutOfRangeException("maxPlayers", "maxPlayers must be strictly positive");
-            _lockObject = new object();
+                throw new ArgumentOutOfRangeException(nameof(maxPlayers), "maxPlayers must be strictly positive");
+            LockObject = new object();
             MaxPlayers = maxPlayers;
             _players = new Dictionary<ITetriNETCallback, IPlayer>();
-            _serverMaster = null;
+            ServerMaster = null;
         }
 
         #region IPlayerManager
@@ -52,8 +50,8 @@ namespace TetriNET.Server.PlayerManager
             //
             _players.Add(player.Callback, player);
             // ServerMaster
-            if (_serverMaster == null || _serverMaster.Id > player.Id)
-                _serverMaster = player;
+            if (ServerMaster == null || ServerMaster.Id > player.Id)
+                ServerMaster = player;
             //
             return true;
         }
@@ -64,40 +62,34 @@ namespace TetriNET.Server.PlayerManager
                 return false;
             bool removed = _players.Remove(player.Callback);
             // ServerMaster
-            if (player == _serverMaster)
+            if (player == ServerMaster)
             {
                 int min = _players.Select(x => (int?)x.Value.Id).Min() ?? -1;
                 if (min != -1)
                 {
                     KeyValuePair<ITetriNETCallback, IPlayer> kv = _players.FirstOrDefault(x => x.Value.Id == min);
                     if (kv.Equals(default(KeyValuePair<ITetriNETCallback, IPlayer>)))
-                        _serverMaster = null;
+                        ServerMaster = null;
                     else
-                        _serverMaster = kv.Value;
+                        ServerMaster = kv.Value;
                 }
                 else
-                    _serverMaster = null;
+                    ServerMaster = null;
             }
             return removed;
         }
 
         public void Clear()
         {
-            _serverMaster = null;
+            ServerMaster = null;
             _players.Clear();
         }
 
-        public int MaxPlayers { get; private set; }
+        public int MaxPlayers { get; }
 
-        public int PlayerCount
-        {
-            get { return _players.Count; }
-        }
+        public int PlayerCount => _players.Count;
 
-        public object LockObject
-        {
-            get { return _lockObject; }
-        }
+        public object LockObject { get; }
 
         public int FirstAvailableId
         {
@@ -120,10 +112,7 @@ namespace TetriNET.Server.PlayerManager
             get { return _players.Select(x => x.Value).ToList(); }
         }
 
-        public IPlayer ServerMaster
-        {
-            get { return _serverMaster; }
-        }
+        public IPlayer ServerMaster { get; private set; }
 
         public IPlayer this[string name]
         {

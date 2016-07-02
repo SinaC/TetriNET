@@ -15,14 +15,8 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 5;
         }
 
-        protected override int LineCount
-        {
-            get { return 4; }
-        }
+        protected override int LineCount => 4;
 
-        protected override int CountToAchieve
-        {
-            get { return 3; }
-        }
+        protected override int CountToAchieve => 3;
     }
 }

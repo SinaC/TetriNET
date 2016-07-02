@@ -8,8 +8,7 @@
              Width="720" Height="480"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Grid>
-        <Canvas x:Name="Canvas" Background="Green" Width="720" Height="480">
-        </Canvas>
+        <Canvas x:Name="Canvas" Background="Green" Width="720" Height="480" />
         <!--<Canvas Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" x:Name="Canvas" Background="Green" Width="200" Height="200" HorizontalAlignment="Right" VerticalAlignment="Bottom">
         </Canvas>
         <UserControls:CircularProgressBar Width="400" Visibility="Visible" Opacity="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>

@@ -4,7 +4,7 @@ using TetriNET.Common.Helpers;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class JustInTime : Achievement
+    internal class JustInTime : AchievementBase
     {
         public JustInTime()
         {

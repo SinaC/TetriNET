@@ -21,7 +21,7 @@ namespace TetriNET.ConsoleWCFClient.UI
         public ConsoleUI(IClient client)
         {
             if (client == null)
-                throw new ArgumentNullException("client");
+                throw new ArgumentNullException(nameof(client));
 
             _client = client;
             _client.GameStarted += OnGameStarted;

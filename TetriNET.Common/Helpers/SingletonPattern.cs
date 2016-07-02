@@ -6,7 +6,6 @@ namespace TetriNET.Common.Helpers
         where T : class
     {
         public T Item { get; set; }
-        private static readonly ThreadSafeSingleton2<T> _instance = new ThreadSafeSingleton2<T>();
 
         // Explicit static constructor to tell C# compiler
         // not to mark type as beforefieldinit
@@ -18,13 +17,7 @@ namespace TetriNET.Common.Helpers
         {
         }
 
-        public static ThreadSafeSingleton2<T> Instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
+        public static ThreadSafeSingleton2<T> Instance { get; } = new ThreadSafeSingleton2<T>();
     }
 
     //http://csharpindepth.com/articles/general/singleton.aspx
@@ -36,10 +29,7 @@ namespace TetriNET.Common.Helpers
         {
         }
 
-        public static BadSingleton Instance
-        {
-            get { return _instance ?? (_instance = new BadSingleton()); }
-        }
+        public static BadSingleton Instance => _instance ?? (_instance = new BadSingleton());
     }
 
     public sealed class SimpleThreadSafeSingleton
@@ -94,8 +84,6 @@ namespace TetriNET.Common.Helpers
 
     public sealed class ThreadSafeNoLockSingleton
     {
-        private static readonly ThreadSafeNoLockSingleton _instance = new ThreadSafeNoLockSingleton();
-
         // Explicit static constructor to tell C# compiler
         // not to mark type as beforefieldinit
         static ThreadSafeNoLockSingleton()
@@ -106,13 +94,7 @@ namespace TetriNET.Common.Helpers
         {
         }
 
-        public static ThreadSafeNoLockSingleton Instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
+        public static ThreadSafeNoLockSingleton Instance { get; } = new ThreadSafeNoLockSingleton();
     }
 
     public sealed class FullLazySingleton
@@ -121,7 +103,7 @@ namespace TetriNET.Common.Helpers
         {
         }
 
-        public static FullLazySingleton Instance { get { return Nested._instance; } }
+        public static FullLazySingleton Instance => Nested._instance;
 
         private class Nested
         {
@@ -139,7 +121,7 @@ namespace TetriNET.Common.Helpers
     {
         private static readonly Lazy<LazySingleton> Lazy = new Lazy<LazySingleton>(() => new LazySingleton());
 
-        public static LazySingleton Instance { get { return Lazy.Value; } }
+        public static LazySingleton Instance => Lazy.Value;
 
         private LazySingleton()
         {

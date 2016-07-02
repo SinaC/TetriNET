@@ -5,7 +5,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class Slam : Achievement
+    internal class Slam : AchievementBase
     {
         private Dictionary<Specials, bool> _specialsUsed;
 

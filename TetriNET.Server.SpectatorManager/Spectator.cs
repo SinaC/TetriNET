@@ -45,11 +45,11 @@ namespace TetriNET.Server.SpectatorManager
 
         public event ConnectionLostEventHandler ConnectionLost;
 
-        public int Id { get; private set; }
-        public string Name { get; private set; }
+        public int Id { get; }
+        public string Name { get; }
 
         //
-        public ITetriNETCallback Callback { get; private set; }
+        public ITetriNETCallback Callback { get; }
         //
 
         // Heartbeat management

@@ -33,14 +33,9 @@ namespace ServiceModelEx
 
          Scope = new Uri("net.tcp://ServiceModelEx.DiscoveryPublishService." + typeName);
       }
-      static NetTcpBinding Binding
-      {
-         get
-         {
-            return new NetTcpBinding(SecurityMode.Transport,true);
-         }
-      }
-      public static T CreateChannel()
+      static NetTcpBinding Binding => new NetTcpBinding(SecurityMode.Transport,true);
+
+       public static T CreateChannel()
       {
          EndpointAddress address = DiscoveryHelper.DiscoverAddress<T>(Scope);
          return ChannelFactory<T>.CreateChannel(Binding,address);

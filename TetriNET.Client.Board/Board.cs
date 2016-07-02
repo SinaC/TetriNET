@@ -10,11 +10,11 @@ namespace TetriNET.Client.Board
 {
     public class Board : IBoard
     {
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public byte[] Cells { get; private set; }
+        public int Width { get; }
+        public int Height { get; }
+        public byte[] Cells { get; }
 
-        public IReadOnlyCollection<byte> ReadOnlyCells { get { return Array.AsReadOnly(Cells); } }
+        public IReadOnlyCollection<byte> ReadOnlyCells => Array.AsReadOnly(Cells);
 
         public Board(int width, int height)
         {
@@ -58,10 +58,7 @@ namespace TetriNET.Client.Board
             return true;
         }
 
-        public int TotalCells
-        {
-            get { return Width*Height; }
-        }
+        public int TotalCells => Width*Height;
 
         public byte this[int x, int y]
         {
@@ -110,15 +107,9 @@ namespace TetriNET.Client.Board
             }
         }
 
-        public int PieceSpawnX
-        {
-            get { return 1 + (Width/2); }
-        }
+        public int PieceSpawnX => 1 + (Width/2);
 
-        public int PieceSpawnY
-        {
-            get { return Height; }
-        }
+        public int PieceSpawnY => Height;
 
         public bool CheckNoConflict(IPiece piece, bool checkTop = false)
         {

@@ -41,10 +41,7 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
 
         #region ITabIndex
 
-        public int TabIndex
-        {
-            get { return 0; }
-        }
+        public int TabIndex => 0;
 
         #endregion
 

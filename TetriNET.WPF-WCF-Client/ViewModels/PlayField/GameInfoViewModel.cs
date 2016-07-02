@@ -43,8 +43,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.PlayField
             set { Set(() => ElapsedTime, ref _elapsedTime, value); }
         }
 
-        public List<ContinuousEffect> Effects { get; private set; }
-        public ICollectionView EffectsView { get; private set; }
+        public List<ContinuousEffect> Effects { get; }
+        public ICollectionView EffectsView { get; }
 
         public GameInfoViewModel()
         {

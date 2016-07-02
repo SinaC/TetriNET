@@ -4,7 +4,7 @@ using TetriNET.Common.DataContracts;
 
 namespace TetriNET.Client.Achievements.Achievements
 {
-    internal class MillionDollarBaby : Achievement
+    internal class MillionDollarBaby : AchievementBase
     {
         public MillionDollarBaby()
         {

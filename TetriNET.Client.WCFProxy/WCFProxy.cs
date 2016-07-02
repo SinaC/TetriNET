@@ -22,9 +22,9 @@ namespace TetriNET.Client.WCFProxy
         public WCFProxy(ITetriNETCallback callback, string address)
         {
             if (callback == null)
-                throw new ArgumentNullException("callback");
+                throw new ArgumentNullException(nameof(callback));
             if (address == null)
-                throw new ArgumentNullException("address");
+                throw new ArgumentNullException(nameof(address));
 
             LastActionToServer = DateTime.Now;
 

@@ -89,70 +89,31 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             }
         }
 
-        public bool IsDeveloperModeActivated
-        {
-            get { return ClientOptionsViewModel.Instance.IsDeveloperModeActivated; }
-        }
+        public bool IsDeveloperModeActivated => ClientOptionsViewModel.Instance.IsDeveloperModeActivated;
 
-        public int PiecesCountSum
-        {
-            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.PieceCount.Values.Sum(); }
-        }
+        public int PiecesCountSum => Client == null || Client.Statistics == null ? 0 : Client.Statistics.PieceCount.Values.Sum();
 
-        public int SpecialCountSum
-        {
-            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.SpecialCount.Values.Sum(); }
-        }
+        public int SpecialCountSum => Client == null || Client.Statistics == null ? 0 : Client.Statistics.SpecialCount.Values.Sum();
 
-        public int SpecialUsedSum
-        {
-            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.SpecialUsed.Values.Sum(); }
-        }
+        public int SpecialUsedSum => Client == null || Client.Statistics == null ? 0 : Client.Statistics.SpecialUsed.Values.Sum();
 
-        public int SpecialDiscardedSum
-        {
-            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.SpecialDiscarded.Values.Sum(); }
-        }
+        public int SpecialDiscardedSum => Client == null || Client.Statistics == null ? 0 : Client.Statistics.SpecialDiscarded.Values.Sum();
 
-        public int EndOfPieceProviderReached
-        {
-            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.EndOfPieceProviderReached; }
-        }
-        
-        public int NextPieceNotYetReceived
-        {
-            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.NextPieceNotYetReceived; }
-        }
+        public int EndOfPieceProviderReached => Client == null || Client.Statistics == null ? 0 : Client.Statistics.EndOfPieceProviderReached;
 
-        public int TetrisCount
-        {
-            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.TetrisCount; }
-        }
+        public int NextPieceNotYetReceived => Client == null || Client.Statistics == null ? 0 : Client.Statistics.NextPieceNotYetReceived;
 
-        public int TripleCount
-        {
-            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.TripleCount; }
-        }
+        public int TetrisCount => Client == null || Client.Statistics == null ? 0 : Client.Statistics.TetrisCount;
 
-        public int DoubleCount
-        {
-            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.DoubleCount; }
-        }
+        public int TripleCount => Client == null || Client.Statistics == null ? 0 : Client.Statistics.TripleCount;
 
-        public int SingleCount
-        {
-            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.SingleCount; }
-        }
+        public int DoubleCount => Client == null || Client.Statistics == null ? 0 : Client.Statistics.DoubleCount;
 
-        public int GameWon
-        {
-            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.GameWon; }
-        }
+        public int SingleCount => Client == null || Client.Statistics == null ? 0 : Client.Statistics.SingleCount;
 
-        public int GameLost
-        {
-            get { return Client == null || Client.Statistics == null ? 0 : Client.Statistics.GameLost; }
-        }
+        public int GameWon => Client == null || Client.Statistics == null ? 0 : Client.Statistics.GameWon;
+
+        public int GameLost => Client == null || Client.Statistics == null ? 0 : Client.Statistics.GameLost;
 
         private bool _gameFinished;
         private DateTime _gameStartedDateTime;
@@ -345,10 +306,10 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Statistics
             public int GameLost { get; set; }
         }
 
-        public new ObservableDictionary<Pieces, ValuePercentage> PieceCount { get; private set; }
-        public new ObservableDictionary<Specials, ValuePercentage> SpecialCount { get; private set; }
-        public new ObservableDictionary<Specials, ValuePercentage> SpecialUsed { get; private set; }
-        public new ObservableDictionary<Specials, ValuePercentage> SpecialDiscarded { get; private set; }
+        public new ObservableDictionary<Pieces, ValuePercentage> PieceCount { get; }
+        public new ObservableDictionary<Specials, ValuePercentage> SpecialCount { get; }
+        public new ObservableDictionary<Specials, ValuePercentage> SpecialUsed { get; }
+        public new ObservableDictionary<Specials, ValuePercentage> SpecialDiscarded { get; }
         public new ObservableDictionary<Specials, SpecialPercentages> Specials { get; private set; }
 
         public new int PiecesCountSum

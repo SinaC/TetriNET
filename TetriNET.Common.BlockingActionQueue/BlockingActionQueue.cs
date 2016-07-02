@@ -14,7 +14,7 @@ namespace TetriNET.Common.BlockingActionQueue
         private CancellationTokenSource _cancellationTokenSource;
         private Task _gameActionTask;
 
-        public int ActionCount { get { return _gameActionBlockingCollection.Count; } }
+        public int ActionCount => _gameActionBlockingCollection.Count;
 
         public void Start(CancellationTokenSource cancellationTokenSource)
         {

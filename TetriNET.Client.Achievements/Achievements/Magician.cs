@@ -16,14 +16,8 @@ namespace TetriNET.Client.Achievements.Achievements
             GoldLevel = 10;
         }
 
-        public override Specials Special
-        {
-            get { return Specials.SwitchFields; }
-        }
+        public override Specials Special => Specials.SwitchFields;
 
-        public override int CountToAchieve
-        {
-            get { return 3; }
-        }
+        public override int CountToAchieve => 3;
     }
 }
