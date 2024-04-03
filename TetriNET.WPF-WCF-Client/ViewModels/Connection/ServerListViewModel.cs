@@ -58,13 +58,13 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
             SelectServerCommand = new RelayCommand(SelectServer);
             SelectLatestServerCommand = new RelayCommand(SelectLatestServer);
 
-            StringCollection latestServers = Settings.Default.LatestServers;
-            if (latestServers != null)
-            {
-                LatestServers.Clear();
-                foreach (string s in latestServers)
-                    LatestServers.Add(s);
-            }
+            //StringCollection latestServers = Settings.Default.LatestServers;
+            //if (latestServers != null)
+            //{
+            //    LatestServers.Clear();
+            //    foreach (string s in latestServers)
+            //        LatestServers.Add(s);
+            //}
         }
 
         public void AddServerToLatest(string address)
@@ -81,8 +81,8 @@ namespace TetriNET.WPF_WCF_Client.ViewModels.Connection
                 LatestServers.RemoveAt(MaxLatestServerCount);
             StringCollection latestServers = new StringCollection();
             latestServers.AddRange(LatestServers.ToArray());
-            Settings.Default.LatestServers = latestServers;
-            Settings.Default.Save();
+            //Settings.Default.LatestServers = latestServers;
+            //Settings.Default.Save();
         }
 
         private void ScanForServer()
